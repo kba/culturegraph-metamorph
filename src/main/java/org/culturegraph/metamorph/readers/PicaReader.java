@@ -5,9 +5,6 @@ import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 
-
-
-
 /**
  * Parses a raw Picaplus stream (utf8 encoding assumed).
  * Events are handled by a {@link StreamReceiver}.

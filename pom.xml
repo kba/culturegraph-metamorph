@@ -4,7 +4,7 @@
 	<groupId>org.culturegraph</groupId>
 	<artifactId>metamorph</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Transformation Language</name>
+	<name>Metamorph, Transformation Language for Metadata</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,22 +15,10 @@
 
 	<repositories>
 		<repository>
-			<id>DNB_internal</id>
-			<url>file://V:\Abt_IT\004_IT4\Archiv\SW-Entwicklung\Maven-Repository</url>
-		</repository>
-		<repository>
 			<id>project_internal</id>
 			<url>file://${basedir}/lib</url>
 		</repository>
 	</repositories>
-
-	<distributionManagement>
-		<repository>
-			<id>DNB_internal</id>
-			<name>DNB test repository</name>
-			<url>file://V:\Abt_IT\004_IT4\Archiv\SW-Entwicklung\Maven-Repository</url>
-		</repository>
-	</distributionManagement>
 
 	<build>
 		<plugins>
@@ -49,7 +37,7 @@
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.6</version>
 				<configuration>
-					<configLocation>developers/checkstyle_rules.xml</configLocation>
+					<configLocation>${basedir}/developers/checkstyle_rules.xml</configLocation>
 				</configuration>
 				<executions>
 					<execution>
@@ -95,6 +83,28 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<linkXRef>true</linkXRef>
+
+					<rulesets>
+						<ruleset>${basedir}/developers/pmd_rules.xml</ruleset>
+					</rulesets>
+				</configuration>
+
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>pmd</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 	<dependencies>
@@ -105,7 +115,7 @@
 			<version>1.2.20</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -114,8 +124,8 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
-		
-				<!-- Json -->
+
+		<!-- Json -->
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-lgpl</artifactId>
@@ -152,7 +162,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-	
+
 	</dependencies>
 
 </project>

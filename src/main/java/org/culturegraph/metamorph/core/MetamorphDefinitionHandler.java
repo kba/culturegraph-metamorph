@@ -43,9 +43,11 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 		private static final String RESET_ATTR = "reset";
 		private static final String SAME_ENTITY_ATTR = "sameEntity";
 		private static final String FORCE_ON_END_ATTR = "forceOnEnd";
+		private static final String DEFAULT_ATTR = "default";
 		
 		private static final Logger LOG = LoggerFactory
 				.getLogger(MetamorphDefinitionHandler.class);
+		
 		
 	
 	
@@ -94,11 +96,8 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 				final Attributes atts) throws SAXException {
 			
 			if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName)) {
-				final boolean reset = atts.getValue(RESET_ATTR)!=null && TRUE.equals(atts.getValue(RESET_ATTR));
-				final boolean sameEntity = atts.getValue(SAME_ENTITY_ATTR)!=null && TRUE.equals(atts.getValue(SAME_ENTITY_ATTR));
-								
-				registerCollector(localName,atts.getValue(NAME_ATTR),atts.getValue(VALUE_ATTR), atts.getValue(FORCE_ON_END_ATTR), reset, sameEntity);
-			
+				registerCollector(localName, atts);	
+
 				
 			}else if(GROUP_TAG.equals(localName)) {
 				emitGroupName = atts.getValue(NAME_ATTR);
@@ -109,7 +108,7 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 				registerDataSource(atts.getValue(SOURCE_ATTR), atts.getValue(NAME_ATTR),atts.getValue(VALUE_ATTR), atts.getValue(AS_ATTR));
 		
 			}else if(MAP_TAG.equals(localName)){
-				createKeyValueStore(atts.getValue(NAME_ATTR));
+				createKeyValueStore(atts.getValue(NAME_ATTR), atts.getValue(DEFAULT_ATTR));
 				
 			} else if (functions.keySet().contains(localName)) {
 				registerFunction(localName,attributesToMap(atts));
@@ -119,31 +118,27 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 			}
 		}
 	
-
-		/**
-		 * @param name
-		 * @param value
-		 */
-		private void registerCollector(final String tag, final String name, final String value, final String forceOnEnd, final boolean reset, final boolean sameEntity) {
+		private void registerCollector(final String tag, final Attributes atts){
+			final boolean reset = atts.getValue(RESET_ATTR)!=null && TRUE.equals(atts.getValue(RESET_ATTR));
+			final boolean sameEntity = atts.getValue(SAME_ENTITY_ATTR)!=null && TRUE.equals(atts.getValue(SAME_ENTITY_ATTR));
 			
-			final Collect collector;
 			if(COLLECT_ENTITY_TAG.equals(tag)){
-				collector = new CollectEntity();
+				collect = new CollectEntity();
 			}else{
-				collector = new CollectLiteral();
+				collect = new CollectLiteral();
 			}
-
-			collector.setMetamorph(metamorph);
-			collector.setName(name);
-			collector.setValue(value);
-			collector.setReset(reset);
-			collector.setSameEntity(sameEntity);
-			if(forceOnEnd!=null){
-				metamorph.addEntityEndListener(collector, forceOnEnd);
-			}
+			collect.setMetamorph(metamorph);
+			collect.setName(atts.getValue(NAME_ATTR));
+			collect.setValue(atts.getValue(VALUE_ATTR));
+			collect.setReset(reset);
+			collect.setSameEntity(sameEntity);
 			
-			this.collect = collector;
+			if(atts.getValue(FORCE_ON_END_ATTR)!=null){
+				metamorph.addEntityEndListener(collect, atts.getValue(FORCE_ON_END_ATTR));
+			}
 		}
+
+	
 
 		@Override
 		public void endElement(final String uri, final String localName, final String qName)
@@ -202,8 +197,9 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 		/**
 		 * @param name of {@link KeyValueStore}
 		 */
-		private void createKeyValueStore(final String name) {
+		private void createKeyValueStore(final String name, final String defaultValue) {
 			keyValueStore = new SimpleKeyValueStore();
+			keyValueStore.setDefaultValue(defaultValue);
 			metamorph.addKeyValueStore(name, keyValueStore);
 			
 			if(LOG.isDebugEnabled()){
@@ -293,10 +289,25 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 		private static final class SimpleKeyValueStore extends HashMap<String, String> implements KeyValueStore {
 
 			private static final long serialVersionUID = 150463997716013252L;
+			
+			private String defaultValue;
 
 			@Override
 			public String get(final String key) {
-				return super.get(key);
+				final String value = super.get(key);
+				if(value==null){
+					return defaultValue;
+				}else{
+					return value;
+				}
+			}
+			
+			/**
+			 * sets the default to return when a key was not found. Can take <code>null</code>.
+			 * @param value
+			 */
+			public void setDefaultValue(final String value){
+				defaultValue = value;
 			}
 		}
 	}

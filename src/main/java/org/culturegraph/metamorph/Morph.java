@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.culturegraph.metamorph.core.MetamorphBuilder;
+import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.readers.MabReader;
 import org.culturegraph.metamorph.readers.PicaReader;
 import org.culturegraph.metamorph.readers.RawRecordReader;
@@ -27,7 +28,7 @@ public final class Morph {
 		final String fileName = args[0];
         final int dotPos = fileName.lastIndexOf('.');
         if(dotPos < 0){
-        	throw new RuntimeException("Extention missing");
+        	throw new MetamorphException("Extention missing");
         }else{
 	        final String extension = fileName.substring(dotPos+1);
 	        
@@ -41,7 +42,7 @@ public final class Morph {
 	        	reader = new MabReader();
 	        	transformerBuilder.setDefinitionFile("src/main/resources/mab2.xml");
 	        }else{
-	        	throw new RuntimeException("Extention not recognized");
+	        	throw new MetamorphException("Extention not recognized");
 	        }
 
 			transformerBuilder.setOutputHandler(new ConsoleWriter());

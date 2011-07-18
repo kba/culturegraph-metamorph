@@ -57,7 +57,7 @@ final class Data extends DataProcessor implements DataSender {
 			if(LOG.isTraceEnabled()){
 				LOG.trace("emiting literal "+ name + "=" + value);
 			}
-			dataReceiver.data(name, value, this, recordCount, entityCount);
+			dataReceiver.data(new Literal(name, value), this, recordCount, entityCount);
 		}
 	}
 	

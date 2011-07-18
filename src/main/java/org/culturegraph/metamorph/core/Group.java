@@ -39,15 +39,15 @@ final class Group extends DataProcessor  implements DataReceiver{
 	}
 	
 	@Override
-	public void data(final String name, final String value, final DataSender sender,final int recordCount, final int entityCount) {
+	public void data(final Literal literal, final DataSender sender, final int recordCount, final int entityCount) {
 		String resultName = this.name;
 		String resultValue = this.value;
 		
 		if(resultName==null){
-			resultName = name;
+			resultName = literal.getName();
 		}
 		if(resultValue==null){
-			resultValue = applyFunctions(value);
+			resultValue = applyFunctions(literal.getValue());
 		}
 		
 		if(name==null || value ==null){
