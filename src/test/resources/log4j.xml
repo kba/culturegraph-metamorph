@@ -10,13 +10,8 @@
 	</appender>
 
 	
-	<logger name="org.springframework" additivity="false">
-		<level value="info" />
-		<appender-ref ref="stout" />
-	</logger>
-	
 	<root>
-		<priority value="debug" />
+		<priority value="warn" />
 		<appender-ref ref="stout" />
 	</root>
 

@@ -2,7 +2,6 @@ package org.culturegraph.metamorph.functions;
 
 import junit.framework.Assert;
 
-import org.culturegraph.metamorph.core.MetamorphException;
 import org.junit.Test;
 
 
@@ -35,12 +34,12 @@ public final class ISBNTest {
 		Assert.assertEquals(ISBN10,ISBN.cleanse(ISBN_DIRTY));
 	}
 	
-	@Test(expected = MetamorphException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidInputTo13() {
 		ISBN.isbn10to13(ISBN_INCORRECT_SIZE);
 	}
 	
-	@Test(expected = MetamorphException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidInputTo10() {
 		ISBN.isbn13to10(ISBN_INCORRECT_SIZE);
 	}
