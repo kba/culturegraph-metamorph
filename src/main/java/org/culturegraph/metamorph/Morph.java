@@ -32,21 +32,21 @@ public final class Morph {
         }else{
 	        final String extension = fileName.substring(dotPos+1);
 	        
-	        final MetamorphBuilder transformerBuilder = new MetamorphBuilder();
-	        final RawRecordReader reader;
 
+	        final RawRecordReader reader;
+	        final String definition;
+	        
 	        if("pica".equalsIgnoreCase(extension)){
 	        	reader = new PicaReader();
-	        	transformerBuilder.setDefinitionFile("src/main/resources/pica.xml");
+	        	definition = "src/main/resources/pica.xml";
 	        }else if("mab2".equalsIgnoreCase(extension)){
 	        	reader = new MabReader();
-	        	transformerBuilder.setDefinitionFile("src/main/resources/mab2.xml");
+	        	definition = "src/main/resources/mab2.xml";
 	        }else{
 	        	throw new MetamorphException("Extention not recognized");
 	        }
-
-			transformerBuilder.setOutputHandler(new ConsoleWriter());
-			reader.setStreamReceiver(transformerBuilder.build());
+	
+			reader.setStreamReceiver(MetamorphBuilder.build(definition, new ConsoleWriter()));
 			reader.read(new FileInputStream(args[0]));
 
         }

@@ -15,13 +15,13 @@ final class CollectEntity extends AbstractCollect {
 
 	@Override
 	protected void emit() {
-		getTransformer().getOutputStreamReceiver().startEntity(getName());
+		getStreamReceiver().startEntity(getName());
 		for(Literal literal:literals){
 			if(literal.getName()!=null && literal.getValue()!=null){
-				getTransformer().getOutputStreamReceiver().literal(literal.getName(), literal.getValue());
+				getStreamReceiver().literal(literal.getName(), literal.getValue());
 			}
 		}
-		getTransformer().getOutputStreamReceiver().endEntity();
+		getStreamReceiver().endEntity();
 	}
 	
 

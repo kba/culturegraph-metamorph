@@ -10,23 +10,15 @@ import org.junit.Test;
  * @status Experimental
  */
 public final class MetamorphBuilderTest {
-	
 
-	
 	@Test(expected=MetamorphDefinitionException.class)
 	public void testShemaVerification() {
-		final MetamorphBuilder builder = new MetamorphBuilder();
-		builder.setDefinitionFile(TestFiles.SYTAX_ERROR_MM);
-		builder.setOutputHandler(new ConsoleWriter());
-		builder.build();
+		MetamorphBuilder.build(TestFiles.SYTAX_ERROR_MM, new ConsoleWriter());
 	}
 	
 	@Test
 	public void testBuild() {
-		final MetamorphBuilder builder = new MetamorphBuilder();
-		builder.setDefinitionFile(TestFiles.PND_PICA_MM);
-		builder.setOutputHandler(new ConsoleWriter());
-		final Metamorph metamorph = builder.build();
+		final Metamorph metamorph = MetamorphBuilder.build(TestFiles.PND_PICA_MM, new ConsoleWriter());
 		Assert.assertNotNull(metamorph);
 	}
 }

@@ -16,11 +16,11 @@ final class Group extends DataProcessor  implements DataReceiver{
 	private String name;
 	private String value;
 
-	private final Metamorph transformer;
+	private final Metamorph metamorph;
 	
-	Group(final Metamorph transformer){
+	Group(final Metamorph metamorph){
 		super();
-		this.transformer = transformer;		
+		this.metamorph = metamorph;		
 	}
 	
 	/**
@@ -56,7 +56,7 @@ final class Group extends DataProcessor  implements DataReceiver{
 			if(LOG.isTraceEnabled()){
 				LOG.trace("emiting literal "+ resultName + "=" + resultValue);
 			}
-			transformer.literal(resultName, resultValue);
+			metamorph.literal(resultName, resultValue);
 		}
 	}
 

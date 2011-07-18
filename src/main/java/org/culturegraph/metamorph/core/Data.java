@@ -28,7 +28,6 @@ final class Data extends DataProcessor implements DataSender {
 	private DataReceiver dataReceiver;
 
 	
-
 	
 	public void data(final CharSequence data, final int recordCount, final int entityCount){
 		assert dataReceiver != null;

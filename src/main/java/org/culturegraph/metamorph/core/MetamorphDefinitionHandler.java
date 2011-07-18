@@ -68,8 +68,8 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 		private SimpleKeyValueStore keyValueStore;	
 
 		
-		public MetamorphDefinitionHandler(final Metamorph transformer) {
-			this.metamorph = transformer;
+		public MetamorphDefinitionHandler(final Metamorph metamorph) {
+			this.metamorph = metamorph;
 			registerFunctionClass("constant",Constant.class);
 			registerFunctionClass("regexp",Regexp.class);
 			registerFunctionClass("compose",Compose.class);
@@ -127,7 +127,7 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 			}else{
 				collect = new CollectLiteral();
 			}
-			collect.setMetamorph(metamorph);
+			collect.setStreamReceiver(metamorph.getOutputStreamReceiver());
 			collect.setName(atts.getValue(NAME_ATTR));
 			collect.setValue(atts.getValue(VALUE_ATTR));
 			collect.setReset(reset);

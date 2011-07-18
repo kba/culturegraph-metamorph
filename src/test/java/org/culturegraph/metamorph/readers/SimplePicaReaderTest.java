@@ -21,14 +21,12 @@ public final class SimplePicaReaderTest {
 	private final RawRecordReader reader = new PicaReader();
 	private final CountingStreamReceiver countStreamReceiver =  new CountingStreamReceiver();
 
-	
-	
 	@Test
 	public void testRead() throws IOException {
 		reader.setStreamReceiver(countStreamReceiver);
 		reader.read(new FileInputStream(TestFiles.PND_PICA));
 		
-		Assert.assertEquals("Number of read records is incorrect", NUM_RECORDS, countStreamReceiver.getNumRecords());
-		Assert.assertEquals("Number of read literals is incorrect", NUM_LITERALS, countStreamReceiver.getNumLiterals());
+		Assert.assertEquals("Number of records is incorrect", NUM_RECORDS, countStreamReceiver.getNumRecords());
+		Assert.assertEquals("Number of literals is incorrect", NUM_LITERALS, countStreamReceiver.getNumLiterals());
 	}
 }

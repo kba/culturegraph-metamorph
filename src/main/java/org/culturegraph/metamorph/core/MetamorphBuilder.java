@@ -10,7 +10,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
-import org.springframework.util.Assert;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -27,41 +26,20 @@ public final class MetamorphBuilder {
 	private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 	private static final String SCHEMA_FILE = "metamorph.xsd";
 	private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
-
 	private static final String PARSE_ERROR = "Error parsing transformation definition: ";
 
-	private String definitionFile;
 
-	private MetamorphDefinitionHandler transformationContentHandler;
-	private StreamReceiver outputReceiver;
-
+	private MetamorphBuilder(){/* no instances exist */}
 	
-		
-	/**
-	 * @param outputReceiver 
-	 */
-	public void setOutputHandler(final StreamReceiver outputReceiver) {
-		Assert.notNull("'outputHandler' must not be null");
-		this.outputReceiver = outputReceiver;
-	}
-
-
-	/**
-	 * @param definitionFile
-	 */
-	public void setDefinitionFile(final String definitionFile) {
-		this.definitionFile = definitionFile;
-	}
-	
-	public Metamorph build(){
+	public static Metamorph build(final String definitionFile, final StreamReceiver outputReceiver){
 		final Metamorph metamorph = new Metamorph();
 		metamorph.setOutputStreamReceiver(outputReceiver);
-		transformationContentHandler = new MetamorphDefinitionHandler(metamorph);
-		loadDefinition();
+		final MetamorphDefinitionHandler transformationContentHandler = new MetamorphDefinitionHandler(metamorph);
+		loadDefinition(transformationContentHandler, definitionFile);
 		return metamorph;
 	}
 
-	private void loadDefinition(){
+	private static void loadDefinition(final MetamorphDefinitionHandler transformationContentHandler, final String definitionFile){
 		try {
 			// XMLReader erzeugen
 			final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -98,7 +76,7 @@ public final class MetamorphBuilder {
 			// Pfad zur XML Datei
 			final FileReader reader = new FileReader(definitionFile);
 			final InputSource inputSource = new InputSource(reader);
-
+			
 			xmlReader.setContentHandler(transformationContentHandler);
 
 			// Parsen wird gestartet

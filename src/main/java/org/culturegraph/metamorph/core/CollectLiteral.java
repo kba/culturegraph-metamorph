@@ -34,7 +34,7 @@ final class CollectLiteral extends AbstractCollect {
 	protected void emit() {
 		final String name = format(getName(), variables);
 		final String value = format(getValue(), variables);
-		getTransformer().getOutputStreamReceiver().literal(name, value);
+		getStreamReceiver().literal(name, value);
 	}
 	
 	@Override

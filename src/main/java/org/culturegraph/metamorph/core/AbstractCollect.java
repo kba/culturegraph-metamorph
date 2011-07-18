@@ -3,6 +3,7 @@ package org.culturegraph.metamorph.core;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 	private int oldRecord;
 	private int oldEntity;
 	private int dataCount;
-	private Metamorph transformer;
+	private StreamReceiver streamReceiver;
 	private boolean reset;
 	private boolean sameEntity;
 	private String name;
@@ -54,8 +55,8 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 	/**
 	 * @return the transformer
 	 */
-	public final Metamorph getTransformer() {
-		return transformer;
+	public final StreamReceiver getStreamReceiver() {
+		return streamReceiver;
 	}
 	
 	/**
@@ -100,10 +101,10 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 
 
 	/**
-	 * @param transformer the transformer to set
+	 * @param streamReceiver the transformer to set
 	 */
-	public final void setMetamorph(final Metamorph transformer) {
-		this.transformer = transformer;
+	public final void setStreamReceiver(final StreamReceiver streamReceiver) {
+		this.streamReceiver = streamReceiver;
 	}
 
 	private void updateCounts(final int newRecord, final int newEntity) {
