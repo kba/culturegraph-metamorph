@@ -111,7 +111,11 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 		final List<Data> matchingReceiver = dataSources.get(entityPath.toString()+name);
 		if(null!=matchingReceiver){
 			for (Data receiver : matchingReceiver) {
-				receiver.data(value, recordCount, entityCountStack.getLast());
+				if(entityCountStack.isEmpty()){
+					throw new IllegalStateException("Cannot receive literals outside of records");
+				}else{
+					receiver.data(value, recordCount, entityCountStack.getLast());
+				}
 			}
 		}
 	}
