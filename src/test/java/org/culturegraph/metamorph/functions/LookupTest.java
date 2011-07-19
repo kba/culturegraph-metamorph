@@ -9,15 +9,14 @@ import org.junit.Test;
 
 /**
  * @author Markus Michael Geipel
- * @status Prototype
  */
 
 public final class LookupTest {
 	
 	
-	private static final String KEY = "adfsf"; 
-	private static final String KEY_WRONG = "asdff"; 
-	private static final String VALUE = "ghjfgjgj"; 
+	private static final String KEY = "Franz"; 
+	private static final String KEY_WRONG = "Josef"; 
+	private static final String VALUE = "Kafka"; 
 	
 	@Test
 	public void testLookup() {

@@ -8,7 +8,6 @@ import org.junit.Test;
 
 /**
  * @author Markus Michael Geipel
- * @status Prototype
  */
 
 public final class ISBNTest {

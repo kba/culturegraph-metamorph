@@ -3,7 +3,6 @@ package org.culturegraph.metamorph.core;
 import junit.framework.Assert;
 
 import org.culturegraph.metamorph.streamreceiver.MapCollector;
-import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 import org.junit.Test;
 
 /**
@@ -26,6 +25,8 @@ public final class CollectTest {
 	private final Data dataA = new Data();
 	private final Data dataB = new Data();
 	
+	private final MapCollector mapCollector = new MapCollector();
+	
 
 	public CollectTest() {
 		dataA.setDefaultName(NAME_A);
@@ -33,18 +34,18 @@ public final class CollectTest {
 	}
 	
 	
-	private void wireCollect(final Collect collect, final StreamReceiver streamReceiver){
+	private void wireCollect(final Collect collect){
 		collect.addData(dataA);
 		collect.addData(dataB);
 		collect.setName(ENTITY_NAME);
-		collect.setStreamReceiver(streamReceiver);
+		collect.setStreamReceiver(mapCollector);
+		mapCollector.getMap().clear();
 	}
 	
 	@Test
 	public void testCollectEntity() {
-	
-		final MapCollector mapCollector = new MapCollector();
-		wireCollect(new CollectEntity(), mapCollector);
+
+		wireCollect(new CollectEntity());
 		
 		Assert.assertEquals(0, mapCollector.getMap().size());
 		dataA.data(VALUE_A, 0, 0);
@@ -59,10 +60,10 @@ public final class CollectTest {
 	
 	@Test
 	public void testCollectLiteral() {
-		final MapCollector mapCollector = new MapCollector();
+		
 		final CollectLiteral collectLiteral = new CollectLiteral();
 		collectLiteral.setValue(VALUE_FORMAT);
-		wireCollect(collectLiteral, mapCollector);
+		wireCollect(collectLiteral);
 		
 		Assert.assertEquals(0, mapCollector.getMap().size());
 		dataA.data(VALUE_A, 0, 0);
@@ -73,11 +74,11 @@ public final class CollectTest {
 	}
 	
 	@Test
-	public void testReset() {
-		final MapCollector mapCollector = new MapCollector();
+	public void testExplicitReset() {
+	
 		final CollectLiteral collectLiteral = new CollectLiteral();
 		collectLiteral.setValue(VALUE_FORMAT);
-		wireCollect(collectLiteral, mapCollector);
+		wireCollect(collectLiteral);
 		dataA.data(VALUE_A, 0, 0);
 		dataB.data(VALUE_B, 0, 0);
 		Assert.assertEquals(COMPASITION_AB, mapCollector.getMap().get(ENTITY_NAME));
@@ -94,4 +95,24 @@ public final class CollectTest {
 		dataA.data(VALUE_A, 0, 0);
 		Assert.assertEquals(COMPASITION_AB, mapCollector.getMap().get(ENTITY_NAME));
 	}
+	
+	@Test
+	public void testResetAfterNewRecord(){
+		final CollectLiteral collectLiteral = new CollectLiteral();
+		collectLiteral.setValue(VALUE_FORMAT);
+		wireCollect(collectLiteral);
+		dataA.data(VALUE_A, 0, 0);
+		dataB.data(VALUE_B, 0, 0);
+		Assert.assertEquals(COMPASITION_AB, mapCollector.getMap().get(ENTITY_NAME));
+		mapCollector.getMap().clear();
+		
+		dataA.data(VALUE_A, 1, 0);
+		Assert.assertTrue(mapCollector.getMap().isEmpty());
+		dataB.data(VALUE_B, 2, 0);
+		Assert.assertTrue(mapCollector.getMap().isEmpty());
+		dataA.data(VALUE_A, 2, 0);
+		Assert.assertEquals(COMPASITION_AB, mapCollector.getMap().get(ENTITY_NAME));
+		
+	}
+
 }
