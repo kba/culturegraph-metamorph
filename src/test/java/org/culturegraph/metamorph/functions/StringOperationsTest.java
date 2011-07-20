@@ -28,6 +28,14 @@ public final class StringOperationsTest {
 		Assert.assertEquals(VALUE3 + " K.", regexp.process(VALUE1 + VALUE2));
 	}
 	
+	@Test(expected=Regexp.PatternNotFoundException.class)
+	public void testRegexpExceptionOnFail() {
+		final Regexp regexp = new Regexp();
+		regexp.setMatch(VALUE2);
+		regexp.setExceptionOnFail("true");
+		regexp.process(VALUE3);
+	}
+	
 	@Test
 	public void testCompose() {
 		final Compose compose = new Compose();

@@ -3,6 +3,8 @@ package org.culturegraph.metamorph.functions;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.culturegraph.metamorph.core.MetamorphException;
+
 
 /**
  * @author Markus Michael Geipel
@@ -10,8 +12,10 @@ import java.util.regex.Pattern;
  */
 public final class Regexp extends AbstractFunction {
 
+	private static final String TRUE = "true";
 	private Matcher matcher;
 	private String format;
+	private boolean exceptionOnFail;
 
 	
 	@Override
@@ -27,7 +31,12 @@ public final class Regexp extends AbstractFunction {
 			}
 		}else{
 			result = null;
+			if(exceptionOnFail){
+				throw new PatternNotFoundException(matcher.pattern(), value);
+			}
 		}
+		
+
 		
 		return result;
 	}
@@ -35,10 +44,13 @@ public final class Regexp extends AbstractFunction {
 	private String matchAndFormat(){
 		String result = format;		
 		for (int i = 0; i < matcher.groupCount(); ++i) {
-			
 			result = result.replaceAll("\\$\\{"+i+"\\}", matcher.group(i));
 		}
 		return result; 
+	}
+	
+	public void setExceptionOnFail(final String exceptionOnFail){
+		this.exceptionOnFail = TRUE.equals(exceptionOnFail);
 	}
 	
 	/**
@@ -53,6 +65,13 @@ public final class Regexp extends AbstractFunction {
 	 */
 	public void setFormat(final String format) {
 		this.format = format;
+	}
+	
+	public static final class PatternNotFoundException extends MetamorphException{
+		private static final long serialVersionUID = 4113458605196557204L;
+		public PatternNotFoundException(final Pattern pattern, final String input) {
+			super("Pattern '" + pattern + "' not found in '" + input + "'");
+		}
 	}
 
 }

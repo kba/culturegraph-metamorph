@@ -4,7 +4,7 @@ package org.culturegraph.metamorph.core;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-public final class MetamorphException extends RuntimeException {
+public class MetamorphException extends RuntimeException {
 
 	private static final long serialVersionUID = -3130648074493084946L;
 

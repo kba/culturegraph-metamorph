@@ -64,7 +64,6 @@
 
 	<data source="540a" name="xbib:identifierAuthorityISBN">
 		<isbn to="clean" />
-		
 	</data>
 
 	<data source="541a" name="xbib:identifierAuthorityOriginalISMN" />

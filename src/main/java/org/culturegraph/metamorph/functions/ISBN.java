@@ -7,15 +7,18 @@ import org.culturegraph.metamorph.core.MetamorphException;
 
 /**
  * @author Markus Michael Geipel
- * @status Experimental
  */
 public final class ISBN extends AbstractFunction {
 	private static final String CHECK = "0123456789X0";
-	private static final String INVALID_INPUT = "invalid ISBN: '";
+	
+	private static final String INVALID_LENGTH = "invalid ISBN length: '";
+	private static final String INVALID_CHECK = "invalid ISBN check digit: '";
+	private static final String APOSTROPH = "'";
+	
 	private static final String ISBN10 = "isbn10";
 	private static final String ISBN13 = "isbn13";
-	private static final Pattern ISBN_PATTERN = Pattern.compile("[\\dX]{9,13}");
-	private static final Pattern DIRT_PATTERN = Pattern.compile("[\\.\\-\\s]");
+	private static final Pattern ISBN_PATTERN = Pattern.compile("[\\dX]{10}([\\dX]{3})?");
+	private static final Pattern DIRT_PATTERN = Pattern.compile("[\\.\\-]");
 	private static final int ISBN10_SIZE = 10;
 	private static final int ISBN10_MAGIC = 10;
 	private static final int ISBN13_SIZE = 13;
@@ -25,14 +28,22 @@ public final class ISBN extends AbstractFunction {
 
 	private boolean to10;
 	private boolean to13;
+	private boolean verifyCheckDigit;
+
+
 
 	@Override
 	public String process(final String value) {
 		String result = cleanse(value);
 		final int size = result.length();
-
+		
+		if(verifyCheckDigit && !isValid(result)){
+			throw new InvalidISBNCheckDigitException(value);
+		}
+		
 		if (to10 && ISBN13_SIZE == size) {
 			result = isbn13to10(result);
+	
 		} else if (to13 && ISBN10_SIZE == size) {
 			result = isbn10to13(result);
 		}
@@ -40,14 +51,13 @@ public final class ISBN extends AbstractFunction {
 	}
 
 	public static String cleanse(final String isbn) {
-
 		String normValue = isbn.replace('x', 'X');
 		normValue = DIRT_PATTERN.matcher(normValue).replaceAll("");
 		final Matcher matcher = ISBN_PATTERN.matcher(normValue);
 		if (matcher.find()) {
 			return matcher.group();
 		} else {
-			throw new MetamorphException(INVALID_INPUT + isbn + "'");
+			throw new InvalidISBNLengthException(isbn);
 		}
 	}
 
@@ -127,7 +137,27 @@ public final class ISBN extends AbstractFunction {
 			result = check13(isbn.substring(0, ISBN13_SIZE - 1)) == isbn
 					.charAt(ISBN13_SIZE - 1);
 		}
-		
 		return result;
 	}
+	
+	public void setVerifyCheckDigit(final String verifyCheckDigit) {
+		this.verifyCheckDigit = "true".equals(verifyCheckDigit);
+	}
+	
+	public static final class InvalidISBNLengthException extends MetamorphException{
+		private static final long serialVersionUID = 921922231931724504L;
+		
+		public InvalidISBNLengthException(final String isbn) {
+			super(INVALID_LENGTH + isbn + APOSTROPH);
+		} 
+	}
+	
+	public static final class InvalidISBNCheckDigitException extends MetamorphException{
+		private static final long serialVersionUID = 921922231931724504L;
+		public InvalidISBNCheckDigitException(final String isbn) {
+			super(INVALID_CHECK + isbn + APOSTROPH);
+		}
+	}
+	
+	
 }

@@ -97,6 +97,7 @@
 		<complexType>
 			<attribute name="match" type="string" use="required" />
 			<attribute name="format" type="string" use="optional" />
+			<attribute name="exceptionOnFail" type="boolean" use="optional" default="false"></attribute>
 		</complexType>
 	</element>
 
@@ -122,7 +123,9 @@
 
 	<element name="isbn">
 		<complexType>
-			<attribute name="to" type="tns:toIsbnAttribute" use="required" />
+			<attribute name="to" type="tns:toIsbnAttribute"
+				use="required" />
+			<attribute name="verifyCheckDigit" type="boolean" use="optional" default="false"></attribute>
 		</complexType>
 	</element>
 

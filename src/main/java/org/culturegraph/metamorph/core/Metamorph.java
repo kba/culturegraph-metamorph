@@ -24,17 +24,26 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
 	private final Map<String, List<EntityEndListener>> entityEndListeners = new HashMap<String, List<EntityEndListener>>();
 	private final Map<String, String> entityMap = new HashMap<String, String>();
-	private StreamReceiver outputStreamReceiver;
-	private final Map<String, KeyValueStore> keyValueStores = new HashMap<String, KeyValueStore>();
 	
+	private final Map<String, KeyValueStore> keyValueStores = new HashMap<String, KeyValueStore>();
 	private final Deque<String> entityStack = new LinkedList<String>();
 	private final StringBuilder entityPath = new StringBuilder();
-
 	private final Deque<Integer> entityCountStack = new LinkedList<Integer>();
-
+	
+	private StreamReceiver outputStreamReceiver;
+	private MetamorphErrorHandler errorHandler = new MetamorphErrorHandler() {
+		@Override
+		public void error(final Exception exception) {
+			throw new MetamorphException("An unhandled exception occured", exception);
+		}
+	};
+	
 	private int recordCount;
 	private int entityCount;
 	
+	public void setErrorHandler(final MetamorphErrorHandler errorHandler){
+		this.errorHandler = errorHandler;
+	}
 
 	protected void registerDataSource(final Data entityHandler, final String path){
 		assert entityHandler!=null && path !=null;
@@ -114,7 +123,11 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 				if(entityCountStack.isEmpty()){
 					throw new IllegalStateException("Cannot receive literals outside of records");
 				}else{
-					receiver.data(value, recordCount, entityCountStack.getLast());
+					try{
+						receiver.data(value, recordCount, entityCountStack.getLast());
+					}catch(MetamorphException e){
+						errorHandler.error(e);
+					}
 				}
 			}
 		}

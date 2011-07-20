@@ -13,7 +13,6 @@ public final class LiteralTest{
 	private static final String VALUE = "s234234ldkfj";
 	private static final String OTHER_VALUE = "877687609";
 
-
 	@Test
 	public void testLiteralEquals() {
 		final Literal literal1 = new Literal(NAME, VALUE);
@@ -28,6 +27,7 @@ public final class LiteralTest{
 		Assert.assertFalse(literal1.equals(literal3));
 		Assert.assertFalse(literal1.equals(literal4));
 		Assert.assertFalse(literal4.equals(literal3));
+		Assert.assertFalse(literal4.equals(new Object()));
 		
 		Assert.assertTrue(literal1.hashCode() == literal2.hashCode());
 	}
