@@ -39,5 +39,11 @@ public final class StringOperationsTest {
 		
 	}
 	
-
+	@Test
+	public void testReplace() {
+		final Replace replace = new Replace();
+		replace.setPattern(VALUE2);
+		replace.setWith(VALUE3);
+		Assert.assertEquals(VALUE1+VALUE3, replace.process(VALUE1+VALUE2));
+	}
 }
