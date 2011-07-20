@@ -43,7 +43,7 @@ public final class Literal {
 	public boolean equals(final Object obj) {
 		if (obj instanceof Literal) {
 			final Literal literal = (Literal) obj;
-			return literal.preCompHashCode!=preCompHashCode && literal.name.equals(name) && literal.value.equals(value);
+			return literal.preCompHashCode==preCompHashCode && literal.name.equals(name) && literal.value.equals(value);
 		}
 		return false;
 	}

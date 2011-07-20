@@ -6,7 +6,7 @@ import org.junit.Test;
 
 /**
  * @author Markus Michael Geipel
- * @status Experimental
+
  */
 public final class MetamorphTest implements DataReceiver {
 	
