@@ -3,7 +3,7 @@ package org.culturegraph.metamorph.readers;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.culturegraph.metamorph.TestFiles;
+import org.culturegraph.metamorph.Files;
 import org.culturegraph.metamorph.streamreceiver.CountingStreamReceiver;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public final class SimplePicaReaderTest {
 	@Test
 	public void testRead() throws IOException {
 		reader.setStreamReceiver(countStreamReceiver);
-		reader.read(new FileInputStream(TestFiles.PND_PICA));
+		reader.read(new FileInputStream(Files.PND_PICA));
 		
 		Assert.assertEquals("Number of records is incorrect", NUM_RECORDS, countStreamReceiver.getNumRecords());
 		Assert.assertEquals("Number of literals is incorrect", NUM_LITERALS, countStreamReceiver.getNumLiterals());
