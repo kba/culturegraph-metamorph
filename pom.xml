@@ -133,13 +133,13 @@
 		</dependency>
 
 		<!-- Json -->
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-lgpl</artifactId>
-			<version>1.7.4</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.codehaus.jackson</groupId> -->
+<!-- 			<artifactId>jackson-core-lgpl</artifactId> -->
+<!-- 			<version>1.7.4</version> -->
+<!-- 			<type>jar</type> -->
+<!-- 			<scope>compile</scope> -->
+<!-- 		</dependency> -->
 
 		<!-- Logging -->
 
@@ -169,7 +169,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 	</dependencies>
 
 </project>
