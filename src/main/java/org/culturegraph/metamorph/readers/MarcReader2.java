@@ -37,11 +37,8 @@ public final class MarcReader2 implements RawRecordReader {
 	protected void processRecord(final Record record) {
 		getStreamReceiver().startRecord();
 
-		//LOG.debug("Leader: "+record.getLeader().toString());
-		//only type a relevant?
 		LOG.debug("Type of record: "+record.getLeader().getTypeOfRecord());
-		//LOG.debug("content of control fields: "+record.getControlFields().toString());
-
+		
 		for(ControlField cField : (List<ControlField>)record.getControlFields()){
 			getStreamReceiver().literal(cField.getTag(), cField.getData());
 		}
@@ -49,25 +46,32 @@ public final class MarcReader2 implements RawRecordReader {
 		for(VariableField vField : (List<VariableField>)record.getVariableFields()){
 			if (vField instanceof DataField) {
 				final String tag = vField.getTag();
-				final char ind1 = ((DataField) vField).getIndicator1();
-				final char ind2 = ((DataField) vField).getIndicator2();
-								
+				final String ind1 = String.valueOf(((DataField) vField).getIndicator1()).replaceAll("\\s", "#");
+				final String ind2 = String.valueOf(((DataField) vField).getIndicator2()).replaceAll("\\s", "#");
+				final String tagName=tag+ind1+ind2;				
 				final List<DataField> subfields = ((DataField) vField).getSubfields();
-				final Iterator<DataField> i = subfields.iterator();
-						
-				getStreamReceiver().startEntity(tag);
+				final Iterator<DataField> iter = subfields.iterator();
+														
+				if(subfields.size()==1){
+					final Subfield subfield = (Subfield) iter.next();
+					getStreamReceiver().literal((tagName+subfield.getCode()), subfield.getData());
+					LOG.debug(((tag+ind1+ind2)+subfield.getCode())+"->"+ subfield.getData());
+				}
 				
-				while (i.hasNext()) {
-					
-					final Subfield subfield = (Subfield) i.next();
-					final String name = tag+ind1+ind2+subfield.getCode();
+				else{
+					getStreamReceiver().startEntity(tagName);
+					while (iter.hasNext()) {
+									
+					final Subfield subfield = (Subfield) iter.next();
+					final String name = tagName+subfield.getCode();
 					final String value = subfield.getData();
 										
 					LOG.debug(name.replaceAll("\\s", "#")+"->"+ value);
-					getStreamReceiver().literal(name.replaceAll("\\s", "#"), value);
+					getStreamReceiver().literal(name, value);
 					
 				}
 				getStreamReceiver().endEntity();
+				}
 			}			
 		}
 
