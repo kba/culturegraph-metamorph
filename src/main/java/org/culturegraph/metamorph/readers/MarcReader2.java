@@ -54,8 +54,8 @@ public final class MarcReader2 implements RawRecordReader {
 														
 				if(subfields.size()==1){
 					final Subfield subfield = (Subfield) iter.next();
-					getStreamReceiver().literal((tagName+subfield.getCode()), subfield.getData());
-					LOG.debug(((tag+ind1+ind2)+subfield.getCode())+"->"+ subfield.getData());
+					getStreamReceiver().literal(tagName+subfield.getCode(), subfield.getData());
+					LOG.debug((tagName+subfield.getCode())+"->"+ subfield.getData());
 				}
 				
 				else{
@@ -66,7 +66,7 @@ public final class MarcReader2 implements RawRecordReader {
 					final String name = tagName+subfield.getCode();
 					final String value = subfield.getData();
 										
-					LOG.debug(name.replaceAll("\\s", "#")+"->"+ value);
+					LOG.debug(name+"->"+ value);
 					getStreamReceiver().literal(name, value);
 					
 				}
