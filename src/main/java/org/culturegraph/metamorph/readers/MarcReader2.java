@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
+import org.marc4j.Constants;
 import org.marc4j.MarcStreamReader;
 import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
@@ -29,12 +30,12 @@ public final class MarcReader2 implements RawRecordReader {
 
 
 	private static final Logger LOG = LoggerFactory.getLogger(MarcReader2.class);
-
 	private StreamReceiver streamReceiver;
 
+	
 	@SuppressWarnings("unchecked") // marc4j is not type safe!
 	protected void processRecord(final Record record) {
-		streamReceiver.startRecord();
+		getStreamReceiver().startRecord();
 
 		//LOG.debug("Leader: "+record.getLeader().toString());
 		//only type a relevant?
@@ -42,7 +43,7 @@ public final class MarcReader2 implements RawRecordReader {
 		//LOG.debug("content of control fields: "+record.getControlFields().toString());
 
 		for(ControlField cField : (List<ControlField>)record.getControlFields()){
-			streamReceiver.literal(cField.getTag(), cField.getData());
+			getStreamReceiver().literal(cField.getTag(), cField.getData());
 		}
 
 		for(VariableField vField : (List<VariableField>)record.getVariableFields()){
@@ -50,26 +51,27 @@ public final class MarcReader2 implements RawRecordReader {
 				final String tag = vField.getTag();
 				final char ind1 = ((DataField) vField).getIndicator1();
 				final char ind2 = ((DataField) vField).getIndicator2();
-
-				LOG.debug("Tag: " + tag + " Indicator 1: " + ind1 + " Indicator 2: " + ind2);
-
+								
 				final List<DataField> subfields = ((DataField) vField).getSubfields();
 				final Iterator<DataField> i = subfields.iterator();
-
+						
+				getStreamReceiver().startEntity(tag);
+				
 				while (i.hasNext()) {
+					
 					final Subfield subfield = (Subfield) i.next();
-					final char code = subfield.getCode();
-					final String data = subfield.getData();
-
-					LOG.debug("Subfield code: " + code + " Data element: " + data);
+					final String name = tag+ind1+ind2+subfield.getCode();
+					final String value = subfield.getData();
+										
+					LOG.debug(name.replaceAll("\\s", "#")+"->"+ value);
+					getStreamReceiver().literal(name.replaceAll("\\s", "#"), value);
+					
 				}
-			}
-
-			//streamReceiver.literal("name", "value");
+				getStreamReceiver().endEntity();
+			}			
 		}
 
-
-		streamReceiver.endRecord();
+		getStreamReceiver().endRecord();
 	}
 
 	@Override
