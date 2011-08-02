@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import org.culturegraph.metamorph.core.Data.Mode;
 
 /**
- *  Corresponds to the <code>collect-literal</code> tag.
+ *  Corresponds to the <code>&lt;collect-literal&gt;</code> tag.
  * 
  * @author Markus Michael Geipel
  */

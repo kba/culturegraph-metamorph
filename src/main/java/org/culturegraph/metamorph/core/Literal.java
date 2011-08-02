@@ -10,7 +10,7 @@ public final class Literal {
 	private final String value;
 	private final int preCompHashCode;
 	
-	Literal(final String name, final String value){
+	public Literal(final String name, final String value){
 		this.name = name;
 		this.value = value;
 		int result = MAGIC1;

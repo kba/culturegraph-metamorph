@@ -8,12 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Common basis for {@link CollectEntity} and {@link CollectLiteral}.
  * @author Markus Michael Geipel
  * @status Experimental
  */
 abstract class AbstractCollect implements DataReceiver, Collect {
-
-
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 

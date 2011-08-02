@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Corresponds to the <code>collect-entity</code> tag.
+ * Corresponds to the <code>&lt;collect-entity&gt;</code> tag.
  * 
  * @author Markus Michael Geipel
  */

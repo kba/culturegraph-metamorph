@@ -3,6 +3,8 @@ package org.culturegraph.metamorph.core;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 
 /**
+ * Interface for classes which collect pieces of data. 
+ * 
  * @author Markus Michael Geipel
  */
 interface Collect extends EntityEndListener{

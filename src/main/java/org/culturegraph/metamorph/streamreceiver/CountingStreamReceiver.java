@@ -1,7 +1,7 @@
 package org.culturegraph.metamorph.streamreceiver;
 
 /**
- * Counts the number of records and fields read. Used mainly for testcases and
+ * Counts the number of records and fields read. Used mainly for test cases and
  * debugging.
  * 
  * @author Markus Michael Geipel

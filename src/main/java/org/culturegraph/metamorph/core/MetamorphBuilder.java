@@ -1,8 +1,10 @@
 package org.culturegraph.metamorph.core;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,18 +30,35 @@ public final class MetamorphBuilder {
 	private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
 	private static final String PARSE_ERROR = "Error parsing transformation definition: ";
 
-
-	private MetamorphBuilder(){/* no instances exist */}
-	
-	public static Metamorph build(final String definitionFile, final StreamReceiver outputReceiver){
-		final Metamorph metamorph = new Metamorph();
-		metamorph.setOutputStreamReceiver(outputReceiver);
-		final MetamorphDefinitionHandler transformationContentHandler = new MetamorphDefinitionHandler(metamorph);
-		loadDefinition(transformationContentHandler, definitionFile);
-		return metamorph;
+	private MetamorphBuilder() {/* no instances exist */
 	}
 
-	private static void loadDefinition(final MetamorphDefinitionHandler transformationContentHandler, final String definitionFile){
+	public static Metamorph build(final InputSource inputSource,
+			final StreamReceiver outputReceiver) {
+		final Metamorph metamorph = new Metamorph();
+		metamorph.setOutputStreamReceiver(outputReceiver);
+		final MetamorphDefinitionHandler transformationContentHandler = new MetamorphDefinitionHandler(
+				metamorph);
+		loadDefinition(transformationContentHandler, inputSource);
+		return metamorph;
+	}
+	
+	public static Metamorph build(final File file,final StreamReceiver outputReceiver) {
+		try {
+			return build(new InputSource(new FileInputStream(file)), outputReceiver);
+		} catch (FileNotFoundException e) {
+			throw new MetamorphDefinitionException("Definition file not found", e);
+		}
+	}
+	
+	public static Metamorph build(final InputStream inputStream, final StreamReceiver outputReceiver) {
+			return build(new InputSource(inputStream), outputReceiver);
+	}
+	
+
+	private static void loadDefinition(
+			final MetamorphDefinitionHandler transformationContentHandler,
+			final InputSource inputSource) {
 		try {
 			// XMLReader erzeugen
 			final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -48,47 +67,48 @@ public final class MetamorphBuilder {
 
 			final SAXParser saxParser = factory.newSAXParser();
 			saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
-			
-			final URL schemaUrl = Thread.currentThread().getContextClassLoader().getResource(SCHEMA_FILE);
+
+			final URL schemaUrl = Thread.currentThread()
+					.getContextClassLoader().getResource(SCHEMA_FILE);
 			saxParser.setProperty(JAXP_SCHEMA_SOURCE, schemaUrl.toString());
 
 			final XMLReader xmlReader = saxParser.getXMLReader();
-			xmlReader.setErrorHandler(new ErrorHandler() {
-				@Override
-				public void warning(final SAXParseException exception)
-						throws SAXException {
-					throw new MetamorphDefinitionException(PARSE_ERROR + exception.getMessage(), exception);
-				}
+			xmlReader.setErrorHandler(new MetamorphBuilderErrorHandler());
 
-				@Override
-				public void fatalError(final SAXParseException exception)
-						throws SAXException {
-					throw new MetamorphDefinitionException(PARSE_ERROR + exception.getMessage(), exception);
-				}
-
-				@Override
-				public void error(final SAXParseException exception)
-						throws SAXException {
-					throw new MetamorphDefinitionException(PARSE_ERROR+ exception.getMessage(), exception);
-				}
-			});
-
-			// Pfad zur XML Datei
-			final FileReader reader = new FileReader(definitionFile);
-			final InputSource inputSource = new InputSource(reader);
-			
 			xmlReader.setContentHandler(transformationContentHandler);
 
 			// Parsen wird gestartet
 			xmlReader.parse(inputSource);
 		} catch (ParserConfigurationException e) {
 			throw new MetamorphDefinitionException(e);
-		}catch (FileNotFoundException e) {
-			throw new MetamorphDefinitionException(e);
 		} catch (IOException e) {
 			throw new MetamorphDefinitionException(e);
 		} catch (SAXException e) {
 			throw new MetamorphDefinitionException(e);
+		}
+	}
+
+	private static final class MetamorphBuilderErrorHandler implements
+			ErrorHandler {
+		@Override
+		public void warning(final SAXParseException exception)
+				throws SAXException {
+			throw new MetamorphDefinitionException(PARSE_ERROR
+					+ exception.getMessage(), exception);
+		}
+
+		@Override
+		public void fatalError(final SAXParseException exception)
+				throws SAXException {
+			throw new MetamorphDefinitionException(PARSE_ERROR
+					+ exception.getMessage(), exception);
+		}
+
+		@Override
+		public void error(final SAXParseException exception)
+				throws SAXException {
+			throw new MetamorphDefinitionException(PARSE_ERROR
+					+ exception.getMessage(), exception);
 		}
 	}
 }

@@ -1,6 +1,8 @@
 package org.culturegraph.metamorph.streamreceiver;
 
 /**
+ * Empty implementation of {@link StreamReceiver}.
+ * 
  * @author Markus Michael Geipel
  */
 public class DefaultStreamReceiver implements StreamReceiver {

@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
-import org.marc4j.Constants;
 import org.marc4j.MarcStreamReader;
 import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
@@ -37,7 +36,7 @@ public final class MarcReader2 implements RawRecordReader {
 	protected void processRecord(final Record record) {
 		getStreamReceiver().startRecord();
 
-		LOG.debug("Type of record: "+record.getLeader().getTypeOfRecord());
+		LOG.debug("Type of record: "+record.getLeader().getTypeOfRecord()); // send as literal
 		
 		for(ControlField cField : (List<ControlField>)record.getControlFields()){
 			getStreamReceiver().literal(cField.getTag(), cField.getData());
@@ -46,7 +45,7 @@ public final class MarcReader2 implements RawRecordReader {
 		for(VariableField vField : (List<VariableField>)record.getVariableFields()){
 			if (vField instanceof DataField) {
 				final String tag = vField.getTag();
-				final String ind1 = String.valueOf(((DataField) vField).getIndicator1()).replaceAll("\\s", "#");
+				final String ind1 = String.valueOf(((DataField) vField).getIndicator1()).replaceAll("\\s", "#"); //performance
 				final String ind2 = String.valueOf(((DataField) vField).getIndicator2()).replaceAll("\\s", "#");
 				final String tagName=tag+ind1+ind2;				
 				final List<DataField> subfields = ((DataField) vField).getSubfields();
@@ -63,14 +62,14 @@ public final class MarcReader2 implements RawRecordReader {
 					while (iter.hasNext()) {
 									
 					final Subfield subfield = (Subfield) iter.next();
-					final String name = tagName+subfield.getCode();
+					final String name = tagName+subfield.getCode(); // without name
 					final String value = subfield.getData();
 										
 					LOG.debug(name+"->"+ value);
 					getStreamReceiver().literal(name, value);
 					
 				}
-				getStreamReceiver().endEntity();
+				getStreamReceiver().endEntity(); //correct
 				}
 			}			
 		}
