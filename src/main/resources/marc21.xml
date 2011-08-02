@@ -9,17 +9,17 @@
 
     <data source="001" name="cg:sourceRecordId" ></data>
 	
-	<data source="0167#2" name="xbib:identifierAuthority" />
-	<data source="0167#a" name="xbib:identifierAuthority" />
+	<data source="0167 .2" name="xbib:identifierAuthority" />
+	<data source="0167 .a" name="xbib:identifierAuthority" />
 	
-	<data source="010##a" name="xbib:identifierAuthorityLOC" />
-	<data source="035##a" name="xbib:identifierAuthorityEKI" />
-	<data source="0242#a" name="xbib:identifierAuthorityISMN" />
-	<data source="022##a" name="xbib:identifierAuthorityISSN" />
-	<data source="027##a" name="xbib:identifierAuthorityISRN" />
+	<data source="010  .a" name="xbib:identifierAuthorityLOC" />
+	<data source="035  .a" name="xbib:identifierAuthorityEKI" />
+	<data source="0242 .a" name="xbib:identifierAuthorityISMN" />
+	<data source="022  .a" name="xbib:identifierAuthorityISSN" />
+	<data source="027  .a" name="xbib:identifierAuthorityISRN" />
 	
 	 	 	
-	<data source="020##a" name="xbib:identifierAuthorityISBN">
+	<data source="020  .a" name="xbib:identifierAuthorityISBN">
 		<isbn to="clean" />
 	</data>
 

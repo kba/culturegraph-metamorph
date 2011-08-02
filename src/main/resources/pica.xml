@@ -6,7 +6,6 @@
 
 	<name>Umsetzung der PND</name>
 
-
 	<group name="rdaGr2:identifierForThePerson">
 		<data source="007Q.0">
 			<compose prefix="(DE-588c)" />
@@ -86,7 +85,7 @@
 	</data>
 
 	<data name="rdaRelGr2:relatedCorporateBodyPerson" source="038C.9" />
-	<data name="foaf:homepage " source="009Q.u"></data>
+	<data name="foaf:homepage " source="009Q.u" />
 	<data name="gnd:countryCodeForThePerson" source="042B.a" />
 	<data name="rdaGr2:languageOfThePerson" source="042C.a" />
 	<data name="owl:sameAs" source="039I.9" />

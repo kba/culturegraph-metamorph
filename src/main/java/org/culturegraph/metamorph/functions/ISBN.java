@@ -4,8 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.core.MetamorphException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Michael Geipel
@@ -162,6 +160,5 @@ public final class ISBN extends AbstractFunction {
 			super(INVALID_CHECK + isbn + APOSTROPH);
 		}
 	}
-	
-	
+
 }

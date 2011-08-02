@@ -13,9 +13,6 @@ import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
-import org.marc4j.marc.VariableField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Parses a raw Marc stream using Marc4j. Events are handled by a
@@ -26,8 +23,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class MarcReader2 implements RawRecordReader {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(MarcReader2.class);
+	// private static final Logger LOG = LoggerFactory
+	// .getLogger(MarcReader2.class);
 	private StreamReceiver streamReceiver;
 
 	@SuppressWarnings("unchecked")
@@ -35,44 +32,32 @@ public final class MarcReader2 implements RawRecordReader {
 	protected void processRecord(final Record record) {
 		getStreamReceiver().startRecord();
 
-		LOG.debug("Type of record: " + record.getLeader().getTypeOfRecord()); // send
-																				// as
-																				// literal
+		getStreamReceiver().literal("type",
+				String.valueOf(record.getLeader().getTypeOfRecord()));
 
 		for (ControlField cField : (List<ControlField>) record
 				.getControlFields()) {
 			getStreamReceiver().literal(cField.getTag(), cField.getData());
 		}
+		for (DataField dataField : (List<DataField>) record.getDataFields()) {
 
-		for (VariableField vField : (List<VariableField>) record
-				.getVariableFields()) {
-			if (vField instanceof DataField) {
-				final String tag = vField.getTag();
-				final char ind1 = ((DataField) vField).getIndicator1();
-				final char ind2 = ((DataField) vField).getIndicator2();
-				final String tagName = tag + ind1 + ind2;
-				final List<Subfield> subfields = ((DataField) vField)
-						.getSubfields();
-			//final Iterator<DataField> iter = subfields.iterator();
+			final String tag = dataField.getTag();
+			final char ind1 = dataField.getIndicator1();
+			final char ind2 = dataField.getIndicator2();
+			final String tagName = tag + ind1 + ind2;
+			final List<Subfield> subfields = ((DataField) dataField)
+					.getSubfields();
 
-				if (subfields.size() == 1) {
-					final Subfield subfield = subfields.get(0);
-					getStreamReceiver().literal(tagName + subfield.getCode(),
-							subfield.getData());
-					//LOG.debug((tagName + subfield.getCode()) + "->"
-					//		+ subfield.getData());
-				}else {
-					getStreamReceiver().startEntity(tagName);
-					for(Subfield subfield:subfields) {
-						final String value = subfield.getData();
+			getStreamReceiver().startEntity(tagName);
+			for (Subfield subfield : subfields) {
+				final String value = subfield.getData();
 
-					//	LOG.debug(subfield.getCode() + "->" + value);
-						getStreamReceiver().literal(Character.toString(subfield.getCode()), value);
+				getStreamReceiver().literal(
+						Character.toString(subfield.getCode()), value);
 
-					}
-					getStreamReceiver().endEntity();
-				}
 			}
+			getStreamReceiver().endEntity();
+
 		}
 		getStreamReceiver().endRecord();
 	}
