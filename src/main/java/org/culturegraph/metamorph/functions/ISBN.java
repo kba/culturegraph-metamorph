@@ -4,6 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.core.MetamorphException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Michael Geipel
@@ -17,7 +19,7 @@ public final class ISBN extends AbstractFunction {
 	
 	private static final String ISBN10 = "isbn10";
 	private static final String ISBN13 = "isbn13";
-	private static final Pattern ISBN_PATTERN = Pattern.compile("[\\dX]{10}([\\dX]{3})?");
+	private static final Pattern ISBN_PATTERN = Pattern.compile("[\\dX]+");
 	private static final Pattern DIRT_PATTERN = Pattern.compile("[\\.\\-]");
 	private static final int ISBN10_SIZE = 10;
 	private static final int ISBN10_MAGIC = 10;
@@ -39,6 +41,8 @@ public final class ISBN extends AbstractFunction {
 		
 		if(verifyCheckDigit && !isValid(result)){
 			throw new InvalidISBNCheckDigitException(value);
+		}else if(!(size == ISBN10_SIZE || size == ISBN13_SIZE)){
+			throw new InvalidISBNLengthException(value);
 		}
 		
 		if (to10 && ISBN13_SIZE == size) {
@@ -57,7 +61,7 @@ public final class ISBN extends AbstractFunction {
 		if (matcher.find()) {
 			return matcher.group();
 		} else {
-			throw new InvalidISBNLengthException(isbn);
+			return "";
 		}
 	}
 

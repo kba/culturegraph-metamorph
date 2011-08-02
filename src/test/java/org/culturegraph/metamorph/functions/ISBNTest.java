@@ -69,4 +69,17 @@ public final class ISBNTest {
 		Assert.assertTrue(ISBN.isValid(ISBN.cleanse(ISBN13D_DIRTY)));
 		Assert.assertTrue(ISBN.isValid(ISBN.cleanse(ISBN10F_DIRTY)));
 	}
+	
+	@Test(expected = ISBN.InvalidISBNLengthException.class)
+	public void testCleanseException1(){
+		final ISBN isbn = new ISBN();
+		isbn.process(ISBN_INCORRECT_SIZE3);
+	}
+	
+	@Test(expected = ISBN.InvalidISBNLengthException.class)
+	public void testCleanseException2(){
+		final ISBN isbn = new ISBN();
+		isbn.process(ISBN_INCORRECT_SIZE1);
+	}
+
 }

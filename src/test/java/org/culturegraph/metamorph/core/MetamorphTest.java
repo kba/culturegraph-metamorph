@@ -53,7 +53,7 @@ public final class MetamorphTest implements DataReceiver {
 		Assert.assertEquals(VALUE, literal.getValue());
 		literal = null;
 		
-		//simple mapping with entity
+		// mapping with entity
 		metamorph.startEntity(ENTITY_NAME);
 		metamorph.literal(LITERAL_NAME, VALUE);
 		Assert.assertNotNull(literal);
