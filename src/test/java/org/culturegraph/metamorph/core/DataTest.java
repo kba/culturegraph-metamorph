@@ -2,6 +2,7 @@ package org.culturegraph.metamorph.core;
 
 import org.culturegraph.metamorph.core.Data.Mode;
 import org.culturegraph.metamorph.functions.Constant;
+import org.culturegraph.metamorph.functions.Regexp;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,8 +17,8 @@ public final class DataTest {
 	private static final String INPUT = "alkjfoeijf38";
 	private static final int MAGIC1 = 345;
 	private static final int MAGIC2 = 314584;
-	private static final String CONSTANT1 = "34534tdfgdfgdfgsdlg";
-	private static final String CONSTANT2 = "49utjrlkgjsdlg";
+	private static final String CONSTANT_A = "AAA";
+	private static final String CONSTANT_B = "BBB";
 	
 	private static final String WRONG_NAME = "wrong name";
 	private static final String WRONG_VALUE = "wrong value";
@@ -25,10 +26,12 @@ public final class DataTest {
 	
 	private final Constant constant1 = new Constant();
 	private final Constant constant2 = new Constant();
+	private final Regexp regexp = new Regexp();
 
 	public DataTest() {
-		constant1.setValue(CONSTANT1);
-		constant2.setValue(CONSTANT2);
+		constant1.setValue(CONSTANT_A);
+		constant2.setValue(CONSTANT_B);
+		regexp.setMatch(CONSTANT_A);
 	}
 	
 	@Test
@@ -73,8 +76,24 @@ public final class DataTest {
 			@Override
 			public void data(final Literal literal, final DataSender sender, final int recordCount,
 					final int entityCount) {
-				Assert.assertEquals(WRONG_VALUE, CONSTANT2, literal.getValue());
+				Assert.assertEquals(WRONG_VALUE, CONSTANT_B, literal.getValue());
 				Assert.assertEquals(WRONG_NAME, DEFAULT_NAME, literal.getName());
+			}
+		});
+		data.setDefaultName(DEFAULT_NAME);
+		data.data(INPUT, MAGIC1, MAGIC2);
+	}
+	
+	@Test
+	public void testFunctionProcessingBreak() {
+		final Data data = new Data();
+		data.addFunction(constant2);
+		data.addFunction(regexp);
+		data.setDataReceiver(new DataReceiver() {
+			@Override
+			public void data(final Literal literal, final DataSender sender, final int recordCount,
+					final int entityCount) {
+				Assert.fail(); // Regexp should not find anything
 			}
 		});
 		data.setDefaultName(DEFAULT_NAME);

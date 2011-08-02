@@ -27,66 +27,71 @@ import org.slf4j.LoggerFactory;
  */
 public final class MarcReader2 implements RawRecordReader {
 
-
-	private static final Logger LOG = LoggerFactory.getLogger(MarcReader2.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(MarcReader2.class);
 	private StreamReceiver streamReceiver;
 
-	
-	@SuppressWarnings("unchecked") // marc4j is not type safe!
+	@SuppressWarnings("unchecked")
+	// marc4j is not type safe!
 	protected void processRecord(final Record record) {
 		getStreamReceiver().startRecord();
 
-		LOG.debug("Type of record: "+record.getLeader().getTypeOfRecord()); // send as literal
-		
-		for(ControlField cField : (List<ControlField>)record.getControlFields()){
+		LOG.debug("Type of record: " + record.getLeader().getTypeOfRecord()); // send
+																				// as
+																				// literal
+
+		for (ControlField cField : (List<ControlField>) record
+				.getControlFields()) {
 			getStreamReceiver().literal(cField.getTag(), cField.getData());
 		}
 
-		for(VariableField vField : (List<VariableField>)record.getVariableFields()){
+		for (VariableField vField : (List<VariableField>) record
+				.getVariableFields()) {
 			if (vField instanceof DataField) {
 				final String tag = vField.getTag();
-				final String ind1 = String.valueOf(((DataField) vField).getIndicator1()).replaceAll("\\s", "#"); //performance
-				final String ind2 = String.valueOf(((DataField) vField).getIndicator2()).replaceAll("\\s", "#");
-				final String tagName=tag+ind1+ind2;				
-				final List<DataField> subfields = ((DataField) vField).getSubfields();
+				final String ind1 = String.valueOf(
+						((DataField) vField).getIndicator1()).replaceAll("\\s",	"#"); // performance
+				final String ind2 = String.valueOf(
+						((DataField) vField).getIndicator2()).replaceAll("\\s",	"#");
+				final String tagName = tag + ind1 + ind2;
+				final List<DataField> subfields = ((DataField) vField)
+						.getSubfields();
 				final Iterator<DataField> iter = subfields.iterator();
-														
-				if(subfields.size()==1){
+
+				if (subfields.size() == 1) {
 					final Subfield subfield = (Subfield) iter.next();
-					getStreamReceiver().literal(tagName+subfield.getCode(), subfield.getData());
-					LOG.debug((tagName+subfield.getCode())+"->"+ subfield.getData());
-				}
-				
-				else{
+					getStreamReceiver().literal(tagName + subfield.getCode(),
+							subfield.getData());
+					LOG.debug((tagName + subfield.getCode()) + "->"
+							+ subfield.getData());
+				}else {
 					getStreamReceiver().startEntity(tagName);
 					while (iter.hasNext()) {
-									
-					final Subfield subfield = (Subfield) iter.next();
-					final String name = tagName+subfield.getCode(); // without name
-					final String value = subfield.getData();
-										
-					LOG.debug(name+"->"+ value);
-					getStreamReceiver().literal(name, value);
-					
-				}
-				getStreamReceiver().endEntity(); //correct
-				}
-			}			
-		}
 
+						final Subfield subfield = (Subfield) iter.next();
+						final String name = tagName + subfield.getCode(); // without
+																			// name
+						final String value = subfield.getData();
+
+						LOG.debug(name + "->" + value);
+						getStreamReceiver().literal(name, value);
+
+					}
+					getStreamReceiver().endEntity(); // correct
+				}
+			}
+		}
 		getStreamReceiver().endRecord();
 	}
 
 	@Override
 	public void read(final InputStream inputStream) throws IOException {
-		final MarcStreamReader marcStreamReader = new MarcStreamReader(inputStream);
+		final MarcStreamReader marcStreamReader = new MarcStreamReader(
+				inputStream);
 		while (marcStreamReader.hasNext()) {
 			processRecord(marcStreamReader.next());
-
 		}
 	}
-
-
 
 	@Override
 	public void read(final String entry) {
@@ -102,7 +107,6 @@ public final class MarcReader2 implements RawRecordReader {
 	@Override
 	public void setStreamReceiver(final StreamReceiver streamReceiver) {
 		this.streamReceiver = streamReceiver;
-
 	}
 
 	protected StreamReceiver getStreamReceiver() {

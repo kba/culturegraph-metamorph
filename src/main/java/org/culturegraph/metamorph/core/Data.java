@@ -32,10 +32,6 @@ final class Data extends DataProcessor implements DataSender {
 	public void data(final CharSequence data, final int recordCount, final int entityCount){
 		assert dataReceiver != null;
 		
-		if(LOG.isTraceEnabled()){
-			LOG.trace("receiving " + data);
-		}
-		
 		final String tempData = applyFunctions(data.toString());
 		if(tempData==null){
 			return;
@@ -76,8 +72,6 @@ final class Data extends DataProcessor implements DataSender {
 	}
 
 
-
-	
 	public void setMode(final Mode mode){
 		this.mode = mode;
 	}
@@ -110,13 +104,5 @@ final class Data extends DataProcessor implements DataSender {
 	 */
 	public String getDefaultValue() {
 		return defaultValue;
-	}
-
-
-	/**
-	 * @return the mode
-	 */
-	public Mode getMode() {
-		return mode;
 	}
 }

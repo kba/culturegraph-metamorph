@@ -1,6 +1,7 @@
 package org.culturegraph.metamorph.core;
 
-import org.culturegraph.metamorph.streamreceiver.MapCollector;
+import org.culturegraph.metamorph.streamreceiver.DefaultStreamReceiver;
+import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,27 +12,62 @@ import org.junit.Test;
 public final class MetamorphTest implements DataReceiver {
 	
 	private static final String NAME = "name";
-	private static final String MATCHING_SOURCE = "sldkfj";
-	private static final String NON_MATCHING_SOURCE = "s234234";
+	
 	private static final String VALUE = "s234234ldkfj";
+	
+	private static final String ENTITY_NAME = "dfsdf";
+	private static final String LITERAL_NAME = "fghgh";
+	
+	private static final String MATCHING_PATH = ENTITY_NAME + '.' + LITERAL_NAME;
+	
+	private static final String NON_MATCHING_PATH1 = "s234234";
+	private static final String NON_MATCHING_PATH2 = ENTITY_NAME + ".lskdj";
+	
+	private static final StreamReceiver EMPTY_RECEIVER = new DefaultStreamReceiver();
+	
 	private Literal literal;
 
-	@Test
-	public void testSimpleMapping() {
+	
+	private static Metamorph newMetamorphWithData(final DataReceiver receiver){
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setOutputStreamReceiver(new MapCollector());
+		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
 		final Data data = new Data();
 		data.setDefaultName(NAME);
-		data.setDataReceiver(this);
-		metamorph.registerDataSource(data, MATCHING_SOURCE);
+		data.setDataReceiver(receiver);
+		metamorph.registerDataSource(data, MATCHING_PATH);
+		return metamorph;
+	}
+	
+	@Test
+	public void testSimpleMapping() {
+		final Metamorph metamorph = newMetamorphWithData(this);
 		literal = null;
 		metamorph.startRecord();
-		metamorph.literal(NON_MATCHING_SOURCE, VALUE);
+		
+		//simple mapping without entity
+		metamorph.literal(NON_MATCHING_PATH1, VALUE);
 		Assert.assertNull(literal);
-		metamorph.literal(MATCHING_SOURCE, VALUE);
+		
+		metamorph.literal(MATCHING_PATH, VALUE);
 		Assert.assertNotNull(literal);
 		Assert.assertEquals(VALUE, literal.getValue());
+		literal = null;
+		
+		//simple mapping with entity
+		metamorph.startEntity(ENTITY_NAME);
+		metamorph.literal(LITERAL_NAME, VALUE);
+		Assert.assertNotNull(literal);
+		Assert.assertEquals(VALUE, literal.getValue());
+		literal = null;
+		
+		metamorph.literal(NON_MATCHING_PATH2, VALUE);
+		Assert.assertNull(literal);
+		
+		metamorph.endEntity();
+		metamorph.literal(LITERAL_NAME, VALUE);
+		Assert.assertNull(literal);
 	}
+	
 
 	@Override
 	public void data(final Literal literal, final DataSender sender, final int recordCount,
