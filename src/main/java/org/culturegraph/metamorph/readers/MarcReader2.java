@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
 import java.util.List;
 
 import org.culturegraph.metamorph.core.MetamorphException;
@@ -49,35 +48,29 @@ public final class MarcReader2 implements RawRecordReader {
 				.getVariableFields()) {
 			if (vField instanceof DataField) {
 				final String tag = vField.getTag();
-				final String ind1 = String.valueOf(
-						((DataField) vField).getIndicator1()).replaceAll("\\s",	"#"); // performance
-				final String ind2 = String.valueOf(
-						((DataField) vField).getIndicator2()).replaceAll("\\s",	"#");
+				final char ind1 = ((DataField) vField).getIndicator1();
+				final char ind2 = ((DataField) vField).getIndicator2();
 				final String tagName = tag + ind1 + ind2;
-				final List<DataField> subfields = ((DataField) vField)
+				final List<Subfield> subfields = ((DataField) vField)
 						.getSubfields();
-				final Iterator<DataField> iter = subfields.iterator();
+			//final Iterator<DataField> iter = subfields.iterator();
 
 				if (subfields.size() == 1) {
-					final Subfield subfield = (Subfield) iter.next();
+					final Subfield subfield = subfields.get(0);
 					getStreamReceiver().literal(tagName + subfield.getCode(),
 							subfield.getData());
-					LOG.debug((tagName + subfield.getCode()) + "->"
-							+ subfield.getData());
+					//LOG.debug((tagName + subfield.getCode()) + "->"
+					//		+ subfield.getData());
 				}else {
 					getStreamReceiver().startEntity(tagName);
-					while (iter.hasNext()) {
-
-						final Subfield subfield = (Subfield) iter.next();
-						final String name = tagName + subfield.getCode(); // without
-																			// name
+					for(Subfield subfield:subfields) {
 						final String value = subfield.getData();
 
-						LOG.debug(name + "->" + value);
-						getStreamReceiver().literal(name, value);
+					//	LOG.debug(subfield.getCode() + "->" + value);
+						getStreamReceiver().literal(Character.toString(subfield.getCode()), value);
 
 					}
-					getStreamReceiver().endEntity(); // correct
+					getStreamReceiver().endEntity();
 				}
 			}
 		}
