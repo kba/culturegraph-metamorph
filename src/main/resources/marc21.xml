@@ -8,24 +8,84 @@
 	<annotation></annotation>
 
 	<data source="001" name="cg:sourceRecordId" />
-
+	
+	<data source="005" name="dcterms:modified" />
+	
+	<data source="008" name="gnd:countryCode">
+		<regexp match="^(.{15})(\w{2,3})(.*)" format="${2}"/>
+	</data>
+	
+	<data source="008" name="dcterms:language">
+		<regexp match="^(.{35})(\w{2,3})(.*)" format="${2}"/>
+	</data>
+	
+	<data source="010  .a" name="xbib:identifierAuthorityLOC" />
+	
+	<data source="013  .a" name="xbib:identifierPatent" />
 
 	<collect-literal name="${name}" value="${value}" reset="true">
-		<data source="0167 .2"  name="name">
-			<lookup in="isil"/>
+		<data source="0167 .2" name="name">
+			<lookup in="isil" />
 		</data>
-		<data source="0167 .a"  name="value"/>
+		<data source="0167 .a" name="value" />
 	</collect-literal>
-
-	<data source="010  .a" name="xbib:identifierAuthorityLOC" />
-	<data source="035  .a" name="xbib:identifierAuthorityEKI" />
-	<data source="0242 .a" name="xbib:identifierAuthorityISMN" />
-	<data source="022  .a" name="xbib:identifierAuthorityISSN" />
-	<data source="027  .a" name="xbib:identifierAuthorityISRN" />
 
 	<data source="020  .a" name="xbib:identifierAuthorityISBN">
 		<isbn to="clean" />
 	</data>
+
+	<data source="022  .a" name="xbib:identifierAuthorityISSN" />
+	
+	<data source="0242 .a" name="xbib:identifierAuthorityISMN" />
+
+	<data source="0243 .a" name="xbib:identifierAuthorityEAN" />
+	
+	<collect-literal name="${name}" value="${value}" reset="true">
+		<data source="0247 .2" name="name">
+			<lookup in="doiList" />
+		</data>
+		<data source="0247 .a" name="value" />
+	</collect-literal>
+	
+		<collect-literal name="${name}" value="${value}" reset="true">
+		<data source="0248 .a" name="name">
+			<regexp match="^VD.{2}" />
+			<lookup in="vdList" />
+		</data>
+		<data source="0248 .a" name="value">
+			<regexp match="(^VD.{2})(.*)" format="${1}" />
+		</data>
+	</collect-literal>
+			
+	<data source="027  .a" name="xbib:identifierAuthorityISRN" />
+	
+	<group name="xbib:fingerprint">
+		<data source="026  .a" />
+		<data source="026  .b" />
+	</group>
+		
+	<group name="xbib:identifierAudioPublisher">
+		<data source="02852.a" />
+		<data source="02852.b" />
+	</group>
+	
+	<collect-literal name="${name}" value="${value}" reset="true">
+		<data source="035  .a" name="name">
+			<regexp match="^\(.*\)" />
+			<lookup in="isil" />
+		</data>
+		<data source="035  .a" name="value">
+			<regexp match="^\(.*\)((.*))" format="${1}" />
+		</data>
+	</collect-literal>
+
+	<!-- <data source="035 .a" name="xbib:identifierAuthorityEKI" > -->
+	<!-- <replace pattern="\(DE-599\)" with="" /> -->
+	<!-- </data> -->
+
+	<data source="088  .a" name="xbib:identifierReport" />
+
+	<data source="502  .o" name="xbib:identifierUniversityScript"></data>
 
 	<map name="isil">
 		<entry name="DE-101" value="xbib:identifierAuthorityDNB" />
@@ -33,8 +93,21 @@
 		<entry name="Uk" value="xbib:identifierAuthorityBNB" />
 		<entry name="ItFiC" value="xbib:identifierAuthorityCasaliniLibri " />
 		<entry name="FrPBN" value="xbib:identifierAuthorityBNF" />
-		<entry name="(DE-600)" value="xbib:identifierAuthorityZDB" />
-		<entry name="(DE-600)" value="xbib:identifierAuthorityZDB" />
+		<entry name="(OCoLC)" value="xbib:identifierAuthorityOCLC" />
+		<entry name="(DE-599)" value="xbib:identifierAuthorityEKI"/>
+		<entry name="(XXXxUND)" value="EKI-test-BVB"/>
+	</map>
+	
+	<map name="doiList">
+		<entry name="doi" value="xbib:uniformResourceDoi" />
+		<entry name="urn" value="xbib:uniformResourceName" />
+		<entry name="handle" value="xbib:uniformResourceHandle" />
+	</map>
+	
+	<map name="vdList">
+		<entry name="VD16" value="xbib:identifierVD16" />
+		<entry name="VD17" value="xbib:identifierVD17" />
+		<entry name="VD18" value="xbib:identifierVD18" />
 	</map>
 
 </metamorph>	
