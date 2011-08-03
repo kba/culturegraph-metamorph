@@ -49,8 +49,8 @@ final class CollectLiteral extends AbstractCollect {
 	};
 
 	@Override
-	protected void receive(final Literal literal) {
-		variables.put(literal.getName(), literal.getValue());
+	protected void receive(final String name, final String value) {
+		variables.put(name, value);
 	};
 
 	@Override

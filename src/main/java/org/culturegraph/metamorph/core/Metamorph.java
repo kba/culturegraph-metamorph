@@ -168,9 +168,9 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 
 
 	@Override
-	public void data(final Literal literal, final DataSender sender, final int recordCount, final int entityCount) {
-		if(literal.getName()!=null && literal.getValue()!=null){
-			outputStreamReceiver.literal(literal.getName(), literal.getValue());
+	public void data(final String name, final String value, final DataSender sender, final int recordCount, final int entityCount) {
+		if(name!=null && value!=null){
+			outputStreamReceiver.literal(name, value);
 		}
 	}
 

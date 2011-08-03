@@ -26,8 +26,8 @@ final class CollectEntity extends AbstractCollect {
 	
 
 	@Override
-	protected void receive(final Literal literal) {
-		literals.add(literal);
+	protected void receive(final String name, final String value) {
+		literals.add(new Literal(name, value));
 	}
 
 

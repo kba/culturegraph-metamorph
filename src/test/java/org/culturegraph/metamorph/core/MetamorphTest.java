@@ -70,8 +70,8 @@ public final class MetamorphTest implements DataReceiver {
 	
 
 	@Override
-	public void data(final Literal literal, final DataSender sender, final int recordCount,
+	public void data(final String name, final String value, final DataSender sender, final int recordCount,
 			final int entityCount) {
-		this.literal = literal;
+		this.literal = new Literal(name, value);
 	}
 }

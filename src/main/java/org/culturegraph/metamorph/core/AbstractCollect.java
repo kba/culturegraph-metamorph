@@ -121,12 +121,12 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 
 
 	@Override
-	public final void data(final Literal literal,
+	public final void data(final String name, final String value,
 			final DataSender sender, final int recordCount,
 			final int entityCount) {
 		updateCounts(recordCount, entityCount);
 
-		receive(literal);
+		receive(name, value);
 
 		if(isComplete()){
 			emit();
@@ -140,7 +140,7 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 	/**
 	 * @param literal
 	 */
-	protected abstract void receive(Literal literal);
+	protected abstract void receive(final String name, final String value);
 
 
 	/**

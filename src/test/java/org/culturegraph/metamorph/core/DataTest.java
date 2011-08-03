@@ -39,10 +39,10 @@ public final class DataTest {
 		final Data data = new Data();
 		data.setDataReceiver(new DataReceiver() {
 			@Override
-			public void data(final Literal literal, final DataSender sender, final int recordCount,
+			public void data(final String name, final String value, final DataSender sender, final int recordCount,
 					final int entityCount) {
-				Assert.assertEquals(WRONG_VALUE, INPUT, literal.getValue());
-				Assert.assertEquals(WRONG_NAME, DEFAULT_NAME, literal.getName());
+				Assert.assertEquals(WRONG_VALUE, INPUT, value);
+				Assert.assertEquals(WRONG_NAME, DEFAULT_NAME, name);
 				Assert.assertEquals("wrong recordCount", MAGIC1, recordCount);
 				Assert.assertEquals("wrong entityCount", MAGIC2, entityCount);
 			}
@@ -56,10 +56,10 @@ public final class DataTest {
 		final Data data = new Data();
 		data.setDataReceiver(new DataReceiver() {
 			@Override
-			public void data(final Literal literal, final DataSender sender, final int recordCount,
+			public void data(final String name, final String value, final DataSender sender, final int recordCount,
 					final int entityCount) {
-				Assert.assertEquals(WRONG_VALUE, DEFAULT_VALUE, literal.getValue());
-				Assert.assertEquals(WRONG_NAME, INPUT, literal.getName());
+				Assert.assertEquals(WRONG_VALUE, DEFAULT_VALUE, value);
+				Assert.assertEquals(WRONG_NAME, INPUT, name);
 			}
 		});
 		data.setDefaultValue(DEFAULT_VALUE);
@@ -74,10 +74,10 @@ public final class DataTest {
 		data.addFunction(constant2);
 		data.setDataReceiver(new DataReceiver() {
 			@Override
-			public void data(final Literal literal, final DataSender sender, final int recordCount,
+			public void data(final String name, final String value, final DataSender sender, final int recordCount,
 					final int entityCount) {
-				Assert.assertEquals(WRONG_VALUE, CONSTANT_B, literal.getValue());
-				Assert.assertEquals(WRONG_NAME, DEFAULT_NAME, literal.getName());
+				Assert.assertEquals(WRONG_VALUE, CONSTANT_B, value);
+				Assert.assertEquals(WRONG_NAME, DEFAULT_NAME, name);
 			}
 		});
 		data.setDefaultName(DEFAULT_NAME);
@@ -91,7 +91,7 @@ public final class DataTest {
 		data.addFunction(regexp);
 		data.setDataReceiver(new DataReceiver() {
 			@Override
-			public void data(final Literal literal, final DataSender sender, final int recordCount,
+			public void data(final String name, final String value, final DataSender sender, final int recordCount,
 					final int entityCount) {
 				Assert.fail(); // Regexp should not find anything
 			}

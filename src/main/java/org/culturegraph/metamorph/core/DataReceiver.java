@@ -5,5 +5,5 @@ package org.culturegraph.metamorph.core;
  * @author Markus Michael Geipel
  */
 interface DataReceiver {
-	void data(Literal literal, DataSender sender, int recordCount, int entityCount);
+	void data(String name, String value, DataSender sender, int recordCount, int entityCount);
 }
