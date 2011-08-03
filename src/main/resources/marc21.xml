@@ -17,9 +17,6 @@
 		<data source="0167 .a"  name="value"/>
 	</collect-literal>
 
-	<data source="0167 .2" name="xbib:identifierAuthority" />
-	<data source="0167 .a" name="xbib:identifierAuthority" />
-
 	<data source="010  .a" name="xbib:identifierAuthorityLOC" />
 	<data source="035  .a" name="xbib:identifierAuthorityEKI" />
 	<data source="0242 .a" name="xbib:identifierAuthorityISMN" />
@@ -31,8 +28,13 @@
 	</data>
 
 	<map name="isil">
-		<entry name="DE-101" value="xbib:identifierAuthorityXXX" />
-		<entry name="DE-599" value="xbib:identifierAuthorityYYY" />
+		<entry name="DE-101" value="xbib:identifierAuthorityDNB" />
+		<entry name="(DE-600)" value="xbib:identifierAuthorityZDB" />
+		<entry name="Uk" value="xbib:identifierAuthorityBNB" />
+		<entry name="ItFiC" value="xbib:identifierAuthorityCasaliniLibri " />
+		<entry name="FrPBN" value="xbib:identifierAuthorityBNF" />
+		<entry name="(DE-600)" value="xbib:identifierAuthorityZDB" />
+		<entry name="(DE-600)" value="xbib:identifierAuthorityZDB" />
 	</map>
 
 </metamorph>	
