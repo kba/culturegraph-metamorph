@@ -20,7 +20,7 @@
 	<data source="026" name="xbib:identifierAuthorityEKI" />
 	<data source="037b" name="dcterms:language" />
 	<data source="089" name="xbib:titleVolume" />
-	<data source="089" name="xbib:titleVolume" />
+
 	
 	<group name="xbib:creatorDNBGND">
 		<data source="102a" />
@@ -63,7 +63,7 @@
 	<data source="455" name="xbib:titleVolume" />
 
 	<data source="540a" name="xbib:identifierAuthorityISBN">
-		<isbn to="clean" />
+		<isbn to="isbn13" />
 	</data>
 
 	<data source="541a" name="xbib:identifierAuthorityOriginalISMN" />
@@ -76,12 +76,5 @@
 	<data source="556" name="xbib:identifierReport" />
 	<data source="562" name="xbib:identifierPatent" />
 	<data source="580" name="xbib:identifierVD18" />
-
-	<collect-literal name="ISBN_YEAR_KEY" value="${isbn}-${year}" reset="true" >
-		<data source="540a" name="isbn">
-			<isbn to="isbn13" />
-		</data>
-		<data source="425" name="year"/>
-	</collect-literal>
 
 </metamorph>

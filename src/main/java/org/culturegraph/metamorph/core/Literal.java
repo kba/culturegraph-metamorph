@@ -3,7 +3,7 @@ package org.culturegraph.metamorph.core;
 /**
  * @author Markus Michael Geipel
  */
-public final class Literal {
+public final class Literal  implements Comparable<Literal>{
 	private static final int MAGIC1 = 23;
 	private static final int MAGIC2 = 31;
 	private final String name;
@@ -26,7 +26,6 @@ public final class Literal {
 		return name;
 	}
 
-
 	/**
 	 * @return the value
 	 */
@@ -46,5 +45,15 @@ public final class Literal {
 			return literal.preCompHashCode==preCompHashCode && literal.name.equals(name) && literal.value.equals(value);
 		}
 		return false;
+	}
+
+	@Override
+	public int compareTo(final Literal literal) {
+		final int first = name.compareTo(literal.name);
+		if(first == 0){
+			return value.compareTo(literal.value);
+		}else{
+			return first;
+		}
 	}
 }

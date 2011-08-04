@@ -5,8 +5,6 @@ import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.ddb.charset.MabCharset;
 
@@ -28,11 +26,9 @@ public final class MabReader extends AbstractReader {
 			.toString(MabCharset.SATZENDEZEICHEN);
 
 	private static final int ID_START = 28;
-
 	private static final int FIELD_NAME_SIZE = 4;
 	private static final int HEADER_SIZE = 24;
 
-	private static final Logger LOG = LoggerFactory.getLogger(MabReader.class);
 
 	@Override
 	protected void processRecord(final String record) {
@@ -40,9 +36,10 @@ public final class MabReader extends AbstractReader {
 			return;
 		}
 
-		// final String header = record.substring(0, 24);
+		
 		final String content = record.substring(HEADER_SIZE);
 
+		// final String header = record.substring(0, HEADER_SIZE);
 		// if (LOG.isTraceEnabled()) {
 		// LOG.trace("Länge des Datensatzes: " + header.substring(0, 4));
 		// LOG.trace("Status: " + header.charAt(5));
