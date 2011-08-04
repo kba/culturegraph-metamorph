@@ -11,6 +11,10 @@
 	
 	<data source="005" name="dcterms:modified" />
 	
+	<data source="007" name="dcterms:format">
+		<regexp match="^(.{2})" />
+	</data>
+	
 	<data source="008" name="gnd:countryCode">
 		<regexp match="^(.{15})(\w{2,3})(.*)" format="${2}"/>
 	</data>
@@ -83,7 +87,23 @@
 	<!-- <replace pattern="\(DE-599\)" with="" /> -->
 	<!-- </data> -->
 
+	<group name="xbib:originLanguage">
+		<data source="041  .h" />
+		<data source="0417 .h" />
+		<data source="0417 .2" />
+	</group>
+
 	<data source="088  .a" name="xbib:identifierReport" />
+
+	<group name="dcterms:creator">
+		<data source="1001 .a" />
+		<data source="1001 .c" />
+	</group>
+	
+	<group name="xbib:creatorDNBGND">
+		<data source="1001 .0" />
+		<data source="700  .0" />
+	</group>
 
 	<data source="502  .o" name="xbib:identifierUniversityScript"></data>
 
@@ -95,7 +115,7 @@
 		<entry name="FrPBN" value="xbib:identifierAuthorityBNF" />
 		<entry name="(OCoLC)" value="xbib:identifierAuthorityOCLC" />
 		<entry name="(DE-599)" value="xbib:identifierAuthorityEKI"/>
-		<entry name="(XXXxUND)" value="EKI-test-BVB"/>
+		<entry name="(XXXxUND)" value="EKI-fakePrefix"/>
 	</map>
 	
 	<map name="doiList">
