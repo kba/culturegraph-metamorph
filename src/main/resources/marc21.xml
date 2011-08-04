@@ -100,10 +100,15 @@
 		<data source="1001 .c" />
 	</group>
 	
+	<!-- deeper analyze on isil -->
 	<group name="xbib:creatorDNBGND">
 		<data source="1001 .0" />
 		<data source="700  .0" />
 	</group>
+	
+	<data source="24510.a" name="dcterms:title" />
+	<!-- deeper analyze on this fields -->
+	<data source="2603 .c" name="dcterms:issued" />
 
 	<data source="502  .o" name="xbib:identifierUniversityScript"></data>
 
