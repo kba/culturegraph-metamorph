@@ -9,7 +9,7 @@ import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 import de.ddb.charset.MabCharset;
 
 /**
- * Parses a raw Mab2 stream (utf8 encoding assumed). Events are handled by a
+ * Parses a raw Mab2 stream (mab encoding assumed). Events are handled by a
  * {@link StreamReceiver}.
  * 
  * @author "Markus Michael Geipel"
@@ -88,8 +88,8 @@ public final class MabReader extends AbstractReader {
 	protected Charset getCharset() {
 		return new MabCharset(false);
 	}
-
-	public static String getIdFromRawRecord(final String record) {
+	
+	public static String extractIdFromRawRecord(final String record) {
 
 		if (record.length() > ID_START) {
 			int fieldEnd = ID_START;
@@ -103,5 +103,10 @@ public final class MabReader extends AbstractReader {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public String getId(final String record) {
+		return extractIdFromRawRecord(record);
 	}
 }

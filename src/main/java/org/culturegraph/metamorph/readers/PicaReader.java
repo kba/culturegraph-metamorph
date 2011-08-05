@@ -1,6 +1,7 @@
 package org.culturegraph.metamorph.readers;
 
 import java.nio.charset.Charset;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
@@ -15,8 +16,12 @@ import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
  */
 public final class PicaReader extends AbstractReader{
 
-	private static final Pattern FIELD_PATTERN = Pattern.compile("\u001e");
-	private static final Pattern SUBFIELD_PATTERN = Pattern.compile("\u001f");
+	private static final String FIELD_DELIMITER = "\u001e";
+	private static final String SUB_DELIMITER = "\u001f";
+	private static final Pattern FIELD_PATTERN = Pattern.compile(FIELD_DELIMITER);
+	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(SUB_DELIMITER);
+	private static final String ID_PATTERN_STRING = FIELD_DELIMITER + "003@ " + SUB_DELIMITER + "0(.*?)" + FIELD_DELIMITER;
+	private static final Pattern ID_PATTERN = Pattern.compile(ID_PATTERN_STRING);
 
 	@Override
 	protected void processRecord(final String record) {
@@ -51,5 +56,20 @@ public final class PicaReader extends AbstractReader{
 	protected Charset getCharset() {
 		return Charset.forName("UTF8");
 	}
+	
+	
+	
+	public static String extractIdFromRawRecord(final String record) {
+		final Matcher idMatcher = ID_PATTERN.matcher(record);
+		if(idMatcher.find()){
+			return idMatcher.group(1);
+		}else{
+			return null;
+		}
+	}
 
+	@Override
+	public String getId(final String record) {
+		return extractIdFromRawRecord(record);
+	}
 }

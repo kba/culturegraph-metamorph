@@ -15,7 +15,8 @@ public final class StringOperationsTest {
 	
 	private static final String VALUE1 = "Franz"; 
 	private static final String VALUE2 = "Kafka";
-	private static final String VALUE3 = "Josef"; 
+	private static final String VALUE3 = "Josef";
+	
 	
 	@Test
 	public void testRegexp() {
@@ -26,6 +27,25 @@ public final class StringOperationsTest {
 		regexp.setFormat(VALUE3 + " ${1}.");
 		regexp.setMatch("((K)).*$");
 		Assert.assertEquals(VALUE3 + " K.", regexp.process(VALUE1 + VALUE2));
+	}
+	
+	@Test
+	public void testSubstring() {
+		final Substring substring = new Substring();
+		Assert.assertEquals(VALUE1,substring.process(VALUE1));
+		
+		final int position = 2;
+		substring.setStart(String.valueOf(position));
+		Assert.assertEquals(VALUE1.substring(position),substring.process(VALUE1));
+		
+		substring.setStart("0");
+		substring.setEnd(String.valueOf(VALUE1.length()+1));
+		Assert.assertNull(substring.process(VALUE1));
+		
+		substring.setStart(String.valueOf(VALUE1.length()+1));
+		substring.setEnd(String.valueOf(position));
+		Assert.assertNull(substring.process(VALUE1));
+	
 	}
 	
 	@Test(expected=Regexp.PatternNotFoundException.class)

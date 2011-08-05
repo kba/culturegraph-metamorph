@@ -29,6 +29,13 @@ public interface RawRecordReader {
 	 * Sets the {@link StreamReceiver} which is used to process events during the parsing.
 	 * @param recordHandler
 	 */
-	void setStreamReceiver(final StreamReceiver recordHandler);
+	void setStreamReceiver(StreamReceiver recordHandler);
+	
+	/**
+	 * Extracts the id from the raw record data. Used for database ingests.
+	 * @param record raw record
+	 * @return
+	 */
+	String getId(String record);
 
 }

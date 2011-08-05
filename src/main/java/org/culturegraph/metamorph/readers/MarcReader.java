@@ -21,7 +21,7 @@ import org.marc4j.marc.Subfield;
  * @author "Markus Michael Geipel"
  * @see StreamReceiver
  */
-public final class MarcReader2 implements RawRecordReader {
+public final class MarcReader implements RawRecordReader {
 
 	// private static final Logger LOG = LoggerFactory
 	// .getLogger(MarcReader2.class);
@@ -89,5 +89,10 @@ public final class MarcReader2 implements RawRecordReader {
 
 	protected StreamReceiver getStreamReceiver() {
 		return streamReceiver;
+	}
+
+	@Override
+	public String getId(final String record) {
+		throw new UnsupportedOperationException();
 	}
 }

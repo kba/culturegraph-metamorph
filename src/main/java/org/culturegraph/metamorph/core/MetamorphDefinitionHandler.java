@@ -12,6 +12,7 @@ import org.culturegraph.metamorph.functions.ISBN;
 import org.culturegraph.metamorph.functions.Lookup;
 import org.culturegraph.metamorph.functions.Regexp;
 import org.culturegraph.metamorph.functions.Replace;
+import org.culturegraph.metamorph.functions.Substring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -72,6 +73,7 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 			this.metamorph = metamorph;
 			registerFunctionClass("constant",Constant.class);
 			registerFunctionClass("regexp",Regexp.class);
+			registerFunctionClass("substring",Substring.class);
 			registerFunctionClass("compose",Compose.class);
 			registerFunctionClass("lookup",Lookup.class);
 			registerFunctionClass("replace",Replace.class);
