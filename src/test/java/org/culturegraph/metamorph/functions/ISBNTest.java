@@ -29,6 +29,19 @@ public final class ISBNTest {
 	private static final String ISBN_INCORRECT_SIZE2 = "123456789012"; 
 	private static final String ISBN_INCORRECT_SIZE3 = "123456789"; 
 	
+	
+	@Test
+	public void testProcess(){
+		final ISBN isbn = new ISBN();
+		isbn.setTo("isbn13");
+		Assert.assertEquals(ISBN13A, isbn.process(ISBN10A));
+		isbn.setTo("isbn10");
+		Assert.assertEquals(ISBN10A, isbn.process(ISBN13A));
+		isbn.setTo("cleanse");
+		Assert.assertEquals(ISBN10A, isbn.process(ISBN10A_DIRTY));
+		
+	}
+	
 	@Test
 	public void testTo13() {
 		Assert.assertEquals(ISBN13A, ISBN.isbn10to13(ISBN10A));
