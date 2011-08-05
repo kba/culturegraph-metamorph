@@ -11,11 +11,12 @@
 <module name="Checker">
   <property name="severity" value="warning"/>
   <module name="TreeWalker">
-    <module name="AbstractClassName"/>
     <module name="ClassTypeParameterName"/>
     <module name="ConstantName"/>
     <module name="LocalFinalVariableName"/>
-    <module name="AbstractClassName"/>
+    <module name="AbstractClassName">
+      <property name="format" value="^Abstract.*$"/>
+    </module>
     <module name="ClassTypeParameterName"/>
     <module name="ConstantName"/>
     <module name="LocalFinalVariableName"/>
@@ -57,7 +58,10 @@
       <property name="tokens" value="METHOD_DEF,PARAMETER_DEF,VARIABLE_DEF"/>
     </module>
     <module name="InnerAssignment"/>
-    <module name="JUnitTestCase"/>
+    <module name="JUnitTestCase">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
     <module name="MagicNumber"/>
     <module name="MissingSwitchDefault"/>
     <module name="ModifiedControlVariable"/>

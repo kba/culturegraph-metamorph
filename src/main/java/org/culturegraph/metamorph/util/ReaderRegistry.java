@@ -16,22 +16,32 @@ public class ReaderRegistry {
 	private static final String READER_NULL = "'reader' must not be null";
 	private static final String READERS_NULL = "'readers' must not be null";
 	
-	private Map<String, RawRecordReader> readers = new HashMap<String, RawRecordReader>();
+	private Map<String, ReaderFactory> factories = new HashMap<String, ReaderFactory>();
 	
 	public final RawRecordReader getReaderForFormat(final String format){
 		Assert.notNull(format, FORMAT_NULL);
-		return readers.get(format);
+		final ReaderFactory factory = factories.get(format);
+		if(factory==null){
+			return null;
+		}else{
+			return factory.newReader();
+		}
 	}
 	
-	public final void addReader(final String format, final RawRecordReader reader){
-		Assert.notNull(reader, READER_NULL);
+	public final void addReaderFactory(final String format, final ReaderFactory factory){
+		Assert.notNull(factory, READER_NULL);
 		Assert.notNull(format, FORMAT_NULL);
-		readers.put(format, reader);
+		factories.put(format, factory);
 	}
 	
-	public final void setReaders(final Map<String, RawRecordReader> readers){
-		Assert.notNull(readers, READERS_NULL);
-		this.readers = readers;
+	public final void setReaderFactories(final Map<String, ReaderFactory> factories){
+		Assert.notNull(factories, READERS_NULL);
+		this.factories = factories;
+	}
+	
+	public static ReaderRegistry newReaderRegistry(){
+		//TODO choose ReaderRegistry based on Java Property
+		return new DefaultReaderRegistry();
 	}
 	
 }

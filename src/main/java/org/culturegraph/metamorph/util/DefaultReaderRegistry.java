@@ -1,8 +1,5 @@
 package org.culturegraph.metamorph.util;
 
-import org.culturegraph.metamorph.readers.MabReader;
-import org.culturegraph.metamorph.readers.MarcReader;
-import org.culturegraph.metamorph.readers.PicaReader;
 import org.culturegraph.metamorph.readers.RawRecordReader;
 
 /**
@@ -15,8 +12,8 @@ public final class DefaultReaderRegistry extends ReaderRegistry {
 
 	public DefaultReaderRegistry() {
 		super();
-		this.addReader(ReaderRegistry.PICA, new PicaReader());
-		this.addReader(ReaderRegistry.MAB2, new MabReader());
-		this.addReader(ReaderRegistry.MARC21, new MarcReader());
+		this.addReaderFactory(ReaderRegistry.PICA, new PicaReaderFactory());
+		this.addReaderFactory(ReaderRegistry.MAB2, new MabReaderFactory());
+		this.addReaderFactory(ReaderRegistry.MARC21, new MarcReaderFactory());
 	}
 }
