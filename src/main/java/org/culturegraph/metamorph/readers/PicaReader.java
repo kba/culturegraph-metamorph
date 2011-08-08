@@ -4,6 +4,7 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 
 /**
@@ -22,34 +23,41 @@ public final class PicaReader extends AbstractReader{
 	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(SUB_DELIMITER);
 	private static final String ID_PATTERN_STRING = FIELD_DELIMITER + "003@ " + SUB_DELIMITER + "0(.*?)" + FIELD_DELIMITER;
 	private static final Pattern ID_PATTERN = Pattern.compile(ID_PATTERN_STRING);
+	private static final String INVALID_FORMAT_ERROR = "Invalid format";
 
 	@Override
 	protected void processRecord(final String record) {
 		getStreamReceiver().startRecord();
-		for (String field : FIELD_PATTERN.split(record)) {
-			
-			final String[] subfields = SUBFIELD_PATTERN.split(field);
-			
-			final String fieldName;
-			final int firstSubfield;
-			if(subfields[1].charAt(0)=='S'){
-				fieldName = subfields[0].trim() + subfields[1].charAt(1);
-				firstSubfield = 2;
-			}else{
-				fieldName = subfields[0].trim();
-				firstSubfield = 1;
+		
+		try{
+			for (String field : FIELD_PATTERN.split(record)) {
+				
+				final String[] subfields = SUBFIELD_PATTERN.split(field);
+				
+				final String fieldName;
+				final int firstSubfield;
+				if(subfields[1].charAt(0)=='S'){
+					fieldName = subfields[0].trim() + subfields[1].charAt(1);
+					firstSubfield = 2;
+				}else{
+					fieldName = subfields[0].trim();
+					firstSubfield = 1;
+				}
+				
+				getStreamReceiver().startEntity(fieldName);
+	
+				for (int i = firstSubfield; i < subfields.length; ++i) {
+					final String subfield = subfields[i];
+					getStreamReceiver().literal(subfield.substring(0, 1), subfield.substring(1));
+				}
+				getStreamReceiver().endEntity();
+				
 			}
-			
-			getStreamReceiver().startEntity(fieldName);
-
-			for (int i = firstSubfield; i < subfields.length; ++i) {
-				final String subfield = subfields[i];
-				getStreamReceiver().literal(subfield.substring(0, 1), subfield.substring(1));
-			}
-			getStreamReceiver().endEntity();
-			
+		}catch(IndexOutOfBoundsException exception){
+			throw new MetamorphException(INVALID_FORMAT_ERROR, exception);
+		}finally{
+			getStreamReceiver().endRecord();
 		}
-		getStreamReceiver().endRecord();
 	}
 
 	@Override
