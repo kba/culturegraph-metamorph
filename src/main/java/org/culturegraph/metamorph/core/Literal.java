@@ -56,4 +56,9 @@ public final class Literal  implements Comparable<Literal>{
 			return first;
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return name + "=" + value;
+	}
 }

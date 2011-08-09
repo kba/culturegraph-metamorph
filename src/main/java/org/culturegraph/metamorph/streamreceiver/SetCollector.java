@@ -42,5 +42,10 @@ public final class SetCollector extends DefaultStreamReceiver {
 	public Set<Literal> getSet() {
 		return set;
 	}
+	
+	@Override
+	public String toString() {
+		return set.toString();
+	}
 
 }
