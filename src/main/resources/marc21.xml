@@ -106,9 +106,39 @@
 		<data source="700  .0" />
 	</group>
 	
+	<group name="rdaGr2:identifierForTheCorporateBody">
+		<data source="1102 .0" />
+		<data source="1100 .0" />
+		<data source="1101 .0" />
+	</group>
+	
+	<group name="gnd:preferredNameForTheCorporateBody">
+		<data source="1102 .a" />
+		<data source="1100 .a" />
+		<data source="1101 .a" />
+	</group>
+	
 	<data source="24510.a" name="dcterms:title" />
+	
+	<group name="xbib:issueType">
+		<data source="250  .a" />
+		<data source="250  .6" />
+		<data source="250  .8" />
+	</group>
+	
 	<!-- deeper analyze on this fields -->
 	<data source="2603 .c" name="dcterms:issued" />
+
+	<group name="xbib:issueType">
+		<data source="250  .a" />
+		<data source="250  .6" />
+		<data source="250  .8" />
+	</group>
+	
+	<group name="xbib:volume">
+		<data source="4900 .v" />
+		<data source="4901 .v" />
+	</group>
 
 	<data source="502  .o" name="xbib:identifierUniversityScript"></data>
 
