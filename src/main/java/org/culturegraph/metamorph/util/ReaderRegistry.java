@@ -8,15 +8,13 @@ import org.springframework.util.Assert;
 
 public class ReaderRegistry {
 	
-	public static final String MAB2 = "mab2";
-	public static final String PICA = "pica";
-	public static final String MARC21 = "marc21";
-	
+
 	private static final String FORMAT_NULL = "'format' must not be null";
 	private static final String READER_NULL = "'reader' must not be null";
 	private static final String READERS_NULL = "'readers' must not be null";
 	
 	private Map<String, ReaderFactory> factories = new HashMap<String, ReaderFactory>();
+	
 	
 	public final RawRecordReader getReaderForFormat(final String format){
 		Assert.notNull(format, FORMAT_NULL);
@@ -26,6 +24,10 @@ public class ReaderRegistry {
 		}else{
 			return factory.newReader();
 		}
+	}
+	
+	public final boolean isFormatSupported(final String format){
+		return factories.get(format) != null;
 	}
 	
 	public final void addReaderFactory(final String format, final ReaderFactory factory){
@@ -39,9 +41,8 @@ public class ReaderRegistry {
 		this.factories = factories;
 	}
 	
-	public static ReaderRegistry newReaderRegistry(){
-		//TODO choose ReaderRegistry based on Java Property
-		return new DefaultReaderRegistry();
-	}
-	
+//	public static ReaderRegistry newReaderRegistry(){
+//		//TODO choose ReaderRegistry based on Java Property
+//		return new DefaultReaderRegistry();
+//	}
 }
