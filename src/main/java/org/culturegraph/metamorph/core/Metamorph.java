@@ -68,6 +68,9 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 
 	public void endRecord() {
 		entityCount=0;
+		if(entityCountStack.size()!=0){
+			throw new MetamorphException("Entity starts and ends are not balanced");
+		}
 		outputStreamReceiver.endRecord();
 	}
 
