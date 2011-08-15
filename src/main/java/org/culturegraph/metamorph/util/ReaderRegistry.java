@@ -4,20 +4,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.culturegraph.metamorph.readers.RawRecordReader;
-import org.springframework.util.Assert;
 
 public class ReaderRegistry {
 	
 
 	private static final String FORMAT_NULL = "'format' must not be null";
-	private static final String READER_NULL = "'reader' must not be null";
-	private static final String READERS_NULL = "'readers' must not be null";
+	private static final String FACTORY_NULL = "'factory' must not be null";
+	private static final String FACTORIES_NULL = "'factories' must not be null";
 	
 	private Map<String, ReaderFactory> factories = new HashMap<String, ReaderFactory>();
 	
 	
 	public final RawRecordReader getReaderForFormat(final String format){
-		Assert.notNull(format, FORMAT_NULL);
+		if(format==null){
+			throw new IllegalArgumentException(FORMAT_NULL);
+		}
 		final ReaderFactory factory = factories.get(format);
 		if(factory==null){
 			return null;
@@ -31,13 +32,20 @@ public class ReaderRegistry {
 	}
 	
 	public final void addReaderFactory(final String format, final ReaderFactory factory){
-		Assert.notNull(factory, READER_NULL);
-		Assert.notNull(format, FORMAT_NULL);
+		if(format==null){
+			throw new IllegalArgumentException(FORMAT_NULL);
+		}
+		if(factory==null){
+			throw new IllegalArgumentException(FACTORY_NULL);
+		}
+	
 		factories.put(format, factory);
 	}
 	
 	public final void setReaderFactories(final Map<String, ReaderFactory> factories){
-		Assert.notNull(factories, READERS_NULL);
+		if(factories==null){
+			throw new IllegalArgumentException(FACTORIES_NULL);
+		}
 		this.factories = factories;
 	}
 	

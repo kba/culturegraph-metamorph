@@ -3,6 +3,7 @@ package org.culturegraph.metamorph.core;
 import org.culturegraph.metamorph.streamreceiver.DefaultStreamReceiver;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -66,6 +67,31 @@ public final class MetamorphTest implements DataReceiver {
 		metamorph.endEntity();
 		metamorph.literal(LITERAL_NAME, VALUE);
 		Assert.assertNull(literal);
+	}
+	
+
+	@Test(expected=MetamorphException.class)
+	public void testEntityBorderBalanceCheck1(){
+		final Metamorph metamorph = new Metamorph();
+		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
+		
+		metamorph.startRecord();
+		metamorph.startEntity(ENTITY_NAME);
+		metamorph.startEntity(ENTITY_NAME);
+		metamorph.endEntity();
+		metamorph.endRecord();
+	}
+	
+	@Test(expected=MetamorphException.class)
+	public void testEntityBorderBalanceCheck2(){
+		final Metamorph metamorph = new Metamorph();
+		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
+		
+		metamorph.startRecord();
+		metamorph.startEntity(ENTITY_NAME);
+		metamorph.endEntity();
+		metamorph.endEntity();
+		metamorph.endRecord();
 	}
 	
 

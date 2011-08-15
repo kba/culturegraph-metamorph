@@ -48,6 +48,8 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 		
 		private static final Logger LOG = LoggerFactory
 				.getLogger(MetamorphDefinitionHandler.class);
+		private static final Object METAMORPH_TAG = "metamorph";
+		private static final String MARKER_ATTR = "entityMarker";
 		
 		
 	
@@ -99,12 +101,10 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 			
 			if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName)) {
 				registerCollector(localName, atts);	
-
-				
+	
 			}else if(GROUP_TAG.equals(localName)) {
 				emitGroupName = atts.getValue(NAME_ATTR);
 				emitGroupValue = atts.getValue(VALUE_ATTR);
-
 				
 			} else if (DATA_TAG.equals(localName)) {
 				registerDataSource(atts.getValue(SOURCE_ATTR), atts.getValue(NAME_ATTR),atts.getValue(VALUE_ATTR), atts.getValue(AS_ATTR));
@@ -117,6 +117,11 @@ final class MetamorphDefinitionHandler implements 	ContentHandler{
 	
 			} else if(ENTRY_TAG.equals(localName)){
 				keyValueStore.put(atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR));
+			} else if(METAMORPH_TAG.equals(localName)){
+				final String marker = atts.getValue(MARKER_ATTR);
+				if(null!=marker){
+					metamorph.setEntityMarker(marker.charAt(0));
+				}
 			}
 		}
 	

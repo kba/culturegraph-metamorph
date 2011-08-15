@@ -2,7 +2,7 @@
 <metamorph xmlns="http://www.culturegraph.org/metamorph"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
-		http://www.culturegraph.org/metamorph metamorph.xsd">
+		http://www.culturegraph.org/metamorph metamorph.xsd" entityMarker=".">
 
 	<name>Umsetzung der PND</name>
 
