@@ -18,8 +18,21 @@
 	<data source="025o" name="xbib:identifierAuthorityOCLC" />
 	<data source="025z" name="xbib:identifierAuthorityZDB" />
 	<data source="026" name="xbib:identifierAuthorityEKI" />
-	<data source="037b" name="dcterms:language" />
-	<data source="089" name="xbib:titleVolume" />
+	
+	<group name="dcterms:language">
+		<data source="037a" />
+		<data source="037b" />
+	</group>
+	
+	<group name="xbib:originLanguage">
+		<data source="038a" />
+		<data source="038b" />
+	</group>
+	
+	<group name="gnd:countryCode">
+		<data source="036a" />
+		<data source="036b" />
+	</group>
 	
 	<data source="050" name="dcterms:format" />
 	
@@ -31,45 +44,26 @@
 		<substring start="0" end="1"/>
 	</data>
 
+	<data source="100" name="dcterms:creator" />
 	
 	<group name="xbib:creatorDNBGND">
 		<data source="102a" />
-		<data source="106a" />
 	</group>
 	
-	<group name="dcterms:titleUniform">
-		<data source="304" />
-		<data source="304a" />
-		<data source="304b" />
-	</group>
+	<data source="200" name="gnd:preferredNameForTheCorporateBody" />
 	
+	<data source="202a" name="rdaGr2:IdentifierForTheCorporateBody" />
+		
 	<group name="dcterms:title">
-		<data source="310" />
-		<data source="310.1" />
-		<data source="310a" />
-		<data source="310a.1" />
-		<data source="310b" />
-		<data source="310b.1" />
 		<data source="331" />
-		<data source="331.1" />
-		<data source="331a" />
-		<data source="331b" />
-		<data source="333" />
-		<data source="333.1" />
-		<data source="360" />
-		<data source="360.1" />
 	</group>
+	
+	<data source="403" name="xbib:issueType" />
 	
 	<data source="410" name="xbib:publicationPlace" />
 	<data source="412" name="xbib:publisherName" />
 	<data source="425" name="dcterms:issued" />
-
-	<group name="dcterms:titleSeries">
-		<data source="451" />
-		<data source="451a" />
-		<data source="451b" />
-	</group>
-	
+	<data source="433" name="dcterms:extends" />
 	<data source="455" name="xbib:titleVolume" />
 
 	<data source="540a" name="xbib:identifierAuthorityISBN">
@@ -78,15 +72,21 @@
 
 	<data source="541a" name="xbib:identifierAuthorityOriginalISMN" />
 	<data source="542a" name="xbib:identifierAuthorityISSN" />
+	<data source="543a" name="xbib:identifierAuthorityISRN" />
+	
 	<data source="551a" name="xbib:identifierAudioPublisher" />
 	<data source="552a" name="xbib:uniformResourceDoi" />
 	<data source="552b" name="xbib:uniformResourceName" />
 	<data source="552c" name="xbib:uniformResourceHandle" />
+	
+	<data source="553a" name="xbib:identifierAuthorityEAN" />
+	
 	<data source="554" name="xbib:identifierUniversityScript" />
 	<data source="556" name="xbib:identifierReport" />
-	<data source="562" name="xbib:identifierPatent" />
-	<data source="580" name="xbib:identifierVD18" />
+	
+	<data source="562a" name="xbib:identifierPatent" />
+	
+	<data source="578" name="xbib:fingerprint" />
 	
 	
-
 </metamorph>
