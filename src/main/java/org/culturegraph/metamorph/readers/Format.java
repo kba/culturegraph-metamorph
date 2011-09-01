@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.util;
+package org.culturegraph.metamorph.readers;
 
 public final class Format {
 	public static final String MAB2 = "mab2";

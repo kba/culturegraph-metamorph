@@ -1,9 +1,8 @@
-package org.culturegraph.metamorph.util;
+package org.culturegraph.metamorph.readers;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.culturegraph.metamorph.readers.RawRecordReader;
 
 public class ReaderRegistry {
 	

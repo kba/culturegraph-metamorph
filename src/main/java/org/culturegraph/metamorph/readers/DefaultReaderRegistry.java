@@ -1,6 +1,5 @@
-package org.culturegraph.metamorph.util;
+package org.culturegraph.metamorph.readers;
 
-import org.culturegraph.metamorph.readers.RawRecordReader;
 
 /**
  * {@link ReaderRegistry} with pica, mab2 and marc21 {@link RawRecordReader}s already registered.

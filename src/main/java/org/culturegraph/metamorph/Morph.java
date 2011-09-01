@@ -7,10 +7,10 @@ import java.io.InputStream;
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
 import org.culturegraph.metamorph.core.MetamorphErrorHandler;
+import org.culturegraph.metamorph.readers.DefaultReaderRegistry;
 import org.culturegraph.metamorph.readers.RawRecordReader;
+import org.culturegraph.metamorph.readers.ReaderRegistry;
 import org.culturegraph.metamorph.streamreceiver.ConsoleWriter;
-import org.culturegraph.metamorph.util.DefaultReaderRegistry;
-import org.culturegraph.metamorph.util.ReaderRegistry;
 
 /**
  * Example which can read mab2, pica and marc21 files, applies the

@@ -1,7 +1,5 @@
-package org.culturegraph.metamorph.util;
+package org.culturegraph.metamorph.readers;
 
-import org.culturegraph.metamorph.readers.MabReader;
-import org.culturegraph.metamorph.readers.RawRecordReader;
 
 public final class MabReaderFactory implements ReaderFactory {
 
