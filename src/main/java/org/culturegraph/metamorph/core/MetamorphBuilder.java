@@ -11,6 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.culturegraph.metamorph.readers.RawRecordReader;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -29,10 +30,32 @@ public final class MetamorphBuilder {
 	private static final String SCHEMA_FILE = "metamorph.xsd";
 	private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
 	private static final String PARSE_ERROR = "Error parsing transformation definition: ";
-
+	private static final String NOT_FOUND_ERROR = "Definition file not found";
+	
+	
 	private MetamorphBuilder() {/* no instances exist */
 	}
 
+	public static Metamorph build(final RawRecordReader reader, final InputSource inputSource,
+			final StreamReceiver outputReceiver){
+		final Metamorph metamorph = build(inputSource,outputReceiver);
+		reader.setStreamReceiver(metamorph);
+		return metamorph;
+	}
+	
+	public static Metamorph build(final RawRecordReader reader, final File file, final StreamReceiver outputReceiver) {
+		try {
+			return build(reader, new InputSource(new FileInputStream(file)), outputReceiver);
+		} catch (FileNotFoundException e) {
+			throw new MetamorphDefinitionException(NOT_FOUND_ERROR, e);
+		}
+	}
+	
+	public static Metamorph build(final RawRecordReader reader, final InputStream inputStream, final StreamReceiver outputReceiver) {
+		return build(reader, new InputSource(inputStream), outputReceiver);
+	}
+	
+	
 	public static Metamorph build(final InputSource inputSource,
 			final StreamReceiver outputReceiver) {
 		final Metamorph metamorph = new Metamorph();
@@ -43,11 +66,11 @@ public final class MetamorphBuilder {
 		return metamorph;
 	}
 	
-	public static Metamorph build(final File file,final StreamReceiver outputReceiver) {
+	public static Metamorph build(final File file, final StreamReceiver outputReceiver) {
 		try {
 			return build(new InputSource(new FileInputStream(file)), outputReceiver);
 		} catch (FileNotFoundException e) {
-			throw new MetamorphDefinitionException("Definition file not found", e);
+			throw new MetamorphDefinitionException(NOT_FOUND_ERROR, e);
 		}
 	}
 	

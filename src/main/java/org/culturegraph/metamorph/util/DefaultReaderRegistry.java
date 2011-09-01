@@ -14,6 +14,8 @@ public final class DefaultReaderRegistry extends ReaderRegistry {
 		super();
 		this.addReaderFactory(Format.PICA, new PicaReaderFactory());
 		this.addReaderFactory(Format.MAB2, new MabReaderFactory());
+		this.addReaderFactory("mab", new MabReaderFactory());
 		this.addReaderFactory(Format.MARC21, new MarcReaderFactory());
+		this.addReaderFactory("mrc", new MarcReaderFactory());
 	}
 }

@@ -3,7 +3,6 @@ package org.culturegraph.metamorph.core;
 import org.culturegraph.metamorph.streamreceiver.DefaultStreamReceiver;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
