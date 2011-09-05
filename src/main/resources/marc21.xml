@@ -6,22 +6,48 @@
 
 	<name>Marc21 to PropertyRecord</name>
 	<annotation></annotation>
+				
+	<collect-literal name="cg:typeOfWork"
+		value="${first}${second}"
+		forceOnEnd="Leader">
+		<data source="Leader" name="first" >
+	    	<substring start="7" end="8"/>
+	    </data>
+		<data source="Leader" name="second" >
+	    	<substring start="18" end="19"/>
+	    </data>
+	</collect-literal>
 
+	<data source="Leader" name="cg:typeOfConWork" >
+		<substring start="7" end="8"/>
+		<lookup in="workListContinuousWorks" />
+	</data>
+		
 	<data source="001" name="cg:sourceRecordId" />
 	
 	<data source="005" name="dcterms:modified" />
 	
 	<data source="007" name="dcterms:format">
-		<regexp match="^(.{2})" />
 	</data>
-	
+		
 	<data source="008" name="gnd:countryCode">
 		<regexp match="^(.{15})(\w{2,3})(.*)" format="${2}"/>
 	</data>
+	<data source="044  .c" name="gnd:countryCode" />
 	
 	<data source="008" name="dcterms:language">
 		<regexp match="^(.{35})(\w{2,3})(.*)" format="${2}"/>
 	</data>
+	<group name="dcterms:language">
+		<data source="041 7.a" />
+		<data source="041 7.2" />
+	</group>
+	
+	<group name="xbib:originLanguage">
+		<data source="041 7.h" />
+		<data source="041 7.2" />
+		<data source="041  .2" />
+	</group>
 	
 	<data source="010  .a" name="xbib:identifierAuthorityLOC" />
 	
@@ -29,7 +55,7 @@
 
 	<collect-literal name="${name}" value="${value}" reset="true">
 		<data source="0167 .2" name="name">
-			<lookup in="isil" />
+			<lookup in="prefixLookup" />
 		</data>
 		<data source="0167 .a" name="value" />
 	</collect-literal>
@@ -39,6 +65,8 @@
 	</data>
 
 	<data source="022  .a" name="xbib:identifierAuthorityISSN" />
+	
+	<data source="090  .f" name="cg:detailsForLimitedWorks" />
 	
 	<data source="0242 .a" name="xbib:identifierAuthorityISMN" />
 
@@ -51,7 +79,7 @@
 		<data source="0247 .a" name="value" />
 	</collect-literal>
 	
-		<collect-literal name="${name}" value="${value}" reset="true">
+	<collect-literal name="${name}" value="${value}" reset="true">
 		<data source="0248 .a" name="name">
 			<regexp match="^VD.{2}" />
 			<lookup in="vdList" />
@@ -76,7 +104,7 @@
 	<collect-literal name="${name}" value="${value}" reset="true">
 		<data source="035  .a" name="name">
 			<regexp match="^\(.*\)" />
-			<lookup in="isil" />
+			<lookup in="prefixLookup" />
 		</data>
 		<data source="035  .a" name="value">
 			<regexp match="^\(.*\)((.*))" format="${1}" />
@@ -119,6 +147,7 @@
 	</group>
 	
 	<data source="24510.a" name="dcterms:title" />
+	<data source="24500.a" name="dcterms:title" />
 	
 	<group name="xbib:issueType">
 		<data source="250  .a" />
@@ -142,7 +171,7 @@
 
 	<data source="502  .o" name="xbib:identifierUniversityScript"></data>
 
-	<map name="isil">
+	<map name="prefixLookup">
 		<entry name="DE-101" value="xbib:identifierAuthorityDNB" />
 		<entry name="(DE-600)" value="xbib:identifierAuthorityZDB" />
 		<entry name="Uk" value="xbib:identifierAuthorityBNB" />
@@ -164,6 +193,20 @@
 		<entry name="VD17" value="xbib:identifierVD17" />
 		<entry name="VD18" value="xbib:identifierVD18" />
 	</map>
+	
+	<map name="workListLimited">
+		<entry name="a" value="cg:dependentWork" />
+		<entry name="m " value="cg:independentWork" />
+		<entry name="ma" value="cg:severalVolumesWorkLimited" />
+		<entry name="mb" value="cg:singleVolumeWorkPartOfBigger" />
+	</map>
+		
+	<map name="workListContinuousWorks">
+		<entry name="d" value="dependentConWork" />	
+		<entry name="s" value="journalSeriesNewspaper" />
+	</map>
+	
+	
 
 </metamorph>	
 
