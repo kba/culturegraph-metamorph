@@ -32,8 +32,7 @@ public final class MarcReader implements RawRecordReader {
 	protected void processRecord(final Record record) {
 		getStreamReceiver().startRecord();
 
-		getStreamReceiver().literal("type",
-				String.valueOf(record.getLeader().getTypeOfRecord()));
+		getStreamReceiver().literal("Leader", record.getLeader().marshal());		
 
 		for (ControlField cField : (List<ControlField>) record
 				.getControlFields()) {
@@ -54,7 +53,6 @@ public final class MarcReader implements RawRecordReader {
 
 				getStreamReceiver().literal(
 						Character.toString(subfield.getCode()), value);
-
 			}
 			getStreamReceiver().endEntity();
 
