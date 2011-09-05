@@ -19,6 +19,10 @@
 	<data source="025z" name="xbib:identifierAuthorityZDB" />
 	<data source="026" name="xbib:identifierAuthorityEKI" />
 	
+	<group name="gnd:countryCode">
+		<data source="036a" />
+		<data source="036b" />
+	</group>
 	<group name="dcterms:language">
 		<data source="037a" />
 		<data source="037b" />
@@ -28,21 +32,19 @@
 		<data source="038a" />
 		<data source="038b" />
 	</group>
-	
-	<group name="gnd:countryCode">
-		<data source="036a" />
-		<data source="036b" />
-	</group>
-	
+		
 	<data source="050" name="dcterms:format" />
-	
-	<data source="051" name="cg:detailsForLimitedWorks" >
+		
+	<data source="051" name="cg:typeOfWork">
+	<substring start="0" end="1"/>
+		<lookup in="workListLimited" />
+	</data>
+				
+	<data source="052" name="cg:typeOfConWork" >
 		<substring start="0" end="1"/>
+		<lookup in="workListContinuousWorks" />
 	</data>
 	
-	<data source="052" name="cg:detailsForContinuousWorks" >
-		<substring start="0" end="1"/>
-	</data>
 
 	<data source="100" name="dcterms:creator" />
 	
@@ -88,5 +90,22 @@
 	
 	<data source="578" name="xbib:fingerprint" />
 	
+    <map name="workListLimited">
+		<entry name="a" value="dependentWork" />
+		<entry name="f" value="continuationWork" />
+		<entry name="m" value="independentWork" />
+		<entry name="n" value="severalVolumesWorkLimited" />
+		<entry name="s" value="singleVolumeWorkPartOfBigger" />
+		<entry name="t" value="severalVolumesWorkLimitedPartOfBigger " />
+	</map>
+	
+	<map name="workListContinuousWorks">
+		<entry name="a" value="dependentConWork" />
+		<entry name="s" value="continuationConWork" />
+		<entry name="j" value="journalLikeConWork" />
+		<entry name="p" value="journalConWork" />
+		<entry name="r" value="seriesConWork" />
+		<entry name="z" value="newspaperConWork " />
+	</map>
 	
 </metamorph>
