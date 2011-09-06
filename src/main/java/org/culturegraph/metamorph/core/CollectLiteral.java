@@ -8,23 +8,23 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.core.Data.Mode;
+import org.culturegraph.metamorph.functions.Function;
 
 /**
- *  Corresponds to the <code>&lt;collect-literal&gt;</code> tag.
+ * Corresponds to the <code>&lt;collect-literal&gt;</code> tag.
  * 
  * @author Markus Michael Geipel
  */
-final class CollectLiteral extends AbstractCollect {
+final class CollectLiteral extends AbstractCollect implements DataProcessor {
 
 	private final Map<String, String> variables = new HashMap<String, String>();
 	private final Set<String> variableNames = new HashSet<String>();
+	private final DataProcessorImpl dataProcessor = new DataProcessorImpl();
 
-	private static String format(final String format,
-			final Map<String, String> variables) {
+	private static String format(final String format, final Map<String, String> variables) {
 		String result = format;
 		for (Entry<String, String> variable : variables.entrySet()) {
-			final Pattern pattern = Pattern.compile("\\$\\{"
-					+ variable.getKey() + "\\}");
+			final Pattern pattern = Pattern.compile("\\$\\{" + variable.getKey() + "\\}");
 			result = pattern.matcher(result).replaceAll(variable.getValue());
 		}
 		return result;
@@ -33,10 +33,16 @@ final class CollectLiteral extends AbstractCollect {
 	@Override
 	protected void emit() {
 		final String name = format(getName(), variables);
-		final String value = format(getValue(), variables);
-		getStreamReceiver().literal(name, value);
+		String value = format(getValue(), variables);
+
+		value = dataProcessor.applyFunctions(value);
+		if (value == null) {
+			return;
+		} else {
+			getStreamReceiver().literal(name, value);
+		}
 	}
-	
+
 	@Override
 	public void onEntityEnd(final String entityName) {
 		variables.put(".*?", "");
@@ -65,5 +71,11 @@ final class CollectLiteral extends AbstractCollect {
 	@Override
 	protected void clear() {
 		variables.clear();
-	};
+	}
+
+	@Override
+	public void addFunction(final Function function) {
+		dataProcessor.addFunction(function);
+
+	}
 }

@@ -10,26 +10,23 @@ import java.util.Set;
  */
 final class CollectEntity extends AbstractCollect {
 
-
 	private final Set<Literal> literals = new HashSet<Literal>();
 
 	@Override
 	protected void emit() {
 		getStreamReceiver().startEntity(getName());
-		for(Literal literal:literals){
-			if(literal.getName()!=null && literal.getValue()!=null){
+		for (Literal literal : literals) {
+			if (literal.getName() != null && literal.getValue() != null) {
 				getStreamReceiver().literal(literal.getName(), literal.getValue());
 			}
 		}
 		getStreamReceiver().endEntity();
 	}
-	
 
 	@Override
 	protected void receive(final String name, final String value) {
 		literals.add(new Literal(name, value));
 	}
-
 
 	@Override
 	protected boolean isComplete() {

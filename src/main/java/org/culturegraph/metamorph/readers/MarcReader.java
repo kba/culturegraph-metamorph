@@ -30,13 +30,18 @@ public final class MarcReader implements RawRecordReader {
 	@SuppressWarnings("unchecked")
 	// marc4j is not type safe!
 	protected void processRecord(final Record record) {
-		getStreamReceiver().startRecord();
+		final StreamReceiver receiver = getStreamReceiver();
+		
+		
+		receiver.startRecord();
 
-		getStreamReceiver().literal("Leader", record.getLeader().marshal());		
+		receiver.literal("Leader", record.getLeader().marshal());	
+
+			
 
 		for (ControlField cField : (List<ControlField>) record
 				.getControlFields()) {
-			getStreamReceiver().literal(cField.getTag(), cField.getData());
+			receiver.literal(cField.getTag(), cField.getData());
 		}
 		for (DataField dataField : (List<DataField>) record.getDataFields()) {
 
@@ -47,17 +52,17 @@ public final class MarcReader implements RawRecordReader {
 			final List<Subfield> subfields = ((DataField) dataField)
 					.getSubfields();
 
-			getStreamReceiver().startEntity(tagName);
+			receiver.startEntity(tagName);
 			for (Subfield subfield : subfields) {
 				final String value = subfield.getData();
 
-				getStreamReceiver().literal(
+				receiver.literal(
 						Character.toString(subfield.getCode()), value);
 			}
-			getStreamReceiver().endEntity();
+			receiver.endEntity();
 
 		}
-		getStreamReceiver().endRecord();
+		receiver.endRecord();
 	}
 
 	@Override

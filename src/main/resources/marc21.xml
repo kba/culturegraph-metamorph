@@ -13,9 +13,10 @@
 		<data source="Leader" name="first" >
 	    	<substring start="7" end="8"/>
 	    </data>
+	    
 		<data source="Leader" name="second" >
 	    	<substring start="18" end="19"/>
-	    </data>
+	    </data>	
 	</collect-literal>
 
 	<data source="Leader" name="cg:typeOfConWork" >

@@ -13,7 +13,7 @@ import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-public interface RawRecordReader {
+public interface RawRecordReader extends StreamSender{
 
 	/**
 	 * Start the parsing process. Assumes that an {@link InputStream} 
@@ -25,11 +25,7 @@ public interface RawRecordReader {
 
 	void read(final String entry);
 
-	/**
-	 * Sets the {@link StreamReceiver} which is used to process events during the parsing.
-	 * @param recordHandler
-	 */
-	void setStreamReceiver(StreamReceiver recordHandler);
+
 	
 	/**
 	 * Extracts the id from the raw record data. Used for database ingests.

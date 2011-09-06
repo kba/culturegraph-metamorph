@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Collects the received results in a {@link Map}. Duplicate names are thus lost.
@@ -18,8 +20,19 @@ public final class ListMapCollector extends DefaultStreamReceiver {
 	
 	@Override
 	public void startRecord(){
-		for(String key:map.keySet()){
-			map.get(key).clear();
+		clear();
+	}
+	
+	public void clear(){
+		for(Entry<String, List<String>> entry : map.entrySet()){
+			entry.getValue().clear();
+		}
+	}
+	
+	public void clearKey(final String key){
+		final List<String> values = map.get(key);
+		if(values!=null){
+			values.clear();
 		}
 	}
 
@@ -33,6 +46,10 @@ public final class ListMapCollector extends DefaultStreamReceiver {
 		}
 		
 		values.add(value);
+	}
+	
+	public Set<Entry<String, List<String>>> getEntrySet(){
+		return Collections.unmodifiableSet(map.entrySet());
 	}
 
 	public List<String> getValues(final String name){

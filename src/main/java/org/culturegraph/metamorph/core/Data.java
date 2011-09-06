@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
  * Implementation of the <code>&lt;data&gt;</code> tag.
  * @author Markus Michael Geipel
  */
-final class Data extends DataProcessor implements DataSender {
+final class Data extends DataProcessorImpl implements DataSender {
 	
 	/**
 	 * @author Markus Michael Geipel

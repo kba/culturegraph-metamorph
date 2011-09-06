@@ -3,23 +3,20 @@
 	targetNamespace="http://www.culturegraph.org/metamorph" xmlns="http://www.w3.org/2001/XMLSchema">
 
 	<include schemaLocation="" />
-	
+
 	<element name="metamorph">
 		<complexType>
 			<sequence minOccurs="1" maxOccurs="1">
 				<element ref="tns:name" maxOccurs="1" minOccurs="0" />
-				<element ref="tns:annotation" maxOccurs="1"
-					minOccurs="0" />
-				<element ref="tns:entity" maxOccurs="unbounded"
-					minOccurs="0" />
+				<element ref="tns:annotation" maxOccurs="1" minOccurs="0" />
+				<element ref="tns:entity" maxOccurs="unbounded" minOccurs="0" />
 				<choice maxOccurs="unbounded" minOccurs="0">
 					<element ref="tns:group" />
 					<element ref="tns:collect-literal" />
 					<element ref="tns:collect-entity" />
 					<element ref="tns:data" />
 				</choice>
-				<element ref="tns:map" minOccurs="0"
-					maxOccurs="unbounded" />
+				<element ref="tns:map" minOccurs="0" maxOccurs="unbounded" />
 			</sequence>
 			<attribute name="entityMarker">
 				<simpleType>
@@ -37,7 +34,7 @@
 	<element name="group">
 		<complexType>
 			<sequence>
-				<element ref="tns:annotation" minOccurs="0" maxOccurs="1"/>
+				<element ref="tns:annotation" minOccurs="0" maxOccurs="1" />
 				<choice minOccurs="1" maxOccurs="unbounded">
 					<element ref="tns:collect-literal" minOccurs="0" maxOccurs="unbounded" />
 					<element ref="tns:data" minOccurs="0" maxOccurs="unbounded" />
@@ -51,50 +48,47 @@
 	<element name="collect-literal">
 		<complexType>
 			<sequence>
-				<element ref="tns:annotation" minOccurs="0" maxOccurs="1"/>
+				<element ref="tns:annotation" minOccurs="0" maxOccurs="1" />
 				<element ref="tns:data" minOccurs="2" maxOccurs="unbounded" />
+				<group ref="tns:function" minOccurs="0" maxOccurs="unbounded"/>
 			</sequence>
 			<attribute name="name" type="string" use="optional" />
 			<attribute name="value" type="string" use="optional" />
-			
-			<attribute name="reset" type="boolean" use="optional" default="false"/>
-			<attribute name="sameEntity" type="boolean" use="optional" default="false"/>
-			<attribute name="forceOnEnd" type="string" use="optional"/>
+
+			<attribute name="reset" type="boolean" use="optional"
+				default="false" />
+			<attribute name="sameEntity" type="boolean" use="optional"
+				default="false" />
+			<attribute name="forceOnEnd" type="string" use="optional" />
 		</complexType>
 	</element>
-	
-		<element name="collect-entity">
+
+	<element name="collect-entity">
 		<complexType>
 			<sequence>
-				<element ref="tns:annotation" minOccurs="0" maxOccurs="1"/>
+				<element ref="tns:annotation" minOccurs="0" maxOccurs="1" />
 				<element ref="tns:data" minOccurs="1" maxOccurs="unbounded" />
 			</sequence>
 			<attribute name="name" type="string" use="required" />
-			<attribute name="reset" type="boolean" use="optional" default="false"/>
-			<attribute name="sameEntity" type="boolean" use="optional" default="false"/>
-			<attribute name="forceOnEnd" type="string" use="optional"/>
+			<attribute name="reset" type="boolean" use="optional"
+				default="false" />
+			<attribute name="sameEntity" type="boolean" use="optional"
+				default="false" />
+			<attribute name="forceOnEnd" type="string" use="optional" />
 		</complexType>
 	</element>
 
 	<element name="data">
 		<complexType>
 			<sequence>
-				<element ref="tns:annotation" minOccurs="0" maxOccurs="1"/>
-				<choice minOccurs="0" maxOccurs="unbounded">
-					<element ref="tns:compose" />
-					<element ref="tns:regexp" />
-					<element ref="tns:replace" />
-					<element ref="tns:substring" />
-					<element ref="tns:constant" />
-					<element ref="tns:lookup" />
-					<element ref="tns:isbn" />
-				</choice>
+				<element ref="tns:annotation" minOccurs="0" maxOccurs="1" />
+				<group ref="tns:function" minOccurs="0" maxOccurs="unbounded"/>
 			</sequence>
 			<attribute name="source" type="string" use="required" />
 			<attribute name="as" type="tns:asAttribute" use="optional" />
 			<attribute name="name" type="string" use="optional"></attribute>
 			<attribute name="value" type="string" use="optional"></attribute>
-			
+
 		</complexType>
 	</element>
 
@@ -108,7 +102,8 @@
 		<complexType>
 			<attribute name="match" type="string" use="required" />
 			<attribute name="format" type="string" use="optional" />
-			<attribute name="exceptionOnFail" type="boolean" use="optional" default="false"></attribute>
+			<attribute name="exceptionOnFail" type="boolean" use="optional"
+				default="false"></attribute>
 		</complexType>
 	</element>
 
@@ -134,9 +129,9 @@
 
 	<element name="isbn">
 		<complexType>
-			<attribute name="to" type="tns:toIsbnAttribute"
-				use="required" />
-			<attribute name="verifyCheckDigit" type="boolean" use="optional" default="false"></attribute>
+			<attribute name="to" type="tns:toIsbnAttribute" use="required" />
+			<attribute name="verifyCheckDigit" type="boolean" use="optional"
+				default="false"></attribute>
 		</complexType>
 	</element>
 
@@ -199,4 +194,17 @@
 			</attribute>
 		</complexType>
 	</element>
+
+	<group name="function">
+		<choice>
+			<element ref="tns:compose" />
+			<element ref="tns:regexp" />
+			<element ref="tns:replace" />
+			<element ref="tns:substring" />
+			<element ref="tns:constant" />
+			<element ref="tns:lookup" />
+			<element ref="tns:isbn" />
+		</choice>
+	</group>
+
 </schema>

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-final class Group extends DataProcessor  implements DataReceiver{
+final class Group extends DataProcessorImpl  implements DataReceiver{
 	
 	private static final Logger LOG = LoggerFactory
 			.getLogger(Group.class);
