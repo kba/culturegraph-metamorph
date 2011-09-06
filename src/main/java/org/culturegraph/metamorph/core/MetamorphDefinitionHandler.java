@@ -108,7 +108,7 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 
 		} else if (ENTRY_TAG.equals(localName)) {
 			keyValueStore.put(atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR));
-			
+
 		} else if (METAMORPH_TAG.equals(localName)) {
 			final String marker = atts.getValue(MARKER_ATTR);
 			if (null != marker) {
@@ -166,9 +166,9 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 
 			function.setKeyValueStoreAggregator(metamorph);
 
-			if(collect instanceof DataProcessorImpl && data == null){
-				((DataProcessor)collect).addFunction(function);
-			}else{
+			if (collect instanceof DataProcessorImpl && data == null) {
+				((DataProcessor) collect).addFunction(function);
+			} else {
 				data.addFunction(function);
 			}
 
@@ -305,36 +305,5 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 																									 * do
 																									 * nothing
 																									 */
-	}
-
-	/**
-	 * @author Markus Michael Geipel
-	 * @status Experimental
-	 */
-	private static final class SimpleKeyValueStore extends HashMap<String, String> implements KeyValueStore {
-
-		private static final long serialVersionUID = 150463997716013252L;
-
-		private String defaultValue;
-
-		@Override
-		public String get(final String key) {
-			final String value = super.get(key);
-			if (value == null) {
-				return defaultValue;
-			} else {
-				return value;
-			}
-		}
-
-		/**
-		 * sets the default to return when a key was not found. Can take
-		 * <code>null</code>.
-		 * 
-		 * @param value
-		 */
-		public void setDefaultValue(final String value) {
-			defaultValue = value;
-		}
 	}
 }

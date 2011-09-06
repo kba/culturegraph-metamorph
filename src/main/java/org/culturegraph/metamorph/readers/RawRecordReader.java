@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.StreamHandler;
 
-import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
-
 
 
 
