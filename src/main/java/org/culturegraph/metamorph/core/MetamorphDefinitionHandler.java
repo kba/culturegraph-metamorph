@@ -140,7 +140,9 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 
 	@Override
 	public void endElement(final String uri, final String localName, final String qName) throws SAXException {
-		if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName)) {
+		if (DATA_TAG.equals(localName)){
+			data = null;
+		}else if(COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName)) {
 			collect = null;
 		} else if (GROUP_TAG.equals(localName)) {
 			emitGroupName = null;
@@ -166,9 +168,9 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 
 			function.setKeyValueStoreAggregator(metamorph);
 
-			if (collect instanceof DataProcessorImpl && data == null) {
+			if (collect instanceof DataProcessor && data == null) {
 				((DataProcessor) collect).addFunction(function);
-			} else {
+			} else if(data != null){
 				data.addFunction(function);
 			}
 
