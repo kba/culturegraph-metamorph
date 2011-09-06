@@ -17,6 +17,7 @@
 		<data source="Leader" name="second" >
 	    	<substring start="18" end="19"/>
 	    </data>	
+	  <lookup in="workListLimited"/>
 	</collect-literal>
 
 	<data source="Leader" name="cg:typeOfConWork" >
@@ -158,12 +159,6 @@
 	
 	<!-- deeper analyze on this fields -->
 	<data source="2603 .c" name="dcterms:issued" />
-
-	<group name="xbib:issueType">
-		<data source="250  .a" />
-		<data source="250  .6" />
-		<data source="250  .8" />
-	</group>
 	
 	<group name="xbib:volume">
 		<data source="4900 .v" />
@@ -195,14 +190,14 @@
 		<entry name="VD18" value="xbib:identifierVD18" />
 	</map>
 	
-	<map name="workListLimited">
+	<map name="workListLimited" default="undefined">
 		<entry name="a" value="cg:dependentWork" />
 		<entry name="m " value="cg:independentWork" />
 		<entry name="ma" value="cg:severalVolumesWorkLimited" />
 		<entry name="mb" value="cg:singleVolumeWorkPartOfBigger" />
 	</map>
 		
-	<map name="workListContinuousWorks">
+	<map name="workListContinuousWorks" default="undefined">
 		<entry name="d" value="dependentConWork" />	
 		<entry name="s" value="journalSeriesNewspaper" />
 	</map>
