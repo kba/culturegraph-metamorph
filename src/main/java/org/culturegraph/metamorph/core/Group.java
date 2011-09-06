@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Markus Michael Geipel
  * @status Experimental
+ * @deprecated not used
  */
+@Deprecated
 final class Group extends DataProcessorImpl  implements DataReceiver{
 	
 	private static final Logger LOG = LoggerFactory
