@@ -40,9 +40,9 @@ final class Data extends DataProcessorImpl implements DataSender {
 		String name = defaultName;
 		String value = defaultValue;
 		
-		if(Mode.AS_NAME.equals(mode)){
+		if(Mode.AS_NAME.equals(mode) && name == null){
 			name = tempData;
-		}else{
+		}else if(value == null){
 			value = tempData;
 		}
 		

@@ -52,6 +52,23 @@ public final class DataTest {
 	}
 	
 	@Test
+	public void testConstantValueAndName() {
+		final Data data = new Data();
+		data.setDataReceiver(new DataReceiver() {
+			@Override
+			public void data(final String name, final String value, final DataSender sender, final int recordCount,
+					final int entityCount) {
+				Assert.assertEquals(WRONG_VALUE, DEFAULT_VALUE, value);
+				Assert.assertEquals(WRONG_NAME, DEFAULT_NAME, name);
+
+			}
+		});
+		data.setDefaultName(DEFAULT_NAME);
+		data.setDefaultValue(DEFAULT_VALUE);
+		data.data(INPUT, MAGIC1, MAGIC2);
+	}
+	
+	@Test
 	public void testDataToName() {
 		final Data data = new Data();
 		data.setDataReceiver(new DataReceiver() {
