@@ -24,6 +24,8 @@ public final class MetamorphTest implements DataReceiver {
 	private static final String NON_MATCHING_PATH2 = ENTITY_NAME + ".lskdj";
 	
 	private static final StreamReceiver EMPTY_RECEIVER = new DefaultStreamReceiver();
+
+	private static final String FEEDBACK_VAR = "@var";
 	
 	private Literal literal;
 
@@ -32,7 +34,7 @@ public final class MetamorphTest implements DataReceiver {
 		final Metamorph metamorph = new Metamorph();
 		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
 		final Data data = new Data();
-		data.setDefaultName(NAME);
+		data.setName(NAME);
 		data.setDataReceiver(receiver);
 		metamorph.registerDataSource(data, MATCHING_PATH);
 		return metamorph;
@@ -68,6 +70,34 @@ public final class MetamorphTest implements DataReceiver {
 		Assert.assertNull(literal);
 	}
 	
+	@Test
+	public void testFeedback() {
+	
+		final Metamorph metamorph = new Metamorph();
+		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
+		Data data;
+		
+		data = new Data();
+		data.setName(FEEDBACK_VAR);
+		data.setDataReceiver(metamorph);
+		metamorph.registerDataSource(data, MATCHING_PATH);
+		
+		data = new Data();
+		data.setName(NAME);
+		data.setDataReceiver(this);
+		metamorph.registerDataSource(data, FEEDBACK_VAR);
+		
+		literal = null;
+		
+		metamorph.startRecord();
+		metamorph.literal(MATCHING_PATH, VALUE);
+		Assert.assertNotNull(literal);
+		Assert.assertEquals(VALUE, literal.getValue());
+		literal = null;
+		
+		
+	}
+	
 
 	@Test(expected=MetamorphException.class)
 	public void testEntityBorderBalanceCheck1(){
@@ -95,7 +125,7 @@ public final class MetamorphTest implements DataReceiver {
 	
 
 	@Override
-	public void data(final String name, final String value, final DataSender sender, final int recordCount,
+	public void data(final String name, final String value,  final int recordCount,
 			final int entityCount) {
 		this.literal = new Literal(name, value);
 	}

@@ -58,9 +58,8 @@ public final class ISBN extends AbstractFunction {
 		final Matcher matcher = ISBN_PATTERN.matcher(normValue);
 		if (matcher.find()) {
 			return matcher.group();
-		} else {
-			return "";
 		}
+		return "";
 	}
 
 	public void setTo(final String toString) {

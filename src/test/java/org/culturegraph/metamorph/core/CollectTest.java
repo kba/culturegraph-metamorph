@@ -11,12 +11,13 @@ import org.junit.Test;
  */
 public final class CollectTest {
 	
+	private static final String ORIGIN_NAME = "sdfsdf";
 	private static final String NAME_A = "A";
 	private static final String NAME_B = "B";
 	private static final String VALUE_A = "Franz";
 	private static final String VALUE_B = "Kafka";
 	private static final String VALUE_C = "Josef";
-	private static final String ENTITY_NAME = "asdfsdfsdf";
+	private static final String COLLECT_NAME = "asdfsdfsdf";
 	private static final String VALUE_FORMAT = "${" + NAME_A + "} ${" + NAME_B + "}";
 	private static final String SPACE = " ";
 	private static final String COMPASITION_AB = VALUE_A + SPACE + VALUE_B;
@@ -26,31 +27,32 @@ public final class CollectTest {
 	private final Data dataB = new Data();
 	
 	private final MapCollector mapCollector = new MapCollector();
+	private final SimpleDataReceiver dataReceiver = new SimpleDataReceiver();
 	
 
 	public CollectTest() {
-		dataA.setDefaultName(NAME_A);
-		dataB.setDefaultName(NAME_B);
+		dataA.setName(NAME_A);
+		dataB.setName(NAME_B);
 	}
 	
 	
 	private void wireCollect(final Collect collect){
 		collect.addData(dataA);
 		collect.addData(dataB);
-		collect.setName(ENTITY_NAME);
-		collect.setStreamReceiver(mapCollector);
-		mapCollector.getMap().clear();
+		collect.setName(COLLECT_NAME);
 	}
 	
 	@Test
 	public void testCollectEntity() {
-
-		wireCollect(new CollectEntity());
+		final CollectEntity collectEntity = new CollectEntity();
+		wireCollect(collectEntity);
+		collectEntity.setStreamReceiver(mapCollector);
+		mapCollector.getMap().clear();
 		
 		Assert.assertEquals(0, mapCollector.getMap().size());
-		dataA.data(VALUE_A, 0, 0);
+		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
 		Assert.assertEquals(0, mapCollector.getMap().size());
-		dataB.data(VALUE_B, 0, 0);
+		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertEquals(2, mapCollector.getMap().size());
 		Assert.assertEquals(VALUE_A, mapCollector.getMap().get(NAME_A));
 		Assert.assertEquals(VALUE_B, mapCollector.getMap().get(NAME_B));
@@ -64,13 +66,15 @@ public final class CollectTest {
 		final CollectLiteral collectLiteral = new CollectLiteral();
 		collectLiteral.setValue(VALUE_FORMAT);
 		wireCollect(collectLiteral);
+		collectLiteral.setDataReceiver(dataReceiver);
+		dataReceiver.clear();
 		
-		Assert.assertEquals(0, mapCollector.getMap().size());
-		dataA.data(VALUE_A, 0, 0);
-		Assert.assertEquals(0, mapCollector.getMap().size());
-		dataB.data(VALUE_B, 0, 0);
-		Assert.assertEquals(1, mapCollector.getMap().size());
-		Assert.assertEquals(COMPASITION_AB, mapCollector.getMap().get(ENTITY_NAME));	
+		Assert.assertTrue(dataReceiver.isEmpty());
+		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		Assert.assertTrue(dataReceiver.isEmpty());
+		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		Assert.assertFalse(dataReceiver.isEmpty());
+		Assert.assertEquals(COMPASITION_AB, dataReceiver.getContent());	
 	}
 	
 	@Test
@@ -79,40 +83,71 @@ public final class CollectTest {
 		final CollectLiteral collectLiteral = new CollectLiteral();
 		collectLiteral.setValue(VALUE_FORMAT);
 		wireCollect(collectLiteral);
-		dataA.data(VALUE_A, 0, 0);
-		dataB.data(VALUE_B, 0, 0);
-		Assert.assertEquals(COMPASITION_AB, mapCollector.getMap().get(ENTITY_NAME));
-		mapCollector.getMap().clear();
+		collectLiteral.setDataReceiver(dataReceiver);
+		dataReceiver.clear();
+		
+		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		Assert.assertEquals(COMPASITION_AB, dataReceiver.getContent());
+		dataReceiver.clear();
 		
 		collectLiteral.setReset(true);
-		dataB.data(VALUE_C, 0, 0);
-		Assert.assertEquals(COMPASITION_AC, mapCollector.getMap().get(ENTITY_NAME));
-		mapCollector.getMap().clear();
+		dataB.data(ORIGIN_NAME, VALUE_C, 0, 0);
+		Assert.assertEquals(COMPASITION_AC, dataReceiver.getContent());
+		dataReceiver.clear();
 		
 		collectLiteral.setReset(false);
-		dataB.data(VALUE_B, 0, 0);
-		Assert.assertEquals(null, mapCollector.getMap().get(ENTITY_NAME));
-		dataA.data(VALUE_A, 0, 0);
-		Assert.assertEquals(COMPASITION_AB, mapCollector.getMap().get(ENTITY_NAME));
+		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		Assert.assertEquals(null, dataReceiver.getContent());
+		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		Assert.assertEquals(COMPASITION_AB, dataReceiver.getContent());
 	}
 	
 	@Test
 	public void testResetAfterNewRecord(){
 		final CollectLiteral collectLiteral = new CollectLiteral();
+		collectLiteral.setDataReceiver(dataReceiver);
+		dataReceiver.clear();
+		
 		collectLiteral.setValue(VALUE_FORMAT);
 		wireCollect(collectLiteral);
-		dataA.data(VALUE_A, 0, 0);
-		dataB.data(VALUE_B, 0, 0);
-		Assert.assertEquals(COMPASITION_AB, mapCollector.getMap().get(ENTITY_NAME));
-		mapCollector.getMap().clear();
+		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		Assert.assertEquals(COMPASITION_AB, dataReceiver.getContent());
+		dataReceiver.clear();
 		
-		dataA.data(VALUE_A, 1, 0);
-		Assert.assertTrue(mapCollector.getMap().isEmpty());
-		dataB.data(VALUE_B, 2, 0);
-		Assert.assertTrue(mapCollector.getMap().isEmpty());
-		dataA.data(VALUE_A, 2, 0);
-		Assert.assertEquals(COMPASITION_AB, mapCollector.getMap().get(ENTITY_NAME));
+		dataA.data(ORIGIN_NAME, VALUE_A, 1, 0);
+		Assert.assertTrue(dataReceiver.isEmpty());
+		dataB.data(ORIGIN_NAME, VALUE_B, 2, 0);
+		Assert.assertTrue(dataReceiver.isEmpty());
+		dataA.data(ORIGIN_NAME, VALUE_A, 2, 0);
+		Assert.assertEquals(COMPASITION_AB, dataReceiver.getContent());
 		
 	}
+	
+	private static final class SimpleDataReceiver implements DataReceiver{
 
+		private String content;
+
+		protected SimpleDataReceiver() {
+			// to avoid synthetic acessor methods
+		}
+
+		public String getContent() {
+			return content;
+		}
+		
+		public boolean isEmpty(){
+			return content==null;
+		}
+		
+		public void clear(){
+			content = null;
+		}
+
+		@Override
+		public void data(final String name, final String value, final int recordCount, final int entityCount) {
+			content = value;
+		}
+	}
 }

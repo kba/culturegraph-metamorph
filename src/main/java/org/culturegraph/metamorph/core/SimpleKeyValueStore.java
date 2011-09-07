@@ -17,9 +17,8 @@ final class SimpleKeyValueStore extends HashMap<String, String> implements KeyVa
 		final String value = super.get(key);
 		if (value == null) {
 			return defaultValue;
-		} else {
-			return value;
 		}
+		return value;
 	}
 
 	/**

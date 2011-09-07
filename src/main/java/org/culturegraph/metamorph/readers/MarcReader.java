@@ -31,16 +31,12 @@ public final class MarcReader implements RawRecordReader {
 	// marc4j is not type safe!
 	protected void processRecord(final Record record) {
 		final StreamReceiver receiver = getStreamReceiver();
-		
-		
+
 		receiver.startRecord();
 
-		receiver.literal("Leader", record.getLeader().marshal());	
+		receiver.literal("Leader", record.getLeader().marshal());
 
-			
-
-		for (ControlField cField : (List<ControlField>) record
-				.getControlFields()) {
+		for (ControlField cField : (List<ControlField>) record.getControlFields()) {
 			receiver.literal(cField.getTag(), cField.getData());
 		}
 		for (DataField dataField : (List<DataField>) record.getDataFields()) {
@@ -49,15 +45,13 @@ public final class MarcReader implements RawRecordReader {
 			final char ind1 = dataField.getIndicator1();
 			final char ind2 = dataField.getIndicator2();
 			final String tagName = tag + ind1 + ind2;
-			final List<Subfield> subfields = ((DataField) dataField)
-					.getSubfields();
+			final List<Subfield> subfields = dataField.getSubfields();
 
 			receiver.startEntity(tagName);
 			for (Subfield subfield : subfields) {
 				final String value = subfield.getData();
 
-				receiver.literal(
-						Character.toString(subfield.getCode()), value);
+				receiver.literal(Character.toString(subfield.getCode()), value);
 			}
 			receiver.endEntity();
 
@@ -67,8 +61,7 @@ public final class MarcReader implements RawRecordReader {
 
 	@Override
 	public void read(final InputStream inputStream) throws IOException {
-		final MarcStreamReader marcStreamReader = new MarcStreamReader(
-				inputStream);
+		final MarcStreamReader marcStreamReader = new MarcStreamReader(inputStream);
 		while (marcStreamReader.hasNext()) {
 			processRecord(marcStreamReader.next());
 		}

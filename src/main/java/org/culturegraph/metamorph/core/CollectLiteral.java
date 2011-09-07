@@ -20,6 +20,7 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 	private final Map<String, String> variables = new HashMap<String, String>();
 	private final Set<String> variableNames = new HashSet<String>();
 	private final DataProcessorImpl dataProcessor = new DataProcessorImpl();
+	private DataReceiver dataReceiver;
 
 	private static String format(final String format, final Map<String, String> variables) {
 		String result = format;
@@ -38,32 +39,31 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 		value = dataProcessor.applyFunctions(value);
 		if (value == null) {
 			return;
-		} else {
-			getStreamReceiver().literal(name, value);
 		}
+		dataReceiver.data(name, value, getRecordCount(), getEntityCount());
 	}
 
 	@Override
 	public void onEntityEnd(final String entityName) {
 		variables.put(".*?", "");
 		emit();
-	};
+	}
 
 	@Override
 	protected boolean isComplete() {
 		return variables.size() == variableNames.size();
-	};
+	}
 
 	@Override
 	protected void receive(final String name, final String value) {
 		variables.put(name, value);
-	};
+	}
 
 	@Override
 	protected void onAddData(final Data data) {
 		data.setMode(Mode.AS_VALUE);
 		if (data.getDefaultName() == null) {
-			data.setDefaultName(String.valueOf(getDataCount()));
+			data.setName(String.valueOf(getDataCount()));
 		}
 		variableNames.add(data.getDefaultName());
 	}
@@ -77,5 +77,13 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 	public void addFunction(final Function function) {
 		dataProcessor.addFunction(function);
 
+	}
+	
+	/**
+	 * @param dataReceiver the dataReceiver to set
+	 */
+	public void setDataReceiver(final DataReceiver dataReceiver) {
+		assert dataReceiver != null;
+		this.dataReceiver = dataReceiver;
 	}
 }

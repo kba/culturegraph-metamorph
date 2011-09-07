@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
  * Implementation of the <code>&lt;data&gt;</code> tag.
  * @author Markus Michael Geipel
  */
-final class Data extends DataProcessorImpl implements DataSender {
+final class Data extends DataProcessorImpl implements DataSender, DataReceiver {
 	
 	/**
 	 * @author Markus Michael Geipel
@@ -21,38 +21,38 @@ final class Data extends DataProcessorImpl implements DataSender {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(Data.class);
 	
-	
-	private String defaultName;
-	private String defaultValue;
+	private String name;
+	private String value;
 	private Mode mode = Mode.AS_VALUE;
 	private DataReceiver dataReceiver;
 
 	
 	
-	public void data(final CharSequence data, final int recordCount, final int entityCount){
+	@Override
+	public void data(final String recName, final String recValue, final int recordCount, final int entityCount) {
 		assert dataReceiver != null;
 		
-		final String tempData = applyFunctions(data.toString());
+		final String tempData = applyFunctions(recValue);
 		if(tempData==null){
 			return;
 		}
 		
-		String name = defaultName;
-		String value = defaultValue;
+		String currentName = name;
+		String currentValue = value;
 		
-		if(Mode.AS_NAME.equals(mode) && name == null){
-			name = tempData;
-		}else if(value == null){
-			value = tempData;
+		if(Mode.AS_NAME.equals(mode) && currentName == null){
+			currentName = tempData;
+		}else if(currentValue == null){
+			currentValue = tempData;
 		}
 		
-		if(name==null || value ==null){
-			LOG.warn("missing defaults name="+ name + " value=" + value);
+		if(currentName==null || currentValue ==null){
+			LOG.warn("missing defaults name="+ currentName + " value=" + currentValue);
 		}else{
 			if(LOG.isTraceEnabled()){
-				LOG.trace("emiting literal "+ name + "=" + value);
+				LOG.trace("emiting literal "+ currentName + "=" + currentValue);
 			}
-			dataReceiver.data(name, value, this, recordCount, entityCount);
+			dataReceiver.data(currentName, currentValue, recordCount, entityCount);
 		}
 	}
 	
@@ -77,25 +77,25 @@ final class Data extends DataProcessorImpl implements DataSender {
 	}
 	
 	/**
-	 * @param defaultName the defaultName to set
+	 * @param name the defaultName to set
 	 */
-	public void setDefaultName(final String defaultName) {
-		this.defaultName = defaultName;
+	public void setName(final String name) {
+		this.name = name;
 	}
 
 
 	/**
-	 * @param defaultValue the defaultValue to set
+	 * @param value the defaultValue to set
 	 */
-	public void setDefaultValue(final String defaultValue) {
-		this.defaultValue = defaultValue;
+	public void setValue(final String value) {
+		this.value = value;
 	}
 	
 	/**
 	 * @return the defaultName
 	 */
 	public String getDefaultName() {
-		return defaultName;
+		return name;
 	}
 
 
@@ -103,6 +103,9 @@ final class Data extends DataProcessorImpl implements DataSender {
 	 * @return the defaultValue
 	 */
 	public String getDefaultValue() {
-		return defaultValue;
+		return value;
 	}
+
+
+
 }

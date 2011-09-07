@@ -3,12 +3,12 @@ package org.culturegraph.metamorph.core;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Common basis for {@link CollectEntity} and {@link CollectLiteral}.
+ * 
  * @author Markus Michael Geipel
  * @status Experimental
  */
@@ -16,10 +16,12 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 
+
+
 	private int oldRecord;
 	private int oldEntity;
 	private int dataCount;
-	private StreamReceiver streamReceiver;
+	// private StreamReceiver streamReceiver;
 	private boolean reset;
 	private boolean sameEntity;
 	private String name;
@@ -27,7 +29,15 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 
 	private final Set<Data> dataSources = new HashSet<Data>();
 
+	
+	protected final int getRecordCount() {
+		return oldRecord;
+	}
 
+	protected final int getEntityCount() {
+		return oldEntity;
+	}
+	
 	/**
 	 * @param sameEntity
 	 *            the sameEntity to set
@@ -37,11 +47,9 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 		this.sameEntity = sameEntity;
 	}
 
-
-
 	@Override
 	public final void setReset(final boolean reset) {
-			this.reset = reset;
+		this.reset = reset;
 	}
 
 	/**
@@ -50,14 +58,14 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 	protected final int getDataCount() {
 		return dataCount;
 	}
-	
-	/**
-	 * @return the transformer
-	 */
-	public final StreamReceiver getStreamReceiver() {
-		return streamReceiver;
-	}
-	
+
+	// /**
+	// * @return the transformer
+	// */
+	// public final StreamReceiver getStreamReceiver() {
+	// return streamReceiver;
+	// }
+
 	/**
 	 * @return
 	 */
@@ -74,7 +82,8 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	@Override
 	public final void setName(final String name) {
@@ -90,21 +99,21 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 	}
 
 	/**
-	 * @param value the value to set
+	 * @param value
+	 *            the value to set
 	 */
 	@Override
 	public final void setValue(final String value) {
 		this.value = value;
 	}
 
-
-
-	/**
-	 * @param streamReceiver the transformer to set
-	 */
-	public final void setStreamReceiver(final StreamReceiver streamReceiver) {
-		this.streamReceiver = streamReceiver;
-	}
+	// /**
+	// * @param streamReceiver the transformer to set
+	// */
+	// public final void setStreamReceiver(final StreamReceiver streamReceiver)
+	// {
+	// this.streamReceiver = streamReceiver;
+	// }
 
 	private void updateCounts(final int newRecord, final int newEntity) {
 		if (newRecord != oldRecord) {
@@ -118,17 +127,15 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 			LOG.trace("reset as entities differ");
 		}
 	}
-
+	
 
 	@Override
-	public final void data(final String name, final String value,
-			final DataSender sender, final int recordCount,
-			final int entityCount) {
+	public final void data(final String name, final String value, final int recordCount, final int entityCount) {
 		updateCounts(recordCount, entityCount);
 
 		receive(name, value);
 
-		if(isComplete()){
+		if (isComplete()) {
 			emit();
 			if (reset) {
 				LOG.trace("reset because of emit");
@@ -137,11 +144,8 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 		}
 	}
 
-	/**
-	 * @param literal
-	 */
-	protected abstract void receive(final String name, final String value);
 
+	protected abstract void receive(final String name, final String value);
 
 	/**
 	 * @return
@@ -153,13 +157,11 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 	 */
 	protected abstract void clear();
 
-	
 	/**
 	 * 
 	 */
-	protected abstract void emit() ;
-	
-	
+	protected abstract void emit();
+
 	@Override
 	public final void addData(final Data data) {
 		++dataCount;
@@ -167,14 +169,15 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 		dataSources.add(data);
 		onAddData(data);
 	}
-	
+
 	@Override
 	public void onEntityEnd(final String name) {
 		emit();
-	};
-	
+	}
+
 	/**
 	 * @param data
 	 */
-	protected void onAddData(final Data data) {/*as default do nothing*/}
+	protected void onAddData(final Data data) {/* as default do nothing */
+	}
 }

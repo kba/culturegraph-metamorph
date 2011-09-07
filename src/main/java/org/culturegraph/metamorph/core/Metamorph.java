@@ -15,14 +15,15 @@ import org.slf4j.LoggerFactory;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-public final class Metamorph implements StreamReceiver,
-		KeyValueStoreAggregator, DataReceiver {
+public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator, DataReceiver {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 
 	private static final char DEFUALT_ENTITY_MARKER = '.';
+
+	private static final char FEEDBACK_CHAR = '@';
 
 	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
 	private final Map<String, List<EntityEndListener>> entityEndListeners = new HashMap<String, List<EntityEndListener>>();
@@ -37,8 +38,7 @@ public final class Metamorph implements StreamReceiver,
 	private MetamorphErrorHandler errorHandler = new MetamorphErrorHandler() {
 		@Override
 		public void error(final Exception exception) {
-			throw new MetamorphException("An unhandled exception occured",
-					exception);
+			throw new MetamorphException("An unhandled exception occured", exception);
 		}
 	};
 
@@ -55,8 +55,7 @@ public final class Metamorph implements StreamReceiver,
 		this.errorHandler = errorHandler;
 	}
 
-	protected void registerDataSource(final Data entityHandler,
-			final String path) {
+	protected void registerDataSource(final Data entityHandler, final String path) {
 		assert entityHandler != null && path != null;
 
 		List<Data> matchingDataSources = dataSources.get(path);
@@ -67,6 +66,7 @@ public final class Metamorph implements StreamReceiver,
 		matchingDataSources.add(entityHandler);
 	}
 
+	@Override
 	public void startRecord() {
 		++recordCount;
 		entityCountStack.add(Integer.valueOf(entityCount));
@@ -76,24 +76,25 @@ public final class Metamorph implements StreamReceiver,
 		}
 	}
 
+	@Override
 	public void endRecord() {
 		entityCount = 0;
 		entityCountStack.removeLast();
 		if (entityCountStack.size() != 0) {
-			 throw new MetamorphException(ENTITIES_NOT_BALANCED);
+			throw new MetamorphException(ENTITIES_NOT_BALANCED);
 		}
-		
+
 		outputStreamReceiver.endRecord();
 	}
 
+	@Override
 	public void startEntity(final String name) {
 		++entityCount;
 		entityCountStack.add(Integer.valueOf(entityCount));
 		entityStack.add(name);
 		entityPath.append(name + entityMarker);
 		if (LOG.isTraceEnabled()) {
-			LOG.trace(entityCount + "> " + entityPath.toString() + " ("
-					+ entityStack.size() + ")");
+			LOG.trace(entityCount + "> " + entityPath.toString() + " (" + entityStack.size() + ")");
 		}
 		final String toEntity = entityMap.get(name);
 		if (toEntity != null) {
@@ -101,6 +102,7 @@ public final class Metamorph implements StreamReceiver,
 		}
 	}
 
+	@Override
 	public void endEntity() {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("< " + entityPath.toString());
@@ -113,8 +115,7 @@ public final class Metamorph implements StreamReceiver,
 			final String name = entityStack.removeLast();
 			entityCountStack.removeLast();
 
-			final List<EntityEndListener> matchingListeners = entityEndListeners
-					.get(name);
+			final List<EntityEndListener> matchingListeners = entityEndListeners.get(name);
 			if (null != matchingListeners) {
 				for (EntityEndListener listener : matchingListeners) {
 					listener.onEntityEnd(name);
@@ -131,25 +132,29 @@ public final class Metamorph implements StreamReceiver,
 		}
 	}
 
+	@Override
 	public void literal(final String name, final String value) {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("\t- " + name + "=" + value);
 		}
 
-		final List<Data> matchingReceiver = dataSources.get(entityPath
-				.toString() + name);
+		final String path = entityPath.toString() + name;
+		dispatch(path, value);
+
+	}
+
+	private void dispatch(final String key, final String value) {
+		final List<Data> matchingReceiver = dataSources.get(key);
+
 		if (null != matchingReceiver) {
 			for (Data receiver : matchingReceiver) {
 				if (entityCountStack.isEmpty()) {
-					throw new IllegalStateException(
-							"Cannot receive literals outside of records");
-				} else {
-					try {
-						receiver.data(value, recordCount,
-								entityCountStack.getLast());
-					} catch (MetamorphException e) {
-						errorHandler.error(e);
-					}
+					throw new IllegalStateException("Cannot receive literals outside of records");
+				}
+				try {
+					receiver.data(key, value, recordCount, entityCountStack.getLast().intValue());
+				} catch (MetamorphException e) {
+					errorHandler.error(e);
 				}
 			}
 		}
@@ -160,8 +165,8 @@ public final class Metamorph implements StreamReceiver,
 	 *            the outputHandler to set
 	 */
 	protected void setOutputStreamReceiver(final StreamReceiver streamReceiver) {
-		
-		if(streamReceiver==null){
+
+		if (streamReceiver == null) {
 			throw new IllegalArgumentException("'streamReceiver' must not be null");
 		}
 		this.outputStreamReceiver = streamReceiver;
@@ -179,26 +184,28 @@ public final class Metamorph implements StreamReceiver,
 		final KeyValueStore keyValueStore = keyValueStores.get(source);
 		if (keyValueStore == null) {
 			return null;
-		} else {
-			return keyValueStore.get(key);
 		}
+		return keyValueStore.get(key);
 	}
 
 	/**
 	 * @param mapName
 	 * @param keyValueStore
 	 */
-	public void addKeyValueStore(final String mapName,
-			final KeyValueStore keyValueStore) {
+	public void addKeyValueStore(final String mapName, final KeyValueStore keyValueStore) {
 		keyValueStores.put(mapName, keyValueStore);
 	}
 
 	@Override
-	public void data(final String name, final String value,
-			final DataSender sender, final int recordCount,
-			final int entityCount) {
-		if (name != null && value != null) {
-			outputStreamReceiver.literal(name, value);
+	public void data(final String name, final String value, final int recordCount, final int entityCount) {
+		if (name == null || value == null) {
+			LOG.warn("Empty data received. This is not suposed to happen. Please file a bugreport");
+		}else{
+			if(name.length()!=0 && name.charAt(0)==FEEDBACK_CHAR){
+				dispatch(name, value);
+			}else{
+				outputStreamReceiver.literal(name, value);
+			}
 		}
 	}
 
@@ -210,12 +217,10 @@ public final class Metamorph implements StreamReceiver,
 		entityMap.put(from, toParam);
 	}
 
-	protected void addEntityEndListener(
-			final EntityEndListener entityEndListener, final String entityName) {
+	protected void addEntityEndListener(final EntityEndListener entityEndListener, final String entityName) {
 		assert entityEndListener != null && entityName != null;
 
-		List<EntityEndListener> matchingListeners = entityEndListeners
-				.get(entityName);
+		List<EntityEndListener> matchingListeners = entityEndListeners.get(entityName);
 		if (matchingListeners == null) {
 			matchingListeners = new LinkedList<EntityEndListener>();
 			entityEndListeners.put(entityName, matchingListeners);

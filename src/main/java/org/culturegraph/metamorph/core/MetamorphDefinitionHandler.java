@@ -123,11 +123,16 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 				&& TRUE.equals(atts.getValue(SAME_ENTITY_ATTR));
 
 		if (COLLECT_ENTITY_TAG.equals(tag)) {
-			collect = new CollectEntity();
+			final CollectEntity collectEntity = new CollectEntity();
+			collectEntity.setStreamReceiver(metamorph.getOutputStreamReceiver());
+			collect = collectEntity;
 		} else {
-			collect = new CollectLiteral();
+			final CollectLiteral collectLiteral = new CollectLiteral();
+			collectLiteral.setDataReceiver(metamorph);
+			collect = collectLiteral;
 		}
-		collect.setStreamReceiver(metamorph.getOutputStreamReceiver());
+		
+		
 		collect.setName(atts.getValue(NAME_ATTR));
 		collect.setValue(atts.getValue(VALUE_ATTR));
 		collect.setReset(reset);
@@ -220,15 +225,15 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 		data = new Data();
 
 		if (emitGroupName == null) {
-			data.setDefaultName(name);
+			data.setName(name);
 		} else {
-			data.setDefaultName(emitGroupName);
+			data.setName(emitGroupName);
 		}
 
 		if (emitGroupValue == null) {
-			data.setDefaultValue(value);
+			data.setValue(value);
 		} else {
-			data.setDefaultValue(emitGroupValue);
+			data.setValue(emitGroupValue);
 		}
 
 		if (collect == null) {

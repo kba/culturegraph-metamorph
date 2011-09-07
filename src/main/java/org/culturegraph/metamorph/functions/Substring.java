@@ -14,17 +14,15 @@ public final class Substring extends AbstractFunction {
 
 		if (start > length - 1 || end > length) {
 			return null;
-		} else {
-
-			final int adjEnd;
-			if (end == 0) {
-				adjEnd = length;
-			} else {
-				adjEnd = end;
-			}
-
-			return value.substring(start, adjEnd);
 		}
+		final int adjEnd;
+		if (end == 0) {
+			adjEnd = length;
+		} else {
+			adjEnd = end;
+		}
+
+		return value.substring(start, adjEnd);
 	}
 
 	/**

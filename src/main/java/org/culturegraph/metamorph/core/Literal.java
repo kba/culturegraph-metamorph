@@ -52,9 +52,8 @@ public final class Literal  implements Comparable<Literal>{
 		final int first = name.compareTo(literal.name);
 		if(first == 0){
 			return value.compareTo(literal.value);
-		}else{
-			return first;
 		}
+		return first;
 	}
 	
 	@Override

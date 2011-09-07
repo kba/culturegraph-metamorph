@@ -21,9 +21,8 @@ public class ReaderRegistry {
 		final ReaderFactory factory = factories.get(format);
 		if(factory==null){
 			return null;
-		}else{
-			return factory.newReader();
 		}
+		return factory.newReader();
 	}
 	
 	public final boolean isFormatSupported(final String format){

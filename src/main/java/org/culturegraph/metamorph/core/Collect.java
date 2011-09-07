@@ -1,6 +1,5 @@
 package org.culturegraph.metamorph.core;
 
-import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 
 /**
  * Interface for classes which collect pieces of data. 
@@ -14,7 +13,7 @@ interface Collect extends EntityEndListener{
 	 */
 	void addData(Data data);
 	void setSameEntity(boolean sameEntity);
-	void setStreamReceiver(StreamReceiver streamReceiver);
+//	void setStreamReceiver(StreamReceiver streamReceiver);
 	void setReset(boolean reset);
 	void setName(String name);
 	void setValue(String value);

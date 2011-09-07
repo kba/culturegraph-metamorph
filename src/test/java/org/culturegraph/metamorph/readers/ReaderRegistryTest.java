@@ -1,7 +1,5 @@
 package org.culturegraph.metamorph.readers;
 
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +12,7 @@ public final class ReaderRegistryTest {
 	
 	
 	@Test
-	public void testRegistry() throws IOException {
+	public void testRegistry() {
 		final ReaderRegistry registry = new ReaderRegistry();
 		Assert.assertNull(registry.getReaderForFormat("nothing"));
 		Assert.assertFalse(registry.isFormatSupported("lskdfj"));

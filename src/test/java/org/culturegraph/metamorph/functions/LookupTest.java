@@ -26,9 +26,8 @@ public final class LookupTest {
 			public String getValue(final String source, final String key) {
 				if(KEY.equals(key)){
 					return VALUE;
-				}else{
-					return null;
 				}
+				return null;
 			}
 		});
 		Assert.assertEquals(VALUE, lookup.process(KEY));

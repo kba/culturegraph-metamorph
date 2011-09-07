@@ -3,6 +3,8 @@ package org.culturegraph.metamorph.core;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
+
 /**
  * Corresponds to the <code>&lt;collect-entity&gt;</code> tag.
  * 
@@ -11,16 +13,17 @@ import java.util.Set;
 final class CollectEntity extends AbstractCollect {
 
 	private final Set<Literal> literals = new HashSet<Literal>();
+	private StreamReceiver streamReceiver;
 
 	@Override
 	protected void emit() {
-		getStreamReceiver().startEntity(getName());
+		streamReceiver.startEntity(getName());
 		for (Literal literal : literals) {
 			if (literal.getName() != null && literal.getValue() != null) {
-				getStreamReceiver().literal(literal.getName(), literal.getValue());
+				streamReceiver.literal(literal.getName(), literal.getValue());
 			}
 		}
-		getStreamReceiver().endEntity();
+		streamReceiver.endEntity();
 	}
 
 	@Override
@@ -36,5 +39,12 @@ final class CollectEntity extends AbstractCollect {
 	@Override
 	protected void clear() {
 		literals.clear();
+	}
+	
+	/**
+	 * @param streamReceiver the {@link StreamReceiver} to set
+	 */
+	public void setStreamReceiver(final StreamReceiver streamReceiver) {
+		this.streamReceiver = streamReceiver;
 	}
 }

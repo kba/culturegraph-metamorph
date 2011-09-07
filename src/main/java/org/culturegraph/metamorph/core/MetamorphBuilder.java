@@ -90,7 +90,8 @@ public final class MetamorphBuilder {
 			saxParser.setProperty(JAXP_SCHEMA_SOURCE, schemaUrl.toString());
 
 			final XMLReader xmlReader = saxParser.getXMLReader();
-			xmlReader.setErrorHandler(new MetamorphBuilderErrorHandler());
+			final MetamorphBuilderErrorHandler handler = new MetamorphBuilderErrorHandler();
+			xmlReader.setErrorHandler(handler);
 
 			xmlReader.setContentHandler(transformationContentHandler);
 
@@ -106,6 +107,11 @@ public final class MetamorphBuilder {
 	}
 
 	private static final class MetamorphBuilderErrorHandler implements ErrorHandler {
+
+		protected MetamorphBuilderErrorHandler() {
+			// to avoid synthetic accessor methods
+		}
+
 		@Override
 		public void warning(final SAXParseException exception) throws SAXException {
 			throw new MetamorphDefinitionException(PARSE_ERROR + exception.getMessage(), exception);

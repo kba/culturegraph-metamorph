@@ -100,9 +100,8 @@ public final class MabReader extends AbstractReader {
 			}
 
 			return record.substring(ID_START, fieldEnd);
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	@Override

@@ -71,9 +71,8 @@ public final class PicaReader extends AbstractReader{
 		final Matcher idMatcher = ID_PATTERN.matcher(record);
 		if(idMatcher.find()){
 			return idMatcher.group(1);
-		}else{
-			return null;
 		}
+		return null;
 	}
 
 	@Override

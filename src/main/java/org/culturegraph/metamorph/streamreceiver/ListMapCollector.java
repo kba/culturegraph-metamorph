@@ -60,18 +60,16 @@ public final class ListMapCollector extends DefaultStreamReceiver {
 		final List<String> values = map.get(name);
 		if(values==null){
 			return Collections.emptyList();
-		}else{
-			return values;
 		}
+		return values;
 	}
 	
 	public String getFirstValue(final String name){
 		final List<String> values = map.get(name);
 		if(values==null || values.isEmpty()){
 			return null;
-		}else{
-			return values.get(0);
 		}
+		return values.get(0);
 	}
 	
 	@Override

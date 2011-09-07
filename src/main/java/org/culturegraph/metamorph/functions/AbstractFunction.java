@@ -8,6 +8,7 @@ import org.culturegraph.metamorph.core.KeyValueStoreAggregator;
  */
 abstract class AbstractFunction implements Function {
 
+	@Override
 	public abstract String process(final String  value);
 
 	@Override

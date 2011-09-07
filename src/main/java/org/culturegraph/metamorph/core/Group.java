@@ -41,7 +41,7 @@ final class Group extends DataProcessorImpl  implements DataReceiver{
 	}
 	
 	@Override
-	public void data(final String name, final String value, final DataSender sender, final int recordCount, final int entityCount) {
+	public void data(final String name, final String value, final int recordCount, final int entityCount) {
 		String resultName = this.name;
 		String resultValue = this.value;
 		

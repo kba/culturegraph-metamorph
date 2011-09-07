@@ -21,8 +21,7 @@ import org.culturegraph.metamorph.streamreceiver.ConsoleWriter;
  */
 public final class Morph {
 	
-	private Morph() {
-	}
+	private Morph() {/*no instances*/}
 
 	/**
 	 * @param args
