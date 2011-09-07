@@ -195,6 +195,7 @@
 		<entry name="m " value="cg:independentWork" />
 		<entry name="ma" value="cg:severalVolumesWorkLimited" />
 		<entry name="mb" value="cg:singleVolumeWorkPartOfBigger" />
+		<entry name="mc" value="Hula"/>
 	</map>
 		
 	<map name="workListContinuousWorks" default="undefined">

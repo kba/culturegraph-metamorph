@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * @author Markus Michael Geipel
  */
 class DataProcessorImpl implements DataProcessor {
-	private static final Logger LOG = LoggerFactory.getLogger(Data.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DataProcessorImpl.class);
 	
 	private final List<Function> functions = new LinkedList<Function>();
 	

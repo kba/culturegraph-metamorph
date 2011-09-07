@@ -29,6 +29,10 @@ public final class ListMapCollector extends DefaultStreamReceiver {
 		}
 	}
 	
+	public boolean existsKey(final String name){
+		return getFirstValue(name)!=null;
+	}
+	
 	public void clearKey(final String key){
 		final List<String> values = map.get(key);
 		if(values!=null){
@@ -63,7 +67,7 @@ public final class ListMapCollector extends DefaultStreamReceiver {
 	
 	public String getFirstValue(final String name){
 		final List<String> values = map.get(name);
-		if(values==null || values.size()<1){
+		if(values==null || values.isEmpty()){
 			return null;
 		}else{
 			return values.get(0);
