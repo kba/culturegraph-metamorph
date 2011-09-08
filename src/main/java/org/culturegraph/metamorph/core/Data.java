@@ -27,7 +27,6 @@ final class Data extends DataProcessorImpl implements DataSender, DataReceiver {
 	private DataReceiver dataReceiver;
 
 	
-	
 	@Override
 	public void data(final String recName, final String recValue, final int recordCount, final int entityCount) {
 		assert dataReceiver != null;
@@ -36,6 +35,7 @@ final class Data extends DataProcessorImpl implements DataSender, DataReceiver {
 		if(tempData==null){
 			return;
 		}
+
 		
 		String currentName = name;
 		String currentValue = value;

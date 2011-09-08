@@ -139,6 +139,7 @@
 	<element name="map">
 		<complexType>
 			<sequence>
+				<element ref="tns:annotation" minOccurs="0" maxOccurs="1" />
 				<element ref="tns:entry" minOccurs="0" maxOccurs="unbounded" />
 			</sequence>
 			<attribute name="name" type="string" use="required" />

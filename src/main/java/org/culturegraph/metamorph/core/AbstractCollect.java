@@ -16,8 +16,6 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 
-
-
 	private int oldRecord;
 	private int oldEntity;
 	private int dataCount;
