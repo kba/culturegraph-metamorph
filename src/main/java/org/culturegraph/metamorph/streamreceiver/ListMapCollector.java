@@ -1,8 +1,8 @@
 package org.culturegraph.metamorph.streamreceiver;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,7 +45,7 @@ public final class ListMapCollector extends DefaultStreamReceiver {
 		
 		List<String> values = map.get(name);
 		if(values == null){
-			values = new LinkedList<String>();
+			values = new ArrayList<String>();
 			map.put(name, values);
 		}
 		

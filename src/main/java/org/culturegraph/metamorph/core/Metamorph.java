@@ -1,5 +1,6 @@
 package org.culturegraph.metamorph.core;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -60,7 +61,7 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 
 		List<Data> matchingDataSources = dataSources.get(path);
 		if (matchingDataSources == null) {
-			matchingDataSources = new LinkedList<Data>();
+			matchingDataSources = new ArrayList<Data>();
 			dataSources.put(path, matchingDataSources);
 		}
 		matchingDataSources.add(entityHandler);
