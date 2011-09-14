@@ -21,13 +21,12 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
-
-	private static final char DEFUALT_ENTITY_MARKER = '.';
-
+	private static final char DEFAULT_ENTITY_MARKER = '.';
 	private static final char FEEDBACK_CHAR = '@';
 
 	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
 	private final Map<String, List<EntityEndListener>> entityEndListeners = new HashMap<String, List<EntityEndListener>>();
+	
 	private final Map<String, String> entityMap = new HashMap<String, String>();
 
 	private final Map<String, KeyValueStore> keyValueStores = new HashMap<String, KeyValueStore>();
@@ -46,7 +45,7 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	private int recordCount;
 	private int entityCount;
 
-	private char entityMarker = DEFUALT_ENTITY_MARKER;
+	private char entityMarker = DEFAULT_ENTITY_MARKER;
 
 	public void setEntityMarker(final char entityMarker) {
 		this.entityMarker = entityMarker;
@@ -56,15 +55,21 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 		this.errorHandler = errorHandler;
 	}
 
-	protected void registerDataSource(final Data entityHandler, final String path) {
-		assert entityHandler != null && path != null;
+	protected void registerDataSource(final Data data, final String path) {
+		assert data != null && path != null;
 
 		List<Data> matchingDataSources = dataSources.get(path);
 		if (matchingDataSources == null) {
 			matchingDataSources = new ArrayList<Data>();
 			dataSources.put(path, matchingDataSources);
 		}
-		matchingDataSources.add(entityHandler);
+		matchingDataSources.add(data);
+	}
+	
+	protected void registerRegexpDataSource(final Data data, final String regexp) {
+		assert data != null && regexp != null;
+		
+		
 	}
 
 	@Override

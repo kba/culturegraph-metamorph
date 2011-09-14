@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.core;
+package org.culturegraph.metamorph.types;
 
 /**
  * @author Markus Michael Geipel

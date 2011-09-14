@@ -3,7 +3,7 @@ package org.culturegraph.metamorph.streamreceiver;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.culturegraph.metamorph.core.Literal;
+import org.culturegraph.metamorph.types.Literal;
 
 /**
  * Collects {@link Literal}s in a {@link Set}. So there will not be duplicates.

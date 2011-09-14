@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
+import org.culturegraph.metamorph.types.Literal;
 
 /**
  * Corresponds to the <code>&lt;collect-entity&gt;</code> tag.

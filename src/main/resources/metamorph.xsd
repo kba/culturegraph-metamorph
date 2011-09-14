@@ -85,6 +85,7 @@
 				<group ref="tns:function" minOccurs="0" maxOccurs="unbounded"/>
 			</sequence>
 			<attribute name="source" type="string" use="required" />
+			<attribute name="regExp" type="boolean" use="optional" default="true"/>
 			<attribute name="as" type="tns:asAttribute" use="optional" />
 			<attribute name="name" type="string" use="optional"></attribute>
 			<attribute name="value" type="string" use="optional"></attribute>
@@ -207,5 +208,7 @@
 			<element ref="tns:isbn" />
 		</choice>
 	</group>
+	
+
 
 </schema>
