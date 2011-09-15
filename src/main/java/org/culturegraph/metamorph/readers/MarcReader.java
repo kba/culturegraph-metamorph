@@ -13,6 +13,8 @@ import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parses a raw Marc stream using Marc4j. Events are handled by a
@@ -23,8 +25,7 @@ import org.marc4j.marc.Subfield;
  */
 public final class MarcReader implements RawRecordReader {
 
-	// private static final Logger LOG = LoggerFactory
-	// .getLogger(MarcReader2.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MarcReader.class);
 	private StreamReceiver streamReceiver;
 
 	@SuppressWarnings("unchecked")
@@ -35,9 +36,12 @@ public final class MarcReader implements RawRecordReader {
 		receiver.startRecord();
 
 		receiver.literal("Leader", record.getLeader().marshal());
-
+		
 		for (ControlField cField : (List<ControlField>) record.getControlFields()) {
 			receiver.literal(cField.getTag(), cField.getData());
+			if(LOG.isTraceEnabled()){
+				LOG.trace("cF"+cField.getTag().toString()+"\t"+cField.getData().toString());
+			}
 		}
 		for (DataField dataField : (List<DataField>) record.getDataFields()) {
 
@@ -52,6 +56,10 @@ public final class MarcReader implements RawRecordReader {
 				final String value = subfield.getData();
 
 				receiver.literal(Character.toString(subfield.getCode()), value);
+				if(LOG.isTraceEnabled()){
+					LOG.trace("tagName"+tagName+"\t"+subfield.getCode()+"\t"+value);
+				}
+
 			}
 			receiver.endEntity();
 
