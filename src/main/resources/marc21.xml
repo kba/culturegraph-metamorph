@@ -13,7 +13,6 @@
 		<data source="Leader" name="first" >
 	    	<substring start="7" end="8"/>
 	    </data>
-	    
 		<data source="Leader" name="second" >
 	    	<substring start="18" end="19"/>
 	    </data>	
@@ -24,7 +23,7 @@
 		<substring start="7" end="8"/>
 		<lookup in="workListContinuousWorks" />
 	</data>
-		
+			
 	<data source="001" name="cg:sourceRecordId" />
 	
 	<data source="005" name="dcterms:modified" />
@@ -61,6 +60,18 @@
 		</data>
 		<data source="0167 .a" name="value" />
 	</collect-literal>
+	
+	<!-- cause BSZ uses wrong indicators/subfields-combination -->
+	<collect-literal name="${name}" value="${value}" reset="true">
+		<data source="016  .a" name="name">
+			<regexp match="^\(.*\)" />
+			<lookup in="prefixLookup" />
+		</data>
+		<data source="016  .a" name="value">
+			<regexp match="^\(.*\)((.*))" format="${1}" />
+		</data>
+	</collect-literal>
+	
 
 	<data source="020  .a" name="xbib:identifierAuthorityISBN">
 		<isbn to="clean" />
@@ -132,10 +143,27 @@
 	
 	<!-- deeper analyze on isil -->
 	<group name="xbib:creatorDNBGND">
-		<data source="1001 .0" />
 		<data source="700  .0" />
 	</group>
 	
+	<collect-literal name="xbib:creatorDNBGND" value="${value}" reset="true">
+		<data source="1001 .0" >
+			<regexp match="^\(DE-588a\)" />
+		</data>
+		<data source="1001 .0" name="value">
+			<regexp match="^\(DE-588a\)((.*))" format="${1}" />
+		</data>
+	</collect-literal>
+	
+	<collect-literal name="xbib:creatorDNBGND" value="${value}" reset="true">
+		<data source="7001 .0" >
+			<regexp match="^\(DE-588a\)" />
+		</data>
+		<data source="7001 .0" name="value">
+			<regexp match="^\(DE-588a\)((.*))" format="${1}" />
+		</data>
+	</collect-literal>
+			
 	<group name="rdaGr2:identifierForTheCorporateBody">
 		<data source="1102 .0" />
 		<data source="1100 .0" />
@@ -149,6 +177,7 @@
 	</group>
 	
 	<data source="24510.a" name="dcterms:title" />
+	<data source="24514.a" name="dcterms:title" />
 	<data source="24500.a" name="dcterms:title" />
 	
 	<group name="xbib:issueType">
@@ -163,15 +192,19 @@
 	<group name="xbib:volume">
 		<data source="4900 .v" />
 		<data source="4901 .v" />
+		<data source="245 0.n" />
+		<data source="245 4.n" />
 	</group>
 
 	<data source="502  .o" name="xbib:identifierUniversityScript"></data>
+	
+	<data source="773  .w" name="cg:broaderWork" />
 
 	<map name="prefixLookup">
 		<entry name="DE-101" value="xbib:identifierAuthorityDNB" />
 		<entry name="(DE-600)" value="xbib:identifierAuthorityZDB" />
 		<entry name="Uk" value="xbib:identifierAuthorityBNB" />
-		<entry name="ItFiC" value="xbib:identifierAuthorityCasaliniLibri " />
+		<entry name="ItFiC" value="xbib:identifierAuthorityCasaliniLibri" />
 		<entry name="FrPBN" value="xbib:identifierAuthorityBNF" />
 		<entry name="(OCoLC)" value="xbib:identifierAuthorityOCLC" />
 		<entry name="(DE-599)" value="xbib:identifierAuthorityEKI"/>
@@ -191,14 +224,14 @@
 	</map>
 	
 	<map name="workListLimited" default="undefined">
-		<entry name="a" value="cg:dependentWork" />
-		<entry name="m " value="cg:independentWork" />
-		<entry name="ma" value="cg:severalVolumesWorkLimited" />
-		<entry name="mb" value="cg:singleVolumeWorkPartOfBigger" />
-		<entry name="mc" value="Hula"/>
+		<entry name="a" value="dependentWork" />
+		<entry name="m " value="independentWork" />
+		<entry name="ma" value="severalVolumesWorkLimited" />
+		<entry name="mb" value="singleVolumeWorkPartOfBigger" />
+		<entry name="mc" value="partWithDependentTitle"/>
 	</map>
 		
-	<map name="workListContinuousWorks" default="undefined">
+	<map name="workListContinuousWorks" >
 		<entry name="d" value="dependentConWork" />	
 		<entry name="s" value="journalSeriesNewspaper" />
 	</map>
