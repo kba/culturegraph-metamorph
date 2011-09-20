@@ -103,9 +103,9 @@
 		<entry name="a" value="dependentConWork" />
 		<entry name="s" value="continuationConWork" />
 		<entry name="j" value="journalLikeConWork" />
-		<entry name="p" value="journalConWork" />
-		<entry name="r" value="seriesConWork" />
-		<entry name="z" value="newspaperConWork " />
+		<entry name="p" value="journalSeriesNewspaper" />
+		<entry name="r" value="journalSeriesNewspaper" />
+		<entry name="z" value="journalSeriesNewspaper " />
 	</map>
 	
 </metamorph>
