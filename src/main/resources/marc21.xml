@@ -14,7 +14,7 @@
 	    	<substring start="7" end="8"/>
 	    </data>
 		<data source="Leader" name="second" >
-	    	<substring start="18" end="19"/>
+	    	<substring start="19" end="20"/>
 	    </data>	
 	  <lookup in="workListLimited"/>
 	</collect-literal>
@@ -186,8 +186,13 @@
 		<data source="250  .8" />
 	</group>
 	
-	<!-- deeper analyze on this fields -->
-	<data source="2603 .c" name="dcterms:issued" />
+	<data source="260  .a" name="xbib:publicationPlace" />
+	<data source="260  .b" name="xbib:publisherName" />
+	
+	<group name="dcterms:issued">
+		<data source="260  .c" />
+		<data source="2603 .c" />
+	</group>
 	
 	<group name="xbib:volume">
 		<data source="4900 .v" />
@@ -198,8 +203,14 @@
 
 	<data source="502  .o" name="xbib:identifierUniversityScript"></data>
 	
-	<data source="773  .w" name="cg:broaderWork" />
-
+	<group name="cg:broaderWork">
+		<data source="773  .w" />
+		<data source="7730 .w" />
+		<data source="7731 .w" />
+		<data source="77318.w" />
+		<data source="77308.w" />
+	</group>
+	
 	<map name="prefixLookup">
 		<entry name="DE-101" value="xbib:identifierAuthorityDNB" />
 		<entry name="(DE-600)" value="xbib:identifierAuthorityZDB" />
