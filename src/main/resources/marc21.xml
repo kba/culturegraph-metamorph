@@ -79,6 +79,7 @@
 
 	<data source="022  .a" name="xbib:identifierAuthorityISSN" />
 	
+	<!-- analyze content of Subfield!! -->
 	<data source="090  .f" name="cg:detailsForLimitedWorks" />
 	
 	<data source="0242 .a" name="xbib:identifierAuthorityISMN" />
