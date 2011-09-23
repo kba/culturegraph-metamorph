@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.ddb.charset.MabCharset;
 
@@ -29,9 +31,10 @@ public final class MabReader extends AbstractReader {
 	private static final int FIELD_NAME_SIZE = 4;
 	private static final int HEADER_SIZE = 24;
 
+	private static final Logger LOG = LoggerFactory.getLogger(MabReader.class);
 
 	@Override
-	protected void processRecord(final String record) {
+	protected void processRecord(final String record) {	
 		if (record.trim().isEmpty()) {
 			return;
 		}
@@ -49,6 +52,10 @@ public final class MabReader extends AbstractReader {
 		// LOG.trace("Datenanfang: " + header.substring(12, 17));
 		// LOG.trace("Typ: " + header.substring(23, 24));
 		// }
+		
+		if(LOG.isDebugEnabled()){
+			LOG.debug(record.substring(0, HEADER_SIZE).toString());
+		}
 
 		getStreamReceiver().startRecord();
 
@@ -64,6 +71,9 @@ public final class MabReader extends AbstractReader {
 
 					if (subFields.length == 1) {
 						getStreamReceiver().literal(fieldName, subFields[0]);
+						if(LOG.isDebugEnabled()){
+							LOG.debug(fieldName.toString()+"\t"+subFields[0].toString());
+						}
 					} else {
 						getStreamReceiver().startEntity(fieldName);
 
@@ -71,6 +81,9 @@ public final class MabReader extends AbstractReader {
 							final String name = subFields[i].substring(0, 1);
 							final String value = subFields[i].substring(1);
 							getStreamReceiver().literal(name, value);
+							if(LOG.isDebugEnabled()){
+								LOG.debug(fieldName+name.toString()+"\t"+value.toString());
+							}
 
 						}
 						getStreamReceiver().endEntity();
