@@ -53,14 +53,16 @@ public final class MabReader extends AbstractReader {
 		// LOG.trace("Typ: " + header.substring(23, 24));
 		// }
 		
-		if(LOG.isDebugEnabled()){
-			LOG.debug(record.substring(0, HEADER_SIZE).toString());
+		if(LOG.isTraceEnabled()){
+			LOG.trace(record.substring(0, HEADER_SIZE).toString());
 		}
 
 		getStreamReceiver().startRecord();
-
+		
 		try {
 
+			getStreamReceiver().literal("Leader", record.substring(0, HEADER_SIZE).toString());
+			
 			for (String part : FIELD_PATTERN.split(content)) {
 				if (!part.startsWith(RECORD_END)) {
 					final String fieldName = part.substring(0, FIELD_NAME_SIZE)
@@ -71,8 +73,8 @@ public final class MabReader extends AbstractReader {
 
 					if (subFields.length == 1) {
 						getStreamReceiver().literal(fieldName, subFields[0]);
-						if(LOG.isDebugEnabled()){
-							LOG.debug(fieldName.toString()+"\t"+subFields[0].toString());
+						if(LOG.isTraceEnabled()){
+							LOG.trace(fieldName.toString()+"\t"+subFields[0].toString());
 						}
 					} else {
 						getStreamReceiver().startEntity(fieldName);
@@ -81,8 +83,8 @@ public final class MabReader extends AbstractReader {
 							final String name = subFields[i].substring(0, 1);
 							final String value = subFields[i].substring(1);
 							getStreamReceiver().literal(name, value);
-							if(LOG.isDebugEnabled()){
-								LOG.debug(fieldName+name.toString()+"\t"+value.toString());
+							if(LOG.isTraceEnabled()){
+								LOG.trace(fieldName+name.toString()+"\t"+value.toString());
 							}
 
 						}
