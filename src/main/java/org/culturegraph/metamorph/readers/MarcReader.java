@@ -37,14 +37,14 @@ public final class MarcReader implements RawRecordReader {
 
 		receiver.literal("Leader", record.getLeader().marshal());
 		
-		if(LOG.isDebugEnabled()){
-			LOG.debug("Leader"+record.getLeader().marshal());
+		if(LOG.isTraceEnabled()){
+			LOG.trace("Leader"+record.getLeader().marshal());
 		}
 		
 		for (ControlField cField : (List<ControlField>) record.getControlFields()) {
 			receiver.literal(cField.getTag(), cField.getData());
-			if(LOG.isDebugEnabled()){
-				LOG.debug("cF"+cField.getTag().toString()+"\t"+cField.getData().toString());
+			if(LOG.isTraceEnabled()){
+				LOG.trace("cF"+cField.getTag().toString()+"\t"+cField.getData().toString());
 			}
 		}
 		for (DataField dataField : (List<DataField>) record.getDataFields()) {
@@ -60,8 +60,8 @@ public final class MarcReader implements RawRecordReader {
 				final String value = subfield.getData();
 
 				receiver.literal(Character.toString(subfield.getCode()), value);
-				if(LOG.isDebugEnabled()){
-					LOG.debug("tagName"+tagName+"\t"+subfield.getCode()+"\t"+value);
+				if(LOG.isTraceEnabled()){
+					LOG.trace("tagName"+tagName+"\t"+subfield.getCode()+"\t"+value);
 				}
 
 			}
