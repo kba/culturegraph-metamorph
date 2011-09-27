@@ -74,7 +74,7 @@
 	
 
 	<data source="020  .a" name="xbib:identifierAuthorityISBN">
-		<isbn to="clean" />
+		<isbn to="isbn13" />
 	</data>
 
 	<data source="022  .a" name="xbib:identifierAuthorityISSN" />
@@ -156,14 +156,11 @@
 		</data>
 	</collect-literal>
 	
-	<collect-literal name="xbib:creatorDNBGND" value="${value}" reset="true">
-		<data source="7001 .0" >
-			<regexp match="^\(DE-588a\)" />
-		</data>
-		<data source="7001 .0" name="value">
+	
+		<data source="7001 .0" name="xbib:creatorDNBGND">
 			<regexp match="^\(DE-588a\)((.*))" format="${1}" />
 		</data>
-	</collect-literal>
+
 			
 	<group name="rdaGr2:identifierForTheCorporateBody">
 		<data source="1102 .0" />

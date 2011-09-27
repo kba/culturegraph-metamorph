@@ -54,7 +54,7 @@ public final class PicaReader extends AbstractReader{
 				
 			}
 		}catch(IndexOutOfBoundsException exception){
-			throw new MetamorphException(INVALID_FORMAT_ERROR + ": " + record, exception);
+			throw new MetamorphException(INVALID_FORMAT_ERROR + ": [" + record + "]", exception);
 		}finally{
 			getStreamReceiver().endRecord();
 		}

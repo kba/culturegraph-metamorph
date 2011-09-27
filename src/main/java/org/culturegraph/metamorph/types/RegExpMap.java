@@ -37,9 +37,9 @@ public final class RegExpMap<V> {
 		
 		if(matcher.find()){
 			final int numMatchGroups = matcher.groupCount();
-			for(int i=0;i<numMatchGroups;i++){
+			for(int i=0;i<numMatchGroups;++i){
 				if(matcher.group(i)!=null){
-					
+					//TODO ...
 				}
 			}
 		}

@@ -16,7 +16,7 @@ import org.junit.Test;
 public final class SimpleMarcReaderTest {
 	
 	private static final int NUM_RECORDS=10;
-	private static final int NUM_LITERALS=745;
+	private static final int NUM_LITERALS=737;
 	
 	private final MarcReader reader = new MarcReader();
 	private final CountingStreamReceiver countStreamReceiver =  new CountingStreamReceiver();
@@ -26,7 +26,7 @@ public final class SimpleMarcReaderTest {
 	@Test
 	public void testRead() throws IOException {
 		reader.setStreamReceiver(countStreamReceiver);
-		reader.read(new FileInputStream(Files.TITLE_MARC));
+		reader.read(new FileInputStream(Files.TITLE_MARC_LINEBREAKS));
 		
 		Assert.assertEquals("Number of read records is incorrect", NUM_RECORDS, countStreamReceiver.getNumRecords());
 		Assert.assertEquals("Number of read literals is incorrect", NUM_LITERALS, countStreamReceiver.getNumLiterals());

@@ -1,20 +1,10 @@
 package org.culturegraph.metamorph.readers;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
+import java.nio.charset.Charset;
+import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
-import org.marc4j.MarcStreamReader;
-import org.marc4j.marc.ControlField;
-import org.marc4j.marc.DataField;
-import org.marc4j.marc.Record;
-import org.marc4j.marc.Subfield;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Parses a raw Marc stream using Marc4j. Events are handled by a
@@ -23,85 +13,80 @@ import org.slf4j.LoggerFactory;
  * @author "Markus Michael Geipel"
  * @see StreamReceiver
  */
-public final class MarcReader implements RawRecordReader {
+public final class MarcReader extends AbstractReader {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MarcReader.class);
-	private StreamReceiver streamReceiver;
+	private static final String FIELD_DELIMITER = "\u001e";
+	private static final String SUB_DELIMITER = "\u001f";
+	private static final Pattern FIELD_PATTERN = Pattern.compile(FIELD_DELIMITER);
+	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(SUB_DELIMITER);
+	private static final int POS_ENCODING = 9;
+	private static final int POS_TYPE = 6;
+	private static final int POS_DIRECTORY = 24;
+	private static final int DIRECTORY_ENTRY_WIDTH = 12;
+	private static final String TYPE = "type";
+	private static final int TAG_LENGTH = 3;
+	private static final int DATA_START_BEGIN = 12;
+	private static final int DATA_START_END = 17;
+	private static final String MULTIPART = "multipart";
+	private static final int POS_MULTIPART = 19;
+	private static final String INVALID_FORMAT_ERROR = "Invalid format";
 
-	@SuppressWarnings("unchecked")
-	// marc4j is not type safe!
-	protected void processRecord(final Record record) {
+	@Override
+	protected void processRecord(final String record) {
+
+
+		if (record.charAt(POS_ENCODING) != 'a') {
+			throw new MetamorphException("UTF-8 encoding expected");
+		}
 		final StreamReceiver receiver = getStreamReceiver();
-
-		receiver.startRecord();
-
-		receiver.literal("Leader", record.getLeader().marshal());
-		
-		if(LOG.isTraceEnabled()){
-			LOG.trace("Leader"+record.getLeader().marshal());
-		}
-		
-		for (ControlField cField : (List<ControlField>) record.getControlFields()) {
-			receiver.literal(cField.getTag(), cField.getData());
-			if(LOG.isTraceEnabled()){
-				LOG.trace("cF"+cField.getTag().toString()+"\t"+cField.getData().toString());
-			}
-		}
-		for (DataField dataField : (List<DataField>) record.getDataFields()) {
-
-			final String tag = dataField.getTag();
-			final char ind1 = dataField.getIndicator1();
-			final char ind2 = dataField.getIndicator2();
-			final String tagName = tag + ind1 + ind2;
-			final List<Subfield> subfields = dataField.getSubfields();
-
-			receiver.startEntity(tagName);
-			for (Subfield subfield : subfields) {
-				final String value = subfield.getData();
-
-				receiver.literal(Character.toString(subfield.getCode()), value);
-				if(LOG.isTraceEnabled()){
-					LOG.trace("tagName"+tagName+"\t"+subfield.getCode()+"\t"+value);
-				}
-
-			}
-			receiver.endEntity();
-
-		}
-		receiver.endRecord();
-	}
-
-	@Override
-	public void read(final InputStream inputStream) throws IOException {
-		final MarcStreamReader marcStreamReader = new MarcStreamReader(inputStream);
-		while (marcStreamReader.hasNext()) {
-			processRecord(marcStreamReader.next());
-		}
-	}
-
-	@Override
-	public void read(final String entry) {
 		try {
-			read(new ByteArrayInputStream(entry.getBytes("UTF-8")));
-		} catch (UnsupportedEncodingException e) {
-			throw new MetamorphException("Encoding not found", e);
-		} catch (IOException e) {
-			throw new MetamorphException(e);
+			receiver.startRecord();
+			receiver.literal(TYPE, String.valueOf(record.charAt(POS_TYPE)));
+			receiver.literal(MULTIPART, String.valueOf(record.charAt(POS_MULTIPART)));
+
+			final int dataStart = Integer.parseInt(record.substring(DATA_START_BEGIN, DATA_START_END));
+			final String directory = record.substring(POS_DIRECTORY, dataStart);
+			final int numDirEntries = directory.length() / DIRECTORY_ENTRY_WIDTH;
+			final String[] fields = FIELD_PATTERN.split(record);
+			boolean isDataField = false;
+
+			for (int i = 0; i < numDirEntries; i += 1) {
+				final int base = i * 12;
+				final String[] subFields = SUBFIELD_PATTERN.split(fields[i + 1]);
+				final String tag = directory.substring(base, base + TAG_LENGTH);
+				if (isDataField) {
+					receiver.startEntity(tag + subFields[0]);
+					for (int j = 1; j < subFields.length; ++j) {
+						final String subField = subFields[j];
+						receiver.literal(String.valueOf(subField.charAt(0)), subField.substring(1));
+					}
+					receiver.endEntity();
+				} else {
+					receiver.literal(tag, subFields[0]);
+					isDataField = tag.charAt(1) != '0';
+				}
+			}
+		} catch (IndexOutOfBoundsException exception) {
+			throw new MetamorphException(INVALID_FORMAT_ERROR + ": [" + record + "]", exception);
+		} finally {
+			receiver.endRecord();
 		}
 	}
 
-	@Override
-	public void setStreamReceiver(final StreamReceiver streamReceiver) {
-		this.streamReceiver = streamReceiver;
-	}
-
-	protected StreamReceiver getStreamReceiver() {
-		return streamReceiver;
+	public static String extractIdFromRawRecord(final String record) {
+		final int start = record.indexOf(FIELD_DELIMITER);
+		final int end = record.indexOf(FIELD_DELIMITER, start + 1);
+		return record.substring(start, end);
 	}
 
 	@Override
 	public String getId(final String record) {
-		throw new UnsupportedOperationException();
+		return extractIdFromRawRecord(record);
+	}
+
+	@Override
+	protected Charset getCharset() {
+		return Charset.forName("UTF8");
 	}
 }
 
