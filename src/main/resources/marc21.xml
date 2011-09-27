@@ -24,10 +24,11 @@
 	<data source="007" name="dcterms:format">
 	</data>
 
-	<data source="008" name="gnd:countryCode">
+	<data source="008" name="cg:countryCodeMarc">
 		<regexp match="^(.{15})(\w{2,3})(.*)" format="${2}" />
 	</data>
-	<data source="044  .c" name="gnd:countryCode" />
+	
+	<data source="044  .c" name="cg:countryCodeIso" />
 
 	<data source="008" name="dcterms:language">
 		<regexp match="^(.{35})(\w{2,3})(.*)" format="${2}" />
