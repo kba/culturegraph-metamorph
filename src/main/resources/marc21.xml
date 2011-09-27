@@ -6,52 +6,45 @@
 
 	<name>Marc21 to PropertyRecord</name>
 	<annotation></annotation>
-				
-	<collect-literal name="cg:typeOfWork"
-		value="${first}${second}"
-		forceOnEnd="Leader">
-		<data source="Leader" name="first" >
-	    	<substring start="7" end="8"/>
-	    </data>
-		<data source="Leader" name="second" >
-	    	<substring start="19" end="20"/>
-	    </data>	
-	  <lookup in="workListLimited"/>
+
+	<collect-literal name="cg:typeOfWork" value="${first}${second}">
+		<data source="type" name="first" />
+		<data source="multipart" name="second" />
+		<lookup in="workListLimited" />
 	</collect-literal>
 
-	<data source="Leader" name="cg:typeOfConWork" >
-		<substring start="7" end="8"/>
+	<data source="type" name="cg:typeOfConWork">
 		<lookup in="workListContinuousWorks" />
 	</data>
-			
+
 	<data source="001" name="cg:sourceRecordId" />
-	
+
 	<data source="005" name="dcterms:modified" />
-	
+
 	<data source="007" name="dcterms:format">
 	</data>
-		
+
 	<data source="008" name="gnd:countryCode">
-		<regexp match="^(.{15})(\w{2,3})(.*)" format="${2}"/>
+		<regexp match="^(.{15})(\w{2,3})(.*)" format="${2}" />
 	</data>
 	<data source="044  .c" name="gnd:countryCode" />
-	
+
 	<data source="008" name="dcterms:language">
-		<regexp match="^(.{35})(\w{2,3})(.*)" format="${2}"/>
+		<regexp match="^(.{35})(\w{2,3})(.*)" format="${2}" />
 	</data>
 	<group name="dcterms:language">
 		<data source="041 7.a" />
 		<data source="041 7.2" />
 	</group>
-	
+
 	<group name="xbib:originLanguage">
 		<data source="041 7.h" />
 		<data source="041 7.2" />
 		<data source="041  .2" />
 	</group>
-	
+
 	<data source="010  .a" name="xbib:identifierAuthorityLOC" />
-	
+
 	<data source="013  .a" name="xbib:identifierPatent" />
 
 	<collect-literal name="${name}" value="${value}" reset="true">
@@ -60,7 +53,7 @@
 		</data>
 		<data source="0167 .a" name="value" />
 	</collect-literal>
-	
+
 	<!-- cause BSZ uses wrong indicators/subfields-combination -->
 	<collect-literal name="${name}" value="${value}" reset="true">
 		<data source="016  .a" name="name">
@@ -71,28 +64,28 @@
 			<regexp match="^\(.*\)((.*))" format="${1}" />
 		</data>
 	</collect-literal>
-	
+
 
 	<data source="020  .a" name="xbib:identifierAuthorityISBN">
 		<isbn to="isbn13" />
 	</data>
 
 	<data source="022  .a" name="xbib:identifierAuthorityISSN" />
-	
+
 	<!-- analyze content of Subfield!! -->
 	<data source="090  .f" name="cg:detailsForLimitedWorks" />
-	
+
 	<data source="0242 .a" name="xbib:identifierAuthorityISMN" />
 
 	<data source="0243 .a" name="xbib:identifierAuthorityEAN" />
-	
+
 	<collect-literal name="${name}" value="${value}" reset="true">
 		<data source="0247 .2" name="name">
 			<lookup in="doiList" />
 		</data>
 		<data source="0247 .a" name="value" />
 	</collect-literal>
-	
+
 	<collect-literal name="${name}" value="${value}" reset="true">
 		<data source="0248 .a" name="name">
 			<regexp match="^VD.{2}" />
@@ -102,19 +95,19 @@
 			<regexp match="(^VD.{2})(.*)" format="${1}" />
 		</data>
 	</collect-literal>
-			
+
 	<data source="027  .a" name="xbib:identifierAuthorityISRN" />
-	
+
 	<group name="xbib:fingerprint">
 		<data source="026  .a" />
 		<data source="026  .b" />
 	</group>
-		
+
 	<group name="xbib:identifierAudioPublisher">
 		<data source="02852.a" />
 		<data source="02852.b" />
 	</group>
-	
+
 	<collect-literal name="${name}" value="${value}" reset="true">
 		<data source="035  .a" name="name">
 			<regexp match="^\(.*\)" />
@@ -141,57 +134,58 @@
 		<data source="1001 .a" />
 		<data source="1001 .c" />
 	</group>
-	
+
 	<!-- deeper analyze on isil -->
 	<group name="xbib:creatorDNBGND">
 		<data source="700  .0" />
 	</group>
-	
-	<collect-literal name="xbib:creatorDNBGND" value="${value}" reset="true">
-		<data source="1001 .0" >
+
+	<collect-literal name="xbib:creatorDNBGND" value="${value}"
+		reset="true">
+		<data source="1001 .0">
 			<regexp match="^\(DE-588a\)" />
 		</data>
 		<data source="1001 .0" name="value">
 			<regexp match="^\(DE-588a\)((.*))" format="${1}" />
 		</data>
 	</collect-literal>
-	
-	
-		<data source="7001 .0" name="xbib:creatorDNBGND">
-			<regexp match="^\(DE-588a\)((.*))" format="${1}" />
-		</data>
 
-			
+
+	<data source="7001 .0" name="xbib:creatorDNBGND">
+		<regexp match="^\(DE-588a\)((.*))" format="${1}" />
+	</data>
+
+
 	<group name="rdaGr2:identifierForTheCorporateBody">
 		<data source="1102 .0" />
 		<data source="1100 .0" />
 		<data source="1101 .0" />
 	</group>
-	
+
 	<group name="gnd:preferredNameForTheCorporateBody">
 		<data source="1102 .a" />
 		<data source="1100 .a" />
 		<data source="1101 .a" />
 	</group>
-	
+
 	<data source="24510.a" name="dcterms:title" />
 	<data source="24514.a" name="dcterms:title" />
 	<data source="24500.a" name="dcterms:title" />
-	
+
 	<group name="xbib:issueType">
 		<data source="250  .a" />
 		<data source="250  .6" />
 		<data source="250  .8" />
 	</group>
-	
+
 	<data source="260  .a" name="xbib:publicationPlace" />
 	<data source="260  .b" name="xbib:publisherName" />
-	
+
 	<group name="dcterms:issued">
 		<data source="260  .c" />
 		<data source="2603 .c" />
 	</group>
-	
+
 	<group name="xbib:volume">
 		<data source="4900 .v" />
 		<data source="4901 .v" />
@@ -200,7 +194,7 @@
 	</group>
 
 	<data source="502  .o" name="xbib:identifierUniversityScript"></data>
-	
+
 	<group name="cg:broaderWork">
 		<data source="773  .w" />
 		<data source="7730 .w" />
@@ -208,7 +202,7 @@
 		<data source="77318.w" />
 		<data source="77308.w" />
 	</group>
-	
+
 	<map name="prefixLookup">
 		<entry name="DE-101" value="xbib:identifierAuthorityDNB" />
 		<entry name="(DE-600)" value="xbib:identifierAuthorityZDB" />
@@ -216,36 +210,36 @@
 		<entry name="ItFiC" value="xbib:identifierAuthorityCasaliniLibri" />
 		<entry name="FrPBN" value="xbib:identifierAuthorityBNF" />
 		<entry name="(OCoLC)" value="xbib:identifierAuthorityOCLC" />
-		<entry name="(DE-599)" value="xbib:identifierAuthorityEKI"/>
-		<entry name="(XXXxUND)" value="EKI-fakePrefix"/>
+		<entry name="(DE-599)" value="xbib:identifierAuthorityEKI" />
+		<entry name="(XXXxUND)" value="EKI-fakePrefix" />
 	</map>
-	
+
 	<map name="doiList">
 		<entry name="doi" value="xbib:uniformResourceDoi" />
 		<entry name="urn" value="xbib:uniformResourceName" />
 		<entry name="handle" value="xbib:uniformResourceHandle" />
 	</map>
-	
+
 	<map name="vdList">
 		<entry name="VD16" value="xbib:identifierVD16" />
 		<entry name="VD17" value="xbib:identifierVD17" />
 		<entry name="VD18" value="xbib:identifierVD18" />
 	</map>
-	
+
 	<map name="workListLimited" default="undefined">
-		<entry name="a" value="dependentWork" />
+		<entry name="a " value="dependentWork" />
 		<entry name="m " value="independentWork" />
 		<entry name="ma" value="severalVolumesWorkLimited" />
 		<entry name="mb" value="singleVolumeWorkPartOfBigger" />
-		<entry name="mc" value="partWithDependentTitle"/>
+		<entry name="mc" value="partWithDependentTitle" />
 	</map>
-		
-	<map name="workListContinuousWorks" >
-		<entry name="d" value="dependentConWork" />	
+
+	<map name="workListContinuousWorks">
+		<entry name="d" value="dependentConWork" />
 		<entry name="s" value="journalSeriesNewspaper" />
 	</map>
-	
-	
+
+
 
 </metamorph>	
 
