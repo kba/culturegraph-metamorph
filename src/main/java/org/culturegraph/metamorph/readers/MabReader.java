@@ -26,6 +26,7 @@ public final class MabReader extends AbstractReader {
 	private static final int FIELD_NAME_SIZE = 4;
 	private static final int HEADER_SIZE = 24;
 	private static final String LEADER = "Leader";
+	private static final String INVALID_FORMAT = "Invalid MAB format";
 
 	@Override
 	protected void processRecord(final String record) {
@@ -73,7 +74,7 @@ public final class MabReader extends AbstractReader {
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
-			throw new MetamorphException("Invalid MAB format", e);
+			throw new MetamorphException(INVALID_FORMAT, e);
 		} finally {
 			getStreamReceiver().endRecord();
 		}
@@ -85,12 +86,12 @@ public final class MabReader extends AbstractReader {
 	}
 
 	public static String extractIdFromRawRecord(final String record) {
-
-		if (record.length() > ID_START) {
+		try{
 			final int fieldEnd = record.indexOf(MabCharset.FELDENDEZEICHEN, ID_START);
 			return record.substring(ID_START, fieldEnd);
+		} catch (IndexOutOfBoundsException e) {
+			throw new MetamorphException(INVALID_FORMAT, e);
 		}
-		return null;
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 
 /**
- * Parses a raw Marc stream using Marc4j. Events are handled by a
+ * Parses a raw Marc stream. UTF-8 encoding expected. Events are handled by a
  * {@link StreamReceiver}.
  * 
  * @author "Markus Michael Geipel"
