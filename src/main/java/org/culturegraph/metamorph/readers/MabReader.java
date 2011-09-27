@@ -5,8 +5,6 @@ import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.ddb.charset.MabCharset;
 
@@ -20,26 +18,21 @@ import de.ddb.charset.MabCharset;
  */
 public final class MabReader extends AbstractReader {
 
-	private static final Pattern FIELD_PATTERN = Pattern.compile(String
-			.valueOf(MabCharset.FELDENDEZEICHEN));
-	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(String
-			.valueOf(MabCharset.UNTERFELDBEGINNZEICHEN));
-	private static final String RECORD_END = Character
-			.toString(MabCharset.SATZENDEZEICHEN);
+	private static final Pattern FIELD_PATTERN = Pattern.compile(String.valueOf(MabCharset.FELDENDEZEICHEN));
+	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(String.valueOf(MabCharset.UNTERFELDBEGINNZEICHEN));
+	private static final String RECORD_END = Character.toString(MabCharset.SATZENDEZEICHEN);
 
 	private static final int ID_START = 28;
 	private static final int FIELD_NAME_SIZE = 4;
 	private static final int HEADER_SIZE = 24;
-
-	private static final Logger LOG = LoggerFactory.getLogger(MabReader.class);
+	private static final String LEADER = "Leader";
 
 	@Override
-	protected void processRecord(final String record) {	
+	protected void processRecord(final String record) {
 		if (record.trim().isEmpty()) {
 			return;
 		}
 
-		
 		final String content = record.substring(HEADER_SIZE);
 
 		// final String header = record.substring(0, HEADER_SIZE);
@@ -52,30 +45,21 @@ public final class MabReader extends AbstractReader {
 		// LOG.trace("Datenanfang: " + header.substring(12, 17));
 		// LOG.trace("Typ: " + header.substring(23, 24));
 		// }
-		
-		if(LOG.isTraceEnabled()){
-			LOG.trace(record.substring(0, HEADER_SIZE).toString());
-		}
 
 		getStreamReceiver().startRecord();
-		
+
 		try {
 
-			getStreamReceiver().literal("Leader", record.substring(0, HEADER_SIZE).toString());
-			
+			getStreamReceiver().literal(LEADER, record.substring(0, HEADER_SIZE).toString());
+
 			for (String part : FIELD_PATTERN.split(content)) {
 				if (!part.startsWith(RECORD_END)) {
-					final String fieldName = part.substring(0, FIELD_NAME_SIZE)
-							.trim();
+					final String fieldName = part.substring(0, FIELD_NAME_SIZE).trim();
 					final String fieldContent = part.substring(FIELD_NAME_SIZE);
-					final String[] subFields = SUBFIELD_PATTERN
-							.split(fieldContent);
+					final String[] subFields = SUBFIELD_PATTERN.split(fieldContent);
 
 					if (subFields.length == 1) {
 						getStreamReceiver().literal(fieldName, subFields[0]);
-						if(LOG.isTraceEnabled()){
-							LOG.trace(fieldName.toString()+"\t"+subFields[0].toString());
-						}
 					} else {
 						getStreamReceiver().startEntity(fieldName);
 
@@ -83,10 +67,6 @@ public final class MabReader extends AbstractReader {
 							final String name = subFields[i].substring(0, 1);
 							final String value = subFields[i].substring(1);
 							getStreamReceiver().literal(name, value);
-							if(LOG.isTraceEnabled()){
-								LOG.trace(fieldName+name.toString()+"\t"+value.toString());
-							}
-
 						}
 						getStreamReceiver().endEntity();
 					}
@@ -103,17 +83,11 @@ public final class MabReader extends AbstractReader {
 	protected Charset getCharset() {
 		return new MabCharset(false);
 	}
-	
+
 	public static String extractIdFromRawRecord(final String record) {
 
 		if (record.length() > ID_START) {
-			int fieldEnd = ID_START;
-			final int length = record.length();
-			while (record.charAt(fieldEnd) != MabCharset.FELDENDEZEICHEN
-					&& fieldEnd < length) {
-				++fieldEnd;
-			}
-
+			final int fieldEnd = record.indexOf(MabCharset.FELDENDEZEICHEN, ID_START);
 			return record.substring(ID_START, fieldEnd);
 		}
 		return null;

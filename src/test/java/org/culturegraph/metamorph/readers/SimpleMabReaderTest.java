@@ -16,12 +16,9 @@ import org.junit.Test;
 public final class SimpleMabReaderTest {
 	
 	private static final int NUM_RECORDS=10;
-	private static final int NUM_LITERALS=500;
-	
+	private static final int NUM_LITERALS=510;
 	private final MabReader reader = new MabReader();
 	private final CountingStreamReceiver countStreamReceiver =  new CountingStreamReceiver();
-
-	
 	
 	@Test
 	public void testRead() throws IOException {

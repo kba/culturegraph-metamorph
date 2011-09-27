@@ -74,8 +74,8 @@ public final class MarcReader extends AbstractReader {
 	}
 
 	public static String extractIdFromRawRecord(final String record) {
-		final int start = record.indexOf(FIELD_DELIMITER);
-		final int end = record.indexOf(FIELD_DELIMITER, start + 1);
+		final int start = record.indexOf(FIELD_DELIMITER) + 1;
+		final int end = record.indexOf(FIELD_DELIMITER, start);
 		return record.substring(start, end);
 	}
 
