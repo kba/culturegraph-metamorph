@@ -147,8 +147,6 @@
 		<regexp match="^\(DE-588a\)((.*))" format="${1}" />
 	</data>
 		
-
-
 	<group name="rdaGr2:identifierForTheCorporateBody">
 		<data source="1102 .0" />
 		<data source="1100 .0" />

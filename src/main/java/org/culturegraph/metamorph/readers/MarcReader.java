@@ -3,7 +3,6 @@ package org.culturegraph.metamorph.readers;
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
-import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 
 /**
@@ -35,7 +34,7 @@ public final class MarcReader extends AbstractReader {
 	protected void processRecord(final String record) {
 
 		if (record.charAt(POS_ENCODING) != 'a') {
-			throw new MetamorphException("UTF-8 encoding expected");
+			throw new IllegalEncodingException("UTF-8 encoding expected");
 		}
 		final StreamReceiver receiver = getStreamReceiver();
 		try {
