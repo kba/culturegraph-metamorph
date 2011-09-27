@@ -29,11 +29,10 @@ public final class MarcReader extends AbstractReader {
 	private static final int DATA_START_END = 17;
 	private static final String MULTIPART = "multipart";
 	private static final int POS_MULTIPART = 19;
-	private static final String INVALID_FORMAT_ERROR = "Invalid format";
+	private static final Object ID_TAG = "001";
 
 	@Override
 	protected void processRecord(final String record) {
-
 
 		if (record.charAt(POS_ENCODING) != 'a') {
 			throw new MetamorphException("UTF-8 encoding expected");
@@ -67,16 +66,19 @@ public final class MarcReader extends AbstractReader {
 				}
 			}
 		} catch (IndexOutOfBoundsException exception) {
-			throw new MetamorphException(INVALID_FORMAT_ERROR + ": [" + record + "]", exception);
+			throw new RecordFormatException("[" + record + "]", exception);
 		} finally {
 			receiver.endRecord();
 		}
 	}
 
 	public static String extractIdFromRawRecord(final String record) {
-		final int start = record.indexOf(FIELD_DELIMITER) + 1;
-		final int end = record.indexOf(FIELD_DELIMITER, start);
-		return record.substring(start, end);
+		if (record.substring(POS_DIRECTORY, POS_DIRECTORY + TAG_LENGTH).equals(ID_TAG)) {
+			final int start = record.indexOf(FIELD_DELIMITER) + 1;
+			final int end = record.indexOf(FIELD_DELIMITER, start);
+			return record.substring(start, end);
+		}
+		return null;
 	}
 
 	@Override
@@ -89,4 +91,3 @@ public final class MarcReader extends AbstractReader {
 		return Charset.forName("UTF8");
 	}
 }
-

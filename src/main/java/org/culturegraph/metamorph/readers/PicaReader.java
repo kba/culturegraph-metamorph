@@ -4,7 +4,6 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 
 /**
@@ -23,7 +22,7 @@ public final class PicaReader extends AbstractReader{
 	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(SUB_DELIMITER);
 	private static final String ID_PATTERN_STRING = FIELD_DELIMITER + "003@ " + SUB_DELIMITER + "0(.*?)" + FIELD_DELIMITER;
 	private static final Pattern ID_PATTERN = Pattern.compile(ID_PATTERN_STRING);
-	private static final String INVALID_FORMAT_ERROR = "Invalid format";
+
 
 	@Override
 	protected void processRecord(final String record) {
@@ -54,7 +53,7 @@ public final class PicaReader extends AbstractReader{
 				
 			}
 		}catch(IndexOutOfBoundsException exception){
-			throw new MetamorphException(INVALID_FORMAT_ERROR + ": [" + record + "]", exception);
+			throw new RecordFormatException("[" + record + "]", exception);
 		}finally{
 			getStreamReceiver().endRecord();
 		}

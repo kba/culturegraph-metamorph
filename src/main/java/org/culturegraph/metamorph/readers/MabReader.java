@@ -50,7 +50,6 @@ public final class MabReader extends AbstractReader {
 		getStreamReceiver().startRecord();
 
 		try {
-
 			getStreamReceiver().literal(LEADER, record.substring(0, HEADER_SIZE).toString());
 
 			for (String part : FIELD_PATTERN.split(content)) {
@@ -74,7 +73,7 @@ public final class MabReader extends AbstractReader {
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
-			throw new MetamorphException(INVALID_FORMAT, e);
+			throw new RecordFormatException("[" + record + "]", e);
 		} finally {
 			getStreamReceiver().endRecord();
 		}

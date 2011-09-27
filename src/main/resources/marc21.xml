@@ -141,14 +141,13 @@
 	<group name="xbib:creatorDNBGND">
 		<data source="700  .0" />
 	</group>
+
 	
 	<data source="1001 .0" name="xbib:creatorDNBGND">
 		<regexp match="^\(DE-588a\)((.*))" format="${1}" />
 	</data>
 		
-	<data source="7001 .0" name="xbib:creatorDNBGND">
-		<regexp match="^\(DE-588a\)((.*))" format="${1}" />
-	</data>
+
 
 	<group name="rdaGr2:identifierForTheCorporateBody">
 		<data source="1102 .0" />
