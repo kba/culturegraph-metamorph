@@ -20,9 +20,11 @@ public final class MarcReader extends AbstractReader {
 	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(SUB_DELIMITER);
 	private static final int POS_ENCODING = 9;
 	private static final int POS_TYPE = 6;
+	private static final int POS_LEVEL = 7;
 	private static final int POS_DIRECTORY = 24;
 	private static final int DIRECTORY_ENTRY_WIDTH = 12;
 	private static final String TYPE = "type";
+	private static final String LEVEL = "level";
 	private static final int TAG_LENGTH = 3;
 	private static final int DATA_START_BEGIN = 12;
 	private static final int DATA_START_END = 17;
@@ -40,8 +42,9 @@ public final class MarcReader extends AbstractReader {
 		try {
 			receiver.startRecord();
 			receiver.literal(TYPE, String.valueOf(record.charAt(POS_TYPE)));
+			receiver.literal(LEVEL, String.valueOf(record.charAt(POS_LEVEL)));
 			receiver.literal(MULTIPART, String.valueOf(record.charAt(POS_MULTIPART)));
-
+			
 			final int dataStart = Integer.parseInt(record.substring(DATA_START_BEGIN, DATA_START_END));
 			final String directory = record.substring(POS_DIRECTORY, dataStart);
 			final int numDirEntries = directory.length() / DIRECTORY_ENTRY_WIDTH;
