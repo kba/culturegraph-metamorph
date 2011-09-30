@@ -71,7 +71,7 @@ public final class PicaReader extends AbstractReader{
 		if(idMatcher.find()){
 			return idMatcher.group(1);
 		}
-		return null;
+		throw new MissingIdException(record);
 	}
 
 	@Override

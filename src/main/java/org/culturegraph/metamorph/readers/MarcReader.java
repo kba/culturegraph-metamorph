@@ -68,19 +68,24 @@ public final class MarcReader extends AbstractReader {
 				}
 			}
 		} catch (IndexOutOfBoundsException exception) {
-			throw new RecordFormatException("[" + record + "]", exception);
+			throw new RecordFormatException(record, exception);
 		} finally {
 			receiver.endRecord();
 		}
 	}
 
 	public static String extractIdFromRawRecord(final String record) {
-		if (record.substring(POS_DIRECTORY, POS_DIRECTORY + TAG_LENGTH).equals(ID_TAG)) {
-			final int start = record.indexOf(FIELD_DELIMITER) + 1;
-			final int end = record.indexOf(FIELD_DELIMITER, start);
-			return record.substring(start, end);
+		try {
+			if (record.substring(POS_DIRECTORY, POS_DIRECTORY + TAG_LENGTH).equals(ID_TAG)) {
+				final int start = record.indexOf(FIELD_DELIMITER) + 1;
+				final int end = record.indexOf(FIELD_DELIMITER, start);
+				return record.substring(start, end);
+			}
+			throw new MissingIdException(record);
+
+		} catch (IndexOutOfBoundsException exception) {
+			throw new RecordFormatException(record, exception);
 		}
-		return null;
 	}
 
 	@Override
