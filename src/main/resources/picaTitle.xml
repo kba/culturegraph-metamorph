@@ -38,8 +38,13 @@
 	
 	<data source="006X.2" name="xbib:identifierAuthorityCasaliniLibri" />
 	
-	<data source="007Ga.0" name="xbib:identifierRegioKOBV" />
-			
+	<collect-literal name="xbib:identifierAuthorityEKI"
+		value="${prefix}${id}"
+		forceOnEnd="007G">
+		<data source="007G.a" name="prefix" />
+		<data source="007G.0" name="id"/>
+	</collect-literal>	
+				
 	<data source="007Ha.0" name="xbib:identifierRegioKOBV" />
 	<data source="007Hd.0" name="xbib:identifierRegioHBZ" />
 	<data source="007He.0" name="xbib:identifierRegioHEBIS" />
