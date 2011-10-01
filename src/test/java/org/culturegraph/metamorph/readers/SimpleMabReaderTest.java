@@ -18,7 +18,7 @@ import org.junit.Test;
 public final class SimpleMabReaderTest {
 	
 	private static final int NUM_RECORDS=10;
-	private static final int NUM_LITERALS=510;
+	private static final int NUM_LITERALS=520;
 	private final MabReader reader = new MabReader();
 	private final CountingStreamReceiver countStreamReceiver =  new CountingStreamReceiver();
 	

@@ -18,13 +18,12 @@ import org.junit.Test;
 public final class SimpleMarcReaderTest {
 	
 	private static final int NUM_RECORDS=10;
-	private static final int NUM_LITERALS=737;
+	private static final int NUM_LITERALS=765;
 	
 	private final MarcReader reader = new MarcReader();
 	private final CountingStreamReceiver countStreamReceiver =  new CountingStreamReceiver();
 
-	
-	
+		
 	@Test
 	public void testRead() throws IOException {
 		reader.setStreamReceiver(countStreamReceiver);

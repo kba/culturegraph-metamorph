@@ -24,6 +24,7 @@ public final class MabReader extends AbstractReader {
 	private static final int FIELD_NAME_SIZE = 4;
 	private static final int HEADER_SIZE = 24;
 	private static final String LEADER = "Leader";
+	private static final String TYPE = "type";
 	private static final String INVALID_FORMAT = "Invalid MAB format";
 	private static final String ID_TAG = "001 ";
 	private static final int TAG_LENGTH = 4;
@@ -51,6 +52,7 @@ public final class MabReader extends AbstractReader {
 
 		try {
 			getStreamReceiver().literal(LEADER, record.substring(0, HEADER_SIZE));
+			getStreamReceiver().literal(TYPE, String.valueOf(record.charAt(HEADER_SIZE-1)));
 			final String content = record.substring(HEADER_SIZE);
 			for (String part : FIELD_PATTERN.split(content)) {
 				if (!part.startsWith(RECORD_END)) {

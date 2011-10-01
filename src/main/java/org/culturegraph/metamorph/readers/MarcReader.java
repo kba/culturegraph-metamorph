@@ -49,22 +49,20 @@ public final class MarcReader extends AbstractReader {
 			final String directory = record.substring(POS_DIRECTORY, dataStart);
 			final int numDirEntries = directory.length() / DIRECTORY_ENTRY_WIDTH;
 			final String[] fields = FIELD_PATTERN.split(record);
-			boolean isDataField = false;
 
 			for (int i = 0; i < numDirEntries; i += 1) {
 				final int base = i * 12;
 				final String[] subFields = SUBFIELD_PATTERN.split(fields[i + 1]);
 				final String tag = directory.substring(base, base + TAG_LENGTH);
-				if (isDataField) {
+				if (tag.charAt(1) == '0' && tag.charAt(0) == '0') {
+					receiver.literal(tag, subFields[0]);
+				} else {
 					receiver.startEntity(tag + subFields[0]);
 					for (int j = 1; j < subFields.length; ++j) {
 						final String subField = subFields[j];
 						receiver.literal(String.valueOf(subField.charAt(0)), subField.substring(1));
 					}
 					receiver.endEntity();
-				} else {
-					receiver.literal(tag, subFields[0]);
-					isDataField = tag.charAt(1) != '0';
 				}
 			}
 		} catch (IndexOutOfBoundsException exception) {

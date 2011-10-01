@@ -74,6 +74,9 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 
 	@Override
 	public void startRecord() {
+		entityCountStack.clear();
+		entityStack.clear();
+		
 		++recordCount;
 		entityCountStack.add(Integer.valueOf(entityCount));
 		outputStreamReceiver.startRecord();
@@ -84,13 +87,16 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 
 	@Override
 	public void endRecord() {
-		entityCount = 0;
-		entityCountStack.removeLast();
-		if (entityCountStack.size() != 0) {
-			throw new MetamorphException(ENTITIES_NOT_BALANCED);
-		}
+
 
 		outputStreamReceiver.endRecord();
+		
+		entityCount = 0;
+		entityCountStack.removeLast();
+		if (!entityCountStack.isEmpty()) {
+			
+			throw new IllegalMorphStateException(ENTITIES_NOT_BALANCED);
+		}
 	}
 
 	@Override
@@ -134,7 +140,7 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 			}
 
 		} catch (NoSuchElementException exc) {
-			throw new MetamorphException(ENTITIES_NOT_BALANCED, exc);
+			throw new IllegalMorphStateException(ENTITIES_NOT_BALANCED + ": " + exc.getMessage(), exc);
 		}
 	}
 
@@ -155,7 +161,7 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 		if (null != matchingReceiver) {
 			for (Data receiver : matchingReceiver) {
 				if (entityCountStack.isEmpty()) {
-					throw new IllegalStateException("Cannot receive literals outside of records");
+					throw new IllegalMorphStateException("Cannot receive literals outside of records");
 				}
 				try {
 					receiver.data(key, value, recordCount, entityCountStack.getLast().intValue());
