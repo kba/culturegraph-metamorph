@@ -1,6 +1,5 @@
 package org.culturegraph.metamorph.types;
 
-import org.culturegraph.metamorph.types.Literal;
 import org.junit.Assert;
 import org.junit.Test;
 
