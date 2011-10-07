@@ -28,7 +28,8 @@ public interface RawRecordReader extends StreamSender{
 	/**
 	 * Extracts the id from the raw record data. Used for database ingests.
 	 * @param record raw record
-	 * @return
+	 * @return id (never <code>null</code>!)
+	 * @throws MissingIdException
 	 */
 	String getId(String record);
 
