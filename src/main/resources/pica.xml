@@ -17,7 +17,10 @@
 	
 	<data source="019@a" name="cg:countryCodeIso" />
 	
-	<data source="011@.a" name="dcterms:issued"/>
+	<group name="dcterms:issued">
+		<data source="011@.a" />
+		<data source="011@.n" />
+	</group>
 	
 	<data source="010@.c" name="xbib:originLanguage"/>
 	
@@ -39,8 +42,7 @@
 	<data source="006X.2" name="xbib:identifierAuthorityCasaliniLibri" />
 	
 	<collect-literal name="xbib:identifierAuthorityEKI"
-		value="${prefix}${id}"
-		forceOnEnd="007G">
+		value="${prefix}${id}">
 		<data source="007G.a" name="prefix" />
 		<data source="007G.0" name="id"/>
 	</collect-literal>	
@@ -91,17 +93,8 @@
 		<data source="028A.9" />
 		<data source="028A.7" />
 	</group>
-	
-	<collect-entity name="dcterms:creator"
-		forceOnEnd="028A">
-		<data name="gnd:personalName" source="028A.5" />
-		<data name="gnd:surname" source="028A.a" />
-		<data name="gnd:forename" source="028A.d" />
-		<data name="gnd:prefix" source="028A.c" />
-		<data name="gnd:qualifier" source="028A.l" />
-	</collect-entity>
-	
-		<collect-literal name="dcterms:creator"
+		
+	<collect-literal name="dcterms:creator"
 		value="${surname}${forename}${prefix}${personalname}${qualifier}"
 		forceOnEnd="028A">
 		<data source="028A.a" name="surname" />
@@ -119,7 +112,7 @@
 	
 	<group name="rdaGr2:identifierForTheCorporateBody">
 		<data source="029A.9" />
-		<data source="029A.7" />
+		<data source="029A.0" />
 	</group>
 
 	<group name="gnd:preferredNameForTheCorporateBody">
@@ -127,6 +120,53 @@
 		<data source="029A.b" />
 	</group>
 	
+	<group name="dcterms:title">
+		<data source="021A.a" />
+	</group>
 	
+	<group name="xbib:issueType">
+		<data source="032@.a" />
+	</group>
+	
+	
+	<data source="002@.0" name="cg:typeOfWork">
+	<substring start="1" end="2"/>
+		<lookup in="workList" />
+	</data>
+	
+	<data source="002@.0" name="cg:statusWork">
+	<substring start="2" end="3"/>
+		<lookup in="statusList" />
+	</data>
+					
+	<data source="033A.p" name="xbib:publicationPlace" />
+	<data source="033A.n" name="xbib:publisherName" />
+	
+	<map name="workList">
+		<entry name="a" value="independentWork" />
+		<entry name="b" value="journalSeriesNewspaper" />
+		<entry name="c" value="severalVolumesWorkLimited" />
+		<entry name="d" value="journalSeriesNewspaper" />
+		<entry name="E" value="severalVolWorkLtdPartOfBigger " />
+		<entry name="f" value="dependentConWork" />
+		<entry name="F" value="singleVolumeWorkPartOfBigger" />
+		<entry name="l" value="journalSeriesNewspaper" />
+		<entry name="p" value="journalSeriesNewspaper" />
+	</map>
+	
+		<map name="statusList">
+		<entry name="a" value="provisorischerDatensatz" />
+		<entry name="c" value="DatensatzNeuerscheinungsdienst" />
+		<entry name="d" value="HssReiheH" />
+		<entry name="f" value="Fremddaten" />
+		<entry name="g" value="konvDatensHss " />
+		<entry name="h" value="konvZeitschriftenDaten" />
+		<entry name="l" value="konvDaten" />
+		<entry name="r" value="konvDaten" />
+		<entry name="s" value="konvDaten" />
+		<entry name="n" value="altDaten" />
+		<entry name="o" value="altDaten" />
+		<entry name="t" value="altDaten" />
+	</map>
 	
 </metamorph>
