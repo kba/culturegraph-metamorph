@@ -30,10 +30,10 @@
 	
 	<data source="004F.0" name="xbib:identifierAuthorityISMN" />
 	
+	<data source="004K.0" name="xbib:identifierAuthorityEAN" />
+	
 	<data source="004M.0" name="xbib:identifierAuthorityISRN" />
-	
-	<data source="004L.0" name="xbib:identifierAuthorityEAN" />
-	
+		
 	<data source="004V.0" name="xbib:uniformResourceDoi" />
 	
 	<data source="004U.0" name="xbib:uniformResourceName" />
@@ -108,15 +108,25 @@
 		
 	<data source="019@a" name="cg:countryCodeIso" />
 	
+	<group name="dcterms:title">
+		<data source="021A.a" />
+		<data source="021B.a" />
+	</group>
+	
+	<group name="cg:additionToTitle">
+		<data source="021A.d" />
+		<data source="021B.d" />
+	</group>
+	
+	<data source="021A.9" name="cg:broaderWorkId" />
+	
+	<data source="021B.l" name="dcterms:volume" />
+		
 	<group name="xbib:creatorDNBGND">
 		<data source="028A.9" />
 		<data source="028A.7" />
 	</group>
-			
-	<group name="dcterms:title">
-		<data source="021A.a" />
-	</group>
-			
+					
 	<collect-literal name="dcterms:creator"
 		value="${surname}${forename}${prefix}${personalname}${qualifier}"
 		forceOnEnd="028A">
@@ -137,7 +147,7 @@
 		<data source="029A.0" />
 	</group>
 	
-	<group name="rdaGr2:identifierForTheCorporateBody">
+	<group name="cg:identifierForTheSecondaryCorporateBody">
 		<data source="029F.0" />
 	</group>
 
