@@ -65,19 +65,6 @@
 
 	<data source="022  .a" name="xbib:identifierAuthorityISSN" />
 
-	<group name="dcterms:language">
-		<data source="041 7.a" />
-		<data source="041 7.2" />
-	</group>
-
-	<group name="xbib:originLanguage">
-		<data source="041 7.h" />
-		<data source="041 7.2" />
-		<data source="041  .2" />
-	</group>
-	
-	<data source="044  .c" name="cg:countryCodeIso" />
-
 	<data source="0242 .a" name="xbib:identifierAuthorityISMN" />
 
 	<data source="0243 .a" name="xbib:identifierAuthorityEAN" />
@@ -128,6 +115,19 @@
 		<data source="041 7.h" />
 		<data source="041 7.2" />
 	</group>
+		
+	<group name="dcterms:language">
+		<data source="041 7.a" />
+		<data source="041 7.2" />
+	</group>
+
+	<group name="xbib:originLanguage">
+		<data source="041 7.h" />
+		<data source="041 7.2" />
+		<data source="041  .2" />
+	</group>
+	
+	<data source="044  .c" name="cg:countryCodeIso" />
 
 	<data source="088  .a" name="xbib:identifierReport" />
 
@@ -140,24 +140,10 @@
 		<lookup in="workListField90" />
 	</data>
 
-
-	<!-- deeper analyze on isil -->
-	<group name="xbib:creatorDNBGND">
-		<data source="700  .0" />
-	</group>
-	
 	<data source="1001 .0" name="xbib:creatorDNBGND">
 		<regexp match="^\(DE-588a\)((.*))" format="${1}" />
 	</data>
-		
-	<data source="7001 .0" name="xbib:creatorDNBGND">
-		<regexp match="^\(DE-588a\)((.*))" format="${1}" />
-	</data>
 	
-	<data source="7102 .0" name="rdaGr2:identifierForTheCorporateBody">
-		<regexp match="^\(DE-588b\)((.*))" format="${1}" />
-	</data>
-
 	<group name="rdaGr2:identifierForTheCorporateBody">
 		<data source="1102 .0" />
 		<data source="1100 .0" />
@@ -169,13 +155,45 @@
 		<data source="1100 .a" />
 		<data source="1101 .a" />
 	</group>
-
+	
 	<group name="dcterms:title">
 		<data source="24500.a"  />
+		<data source="24503.a"  />
+		<data source="24504.a"  />
 		<data source="24510.a"  />
 		<data source="24512.a"  />
 		<data source="24514.a"  />
 	</group>
+	
+	<group name="cg:additionToTitle">
+		<data source="24500.b"  />
+		<data source="24503.b"  />
+		<data source="24504.b"  />
+		<data source="24510.b"  />
+		<data source="24512.b"  />
+		<data source="24514.b"  />
+	</group>
+	
+	<group name="dcterms:volume">
+		<data source="245 0.n" />
+		<data source="245 4.n" />
+		<data source="24500.n" />
+		<data source="24503.n" />
+		<data source="24504.n" />
+		<data source="24510.n" />
+		<data source="24512.n" />
+		<data source="24514.n" />
+	</group>
+	
+	<group name="cg:titleOfVolume">
+		<data source="24500.p"  />
+		<data source="24503.p"  />
+		<data source="24504.p"  />
+		<data source="24510.p"  />
+		<data source="24512.p"  />
+		<data source="24514.p"  />
+	</group>
+	
 	<group name="xbib:issueType">
 		<data source="250  .a" />
 		<data source="250  .6" />
@@ -198,22 +216,46 @@
 	</group>
 	
 	<data source="300  .a" name="dcterms:extends" />
-
-	<group name="xbib:volume">
-		<data source="4900 .v" />
-		<data source="4901 .v" />
-		<data source="245 0.n" />
-		<data source="245 4.n" />
+				
+	<data source="502  .o" name="xbib:identifierUniversityScript" />
+	
+	<!-- deeper analyze on isil -->
+	<group name="xbib:creatorDNBGND">
+		<data source="700  .0" />
 	</group>
+	
+	<data source="7001 .0" name="xbib:creatorDNBGND">
+		<regexp match="^\(DE-588a\)((.*))" format="${1}" />
+	</data>
+	
+	<data source="7102 .0" name="rdaGr2:identifierForTheCorporateBody">
+		<regexp match="^\(DE-588b\)((.*))" format="${1}" />
+	</data>
 
-	<data source="502  .o" name="xbib:identifierUniversityScript"></data>
-
-	<group name="cg:broaderWork">
+	<group name="cg:broaderWorkId">
 		<data source="773  .w" />
 		<data source="7730 .w" />
 		<data source="7731 .w" />
 		<data source="77318.w" />
 		<data source="77308.w" />
+	</group>
+		
+	<group name="cg:broaderWorkTitle">
+		<data source="4901 .a" />
+		<data source="4900 .a" />
+		<data source="830 0.a" />
+	</group>
+	
+	<group name="cg:broaderWorkVolume">
+		<data source="4901 .v" />
+		<data source="4900 .v" />
+		<data source="830 0.v" />
+	</group>
+	
+	<group name="cg:broaderWorkId">
+		<data source="4901 .x" />
+		<data source="4900 .x" />
+		<data source="830 0.x" />
 	</group>
 
 	<map name="prefixLookup016">
@@ -225,14 +267,14 @@
 		<entry name="(OCoLC)" value="xbib:identifierAuthorityOCLC" />
 		<entry name="(DE-599)" value="xbib:identifierAuthorityEKI" />
 		<!--  
-		<entry name="(XXXxUND)" value="EKI-fakePrefix" />
-		
+		<entry name="(XXXxUND)" value="EKI-fakePrefix" />	
 		-->
 	</map>
 	
-	<map name="prefixLookup035" default="undefinedEKI">
+	<map name="prefixLookup035" default="undefinedField035">
 		<entry name="(OCoLC)" value="xbib:identifierAuthorityOCLC" />
 		<entry name="(DE-599)" value="xbib:identifierAuthorityEKI" />
+		<entry name="(OBV)" value="xbib:identifierAuthorityOBV" />
 		<entry name="(XXXxUND)" value="xbib:identifierAuthorityEKIincorrect" />
 		<entry name="(DE-576)" value="xbib:identifierAuthorityBszEKIincorrect" />
 		<entry name="(DE-101)" value="xbib:identifierAuthorityDnbEKIincorrect" />
@@ -278,7 +320,4 @@
 		<entry name="c" value="Bandauffuehrung" />
 	</map>
 	
-	
-
 </metamorph>	
-
