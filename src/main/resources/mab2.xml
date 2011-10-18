@@ -9,6 +9,9 @@
 
 	<data source="001" name="cg:sourceRecordId" />
 	<data source="003" name="xbib:lastModifiedByInstitution" />
+	
+	<data source="010" name="cg:broaderWorkId" />
+	
 	<data source="025a" name="xbib:identifierAuthorityDNB" />
 	<data source="025b" name="xbib:identifierAuthorityBNB" />
 	<data source="025c" name="xbib:identifierAuthorityCasaliniLibri" />
@@ -68,13 +71,20 @@
 	<data source="412" name="xbib:publisherName" />
 	<data source="425" name="dcterms:issued" />
 	<data source="433" name="dcterms:extends" />
+	 
+	<group name="cg:broaderWorkTitle">
+		<data source="451" />
+		<data source="451a" />
+		<data source="451b" />
+	</group>
 	
-	<group name="cg:broaderWork">
+	
+	<group name="cg:broaderWorkId">
 		<data source="453r" />
 		<data source="453m" />
 		<data source="453" />
 	</group>
-	
+		
 	<data source="455" name="xbib:titleVolume" />
 
 	<data source="540a" name="xbib:identifierAuthorityISBN">
