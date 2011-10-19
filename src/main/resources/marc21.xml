@@ -315,9 +315,10 @@
 	</map>
 	
 	<map name="resourceList" >
-		<entry name="a" value="Kopfsatz" />	
-		<entry name="b" value="Stuecktitel" />
-		<entry name="c" value="Bandauffuehrung" />
+		<entry name=" " value="multipart_notSpecified" />	
+		<entry name="a" value="multipart_Kopfsatz" />	
+		<entry name="b" value="multipart_Stuecktitel" />
+		<entry name="c" value="multipart_Bandauffuehrung" />
 	</map>
 	
 </metamorph>	
