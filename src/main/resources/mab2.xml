@@ -65,6 +65,10 @@
 		<data source="331" />
 	</group>
 	
+	<group name="cg:additionToTitle">
+		<data source="335" />
+	</group>
+		
 	<data source="403" name="xbib:issueType" />
 	
 	<data source="410" name="xbib:publicationPlace" />
