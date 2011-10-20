@@ -13,7 +13,7 @@
 		<lookup in="workListLimited" />
 	</collect-literal>
 	
-	<data source="multipart" name="cg:typeOfResource" >
+	<data source="multipart" name="cg:resourceType" >
 		<lookup in="resourceList" />
 	</data>	
 		
@@ -23,7 +23,7 @@
 
 	<data source="001" name="cg:sourceRecordId" />
 
-	<data source="005" name="dcterms:modified" />
+	<data source="005" name="xbib:lastModifiedByInstitution" />
 
 	<data source="007" name="dcterms:format">
 	</data>
@@ -120,12 +120,6 @@
 		<data source="041 7.a" />
 		<data source="041 7.2" />
 	</group>
-
-	<group name="xbib:originLanguage">
-		<data source="041 7.h" />
-		<data source="041 7.2" />
-		<data source="041  .2" />
-	</group>
 	
 	<data source="044  .c" name="cg:countryCodeIso" />
 
@@ -185,7 +179,7 @@
 		<data source="24514.n" />
 	</group>
 	
-	<group name="cg:titleOfVolume">
+	<group name="xbib:titleVolume">
 		<data source="24500.p"  />
 		<data source="24503.p"  />
 		<data source="24504.p"  />
@@ -219,11 +213,6 @@
 				
 	<data source="502  .o" name="xbib:identifierUniversityScript" />
 	
-	<!-- deeper analyze on isil -->
-	<group name="xbib:creatorDNBGND">
-		<data source="700  .0" />
-	</group>
-	
 	<data source="7001 .0" name="xbib:creatorDNBGND">
 		<regexp match="^\(DE-588a\)((.*))" format="${1}" />
 	</data>
@@ -238,6 +227,9 @@
 		<data source="7731 .w" />
 		<data source="77318.w" />
 		<data source="77308.w" />
+		<data source="4901 .x" />
+		<data source="4900 .x" />
+		<data source="830 0.x" />
 	</group>
 		
 	<group name="cg:broaderWorkTitle">
@@ -252,12 +244,6 @@
 		<data source="830 0.v" />
 	</group>
 	
-	<group name="cg:broaderWorkId">
-		<data source="4901 .x" />
-		<data source="4900 .x" />
-		<data source="830 0.x" />
-	</group>
-
 	<map name="prefixLookup016">
 		<entry name="DE-101" value="xbib:identifierAuthorityDNB" />
 		<entry name="(DE-600)" value="xbib:identifierAuthorityZDB" />
@@ -310,7 +296,7 @@
 	</map>
 	
 	<map name="workListField90" >
-		<entry name="a" value="continuation" />	
+		<entry name="a" value="continuationWork" />	
 		<entry name="b" value="severalVolWorkLtdPartOfBigger" />
 	</map>
 	
