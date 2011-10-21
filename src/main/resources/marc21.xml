@@ -213,14 +213,16 @@
 				
 	<data source="502  .o" name="xbib:identifierUniversityScript" />
 	
-	<data source="7001 .0" name="xbib:creatorDNBGND">
+	<!--  
+	<data source="7001 .0" name="xbib:creatorDNBGNDnebeneintragung">
 		<regexp match="^\(DE-588a\)((.*))" format="${1}" />
 	</data>
 	
-	<data source="7102 .0" name="rdaGr2:identifierForTheCorporateBody">
+	<data source="7102 .0" name="rdaGr2:identifierForTheCorporateBodynebeneintragung">
 		<regexp match="^\(DE-588b\)((.*))" format="${1}" />
 	</data>
-
+	-->
+	
 	<group name="cg:broaderWorkId">
 		<data source="773  .w" />
 		<data source="7730 .w" />
