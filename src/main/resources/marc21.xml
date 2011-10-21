@@ -264,12 +264,6 @@
 		<entry name="(DE-599)" value="xbib:identifierAuthorityEKI" />
 		<entry name="(OBV)" value="xbib:identifierAuthorityOBV" />
 		<entry name="(XXXxUND)" value="xbib:identifierAuthorityEKIincorrect" />
-		<entry name="(DE-576)" value="xbib:identifierAuthorityBszEKIincorrect" />
-		<entry name="(DE-101)" value="xbib:identifierAuthorityDnbEKIincorrect" />
-		<entry name="(DE-601)" value="xbib:identifierAuthorityGbvEKIincorrect" />
-		<entry name="(DE-603)" value="xbib:identifierAuthorityHeBisEKIincorrect" />
-		<entry name="(DE-604)" value="xbib:identifierAuthorityBvbEKIincorrect" />
-		<entry name="(DE-605)" value="xbib:identifierAuthorityHbzEKIincorrect" />
 	</map>
 
 	<map name="doiList" default="undefinedDoi">
