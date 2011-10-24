@@ -114,7 +114,10 @@
 	
 	<data source="021A.9" name="cg:broaderWorkId" />
 	
-	<data source="021B.l" name="dcterms:volume" />
+	<group name="dcterms:volume" >
+		<data source="021B.l" />
+		<data source="032@.a" />
+	</group>
 		
 	<group name="xbib:creatorDNBGND">
 		<data source="028A.9" />
@@ -148,10 +151,6 @@
 	<group name="gnd:preferredNameForTheCorporateBody">
 		<data source="029A.a" />
 		<data source="029A.b" />
-	</group>
-
-	<group name="xbib:issueType">
-		<data source="032@.a" />
 	</group>
 						
 	<data source="033A.p" name="xbib:publicationPlace" />
