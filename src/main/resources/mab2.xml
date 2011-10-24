@@ -69,7 +69,7 @@
 		<data source="335" />
 	</group>
 		
-	<data source="403" name="xbib:issueType" />
+	<data source="403" name="dcterms:volume" />
 	
 	<data source="410" name="xbib:publicationPlace" />
 	<data source="412" name="xbib:publisherName" />
