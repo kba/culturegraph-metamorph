@@ -73,7 +73,7 @@
 	
 	<group name="cg:edition">
 		<data source="400" />
-		<data source="403" />
+		<!-- <data source="403" /> -->
 	</group>
 	
 	<data source="410" name="xbib:publicationPlace" />
