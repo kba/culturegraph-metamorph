@@ -114,11 +114,10 @@
 	
 	<data source="021A.9" name="cg:broaderWorkId" />
 	
-	<group name="dcterms:volume" >
-		<data source="021B.l" />
-		<data source="032@.a" />
-	</group>
+	<data source="021B.l" name="dcterms:volume" />
 		
+	<data source="032@.a" name="cg:edition" />
+	
 	<group name="xbib:creatorDNBGND">
 		<data source="028A.9" />
 		<data source="028A.7" />
