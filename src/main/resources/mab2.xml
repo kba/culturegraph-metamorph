@@ -69,7 +69,12 @@
 		<data source="335" />
 	</group>
 		
-	<data source="403" name="dcterms:volume" />
+	<data source="455" name="dcterms:volume" />
+	
+	<group name="cg:edition">
+		<data source="400" />
+		<data source="403" />
+	</group>
 	
 	<data source="410" name="xbib:publicationPlace" />
 	<data source="412" name="xbib:publisherName" />
@@ -82,15 +87,12 @@
 		<data source="451b" />
 	</group>
 	
-	
 	<group name="cg:broaderWorkId">
 		<data source="453r" />
 		<data source="453m" />
 		<data source="453" />
 	</group>
 		
-	<data source="455" name="xbib:titleVolume" />
-
 	<data source="540a" name="xbib:identifierAuthorityISBN">
 		<isbn to="isbn13" />
 	</data>
