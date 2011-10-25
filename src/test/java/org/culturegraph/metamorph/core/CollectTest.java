@@ -130,7 +130,7 @@ public final class CollectTest {
 		private String content;
 
 		protected SimpleDataReceiver() {
-			// to avoid synthetic acessor methods
+			// to avoid synthetic accessor methods
 		}
 
 		public String getContent() {

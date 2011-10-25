@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.culturegraph.metamorph.functions.Compose;
 import org.culturegraph.metamorph.functions.Constant;
+import org.culturegraph.metamorph.functions.Equals;
 import org.culturegraph.metamorph.functions.Function;
 import org.culturegraph.metamorph.functions.ISBN;
 import org.culturegraph.metamorph.functions.Lookup;
@@ -70,6 +71,7 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 		registerFunctionClass("lookup", Lookup.class);
 		registerFunctionClass("replace", Replace.class);
 		registerFunctionClass("isbn", ISBN.class);
+		registerFunctionClass("equals", Equals.class);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("available functions: " + functions.keySet());
 		}

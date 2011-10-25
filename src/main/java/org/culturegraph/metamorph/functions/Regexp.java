@@ -1,9 +1,12 @@
 package org.culturegraph.metamorph.functions;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.core.MetamorphException;
+import org.culturegraph.metamorph.util.Util;
 
 
 /**
@@ -16,7 +19,7 @@ public final class Regexp extends AbstractFunction {
 	private Matcher matcher;
 	private String format;
 	private boolean exceptionOnFail;
-
+	private final Map<String, String> tempVars = new HashMap<String, String>();
 	
 	@Override
 	public String process(final String value) {
@@ -35,18 +38,15 @@ public final class Regexp extends AbstractFunction {
 				throw new PatternNotFoundException(matcher.pattern(), value);
 			}
 		}
-		
-
-		
 		return result;
 	}
 	
 	private String matchAndFormat(){
-		String result = format;		
+		tempVars.clear();
 		for (int i = 0; i < matcher.groupCount(); ++i) {
-			result = result.replaceAll("\\$\\{"+i+"\\}", matcher.group(i));
+			tempVars.put(String.valueOf(i), matcher.group(i));
 		}
-		return result; 
+		return Util.format(format, tempVars); 
 	}
 	
 	public void setExceptionOnFail(final String exceptionOnFail){

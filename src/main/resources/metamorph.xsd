@@ -183,17 +183,23 @@
 			<attribute name="start" default="0" use="optional">
 				<simpleType>
 					<restriction base="int">
-						<minInclusive value="0"></minInclusive>
+						<minInclusive value="0"/>
 					</restriction>
 				</simpleType>
 			</attribute>
 			<attribute name="end" use="optional" default="0">
 				<simpleType>
 					<restriction base="int">
-						<minInclusive value="0"></minInclusive>
+						<minInclusive value="0"/>
 					</restriction>
 				</simpleType>
 			</attribute>
+		</complexType>
+	</element>
+	
+	<element name="equals">
+		<complexType>
+			<attribute name="string" type="string" use="required"/>
 		</complexType>
 	</element>
 
@@ -206,6 +212,7 @@
 			<element ref="tns:constant" />
 			<element ref="tns:lookup" />
 			<element ref="tns:isbn" />
+			<element ref="tns:equals" />
 		</choice>
 	</group>
 	

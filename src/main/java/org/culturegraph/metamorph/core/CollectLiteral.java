@@ -3,12 +3,11 @@ package org.culturegraph.metamorph.core;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.core.Data.Mode;
 import org.culturegraph.metamorph.functions.Function;
+import org.culturegraph.metamorph.util.Util;
 
 /**
  * Corresponds to the <code>&lt;collect-literal&gt;</code> tag.
@@ -22,19 +21,10 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 	private final DataProcessorImpl dataProcessor = new DataProcessorImpl();
 	private DataReceiver dataReceiver;
 
-	private static String format(final String format, final Map<String, String> variables) {
-		String result = format;
-		for (Entry<String, String> variable : variables.entrySet()) {
-			final Pattern pattern = Pattern.compile("\\$\\{" + variable.getKey() + "\\}");
-			result = pattern.matcher(result).replaceAll(variable.getValue());
-		}
-		return result;
-	}
-
 	@Override
 	protected void emit() {
-		final String name = format(getName(), variables);
-		String value = format(getValue(), variables);
+		final String name = Util.format(getName(), variables);
+		String value = Util.format(getValue(), variables);
 
 		value = dataProcessor.applyFunctions(value);
 		if (value == null) {
@@ -45,7 +35,6 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 
 	@Override
 	public void onEntityEnd(final String entityName) {
-		variables.put(".*?", "");
 		emit();
 	}
 
@@ -76,11 +65,11 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 	@Override
 	public void addFunction(final Function function) {
 		dataProcessor.addFunction(function);
-
 	}
-	
+
 	/**
-	 * @param dataReceiver the dataReceiver to set
+	 * @param dataReceiver
+	 *            the dataReceiver to set
 	 */
 	public void setDataReceiver(final DataReceiver dataReceiver) {
 		assert dataReceiver != null;
