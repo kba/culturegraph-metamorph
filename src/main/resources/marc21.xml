@@ -181,8 +181,10 @@
 	
 	<group name="cg:edition">
 		<data source="250  .a" />
+		<!-- 
 		<data source="250  .6" />
-		<data source="250  .8" />
+		<data source="250  .8" /> 
+		-->
 	</group>
 	
 	<group name="xbib:titleVolume">
