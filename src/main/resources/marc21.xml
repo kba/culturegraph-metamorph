@@ -177,6 +177,9 @@
 		<data source="24510.n" />
 		<data source="24512.n" />
 		<data source="24514.n" />
+	</group>
+	
+	<group name="cg:edition">
 		<data source="250  .a" />
 		<data source="250  .6" />
 		<data source="250  .8" />
