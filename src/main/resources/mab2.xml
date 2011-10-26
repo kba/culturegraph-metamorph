@@ -9,9 +9,9 @@
 
 	<data source="001" name="cg:sourceRecordId" />
 	<data source="003" name="xbib:lastModifiedByInstitution" />
-	
+
 	<data source="010" name="cg:broaderWorkId" />
-	
+
 	<data source="025a" name="xbib:identifierAuthorityDNB" />
 	<data source="025b" name="xbib:identifierAuthorityBNB" />
 	<data source="025c" name="xbib:identifierAuthorityCasaliniLibri" />
@@ -20,11 +20,11 @@
 	<data source="025o" name="xbib:identifierAuthorityOCLC" />
 	<data source="025z" name="xbib:identifierAuthorityZDB" />
 	<data source="026" name="xbib:identifierAuthorityEKI" />
-	
-	<data source="type" name="cg:resourceType" >
+
+	<data source="type" name="cg:resourceType">
 		<lookup in="resourceList" />
 	</data>
-	
+
 	<group name="cg:countryCodeDIN23166">
 		<data source="036a" />
 		<data source="036b" />
@@ -33,66 +33,66 @@
 		<data source="037a" />
 		<data source="037b" />
 	</group>
-	
+
 	<group name="xbib:originLanguage">
 		<data source="038a" />
 		<data source="038b" />
 	</group>
-		
+
 	<data source="050" name="dcterms:format" />
-		
+
 	<data source="051" name="cg:typeOfWork">
-	<substring start="0" end="1"/>
+		<substring start="0" end="1" />
 		<lookup in="workListLimited" />
 	</data>
-				
-	<data source="052" name="cg:typeOfConWork" >
-		<substring start="0" end="1"/>
+
+	<data source="052" name="cg:typeOfConWork">
+		<substring start="0" end="1" />
 		<lookup in="workListContinuousWorks" />
 	</data>
-	
+
 	<data source="100" name="dcterms:creator" />
-	
+
 	<group name="xbib:creatorDNBGND">
 		<data source="102a" />
 	</group>
-	
+
 	<data source="200" name="gnd:preferredNameForTheCorporateBody" />
-	
+
 	<data source="202a" name="rdaGr2:IdentifierForTheCorporateBody" />
-		
+
 	<group name="dcterms:title">
 		<data source="331" />
 	</group>
-	
+
 	<group name="cg:additionToTitle">
 		<data source="335" />
 	</group>
-		
+
 	<data source="455" name="dcterms:volume" />
-	
+
 	<group name="cg:edition">
 		<data source="400" />
 		<!-- <data source="403" /> -->
 	</group>
-	
+
 	<data source="410" name="xbib:publicationPlace" />
 	<data source="412" name="xbib:publisherName" />
 	<data source="425" name="dcterms:issued" />
 	<data source="433" name="dcterms:extends" />
-	 
+
 	<group name="cg:broaderWorkTitle">
 		<data source="451" />
 		<data source="451a" />
 		<data source="451b" />
 	</group>
-	
+
 	<group name="cg:broaderWorkId">
 		<data source="453r" />
 		<data source="453m" />
 		<data source="453" />
 	</group>
-		
+
 	<data source="540a" name="xbib:identifierAuthorityISBN">
 		<isbn to="isbn13" />
 	</data>
@@ -100,22 +100,22 @@
 	<data source="541a" name="xbib:identifierAuthorityOriginalISMN" />
 	<data source="542a" name="xbib:identifierAuthorityISSN" />
 	<data source="543a" name="xbib:identifierAuthorityISRN" />
-	
+
 	<data source="551a" name="xbib:identifierAudioPublisher" />
 	<data source="552a" name="xbib:uniformResourceDoi" />
 	<data source="552b" name="xbib:uniformResourceName" />
 	<data source="552c" name="xbib:uniformResourceHandle" />
-	
+
 	<data source="553a" name="xbib:identifierAuthorityEAN" />
-	
+
 	<data source="554" name="xbib:identifierUniversityScript" />
 	<data source="556" name="xbib:identifierReport" />
-	
+
 	<data source="562a" name="xbib:identifierPatent" />
-	
+
 	<data source="578" name="xbib:fingerprint" />
-	
-    <map name="workListLimited">
+
+	<map name="workListLimited">
 		<entry name="a" value="dependentWork" />
 		<entry name="f" value="continuationWork" />
 		<entry name="m" value="independentWork" />
@@ -123,7 +123,7 @@
 		<entry name="s" value="singleVolumeWorkPartOfBigger" />
 		<entry name="t" value="severalVolWorkLtdPartOfBigger " />
 	</map>
-	
+
 	<map name="workListContinuousWorks">
 		<entry name="a" value="dependentConWork" />
 		<entry name="s" value="continuationConWork" />
@@ -132,7 +132,7 @@
 		<entry name="r" value="journalSeriesNewspaper" />
 		<entry name="z" value="journalSeriesNewspaper " />
 	</map>
-	
+
 	<map name="resourceList">
 		<entry name="h" value="Hauptsatz" />
 		<entry name="y" value="UntersatzAuffuehrungAbteilungen" />
@@ -141,5 +141,5 @@
 		<entry name="r" value="journalSeriesNewspaper" />
 		<entry name="z" value="journalSeriesNewspaper " />
 	</map>
-	
+
 </metamorph>

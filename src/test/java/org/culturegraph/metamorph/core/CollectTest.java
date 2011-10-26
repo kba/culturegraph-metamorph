@@ -23,16 +23,24 @@ public final class CollectTest {
 	private static final String COMPASITION_AB = VALUE_A + SPACE + VALUE_B;
 	private static final String COMPASITION_AC = VALUE_A + SPACE + VALUE_C;
 	
-	private final Data dataA = new Data();
-	private final Data dataB = new Data();
+	private final Data dataA = newData(NAME_A);
+	private final Data dataB = newData(NAME_B);
 	
 	private final MapCollector mapCollector = new MapCollector();
 	private final SimpleDataReceiver dataReceiver = new SimpleDataReceiver();
 	
-
-	public CollectTest() {
-		dataA.setName(NAME_A);
-		dataB.setName(NAME_B);
+	
+	private static Data newData(final String name){
+		final Data data = new Data();
+		data.setName(name);
+		return data;
+	}
+	
+	private static Collect wireCollect(final Collect collect, final Data data1, final Data data2){
+		collect.addData(data1);
+		collect.addData(data2);
+		collect.setName(COLLECT_NAME);
+		return collect;
 	}
 	
 	
@@ -73,6 +81,50 @@ public final class CollectTest {
 		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
 		Assert.assertTrue(dataReceiver.isEmpty());
 		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		Assert.assertFalse(dataReceiver.isEmpty());
+		Assert.assertEquals(COMPASITION_AB, dataReceiver.getContent());
+	}
+	
+	
+	@Test
+	public void testCollectLiteralWithOccurence() {
+		
+		final Data data1 = newData(NAME_A);
+		data1.setOccurence(1);
+		final Data data2 = newData(NAME_B);
+		data2.setOccurence(2);
+		
+		
+		final CollectLiteral collectLiteral = new CollectLiteral();
+		collectLiteral.setValue(VALUE_FORMAT);
+		collectLiteral.setReset(true);
+		wireCollect(collectLiteral, data1, data2);
+
+		collectLiteral.setDataReceiver(dataReceiver);
+		dataReceiver.clear();
+				
+		data1.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		data2.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		data1.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		data2.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		Assert.assertFalse(dataReceiver.isEmpty());
+		Assert.assertEquals(COMPASITION_AB, dataReceiver.getContent());	
+		
+		dataReceiver.clear();
+	
+		data1.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		data2.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		data1.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		data2.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		Assert.assertTrue(dataReceiver.isEmpty());
+			
+		data1.data(ORIGIN_NAME, VALUE_A, 1, 0);
+		data2.data(ORIGIN_NAME, VALUE_A, 1, 0);
+		data1.data(ORIGIN_NAME, VALUE_B, 1, 0);
+		Assert.assertTrue(dataReceiver.isEmpty());
+		
+		data2.data(ORIGIN_NAME, VALUE_B, 1, 0);
+
 		Assert.assertFalse(dataReceiver.isEmpty());
 		Assert.assertEquals(COMPASITION_AB, dataReceiver.getContent());	
 	}

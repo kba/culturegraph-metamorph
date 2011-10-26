@@ -24,10 +24,27 @@ final class Data extends DataProcessorImpl implements DataSender, DataReceiver {
 	private String value;
 	private Mode mode = Mode.AS_VALUE;
 	private DataReceiver dataReceiver;
+	private int occurence;
+	private int occurenceCount;
+
+	private int oldRecordCount;
+
+	public void setOccurence(final int occurence) {
+
+		this.occurence = occurence;
+
+	}
 
 	@Override
 	public void data(final String recName, final String recValue, final int recordCount, final int entityCount) {
 		assert dataReceiver != null;
+
+		if (occurence > 0) {
+			updateOccurence(recordCount);
+			if (!isOccurenceOK()) {
+				return;
+			}
+		}
 
 		final String tempData = applyFunctions(recValue);
 		if (tempData == null) {
@@ -35,10 +52,10 @@ final class Data extends DataProcessorImpl implements DataSender, DataReceiver {
 		}
 
 		String currentName = name;
-		if(currentName==null){
-			currentName=recName;
+		if (currentName == null) {
+			currentName = recName;
 		}
-		
+
 		String currentValue = value;
 
 		if (Mode.AS_NAME.equals(mode) && name == null) {
@@ -47,13 +64,22 @@ final class Data extends DataProcessorImpl implements DataSender, DataReceiver {
 			currentValue = tempData;
 		}
 
-		if (currentName == null || currentValue == null) {
-			LOG.warn("missing defaults name=" + currentName + " value=" + currentValue);
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("emiting literal " + currentName + "=" + currentValue);
+		}
+		dataReceiver.data(currentName, currentValue, recordCount, entityCount);
+	}
+
+	private boolean isOccurenceOK() {
+		return occurence == occurenceCount;
+	}
+
+	private void updateOccurence(final int recordCount) {
+		if (recordCount == oldRecordCount) {
+			++occurenceCount;
 		} else {
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("emiting literal " + currentName + "=" + currentValue);
-			}
-			dataReceiver.data(currentName, currentValue, recordCount, entityCount);
+			occurenceCount = 1;
+			oldRecordCount = recordCount;
 		}
 	}
 

@@ -48,6 +48,7 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 	private static final Logger LOG = LoggerFactory.getLogger(MetamorphDefinitionHandler.class);
 	private static final Object METAMORPH_TAG = "metamorph";
 	private static final String MARKER_ATTR = "entityMarker";
+	private static final String OCCURENCE_ATTR = "occurence";
 
 	// private static final String TNS = "http://www.dnb.de/transformation";
 	private String emitGroupName;
@@ -100,7 +101,7 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 
 		} else if (DATA_TAG.equals(localName)) {
 			registerDataSource(atts.getValue(SOURCE_ATTR), atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR),
-					atts.getValue(AS_ATTR));
+					atts.getValue(AS_ATTR), atts.getValue(OCCURENCE_ATTR));
 
 		} else if (MAP_TAG.equals(localName)) {
 			createKeyValueStore(atts.getValue(NAME_ATTR), atts.getValue(DEFAULT_ATTR));
@@ -220,12 +221,17 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 	}
 
 	/**
+	 * @param occurence 
 	 * @param defaultName
 	 */
-	private void registerDataSource(final String source, final String name, final String value, final String mode) {
+	private void registerDataSource(final String source, final String name, final String value, final String mode, final String occurence) {
 
 		data = new Data();
 
+		if(occurence!=null){
+			data.setOccurence(Integer.parseInt(occurence));
+		}
+		
 		if (emitGroupName == null) {
 			data.setName(name);
 		} else {

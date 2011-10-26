@@ -11,8 +11,6 @@ import org.culturegraph.metamorph.core.MetamorphException;
 public final class ISBN extends AbstractFunction {
 	private static final String CHECK = "0123456789X0";
 	
-	private static final String INVALID_LENGTH = "invalid ISBN length: '";
-	private static final String INVALID_CHECK = "invalid ISBN check digit: '";
 	private static final String APOSTROPH = "'";
 	
 	private static final String ISBN10 = "isbn10";
@@ -149,14 +147,14 @@ public final class ISBN extends AbstractFunction {
 		private static final long serialVersionUID = 921922231931724504L;
 		
 		public InvalidISBNLengthException(final String isbn) {
-			super(INVALID_LENGTH + isbn + APOSTROPH);
+			super(APOSTROPH + isbn + APOSTROPH);
 		} 
 	}
 	
 	public static final class InvalidISBNCheckDigitException extends MetamorphException{
 		private static final long serialVersionUID = 921922231931724504L;
 		public InvalidISBNCheckDigitException(final String isbn) {
-			super(INVALID_CHECK + isbn + APOSTROPH);
+			super(APOSTROPH + isbn + APOSTROPH);
 		}
 	}
 
