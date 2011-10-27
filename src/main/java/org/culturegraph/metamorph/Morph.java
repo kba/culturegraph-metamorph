@@ -60,7 +60,7 @@ public final class Morph {
 						.getResourceAsStream(extension + ".xml");
 
 			}
-			final Metamorph metamorph = MetamorphBuilder.build(morphDefinition, new ConsoleWriter());
+			final Metamorph metamorph = MetamorphBuilder.build(reader,morphDefinition, new ConsoleWriter());
 
 			metamorph.setErrorHandler(new MetamorphErrorHandler() {
 				@Override
@@ -68,10 +68,8 @@ public final class Morph {
 					System.err.println(extension);
 				}
 			});
-
-			reader.setStreamReceiver(metamorph);
+	
 			reader.read(new FileInputStream(fileName));
 		}
 	}
-
 }
