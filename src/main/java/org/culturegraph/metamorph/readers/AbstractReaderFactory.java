@@ -7,7 +7,7 @@ import org.culturegraph.metamorph.util.Util;
 
 public abstract class AbstractReaderFactory implements ReaderFactory {
 	
-	public static final String REGISTRY_PROPERTY_NAME = "org.culturegraph.metamorph.readerregistry";
+	public static final String IMPLEMENTATION_NAME = "org.culturegraph.metamorph.readerregistry";
 	
 	protected AbstractReaderFactory(){
 		//nothing to do
@@ -15,7 +15,7 @@ public abstract class AbstractReaderFactory implements ReaderFactory {
 	
 	public static ReaderFactory newInstance() {
 
-		final String className = System.getProperty(REGISTRY_PROPERTY_NAME);
+		final String className = System.getProperty(IMPLEMENTATION_NAME);
 	
 		if (className != null) {
 				final Object obj = Util.instantiateClass(className);

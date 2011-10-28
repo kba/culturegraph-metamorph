@@ -41,17 +41,21 @@ public final class Util {
 		}
 		return builder.toString();
 	}
+	
+	public static ClassLoader getClassLoader(){
+		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		if (loader == null) {
+			throw new MetamorphException("Class loader could not be found.");
+		}
+		return loader;
+	}
 
 	public static Object instantiateClass(final String className) {
 		if (className == null) {
 			throw new IllegalArgumentException("'className' must not be null.");
 		}
 		try {
-			final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			if (loader == null) {
-				throw new MetamorphException("Class loader could not be found.");
-			}
-			final Class<?> clazz = loader.loadClass(className);
+			final Class<?> clazz = getClassLoader().loadClass(className);
 			return clazz.newInstance();
 			
 		} catch (ClassNotFoundException e) {
