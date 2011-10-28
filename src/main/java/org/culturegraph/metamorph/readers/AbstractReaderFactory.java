@@ -7,7 +7,7 @@ import org.culturegraph.metamorph.util.Util;
 
 public abstract class AbstractReaderFactory implements ReaderFactory {
 	
-	private static final String REGISTRY_PROPERTY_NAME = "org.culturegraph.metamorph.readerregistry";
+	public static final String REGISTRY_PROPERTY_NAME = "org.culturegraph.metamorph.readerregistry";
 	
 	public static ReaderFactory newInstance() {
 
