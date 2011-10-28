@@ -7,6 +7,8 @@ import org.junit.Test;
 
 
 /**
+ * tests {@link Regexp}, {@link Substring}, {@link Compose}, {@link Replace}
+ * 
  * @author Markus Michael Geipel
  */
 

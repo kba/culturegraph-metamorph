@@ -7,8 +7,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * tests {@link Metamorph}
+ * 
  * @author Markus Michael Geipel
-
  */
 public final class MetamorphTest implements DataReceiver {
 	

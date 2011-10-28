@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * tests {@link MetamorphBuilder} and {@link MetamorphDefinitionHandler}
  * @author Markus Michael Geipel
  */
 public final class MetamorphBuilderTest {

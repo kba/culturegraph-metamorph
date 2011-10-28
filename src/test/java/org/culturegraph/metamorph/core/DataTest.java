@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * tests {@link Data}
  * @author Markus Michael Geipel
  * @status Experimental
  */

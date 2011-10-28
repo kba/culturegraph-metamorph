@@ -7,6 +7,12 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+/**
+ * tests {@link Util}
+ * 
+ * @author Markus Michael Geipel
+ *
+ */
 public final class UtilTest {
 	
 	@Test

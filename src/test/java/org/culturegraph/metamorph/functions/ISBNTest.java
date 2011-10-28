@@ -7,6 +7,8 @@ import org.junit.Test;
 
 
 /**
+ * tests {@link ISBN}
+ * 
  * @author Markus Michael Geipel
  */
 

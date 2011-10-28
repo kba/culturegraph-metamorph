@@ -8,6 +8,8 @@ import org.junit.Test;
 
 
 /**
+ * tests {@link Lookup}
+ * 
  * @author Markus Michael Geipel
  */
 

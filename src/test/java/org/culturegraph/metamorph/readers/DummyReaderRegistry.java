@@ -3,6 +3,13 @@ package org.culturegraph.metamorph.readers;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * dummy used by {@link ReaderFactoryTest}
+ * 
+ * @author Markus Michael Geipel
+ *
+ *
+ */
 public final class DummyReaderRegistry extends AbstractReaderFactory{
 
 	@Override

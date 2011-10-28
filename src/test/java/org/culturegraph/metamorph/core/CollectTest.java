@@ -6,8 +6,9 @@ import org.culturegraph.metamorph.stream.MapCollector;
 import org.junit.Test;
 
 /**
+ * tests {@link CollectLiteral} and {@link CollectEntity}
+ * 
  * @author Markus Michael Geipel
- * @status Experimental
  */
 public final class CollectTest {
 	
