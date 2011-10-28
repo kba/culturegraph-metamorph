@@ -1,5 +1,7 @@
 package org.culturegraph.metamorph.readers;
 
+import java.util.Set;
+
 import junit.framework.Assert;
 
 import org.junit.AfterClass;
@@ -15,6 +17,7 @@ import org.junit.Test;
 public final class ReaderFactoryTest {
 
 	private static final String ALT_FORMAT = "hula";
+	private static final int NUMBER_OF_STANDARD_FORMATS = 3;
 
 	@BeforeClass
 	@AfterClass
@@ -25,7 +28,7 @@ public final class ReaderFactoryTest {
 	
 	@Test
 	public void testFactoryChange() {
-		ReaderFactory readerFactory;
+		ReaderFactory readerFactory; 
 		
 		readerFactory = AbstractReaderFactory.newInstance();
 		Assert.assertTrue("The default reader registry was not correctly loaded",
@@ -35,6 +38,18 @@ public final class ReaderFactoryTest {
 		readerFactory = AbstractReaderFactory.newInstance();
 		Assert.assertTrue("The reader registry defined in system properties was not correctly loaded",
 				readerFactory instanceof DummyReaderRegistry);
+	}
+	
+	@Test
+	public void testStandartReaderRegistration() {
+		final ReaderFactory readerFactory = new StandardReaderFactory();
+		final Set<String> formats = readerFactory.getSupportedFormats();
+		
+		Assert.assertTrue("missing standard formats", NUMBER_OF_STANDARD_FORMATS <= formats.size());
+		
+		for(String format:formats){
+			Assert.assertNotNull(readerFactory.newReader(format));
+		}
 	}
 	
 	@Test
