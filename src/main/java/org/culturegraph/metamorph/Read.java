@@ -3,10 +3,10 @@ package org.culturegraph.metamorph;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.culturegraph.metamorph.readers.DefaultReaderRegistry;
-import org.culturegraph.metamorph.readers.RawRecordReader;
-import org.culturegraph.metamorph.readers.ReaderRegistry;
-import org.culturegraph.metamorph.streamreceiver.ConsoleWriter;
+import org.culturegraph.metamorph.readers.AbstractReaderFactory;
+import org.culturegraph.metamorph.readers.Reader;
+import org.culturegraph.metamorph.readers.ReaderFactoryTemp;
+import org.culturegraph.metamorph.stream.ConsoleWriter;
 
 /**
  * Example which reads mab2, pica and marc21 files and prints the result to the console
@@ -30,7 +30,7 @@ public final class Read {
 			return;
 		}
 
-		final ReaderRegistry readerRegistry = new DefaultReaderRegistry();
+		final ReaderFactoryTemp readerRegistry = AbstractReaderFactory.newInstance();
 
 		final String fileName = args[0];
 		final int dotPos = fileName.lastIndexOf('.');
@@ -38,7 +38,7 @@ public final class Read {
 			System.err.println("Extention missing");
 		} else {
 			final String extension = fileName.substring(dotPos + 1);
-			final RawRecordReader reader = readerRegistry.getReaderForFormat(extension);
+			final Reader reader = readerRegistry.newReader(extension);
 
 			if (reader == null) {
 				System.err.println("Extention not recognized");

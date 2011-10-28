@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
+import org.culturegraph.metamorph.stream.StreamReceiver;
 
 /**
  * Parses a raw Picaplus stream (utf8 encoding assumed).

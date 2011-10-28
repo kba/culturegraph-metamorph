@@ -11,8 +11,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.culturegraph.metamorph.readers.StreamSender;
-import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
+import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.culturegraph.metamorph.stream.StreamSender;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

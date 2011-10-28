@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
-import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
+import org.culturegraph.metamorph.stream.StreamReceiver;
 
 
 
@@ -19,7 +19,7 @@ import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
  * @status Productive
  * @see StreamReceiver
  */
-public abstract class AbstractReader implements RawRecordReader{
+public abstract class AbstractReader implements Reader{
 
 	private StreamReceiver streamReceiver;
 	
@@ -47,6 +47,7 @@ public abstract class AbstractReader implements RawRecordReader{
 	}
 	
 	protected abstract Charset getCharset();
+	
 
 	@Override
 	public final void read(final String entry){

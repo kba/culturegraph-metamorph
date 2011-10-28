@@ -3,12 +3,10 @@ package org.culturegraph.metamorph.readers;
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
-import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
-
-import de.ddb.charset.MabCharset;
+import org.culturegraph.metamorph.stream.StreamReceiver;
 
 /**
- * Parses a raw Mab2 stream (mab encoding assumed). Events are handled by a
+ * Parses a raw Mab2 stream (utf-8 encoding assumed). Events are handled by a
  * {@link StreamReceiver}.
  * 
  * @author "Markus Michael Geipel"
@@ -16,10 +14,11 @@ import de.ddb.charset.MabCharset;
  * @see StreamReceiver
  */
 public final class MabReader extends AbstractReader {
-
-	private static final Pattern FIELD_PATTERN = Pattern.compile(String.valueOf(MabCharset.FELDENDEZEICHEN));
-	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(String.valueOf(MabCharset.UNTERFELDBEGINNZEICHEN));
-	private static final String RECORD_END = Character.toString(MabCharset.SATZENDEZEICHEN);
+	
+	private static final String FIELD_END = "\u001e";
+	private static final Pattern FIELD_PATTERN = Pattern.compile(FIELD_END);
+	private static final Pattern SUBFIELD_PATTERN = Pattern.compile("\u001f");
+	private static final String RECORD_END = "\u001d";
 
 	private static final int FIELD_NAME_SIZE = 4;
 	private static final int HEADER_SIZE = 24;
@@ -28,6 +27,7 @@ public final class MabReader extends AbstractReader {
 	private static final String INVALID_FORMAT = "Invalid MAB format";
 	private static final String ID_TAG = "001 ";
 	private static final int TAG_LENGTH = 4;
+	
 
 	@Override
 	protected void processRecord(final String record) {
@@ -83,12 +83,13 @@ public final class MabReader extends AbstractReader {
 
 	@Override
 	protected Charset getCharset() {
-		return new MabCharset(false);
+		return Charset.forName("UTF-8");
+		//return new MabCharset(false);
 	}
 
 	public static String extractIdFromRawRecord(final String record) {
 		try{
-			final int fieldEnd = record.indexOf(MabCharset.FELDENDEZEICHEN, HEADER_SIZE);
+			final int fieldEnd = record.indexOf(FIELD_END, HEADER_SIZE);
 			if(record.substring(HEADER_SIZE, HEADER_SIZE + TAG_LENGTH).equals(ID_TAG)){
 				return record.substring(HEADER_SIZE + TAG_LENGTH, fieldEnd);
 			}

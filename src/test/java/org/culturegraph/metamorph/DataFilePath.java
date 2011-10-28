@@ -3,7 +3,7 @@ package org.culturegraph.metamorph;
 /**
  * @author Markus Michael Geipel
  */
-public final class Files {
+public final class DataFilePath {
 	public static final String TITLE_MAB = "src/test/resources/TITLE_10entries.mab2";
 	public static final String TITLE_PICA = "src/test/resources/TITLE_10entries.pica";
 	public static final String PND_PICA = "src/test/resources/PND_10entries.pica";
@@ -16,7 +16,7 @@ public final class Files {
 	
 	
 	
-	private Files() {/*no instances exist*/}
+	private DataFilePath() {/*no instances exist*/}
 	
 
 }

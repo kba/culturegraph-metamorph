@@ -19,10 +19,10 @@ public final class LiteralTest{
 	
 	@Test
 	public void testLiteralCompare(){
-		final Literal literal1 = new Literal(SMALL, SMALL);
-		final Literal literal2 = new Literal(SMALL, BIG);
-		final Literal literal3 = new Literal(BIG, BIG);
-		final Literal literal4 = new Literal(SMALL, SMALL);
+		final NamedValue literal1 = new NamedValue(SMALL, SMALL);
+		final NamedValue literal2 = new NamedValue(SMALL, BIG);
+		final NamedValue literal3 = new NamedValue(BIG, BIG);
+		final NamedValue literal4 = new NamedValue(SMALL, SMALL);
 		
 		Assert.assertTrue(literal1.compareTo(literal4)==0);
 		
@@ -38,10 +38,10 @@ public final class LiteralTest{
 	
 	@Test
 	public void testLiteralEquals() {
-		final Literal literal1 = new Literal(NAME, VALUE);
-		final Literal literal2 = new Literal(NAME, VALUE);
-		final Literal literal3 = new Literal(NAME, OTHER_VALUE);
-		final Literal literal4 = new Literal(OTHER_VALUE, VALUE);
+		final NamedValue literal1 = new NamedValue(NAME, VALUE);
+		final NamedValue literal2 = new NamedValue(NAME, VALUE);
+		final NamedValue literal3 = new NamedValue(NAME, OTHER_VALUE);
+		final NamedValue literal4 = new NamedValue(OTHER_VALUE, VALUE);
 		
 		Assert.assertTrue(literal1.equals(literal1));
 		Assert.assertTrue(literal1.equals(literal2));

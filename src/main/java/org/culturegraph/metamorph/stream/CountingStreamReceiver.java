@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.streamreceiver;
+package org.culturegraph.metamorph.stream;
 
 /**
  * Counts the number of records and fields read. Used mainly for test cases and

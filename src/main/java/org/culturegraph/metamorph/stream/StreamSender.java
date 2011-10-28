@@ -1,6 +1,5 @@
-package org.culturegraph.metamorph.readers;
+package org.culturegraph.metamorph.stream;
 
-import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
 
 public interface StreamSender {
 	/**

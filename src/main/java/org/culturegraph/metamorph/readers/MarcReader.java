@@ -3,7 +3,7 @@ package org.culturegraph.metamorph.readers;
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
-import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
+import org.culturegraph.metamorph.stream.StreamReceiver;
 
 /**
  * Parses a raw Marc stream. UTF-8 encoding expected. Events are handled by a

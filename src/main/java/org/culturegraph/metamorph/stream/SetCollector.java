@@ -1,27 +1,27 @@
-package org.culturegraph.metamorph.streamreceiver;
+package org.culturegraph.metamorph.stream;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.culturegraph.metamorph.types.Literal;
+import org.culturegraph.metamorph.types.NamedValue;
 
 /**
- * Collects {@link Literal}s in a {@link Set}. So there will not be duplicates.
+ * Collects {@link NamedValue}s in a {@link Set}. So there will not be duplicates.
  * @author Markus Michael Geipel
  */
 public final class SetCollector extends DefaultStreamReceiver {
 
-	private final Set<Literal> set;
+	private final Set<NamedValue> set;
 
 	public SetCollector() {
 		super();
-		set=new HashSet<Literal>();
+		set=new HashSet<NamedValue>();
 	}
 	
 	/**
 	 * @param set is filled with the received results.
 	 */
-	public SetCollector(final Set<Literal> set) {
+	public SetCollector(final Set<NamedValue> set) {
 		super();
 		this.set = set;
 	}
@@ -33,13 +33,13 @@ public final class SetCollector extends DefaultStreamReceiver {
 
 	@Override
 	public void literal(final String name, final String value) {
-		set.add(new Literal(name, value));
+		set.add(new NamedValue(name, value));
 	}
 
 	/**
 	 * @return set with received results.
 	 */
-	public Set<Literal> getSet() {
+	public Set<NamedValue> getSet() {
 		return set;
 	}
 	

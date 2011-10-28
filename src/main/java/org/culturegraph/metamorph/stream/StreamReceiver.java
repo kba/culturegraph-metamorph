@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.streamreceiver;
+package org.culturegraph.metamorph.stream;
 
 /**
  * @author Markus Michael Geipel

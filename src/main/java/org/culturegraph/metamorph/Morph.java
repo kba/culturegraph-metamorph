@@ -7,10 +7,10 @@ import java.io.InputStream;
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
 import org.culturegraph.metamorph.core.MetamorphErrorHandler;
-import org.culturegraph.metamorph.readers.DefaultReaderRegistry;
-import org.culturegraph.metamorph.readers.RawRecordReader;
-import org.culturegraph.metamorph.readers.ReaderRegistry;
-import org.culturegraph.metamorph.streamreceiver.ConsoleWriter;
+import org.culturegraph.metamorph.readers.AbstractReaderFactory;
+import org.culturegraph.metamorph.readers.Reader;
+import org.culturegraph.metamorph.readers.ReaderFactoryTemp;
+import org.culturegraph.metamorph.stream.ConsoleWriter;
 
 /**
  * Example which can read mab2, pica and marc21 files, applies the
@@ -36,7 +36,7 @@ public final class Morph {
 		}
 		// System.setProperty("log4j.configuration", "MorphLog.xml");
 
-		final ReaderRegistry readerRegistry = new DefaultReaderRegistry();
+		final ReaderFactoryTemp readerRegistry = AbstractReaderFactory.newInstance();
 
 		final String fileName = args[0];
 		final int dotPos = fileName.lastIndexOf('.');
@@ -44,7 +44,7 @@ public final class Morph {
 			System.err.println("Extention missing");
 		} else {
 			final String extension = fileName.substring(dotPos + 1);
-			final RawRecordReader reader = readerRegistry.getReaderForFormat(extension);
+			final Reader reader = readerRegistry.newReader(extension);
 
 			if (reader == null) {
 				System.err.println("Extention not recognized");

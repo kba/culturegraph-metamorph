@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.StreamHandler;
 
+import org.culturegraph.metamorph.stream.StreamSender;
+
 
 
 
@@ -11,7 +13,7 @@ import java.util.logging.StreamHandler;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-public interface RawRecordReader extends StreamSender{
+public interface Reader extends StreamSender{
 
 	/**
 	 * Start the parsing process. Assumes that an {@link InputStream} 

@@ -1,8 +1,8 @@
 package org.culturegraph.metamorph.core;
 
-import org.culturegraph.metamorph.streamreceiver.DefaultStreamReceiver;
-import org.culturegraph.metamorph.streamreceiver.StreamReceiver;
-import org.culturegraph.metamorph.types.Literal;
+import org.culturegraph.metamorph.stream.DefaultStreamReceiver;
+import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.culturegraph.metamorph.types.NamedValue;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public final class MetamorphTest implements DataReceiver {
 
 	private static final String FEEDBACK_VAR = "@var";
 	
-	private Literal literal;
+	private NamedValue namedValue;
 
 	
 	private static Metamorph newMetamorphWithData(final DataReceiver receiver){
@@ -44,31 +44,31 @@ public final class MetamorphTest implements DataReceiver {
 	@Test
 	public void testSimpleMapping() {
 		final Metamorph metamorph = newMetamorphWithData(this);
-		literal = null;
+		namedValue = null;
 		metamorph.startRecord();
 		
 		//simple mapping without entity
 		metamorph.literal(NON_MATCHING_PATH1, VALUE);
-		Assert.assertNull(literal);
+		Assert.assertNull(namedValue);
 		
 		metamorph.literal(MATCHING_PATH, VALUE);
-		Assert.assertNotNull(literal);
-		Assert.assertEquals(VALUE, literal.getValue());
-		literal = null;
+		Assert.assertNotNull(namedValue);
+		Assert.assertEquals(VALUE, namedValue.getValue());
+		namedValue = null;
 		
 		// mapping with entity
 		metamorph.startEntity(ENTITY_NAME);
 		metamorph.literal(LITERAL_NAME, VALUE);
-		Assert.assertNotNull(literal);
-		Assert.assertEquals(VALUE, literal.getValue());
-		literal = null;
+		Assert.assertNotNull(namedValue);
+		Assert.assertEquals(VALUE, namedValue.getValue());
+		namedValue = null;
 		
 		metamorph.literal(NON_MATCHING_PATH2, VALUE);
-		Assert.assertNull(literal);
+		Assert.assertNull(namedValue);
 		
 		metamorph.endEntity();
 		metamorph.literal(LITERAL_NAME, VALUE);
-		Assert.assertNull(literal);
+		Assert.assertNull(namedValue);
 	}
 	
 	@Test
@@ -88,13 +88,13 @@ public final class MetamorphTest implements DataReceiver {
 		data.setDataReceiver(this);
 		metamorph.registerDataSource(data, FEEDBACK_VAR);
 		
-		literal = null;
+		namedValue = null;
 		
 		metamorph.startRecord();
 		metamorph.literal(MATCHING_PATH, VALUE);
-		Assert.assertNotNull(literal);
-		Assert.assertEquals(VALUE, literal.getValue());
-		literal = null;
+		Assert.assertNotNull(namedValue);
+		Assert.assertEquals(VALUE, namedValue.getValue());
+		namedValue = null;
 		
 		
 	}
@@ -128,6 +128,6 @@ public final class MetamorphTest implements DataReceiver {
 	@Override
 	public void data(final String name, final String value,  final int recordCount,
 			final int entityCount) {
-		this.literal = new Literal(name, value);
+		this.namedValue = new NamedValue(name, value);
 	}
 }
