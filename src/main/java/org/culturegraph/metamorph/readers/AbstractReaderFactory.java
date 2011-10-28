@@ -9,6 +9,10 @@ public abstract class AbstractReaderFactory implements ReaderFactory {
 	
 	public static final String REGISTRY_PROPERTY_NAME = "org.culturegraph.metamorph.readerregistry";
 	
+	protected AbstractReaderFactory(){
+		//nothing to do
+	}
+	
 	public static ReaderFactory newInstance() {
 
 		final String className = System.getProperty(REGISTRY_PROPERTY_NAME);
