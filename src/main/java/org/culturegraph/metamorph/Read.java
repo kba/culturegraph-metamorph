@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.culturegraph.metamorph.readers.AbstractReaderFactory;
 import org.culturegraph.metamorph.readers.Reader;
-import org.culturegraph.metamorph.readers.ReaderFactoryTemp;
+import org.culturegraph.metamorph.readers.ReaderFactory;
 import org.culturegraph.metamorph.stream.ConsoleWriter;
 
 /**
@@ -30,7 +30,7 @@ public final class Read {
 			return;
 		}
 
-		final ReaderFactoryTemp readerRegistry = AbstractReaderFactory.newInstance();
+		final ReaderFactory readerRegistry = AbstractReaderFactory.newInstance();
 
 		final String fileName = args[0];
 		final int dotPos = fileName.lastIndexOf('.');

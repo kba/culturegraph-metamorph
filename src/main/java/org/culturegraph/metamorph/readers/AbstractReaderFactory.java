@@ -5,18 +5,18 @@ import org.culturegraph.metamorph.util.Util;
 
 
 
-public abstract class AbstractReaderFactory implements ReaderFactoryTemp {
+public abstract class AbstractReaderFactory implements ReaderFactory {
 	
 	private static final String REGISTRY_PROPERTY_NAME = "org.culturegraph.metamorph.readerregistry";
 	
-	public static ReaderFactoryTemp newInstance() {
+	public static ReaderFactory newInstance() {
 
 		final String className = System.getProperty(REGISTRY_PROPERTY_NAME);
 	
 		if (className != null) {
 				final Object obj = Util.instantiateClass(className);
 				if (obj instanceof AbstractReaderFactory) {
-					return (ReaderFactoryTemp) obj;
+					return (ReaderFactory) obj;
 				}
 				throw new MetamorphException(className + " could not be instantiated as it is not a subclass of " + AbstractReaderFactory.class.getName());
 		}
