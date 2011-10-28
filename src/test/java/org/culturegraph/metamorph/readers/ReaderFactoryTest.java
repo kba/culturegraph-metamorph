@@ -7,7 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * tests {@link AbstractReaderFactory} and {@link ReaderFactoryImpl}
+ * tests {@link AbstractReaderFactory} and {@link StandardReaderFactory}
  * 
  * @author Markus Michael Geipel
  *
@@ -20,7 +20,7 @@ public final class ReaderFactoryTest {
 	@AfterClass
 	public static void cleanProperties(){
 		System.getProperties().remove(AbstractReaderFactory.IMPLEMENTATION_NAME);
-		System.getProperties().remove(ReaderFactoryImpl.PROPERTY_LOCATION_NAME);
+		System.getProperties().remove(StandardReaderFactory.PROPERTY_LOCATION_NAME);
 	}
 	
 	@Test
@@ -29,7 +29,7 @@ public final class ReaderFactoryTest {
 		
 		readerFactory = AbstractReaderFactory.newInstance();
 		Assert.assertTrue("The default reader registry was not correctly loaded",
-				readerFactory instanceof ReaderFactoryImpl);
+				readerFactory instanceof StandardReaderFactory);
 
 		System.setProperty(AbstractReaderFactory.IMPLEMENTATION_NAME, DummyReaderRegistry.class.getName());
 		readerFactory = AbstractReaderFactory.newInstance();
@@ -41,11 +41,11 @@ public final class ReaderFactoryTest {
 	public void testAlternativeFormatBindings() {
 		ReaderFactory readerFactory;
 				
-		readerFactory = new ReaderFactoryImpl();
+		readerFactory = new StandardReaderFactory();
 		Assert.assertFalse(readerFactory.isFormatSupported(ALT_FORMAT));
 		
-		System.setProperty(ReaderFactoryImpl.PROPERTY_LOCATION_NAME, "metamorph-alt-readers.properties");
-		readerFactory = new ReaderFactoryImpl();
+		System.setProperty(StandardReaderFactory.PROPERTY_LOCATION_NAME, "metamorph-alt-readers.properties");
+		readerFactory = new StandardReaderFactory();
 		Assert.assertTrue(readerFactory.isFormatSupported(ALT_FORMAT));
 	}
 }
