@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public final class FunctionFactory {
 
-	private static final String PROPERTIES_LOCATION = "function-mapping.properties";
+	private static final String PROPERTIES_LOCATION = "org/culturegraph/metamorph/functions/function-mapping.properties";
 	
 	private static final String INSTANTIATION_PROBLEM = " could not be instantiated";
 	
@@ -32,7 +32,7 @@ public final class FunctionFactory {
 	public FunctionFactory() {
 		super();
 
-		final InputStream inStream = FunctionFactory.class.getResourceAsStream(PROPERTIES_LOCATION);
+		final InputStream inStream = Util.getClassLoader().getResourceAsStream(PROPERTIES_LOCATION);
 		final Properties properties = new Properties();
 
 		if(inStream==null){
@@ -40,10 +40,10 @@ public final class FunctionFactory {
 		}
 		try {
 			properties.load(inStream);
+			inStream.close();
 		} catch (IOException e) {
 			throw new MetamorphException("'"+ PROPERTIES_LOCATION + "' could not be loaded", e);
-		} 
-
+		}
 		for (Entry<Object, Object> entry : properties.entrySet()) {
 			final String className = entry.getValue().toString();
 			final String name = entry.getKey().toString();
