@@ -73,7 +73,7 @@ final class MetamorphDefinitionHandler implements ContentHandler {
 		} else if (MAP_TAG.equals(localName)) {
 			createKeyValueStore(atts.getValue(NAME_ATTR), atts.getValue(DEFAULT_ATTR));
 
-		} else if (functionFactory.availableFunctions().contains(localName)) {
+		} else if (functionFactory.getAvailableFunctions().contains(localName)) {
 			registerFunction(localName, attributesToMap(atts));
 
 		} else if (ENTRY_TAG.equals(localName)) {

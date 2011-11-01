@@ -15,7 +15,7 @@ public final class FunctionFactoryTest {
 	@Test
 	public void testInitialization() {
 		final FunctionFactory factory = new FunctionFactory();
-		Assert.assertFalse(factory.availableFunctions().isEmpty());
+		Assert.assertFalse(factory.getAvailableFunctions().isEmpty());
 		
 		final Map<String, String> attributes = new HashMap<String, String>();
 		attributes.put("value", VALUE);

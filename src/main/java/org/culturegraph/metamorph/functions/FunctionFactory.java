@@ -78,7 +78,7 @@ public final class FunctionFactory {
 		
 	}
 
-	public Set<String> availableFunctions(){
+	public Set<String> getAvailableFunctions(){
 		return availableFunctions;
 	}
 
