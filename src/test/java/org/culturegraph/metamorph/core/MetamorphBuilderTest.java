@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public final class MetamorphBuilderTest {
 
-	@Test(expected=MetamorphDefinitionException.class)
+	@Test(expected=MetamorphBuilder.MetamorphDefinitionException.class)
 	public void testShemaVerification() {
 		MetamorphBuilder.build(new File(DataFilePath.SYTAX_ERROR_MM));
 	}
