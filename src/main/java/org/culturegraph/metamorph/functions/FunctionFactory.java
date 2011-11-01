@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public final class FunctionFactory {
 
-	private static final String PROPERTIES_LOCATION = "org/culturegraph/metamorph/functions/function-mapping.properties";
+	private static final String PROPERTIES_LOCATION = "function-mapping.properties";
 	
 	private static final String INSTANTIATION_PROBLEM = " could not be instantiated";
 	
