@@ -58,10 +58,12 @@ public final class Morph {
 			} else {
 				morphDefinition = Thread.currentThread().getContextClassLoader()
 						.getResourceAsStream(extension + ".xml");
-
 			}
-			final Metamorph metamorph = MetamorphBuilder.build(reader,morphDefinition, new ConsoleWriter());
 
+			final Metamorph metamorph = MetamorphBuilder.build(morphDefinition);
+			reader.setStreamReceiver(metamorph);
+			metamorph.setStreamReceiver(new ConsoleWriter());
+			
 			metamorph.setErrorHandler(new MetamorphErrorHandler() {
 				@Override
 				public void error(final Exception exception) {

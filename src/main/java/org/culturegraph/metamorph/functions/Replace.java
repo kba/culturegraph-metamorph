@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-public final class Replace extends AbstractFunction {
+final class Replace extends AbstractFunction {
 
 	private Pattern pattern;
 	private String with;

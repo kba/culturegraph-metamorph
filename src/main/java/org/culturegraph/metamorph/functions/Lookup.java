@@ -6,7 +6,7 @@ import org.culturegraph.metamorph.core.KeyValueStoreAggregator;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-public final class Lookup implements Function {
+final class Lookup implements Function {
 
 	private KeyValueStoreAggregator keyValueStoreProvider;
 	private String datastoreName;

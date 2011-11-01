@@ -11,8 +11,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.culturegraph.metamorph.stream.StreamSender;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -20,8 +18,9 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 /**
+ * Builds a {@link Metamorph} from an xml description
+ * 
  * @author Markus Michael Geipel
- * @status Experimental
  */
 public final class MetamorphBuilder {
 
@@ -35,48 +34,23 @@ public final class MetamorphBuilder {
 	private MetamorphBuilder() {/* no instances exist */
 	}
 
-	public static Metamorph build(final StreamSender reader, final InputSource inputSource,
-			final StreamReceiver outputReceiver) {
-		final Metamorph metamorph = build(inputSource, outputReceiver);
-		reader.setStreamReceiver(metamorph);
-		return metamorph;
-	}
-
-	public static Metamorph build(final StreamSender reader, final File file, final StreamReceiver outputReceiver) {
+	public static Metamorph build(final File file) {
 		try {
-			return build(reader, new InputSource(new FileInputStream(file)), outputReceiver);
+			return build(new InputSource(new FileInputStream(file)));
 		} catch (FileNotFoundException e) {
 			throw new MetamorphDefinitionException(NOT_FOUND_ERROR, e);
 		}
 	}
 
-	public static Metamorph build(final StreamSender reader, final InputStream inputStream,
-			final StreamReceiver outputReceiver) {
-		return build(reader, new InputSource(inputStream), outputReceiver);
+	public static Metamorph build(final InputStream inputStream) {
+		return build(new InputSource(inputStream));
 	}
 
-	public static Metamorph build(final InputSource inputSource, final StreamReceiver outputReceiver) {
+
+	public static Metamorph build(final InputSource inputSource) {
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setOutputStreamReceiver(outputReceiver);
 		final MetamorphDefinitionHandler transformationContentHandler = new MetamorphDefinitionHandler(metamorph);
-		loadDefinition(transformationContentHandler, inputSource);
-		return metamorph;
-	}
-
-	public static Metamorph build(final File file, final StreamReceiver outputReceiver) {
-		try {
-			return build(new InputSource(new FileInputStream(file)), outputReceiver);
-		} catch (FileNotFoundException e) {
-			throw new MetamorphDefinitionException(NOT_FOUND_ERROR, e);
-		}
-	}
-
-	public static Metamorph build(final InputStream inputStream, final StreamReceiver outputReceiver) {
-		return build(new InputSource(inputStream), outputReceiver);
-	}
-
-	private static void loadDefinition(final MetamorphDefinitionHandler transformationContentHandler,
-			final InputSource inputSource) {
+		
 		try {
 			// XMLReader erzeugen
 			final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -104,6 +78,8 @@ public final class MetamorphBuilder {
 		} catch (SAXException e) {
 			throw new MetamorphDefinitionException(e);
 		}
+		
+		return metamorph;
 	}
 
 	private static final class MetamorphBuilderErrorHandler implements ErrorHandler {

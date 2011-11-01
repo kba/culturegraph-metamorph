@@ -34,7 +34,7 @@ public final class MetamorphTest implements DataReceiver {
 	
 	private static Metamorph newMetamorphWithData(final DataReceiver receiver){
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
+		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		final Data data = new Data();
 		data.setName(NAME);
 		data.setDataReceiver(receiver);
@@ -76,7 +76,7 @@ public final class MetamorphTest implements DataReceiver {
 	public void testFeedback() {
 	
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
+		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		Data data;
 		
 		data = new Data();
@@ -104,7 +104,7 @@ public final class MetamorphTest implements DataReceiver {
 	@Test(expected=MetamorphException.class)
 	public void testEntityBorderBalanceCheck1(){
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
+		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		
 		metamorph.startRecord();
 		metamorph.startEntity(ENTITY_NAME);
@@ -116,7 +116,7 @@ public final class MetamorphTest implements DataReceiver {
 	@Test(expected=MetamorphException.class)
 	public void testEntityBorderBalanceCheck2(){
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
+		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		
 		metamorph.startRecord();
 		metamorph.startEntity(ENTITY_NAME);

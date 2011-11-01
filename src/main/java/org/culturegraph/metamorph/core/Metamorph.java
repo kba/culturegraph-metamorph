@@ -13,8 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Transforms a data stream send via the {@link StreamReceiver} interface. Use
+ * {@link MetamorphBuilder} to create an instance based on an xml description
+ * 
  * @author Markus Michael Geipel
- * @status Experimental
  */
 public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator, DataReceiver {
 
@@ -26,7 +28,7 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 
 	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
 	private final Map<String, List<EntityEndListener>> entityEndListeners = new HashMap<String, List<EntityEndListener>>();
-	
+
 	private final Map<String, String> entityMap = new HashMap<String, String>();
 
 	private final Map<String, KeyValueStore> keyValueStores = new HashMap<String, KeyValueStore>();
@@ -47,7 +49,11 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 
 	private char entityMarker = DEFAULT_ENTITY_MARKER;
 
-	public void setEntityMarker(final char entityMarker) {
+	protected Metamorph() {
+		//keep constructor in package
+	}
+	
+	protected void setEntityMarker(final char entityMarker) {
 		this.entityMarker = entityMarker;
 	}
 
@@ -65,18 +71,12 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 		}
 		matchingDataSources.add(data);
 	}
-	
-	protected void registerRegexpDataSource(final Data data, final String regexp) {
-		assert data != null && regexp != null;
-		
-		
-	}
 
 	@Override
 	public void startRecord() {
 		entityCountStack.clear();
 		entityStack.clear();
-		
+
 		++recordCount;
 		entityCountStack.add(Integer.valueOf(entityCount));
 		outputStreamReceiver.startRecord();
@@ -88,13 +88,12 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	@Override
 	public void endRecord() {
 
-
 		outputStreamReceiver.endRecord();
-		
+
 		entityCount = 0;
 		entityCountStack.removeLast();
 		if (!entityCountStack.isEmpty()) {
-			
+
 			throw new IllegalMorphStateException(ENTITIES_NOT_BALANCED);
 		}
 	}
@@ -176,8 +175,7 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	 * @param streamReceiver
 	 *            the outputHandler to set
 	 */
-	protected void setOutputStreamReceiver(final StreamReceiver streamReceiver) {
-
+	public void setStreamReceiver(final StreamReceiver streamReceiver) {
 		if (streamReceiver == null) {
 			throw new IllegalArgumentException("'streamReceiver' must not be null");
 		}
@@ -187,7 +185,7 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	/**
 	 * @return the outputStreamReceiver
 	 */
-	protected StreamReceiver getOutputStreamReceiver() {
+	protected StreamReceiver getStreamReceiver() {
 		return outputStreamReceiver;
 	}
 
@@ -212,10 +210,10 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	public void data(final String name, final String value, final int recordCount, final int entityCount) {
 		if (name == null || value == null) {
 			LOG.warn("Empty data received. This is not suposed to happen. Please file a bugreport");
-		}else{
-			if(name.length()!=0 && name.charAt(0)==FEEDBACK_CHAR){
+		} else {
+			if (name.length() != 0 && name.charAt(0) == FEEDBACK_CHAR) {
 				dispatch(name, value);
-			}else{
+			} else {
 				outputStreamReceiver.literal(name, value);
 			}
 		}

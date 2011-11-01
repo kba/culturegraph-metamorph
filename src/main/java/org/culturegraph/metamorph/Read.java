@@ -3,9 +3,7 @@ package org.culturegraph.metamorph;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.culturegraph.metamorph.readers.AbstractReaderFactory;
-import org.culturegraph.metamorph.readers.Reader;
-import org.culturegraph.metamorph.readers.ReaderFactory;
+import org.culturegraph.metamorph.readers.MultiFormatReader;
 import org.culturegraph.metamorph.stream.ConsoleWriter;
 
 /**
@@ -30,23 +28,17 @@ public final class Read {
 			return;
 		}
 
-		final ReaderFactory readerRegistry = AbstractReaderFactory.newInstance();
-
+		final MultiFormatReader reader = new MultiFormatReader();
+		reader.setStreamReceiver(new ConsoleWriter());
+		
 		final String fileName = args[0];
 		final int dotPos = fileName.lastIndexOf('.');
 		if (dotPos < 0) {
 			System.err.println("Extention missing");
 		} else {
 			final String extension = fileName.substring(dotPos + 1);
-			final Reader reader = readerRegistry.newReader(extension);
-
-			if (reader == null) {
-				System.err.println("Extention not recognized");
-				return;
-			}
-			reader.setStreamReceiver(new ConsoleWriter());
+			reader.setFormat(extension);
 			reader.read(new FileInputStream(fileName));
 		}
 	}
-
 }

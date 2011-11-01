@@ -3,7 +3,7 @@ package org.culturegraph.metamorph.functions;
 /**
  * @author Markus Michael Geipel
  */
-public final class Equals extends AbstractFunction {
+final class Equals extends AbstractFunction {
 
 	private String string;
 
