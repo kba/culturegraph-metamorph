@@ -1,28 +1,22 @@
 package org.culturegraph.metamorph.functions;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.culturegraph.metamorph.core.MetamorphException;
-import org.culturegraph.metamorph.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class FunctionFactory {
 
-	private static final String PROPERTIES_LOCATION = "function-mapping.properties";
-	
+
+
 	private static final String INSTANTIATION_PROBLEM = " could not be instantiated";
-	
-		
+
 	private static final Logger LOG = LoggerFactory.getLogger(FunctionFactory.class);
 
 	private final Map<String, Class<? extends Function>> functionClasses = new HashMap<String, Class<? extends Function>>();
@@ -32,56 +26,36 @@ public final class FunctionFactory {
 	public FunctionFactory() {
 		super();
 
-		final InputStream inStream = Util.getClassLoader().getResourceAsStream(PROPERTIES_LOCATION);
-		final Properties properties = new Properties();
+		registerFunction("constant", Constant.class);
+		registerFunction("regexp", Regexp.class);
+		registerFunction("substring", Substring.class);
+		registerFunction("compose", Compose.class);
+		registerFunction("lookup", Lookup.class);
+		registerFunction("replace", Replace.class);
+		registerFunction("isbn", ISBN.class);
+		registerFunction("equals", Equals.class);
 
-		if(inStream==null){
-			throw new MetamorphException(PROPERTIES_LOCATION + " not found");
-		}
-		try {
-			properties.load(inStream);
-			inStream.close();
-		} catch (IOException e) {
-			throw new MetamorphException("'"+ PROPERTIES_LOCATION + "' could not be loaded", e);
-		}
-		for (Entry<Object, Object> entry : properties.entrySet()) {
-			final String className = entry.getValue().toString();
-			final String name = entry.getKey().toString();
-			registerFunction(name, className);
-		}
 		availableFunctions = Collections.unmodifiableSet(functionClasses.keySet());
 	}
-	
-	@SuppressWarnings("unchecked")
-	// protected by "if (Function.class.isAssignableFrom(clazz)) {"
-	private void registerFunction(final String name, final String className) {
-		try {
-			final Class<? extends Function> clazz = (Class<? extends Function>)Util.getClassLoader().loadClass(className);
-			if (Function.class.isAssignableFrom(clazz)) {
-				functionClasses.put(name,  clazz);
-				LOG.debug("Reader for '" + name + "': " + className);
-				
-				final Map<String, Method> methodMap = new HashMap<String, Method>();
-				functionMethodMaps.put(clazz, methodMap);
-				for (Method method : clazz.getMethods()) {
-					final String methodName = method.getName().replace("set", "").toLowerCase();
-					methodMap.put(methodName, method);
-				}
-				
-			} else {
-				LOG.warn(className + " does not implement " + Function.class.getName() + " registration with "
-						+ FunctionFactory.class.getSimpleName() + " failed.");
-			}
-		} catch (ClassNotFoundException e) {
-			LOG.warn(e.getMessage(), e);
+
+
+	private void registerFunction(final String name, final Class<? extends Function> clazz) {
+
+		functionClasses.put(name, clazz);
+		LOG.debug("Reader for '" + name + "': " + clazz.getName());
+
+		final Map<String, Method> methodMap = new HashMap<String, Method>();
+		functionMethodMaps.put(clazz, methodMap);
+		for (Method method : clazz.getMethods()) {
+			final String methodName = method.getName().replace("set", "").toLowerCase();
+			methodMap.put(methodName, method);
 		}
-		
+
 	}
 
-	public Set<String> getAvailableFunctions(){
+	public Set<String> getAvailableFunctions() {
 		return availableFunctions;
 	}
-
 
 	public Function newFunction(final String name, final Map<String, String> attributes) {
 		if (!functionClasses.containsKey(name)) {
@@ -96,7 +70,7 @@ public final class FunctionFactory {
 				method.invoke(function, attribute.getValue());
 			}
 			return function;
-			
+
 		} catch (InstantiationException e) {
 			throw new MetamorphException(clazz + INSTANTIATION_PROBLEM, e);
 		} catch (IllegalAccessException e) {
