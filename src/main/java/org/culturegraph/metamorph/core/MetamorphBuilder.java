@@ -59,19 +59,26 @@ public final class MetamorphBuilder {
 	}
 	
 	public static Metamorph build(final String morphDef) {
-		final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(morphDef + ".xml");
+		final String morphDefPath = morphDef + ".xml";
+		final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(morphDefPath);
 		if(inputStream==null){
-			throw new MetamorphDefinitionException(NOT_FOUND_ERROR + ": " + morphDef);
+			throw new MetamorphDefinitionException(NOT_FOUND_ERROR + ": " + morphDefPath);
 		}
 		return build(inputStream);
 	}
 
 	public static Metamorph build(final InputStream inputStream) {
+		if(inputStream==null){
+			throw new IllegalArgumentException("'inputStream' must not be null");
+		}
 		return build(new InputSource(inputStream));
 	}
 
 
 	public static Metamorph build(final InputSource inputSource) {
+		if(inputSource==null){
+			throw new IllegalArgumentException("'inputSource' must not be null");
+		}
 		final Metamorph metamorph = new Metamorph();
 		final MetamorphDefinitionHandler transformationContentHandler = new MetamorphDefinitionHandler(metamorph);
 		

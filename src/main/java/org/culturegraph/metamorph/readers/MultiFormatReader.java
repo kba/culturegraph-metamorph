@@ -51,23 +51,21 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 			currentReader = readerFactory.newReader(format);
 			openReaders.put(format, currentReader);
 
-			if (morphDefinition == null) {
+			if (morphDefinition == null && streamReceiver!=null) {
 				currentReader.setStreamReceiver(streamReceiver);
 			} else {
-				final String morphDefinitionFinal = morphDefinition + '.' + format + ".xml";
-				final InputStream inputStream = Thread.currentThread().getContextClassLoader()
-						.getResourceAsStream(morphDefinitionFinal);
-				if (inputStream == null) {
-					throw new MetamorphException(morphDefinitionFinal + " not found");
-				}
-				final Metamorph metamorph = MetamorphBuilder.build(inputStream);
+				final String morphDefinitionFinal = morphDefinition + '.' + format;
+				final Metamorph metamorph = MetamorphBuilder.build(morphDefinitionFinal);
 				metamorphs.add(metamorph);
-				currentReader.setStreamReceiver(metamorph);
-				metamorph.setStreamReceiver(streamReceiver);
 				metamorph.setErrorHandler(this);
+				currentReader.setStreamReceiver(metamorph);
+				if(streamReceiver!=null){
+					metamorph.setStreamReceiver(streamReceiver);
+				}
 			}
 		}
 	}
+
 
 	@Override
 	public void setStreamReceiver(final StreamReceiver streamReceiver) {
