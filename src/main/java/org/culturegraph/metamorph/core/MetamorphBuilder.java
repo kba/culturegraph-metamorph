@@ -15,6 +15,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.culturegraph.metamorph.functions.Function;
 import org.culturegraph.metamorph.functions.FunctionFactory;
+import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.culturegraph.metamorph.stream.StreamSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -42,6 +44,11 @@ public final class MetamorphBuilder {
 
 	private MetamorphBuilder() {/* no instances exist */
 	}
+	
+	public static void wire(final StreamSender sender, final Metamorph metamorph, final StreamReceiver receiver){
+		sender.setStreamReceiver(metamorph);
+		metamorph.setStreamReceiver(receiver);
+	}
 
 	public static Metamorph build(final File file) {
 		try {
@@ -49,6 +56,14 @@ public final class MetamorphBuilder {
 		} catch (FileNotFoundException e) {
 			throw new MetamorphDefinitionException(NOT_FOUND_ERROR, e);
 		}
+	}
+	
+	public static Metamorph build(final String morphDef) {
+		final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(morphDef + ".xml");
+		if(inputStream==null){
+			throw new MetamorphDefinitionException(NOT_FOUND_ERROR + ": " + morphDef);
+		}
+		return build(inputStream);
 	}
 
 	public static Metamorph build(final InputStream inputStream) {

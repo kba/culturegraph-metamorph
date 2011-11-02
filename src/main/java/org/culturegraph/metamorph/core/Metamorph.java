@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator, DataReceiver {
 
+
+
 	private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
@@ -37,12 +39,7 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	private final Deque<Integer> entityCountStack = new LinkedList<Integer>();
 
 	private StreamReceiver outputStreamReceiver;
-	private MetamorphErrorHandler errorHandler = new MetamorphErrorHandler() {
-		@Override
-		public void error(final Exception exception) {
-			throw new MetamorphException("An unhandled exception occured", exception);
-		}
-	};
+	private MetamorphErrorHandler errorHandler = new DefaultErrorHandler();
 
 	private int recordCount;
 	private int entityCount;
