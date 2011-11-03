@@ -1,6 +1,8 @@
-package org.culturegraph.metamorph.stream;
+package org.culturegraph.metamorph.rdf;
 
 import java.util.Map;
+
+import org.culturegraph.metamorph.stream.StreamReceiver;
 
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -15,8 +17,13 @@ import com.hp.hpl.jena.rdf.model.Resource;
  */
 public final class JenaWriter implements StreamReceiver {
 
+	private static final int DEFAULT_BATCH_SIZE = 1000;
 	private final Model model;
 	private Resource currentResource;
+	private int batchSize = DEFAULT_BATCH_SIZE;
+	private long count;
+	private BatchFinishedListener batchFinishedListener;
+	
 	
 	public JenaWriter() {
 		model = ModelFactory.createDefaultModel();
@@ -35,14 +42,20 @@ public final class JenaWriter implements StreamReceiver {
 	}
 	
 	@Override
-	public void startRecord() {
-		currentResource = model.createResource("hula");
+	public void startRecord(final String identifier) {
+		currentResource = model.createResource("http://" + identifier);
 
 	}
 
 	@Override
 	public void endRecord() {
-		// nothing
+		++count;
+		if(count%batchSize==0){
+			if(null!=batchFinishedListener){
+				batchFinishedListener.onBatchFinished(model);
+			}
+			model.removeAll();
+		}
 	}
 
 	@Override
@@ -64,5 +77,32 @@ public final class JenaWriter implements StreamReceiver {
 		}else{
 			currentResource.addProperty(model.createProperty(name), value);
 		}
+	}
+
+	/**
+	 * @param batchSize
+	 */
+	public void setBatchSize(final int batchSize) {
+		this.batchSize = batchSize;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getBatchSize() {
+		return batchSize;
+	}
+	
+	/**
+	 * @param batchFinishedListener
+	 */
+	public void setBatchFinishedListener(final BatchFinishedListener batchFinishedListener) {
+		this.batchFinishedListener = batchFinishedListener;
+	}
+
+
+	
+	public interface BatchFinishedListener {
+		void onBatchFinished(final Model model);
 	}
 }

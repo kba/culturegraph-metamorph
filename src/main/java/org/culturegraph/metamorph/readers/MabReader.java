@@ -47,12 +47,12 @@ public final class MabReader extends AbstractReader {
 		// LOG.trace("Datenanfang: " + header.substring(12, 17));
 		// LOG.trace("Typ: " + header.substring(23, 24));
 		// }
-
-		getStreamReceiver().startRecord();
+		final StreamReceiver receiver = getStreamReceiver();
+		receiver.startRecord(extractIdFromRecord(record));
 
 		try {
-			getStreamReceiver().literal(LEADER, record.substring(0, HEADER_SIZE));
-			getStreamReceiver().literal(TYPE, String.valueOf(record.charAt(HEADER_SIZE-1)));
+			receiver.literal(LEADER, record.substring(0, HEADER_SIZE));
+			receiver.literal(TYPE, String.valueOf(record.charAt(HEADER_SIZE-1)));
 			final String content = record.substring(HEADER_SIZE);
 			for (String part : FIELD_PATTERN.split(content)) {
 				if (!part.startsWith(RECORD_END)) {
@@ -61,23 +61,23 @@ public final class MabReader extends AbstractReader {
 					final String[] subFields = SUBFIELD_PATTERN.split(fieldContent);
 
 					if (subFields.length == 1) {
-						getStreamReceiver().literal(fieldName, subFields[0]);
+						receiver.literal(fieldName, subFields[0]);
 					} else {
-						getStreamReceiver().startEntity(fieldName);
+						receiver.startEntity(fieldName);
 
 						for (int i = 1; i < subFields.length; ++i) {
 							final String name = subFields[i].substring(0, 1);
 							final String value = subFields[i].substring(1);
 							getStreamReceiver().literal(name, value);
 						}
-						getStreamReceiver().endEntity();
+						receiver.endEntity();
 					}
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
 			throw new RecordFormatException("[" + record + "]", e);
 		} finally {
-			getStreamReceiver().endRecord();
+			receiver.endRecord();
 		}
 	}
 
@@ -87,7 +87,7 @@ public final class MabReader extends AbstractReader {
 		//return new MabCharset(false);
 	}
 
-	public static String extractIdFromRawRecord(final String record) {
+	public static String extractIdFromRecord(final String record) {
 		try{
 			final int fieldEnd = record.indexOf(FIELD_END, HEADER_SIZE);
 			if(record.substring(HEADER_SIZE, HEADER_SIZE + TAG_LENGTH).equals(ID_TAG)){
@@ -101,6 +101,6 @@ public final class MabReader extends AbstractReader {
 
 	@Override
 	public String getId(final String record) {
-		return extractIdFromRawRecord(record);
+		return extractIdFromRecord(record);
 	}
 }

@@ -40,7 +40,7 @@ public final class MarcReader extends AbstractReader {
 		}
 		final StreamReceiver receiver = getStreamReceiver();
 		try {
-			receiver.startRecord();
+			receiver.startRecord(extractIdFromRawRecord(record));
 			receiver.literal(TYPE, String.valueOf(record.charAt(POS_TYPE)));
 			receiver.literal(LEVEL, String.valueOf(record.charAt(POS_LEVEL)));
 			receiver.literal(MULTIPART, String.valueOf(record.charAt(POS_MULTIPART)));

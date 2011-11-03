@@ -70,13 +70,22 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	}
 
 	@Override
-	public void startRecord() {
+	public void startRecord(final String identifier) {
 		entityCountStack.clear();
 		entityStack.clear();
 
 		++recordCount;
 		entityCountStack.add(Integer.valueOf(entityCount));
-		outputStreamReceiver.startRecord();
+		
+		final String identifierFinal;
+		if(identifier==null){
+			identifierFinal = String.valueOf(recordCount);
+		}else{
+			identifierFinal = identifier;
+		}
+		outputStreamReceiver.startRecord(identifierFinal);
+		outputStreamReceiver.literal("_id", identifierFinal);
+		
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("#" + recordCount);
 		}

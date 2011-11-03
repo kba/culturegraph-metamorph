@@ -12,7 +12,7 @@ public final class CountingStreamReceiver extends DefaultStreamReceiver {
 	private int numLiterals;
 
 	@Override
-	public void startRecord() {
+	public void startRecord(final String identifier) {
 		++numRecords;
 	}
 

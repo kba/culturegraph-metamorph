@@ -46,7 +46,7 @@ public final class MetamorphTest implements DataReceiver {
 	public void testSimpleMapping() {
 		final Metamorph metamorph = newMetamorphWithData(this);
 		namedValue = null;
-		metamorph.startRecord();
+		metamorph.startRecord(null);
 		
 		//simple mapping without entity
 		metamorph.literal(NON_MATCHING_PATH1, VALUE);
@@ -91,7 +91,7 @@ public final class MetamorphTest implements DataReceiver {
 		
 		namedValue = null;
 		
-		metamorph.startRecord();
+		metamorph.startRecord(null);
 		metamorph.literal(MATCHING_PATH, VALUE);
 		Assert.assertNotNull(namedValue);
 		Assert.assertEquals(VALUE, namedValue.getValue());
@@ -106,7 +106,7 @@ public final class MetamorphTest implements DataReceiver {
 		final Metamorph metamorph = new Metamorph();
 		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		
-		metamorph.startRecord();
+		metamorph.startRecord(null);
 		metamorph.startEntity(ENTITY_NAME);
 		metamorph.startEntity(ENTITY_NAME);
 		metamorph.endEntity();
@@ -118,7 +118,7 @@ public final class MetamorphTest implements DataReceiver {
 		final Metamorph metamorph = new Metamorph();
 		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		
-		metamorph.startRecord();
+		metamorph.startRecord(null);
 		metamorph.startEntity(ENTITY_NAME);
 		metamorph.endEntity();
 		metamorph.endEntity();

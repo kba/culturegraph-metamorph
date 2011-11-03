@@ -20,7 +20,7 @@ public final class ListMapReader implements StreamSender {
 	}
 	
 	public static void read(final ListMap<String, String> listMap, final StreamReceiver streamReceiver){
-		streamReceiver.startRecord();
+		streamReceiver.startRecord(null);
 		for(Entry<String, List<String>> entry: listMap.entrySet()){
 			final String name = entry.getKey();
 			for(String value:entry.getValue()){

@@ -31,7 +31,7 @@ public final class ConsoleWriter implements StreamReceiver {
 	}
 	
 	@Override
-	public void startRecord() {
+	public void startRecord(final String identifier) {
 		++count;
 		writer.println("RECORD " + count);
 	}

@@ -27,7 +27,7 @@ public final class SetCollector extends DefaultStreamReceiver {
 	}
 	
 	@Override
-	public void startRecord(){
+	public void startRecord(final String identifier){
 		set.clear();
 	}
 
