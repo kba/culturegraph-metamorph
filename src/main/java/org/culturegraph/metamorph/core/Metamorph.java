@@ -84,7 +84,7 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 			identifierFinal = identifier;
 		}
 		outputStreamReceiver.startRecord(identifierFinal);
-		outputStreamReceiver.literal("_id", identifierFinal);
+		literal("_id", identifierFinal);
 		
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("#" + recordCount);
