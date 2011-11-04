@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator, DataReceiver {
+public final class Metamorph implements StreamReceiver, DataReceiver {
 
-
-
+	public static final String DEFAULT_MAP_KEY = "__default";
+	
 	private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
@@ -33,7 +33,7 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 
 	private final Map<String, String> entityMap = new HashMap<String, String>();
 
-	private final Map<String, KeyValueStore> keyValueStores = new HashMap<String, KeyValueStore>();
+	private final Map<String, Map<String, String>> multiMap = new HashMap<String, Map<String, String>>();
 	private final Deque<String> entityStack = new LinkedList<String>();
 	private final StringBuilder entityPath = new StringBuilder();
 	private final Deque<Integer> entityCountStack = new LinkedList<Integer>();
@@ -195,21 +195,12 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 		return outputStreamReceiver;
 	}
 
-	@Override
-	public String getValue(final String source, final String key) {
-		final KeyValueStore keyValueStore = keyValueStores.get(source);
-		if (keyValueStore == null) {
-			return null;
-		}
-		return keyValueStore.get(key);
-	}
-
 	/**
 	 * @param mapName
 	 * @param keyValueStore
 	 */
-	public void addKeyValueStore(final String mapName, final KeyValueStore keyValueStore) {
-		keyValueStores.put(mapName, keyValueStore);
+	public void addMap(final String mapName, final Map<String, String> map) {
+		multiMap.put(mapName, map);
 	}
 
 	@Override
@@ -242,5 +233,14 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 			entityEndListeners.put(entityName, matchingListeners);
 		}
 		matchingListeners.add(entityEndListener);
+	}
+
+	
+	public Map<String, String> getMap(final String mapName) {
+		return multiMap.get(mapName);
+	}
+
+	public Map<String, Map<String, String>> getMultiMap() {
+		return multiMap;
 	}
 }

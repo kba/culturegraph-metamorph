@@ -2,9 +2,7 @@ package org.culturegraph.metamorph.readers;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.culturegraph.metamorph.core.DefaultErrorHandler;
@@ -27,11 +25,12 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 	private static final String ERROR_RECEIVER_NULL = "'streamReceiver' must not be null";
 	private Reader currentReader;
 	private final Map<String, Reader> openReaders = new HashMap<String, Reader>();
-	private final List<Metamorph> metamorphs = new ArrayList<Metamorph>();
+	private final Map<String, Metamorph> metamorphs = new HashMap<String, Metamorph>();
 	private final ReaderFactory readerFactory = AbstractReaderFactory.newInstance();
 	private StreamReceiver streamReceiver;
 	private final String morphDefinition;
 	private MetamorphErrorHandler errorHandler = new DefaultErrorHandler();
+	private String currentFormat;
 
 	public MultiFormatReader(final String morphDefinition) {
 		this.morphDefinition = morphDefinition;
@@ -40,13 +39,22 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 	public MultiFormatReader() {
 		morphDefinition = null;
 	}
+	
+	public Metamorph getMetamorph(){
+		return metamorphs.get(currentFormat);
+	}
 
 	public void setErrorHandler(final MetamorphErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
 	}
+	
+	public String getFormat(){
+		return currentFormat;
+	}
 
 	public void setFormat(final String format) {
 		currentReader = openReaders.get(format);
+		currentFormat = format;
 		if (null == currentReader) {
 			currentReader = readerFactory.newReader(format);
 			openReaders.put(format, currentReader);
@@ -56,7 +64,7 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 			} else {
 				final String morphDefinitionFinal = morphDefinition + '.' + format;
 				final Metamorph metamorph = MetamorphBuilder.build(morphDefinitionFinal);
-				metamorphs.add(metamorph);
+				metamorphs.put(format, metamorph);
 				metamorph.setErrorHandler(this);
 				currentReader.setStreamReceiver(metamorph);
 				if(streamReceiver!=null){
@@ -78,7 +86,7 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 				reader.setStreamReceiver(streamReceiver);
 			}
 		} else {
-			for (Metamorph metamorph : metamorphs) {
+			for (Metamorph metamorph : metamorphs.values()) {
 				metamorph.setStreamReceiver(streamReceiver);
 			}
 		}

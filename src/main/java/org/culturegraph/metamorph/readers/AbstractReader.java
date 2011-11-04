@@ -16,7 +16,6 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
  * Events are handled by a {@link StreamReceiver}.
  * 
  * @author "Markus Michael Geipel"
- * @status Productive
  * @see StreamReceiver
  */
 public abstract class AbstractReader implements Reader{

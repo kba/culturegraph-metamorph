@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.functions;
 
-import org.culturegraph.metamorph.core.KeyValueStoreAggregator;
+import java.util.Map;
 
 /**
  * @author Markus Michael Geipel
@@ -9,5 +9,5 @@ import org.culturegraph.metamorph.core.KeyValueStoreAggregator;
 public interface Function {
 	String process(String value);
 
-	void setKeyValueStoreAggregator(KeyValueStoreAggregator keyValueStoreProvider);
+	void setMultiMap(Map<String, Map<String, String>> multiMap);
 }

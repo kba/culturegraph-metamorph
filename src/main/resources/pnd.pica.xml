@@ -7,7 +7,9 @@
 
 	<name>Umsetzung der PND</name>
 
-	<group name="rdaGr2:identifierForThePerson">
+
+
+	<group name="http://RDVocab.info/ElementsGr2/identifierForThePerson">
 		<data source="007Q.0">
 			<compose prefix="(DE-588c)" />
 		</data>
@@ -19,24 +21,24 @@
 		</data>
 	</group>
 
-	<group name="gnd:invalidIdentifierForThePerson">
+	<group name="http://d-nb.info/gnd/invalidIdentifierForThePerson">
 		<data source="007G.0" />
 		<data source="007Hm.0">
 			<compose prefix="(DE-101c)" />
 		</data>
 	</group>
 
-	<collect-entity name="gnd:variantNameForThePerson"
+	<collect-entity name="http://d-nb.info/gnd/variantNameForThePerson"
 		forceOnEnd="028A">
-		<data name="gnd:personalName" source="028A.5" />
-		<data name="gnd:surname" source="028A.a" />
-		<data name="gnd:forename" source="028A.d" />
-		<data name="gnd:prefix" source="028A.c" />
-		<data name="gnd:qualifier" source="028A.l" />
+		<data name="http://d-nb.info/gnd/personalName" source="028A.5" />
+		<data name="http://d-nb.info/gnd/surname" source="028A.a" />
+		<data name="http://d-nb.info/gnd/forename" source="028A.d" />
+		<data name="http://d-nb.info/gnd/prefix" source="028A.c" />
+		<data name="http://d-nb.info/gnd/qualifier" source="028A.l" />
 	</collect-entity>
 
 
-	<collect-literal name="gnd:variantNameForThePerson"
+	<collect-literal name="http://d-nb.info/gnd/variantNameForThePerson"
 		value="${surname}${forename}${prefix}${personalname}${qualifier}"
 		forceOnEnd="028A">
 		<data source="028A.a" name="surname" />
@@ -52,48 +54,54 @@
 		<data source="028A.5" name="personalname" />
 	</collect-literal>
 
-	<data name="rdaGr2:dateOfBirth" source="032Aa.a">
+	<data name="http://RDVocab.info/ElementsGr2/dateOfBirth" source="032Aa.a">
 		<replace pattern=" " with="" />
 		<regexp match="((\d*?))-" format="${1}" />
 	</data>
 
-	<data name="rdaGr2:dateOfDeath" source="032Aa.a">
+	<data name="http://RDVocab.info/ElementsGr2/dateOfDeath" source="032Aa.a">
 		<replace pattern=" " with="" />
 		<regexp match="-((\d*?))$" format="${1}" />
 	</data>
 
-	<group name="rdaGr2:periodOfActivityOfThePerson">
+	<group name="http://RDVocab.info/ElementsGr2/periodOfActivityOfThePerson">
 		<data source="032Ab.a" />
 		<data source="032Ac.a" />
 		<data source="032Ae.a" />
 	</group>
 
 
-	<data source="032Ba.a" name="rdaGr2:placeOfBirth" />
-	<data source="032Bd.a" name="rdaGr2:placeOfDeath" />
-	<group name="rdaGr2:placeOfResidence">
+	<data source="032Ba.a" name="http://RDVocab.info/ElementsGr2/placeOfBirth" />
+	<data source="032Bd.a" name="http://RDVocab.info/ElementsGr2/placeOfDeath" />
+	<group name="http://RDVocab.info/ElementsGr2/placeOfResidence">
 		<data source="032Be.a" />
 		<data source="032Bf.a" />
 	</group>
-	<data source="032Bq.a" name="rdaGr2:titleOfThePerson" />
-	<data source="032Bt.a" name="gnd:academicTitleOfThePerson" />
-	<data source="032Bu.a" name="rdaGr2:biographicalInformation" />
-	<data source="032Bw.a" name="rdaGr2:gender" />
-	<data source="032Bz.a" name="gnd:studyPathsOfThePerson" />
+	<data source="032Bq.a" name="http://RDVocab.info/ElementsGr2/titleOfThePerson" />
+	<data source="032Bt.a" name="http://d-nb.info/gnd/academicTitleOfThePerson" />
+	<data source="032Bu.a"
+		name="http://RDVocab.info/ElementsGr2/biographicalInformation" />
+	<data source="032Bw.a" name="http://RDVocab.info/ElementsGr2/gender" />
+	<data source="032Bz.a" name="http://d-nb.info/gnd/studyPathsOfThePerson" />
 
-	<data source="032Fa.9" name="rdaGr2:professionOrOccupation">
+	<data source="032Fa.9"
+		name="http://RDVocab.info/ElementsGr2/professionOrOccupation">
 		<compose prefix="http://d-nb.info/gnd/" />
 	</data>
 
 	<data name="rdaRelGr2:relatedCorporateBodyPerson" source="038C.9" />
-	<data name="foaf:homepage " source="009Q.u" />
-	<data name="gnd:countryCodeForThePerson" source="042B.a" />
-	<data name="rdaGr2:languageOfThePerson" source="042C.a" />
-	<data name="owl:sameAs" source="039I.9" />
-	<data name="gnd:publicationOfThePerson" source="046G.a" />
+	<data name="http://xmlns.com/foaf/0.1/homepage " source="009Q.u" />
+	<data name="http://d-nb.info/gnd/countryCodeForThePerson" source="042B.a" />
+	<data name="http://RDVocab.info/ElementsGr2/languageOfThePerson"
+		source="042C.a" />
+	<data name="http://www.w3.org/2002/07/owl#sameAs" source="039I.9" />
+	<data name="http://d-nb.info/gnd/publicationOfThePerson" source="046G.a" />
 
-	<map name="xmlns">
-		<entry name="gnd" value="http://dnb.info/gnd"/>
+	<map name="namespaces">
+		<entry name="gnd" value="http://d-nb.info/gnd/" />
+		<entry name="rdaGr2" value="http://RDVocab.info/ElementsGr2/" />
+		<entry name="foaf" value="http://xmlns.com/foaf/0.1/" />
+		<entry name="owl" value="http://www.w3.org/2002/07/owl#" />
 	</map>
 
 </metamorph>

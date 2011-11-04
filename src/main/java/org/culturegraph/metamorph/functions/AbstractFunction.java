@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.functions;
 
-import org.culturegraph.metamorph.core.KeyValueStoreAggregator;
+import java.util.Map;
 
 /**
  * @author Markus Michael Geipel
@@ -12,7 +12,7 @@ public abstract class AbstractFunction implements Function {
 	public abstract String process(final String  value);
 
 	@Override
-	public void setKeyValueStoreAggregator(final KeyValueStoreAggregator dataSourceProvider) {
+	public void setMultiMap(final Map<String, Map<String, String>> multiMap) {
 		// do nothing
 	}
 }

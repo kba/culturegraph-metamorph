@@ -137,6 +137,7 @@ public final class MetamorphBuilder {
 		private static final Object METAMORPH_TAG = "metamorph";
 		private static final String MARKER_ATTR = "entityMarker";
 		private static final String OCCURENCE_ATTR = "occurence";
+		
 
 		private String emitGroupName;
 		private String emitGroupValue;
@@ -147,7 +148,7 @@ public final class MetamorphBuilder {
 
 		private Data data;
 		private Collect collect;
-		private SimpleKeyValueStore keyValueStore;
+		private Map<String, String> map;
 
 		public MetamorphDefinitionHandler(final Metamorph metamorph) {
 			this.metamorph = metamorph;
@@ -170,13 +171,13 @@ public final class MetamorphBuilder {
 						atts.getValue(AS_ATTR), atts.getValue(OCCURENCE_ATTR));
 
 			} else if (MAP_TAG.equals(localName)) {
-				createKeyValueStore(atts.getValue(NAME_ATTR), atts.getValue(DEFAULT_ATTR));
+				createMap(atts.getValue(NAME_ATTR), atts.getValue(DEFAULT_ATTR));
 
 			} else if (functionFactory.getAvailableFunctions().contains(localName)) {
 				registerFunction(localName, attributesToMap(atts));
 
 			} else if (ENTRY_TAG.equals(localName)) {
-				keyValueStore.put(atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR));
+				map.put(atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR));
 
 			} else if (METAMORPH_TAG.equals(localName)) {
 				initMetamorph(atts.getValue(MARKER_ATTR));
@@ -221,7 +222,7 @@ public final class MetamorphBuilder {
 				emitGroupName = null;
 				emitGroupValue = null;
 			} else if (MAP_TAG.equals(localName)){
-				keyValueStore = null;
+				map = null;
 			}
 		}
 
@@ -232,7 +233,7 @@ public final class MetamorphBuilder {
 		private void registerFunction(final String name, final Map<String, String> attributes) {
 
 			final Function function = functionFactory.newFunction(name, attributes);
-			function.setKeyValueStoreAggregator(metamorph);
+			function.setMultiMap(metamorph.getMultiMap());
 
 			if (collect instanceof DataProcessor && data == null) {
 				((DataProcessor) collect).addFunction(function);
@@ -258,16 +259,18 @@ public final class MetamorphBuilder {
 		}
 
 		/**
-		 * @param name
+		 * @param mapName
 		 *            of {@link KeyValueStore}
 		 */
-		private void createKeyValueStore(final String name, final String defaultValue) {
-			keyValueStore = new SimpleKeyValueStore();
-			keyValueStore.setDefaultValue(defaultValue);
-			metamorph.addKeyValueStore(name, keyValueStore);
+		private void createMap(final String mapName, final String defaultValue) {
+			map = new HashMap<String, String>();
+			if(defaultValue!=null){
+				map.put(Metamorph.DEFAULT_MAP_KEY, defaultValue);
+			}
+			metamorph.addMap(mapName, map);
 
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("new KeyValueStore: " + name);
+				LOG.debug("new map: " + mapName);
 			}
 		}
 

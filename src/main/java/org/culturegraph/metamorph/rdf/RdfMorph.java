@@ -2,6 +2,9 @@ package org.culturegraph.metamorph.rdf;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Map;
 
 import org.culturegraph.metamorph.readers.MultiFormatReader;
 import org.culturegraph.metamorph.stream.ConsoleWriter;
@@ -15,6 +18,8 @@ import com.hp.hpl.jena.rdf.model.Model;
  * @author Markus Michael Geipel
  */
 public final class RdfMorph {
+
+	private static final String RDF_XML_ABR = "RDF/XML-ABBREV";
 
 	private RdfMorph() {/* no instances */
 	}
@@ -34,10 +39,12 @@ public final class RdfMorph {
 		}
 
 		final JenaWriter jenaWriter = new JenaWriter();
+		final Writer out = new OutputStreamWriter(System.out, "UTF8");
+		jenaWriter.setBatchSize(1);
 		jenaWriter.setBatchFinishedListener(new JenaWriter.BatchFinishedListener() {
 			@Override
 			public void onBatchFinished(final Model model) {
-				model.write(System.out);
+				model.write(out, RDF_XML_ABR);
 			}
 		});
 		reader.setStreamReceiver(jenaWriter);
@@ -45,8 +52,16 @@ public final class RdfMorph {
 		final String fileName = args[0];
 		final String extension = getExtention(fileName);
 		reader.setFormat(extension);
+
+		final Map<String, String> namespaces = reader.getMetamorph().getMap("namespaces");
+		if (namespaces == null) {
+			System.err.println("no namespaces defined");
+		} else {
+			jenaWriter.setNsPrefixes(namespaces);
+		}
+
 		reader.read(new FileInputStream(fileName));
-		jenaWriter.getModel().write(System.out);
+		jenaWriter.getModel().write(out, RDF_XML_ABR);
 	}
 
 	private static String getExtention(final String fileName) {
