@@ -8,7 +8,6 @@
 	<name>Umsetzung der PND</name>
 
 
-
 	<group name="http://RDVocab.info/ElementsGr2/identifierForThePerson">
 		<data source="007Q.0">
 			<compose prefix="(DE-588c)" />

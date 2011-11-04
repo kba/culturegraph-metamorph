@@ -3,25 +3,47 @@ package org.culturegraph.metamorph.rdf;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.util.Map;
 
+import org.culturegraph.metamorph.rdf.JenaWriter.BatchFinishedListener;
 import org.culturegraph.metamorph.readers.MultiFormatReader;
-import org.culturegraph.metamorph.stream.ConsoleWriter;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
 /**
- * Example which reads mab2, pica and marc21 files and prints the result to the
- * console using a {@link ConsoleWriter}.
+ * Example which reads mab2, pica and marc21 files and converts them to RDF
+ * using a {@link JenaWriter}.
  * 
  * @author Markus Michael Geipel
  */
-public final class RdfMorph {
+public final class RdfMorph implements BatchFinishedListener {
 
 	private static final String RDF_XML_ABR = "RDF/XML-ABBREV";
 
-	private RdfMorph() {/* no instances */
+	private final JenaWriter jenaWriter = new JenaWriter();
+	private final Writer out;
+	private final MultiFormatReader reader;
+
+	private RdfMorph(final String morphDef) throws UnsupportedEncodingException {
+		out = new OutputStreamWriter(System.out, "UTF8");
+		reader = new MultiFormatReader(morphDef);
+		jenaWriter.setBatchFinishedListener(this);
+
+	}
+
+	private void morph(final String fileName) throws IOException {
+
+		reader.setFormat(getExtention(fileName));
+		reader.setStreamReceiver(jenaWriter);
+		jenaWriter.configure(reader.getMetamorph());
+		reader.read(new FileInputStream(fileName));
+		onBatchFinished(jenaWriter.getModel());
+	}
+
+	@Override
+	public void onBatchFinished(final Model model) {
+		model.write(out, RDF_XML_ABR);
 	}
 
 	/**
@@ -30,38 +52,14 @@ public final class RdfMorph {
 	 * @throws IOException
 	 */
 	public static void main(final String[] args) throws IOException {
-		final MultiFormatReader reader;
+		final RdfMorph rdfMorph;
 		if (args.length == 2) {
-			reader = new MultiFormatReader(args[1]);
+			rdfMorph = new RdfMorph(args[1]);
 		} else {
 			System.err.println("Usage: RdfMorph FILE MORPHDEF");
 			return;
 		}
-
-		final JenaWriter jenaWriter = new JenaWriter();
-		final Writer out = new OutputStreamWriter(System.out, "UTF8");
-		jenaWriter.setBatchSize(1);
-		jenaWriter.setBatchFinishedListener(new JenaWriter.BatchFinishedListener() {
-			@Override
-			public void onBatchFinished(final Model model) {
-				model.write(out, RDF_XML_ABR);
-			}
-		});
-		reader.setStreamReceiver(jenaWriter);
-
-		final String fileName = args[0];
-		final String extension = getExtention(fileName);
-		reader.setFormat(extension);
-
-		final Map<String, String> namespaces = reader.getMetamorph().getMap("namespaces");
-		if (namespaces == null) {
-			System.err.println("no namespaces defined");
-		} else {
-			jenaWriter.setNsPrefixes(namespaces);
-		}
-
-		reader.read(new FileInputStream(fileName));
-		jenaWriter.getModel().write(out, RDF_XML_ABR);
+		rdfMorph.morph(args[0]);
 	}
 
 	private static String getExtention(final String fileName) {
@@ -71,4 +69,5 @@ public final class RdfMorph {
 		}
 		return fileName.substring(dotPos + 1);
 	}
+
 }

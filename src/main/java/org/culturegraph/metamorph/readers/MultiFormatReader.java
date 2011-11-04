@@ -95,7 +95,7 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 	@Override
 	public void read(final InputStream inputStream) throws IOException {
 		if (streamReceiver == null) {
-			throw new IllegalStateException(ERROR_NO_FORMAT);
+			throw new IllegalStateException(ERROR_RECEIVER_NULL);
 		}
 
 		try {

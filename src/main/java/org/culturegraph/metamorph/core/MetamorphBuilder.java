@@ -233,7 +233,7 @@ public final class MetamorphBuilder {
 		private void registerFunction(final String name, final Map<String, String> attributes) {
 
 			final Function function = functionFactory.newFunction(name, attributes);
-			function.setMultiMap(metamorph.getMultiMap());
+			function.setMultiMapProvider(metamorph);
 
 			if (collect instanceof DataProcessor && data == null) {
 				((DataProcessor) collect).addFunction(function);
@@ -265,7 +265,7 @@ public final class MetamorphBuilder {
 		private void createMap(final String mapName, final String defaultValue) {
 			map = new HashMap<String, String>();
 			if(defaultValue!=null){
-				map.put(Metamorph.DEFAULT_MAP_KEY, defaultValue);
+				map.put(MultiMapProvider.DEFAULT_MAP_KEY, defaultValue);
 			}
 			metamorph.addMap(mapName, map);
 

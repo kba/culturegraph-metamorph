@@ -1,6 +1,7 @@
 package org.culturegraph.metamorph.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,9 +19,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamReceiver, DataReceiver {
+public final class Metamorph implements StreamReceiver, DataReceiver, MultiMapProvider {
 
-	public static final String DEFAULT_MAP_KEY = "__default";
+	
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
@@ -236,11 +237,31 @@ public final class Metamorph implements StreamReceiver, DataReceiver {
 	}
 
 	
+	/**
+	 * 
+	 * @param mapName
+	 * @return map corresponding to mapName. Never <code>null</code>. If there is no corresponding {@link Map}, and empty one is returned
+	 */
+	@Override
 	public Map<String, String> getMap(final String mapName) {
-		return multiMap.get(mapName);
+		final Map<String, String> map = multiMap.get(mapName);
+		if(map==null){
+			return Collections.emptyMap();
+		}
+		return map;
 	}
 
 	public Map<String, Map<String, String>> getMultiMap() {
 		return multiMap;
+	}
+
+	@Override
+	public String getValue(final String mapName, final String key) {
+		final Map<String, String> map = getMap(mapName);
+		final String value = map.get(key);
+		if (value == null) {
+			return map.get(MultiMapProvider.DEFAULT_MAP_KEY);
+		}
+		return null;
 	}
 }

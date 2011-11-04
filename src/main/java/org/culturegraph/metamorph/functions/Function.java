@@ -1,13 +1,14 @@
 package org.culturegraph.metamorph.functions;
 
-import java.util.Map;
+import org.culturegraph.metamorph.core.Metamorph;
+import org.culturegraph.metamorph.core.MultiMapProvider;
 
 /**
+ * Interface for functions used in {@link Metamorph}
  * @author Markus Michael Geipel
- * @status Experimental
  */
 public interface Function {
 	String process(String value);
 
-	void setMultiMap(Map<String, Map<String, String>> multiMap);
+	void setMultiMapProvider(MultiMapProvider multiMapProvider);
 }

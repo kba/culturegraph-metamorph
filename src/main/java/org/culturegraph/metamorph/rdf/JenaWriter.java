@@ -1,7 +1,6 @@
 package org.culturegraph.metamorph.rdf;
 
-import java.util.Map;
-
+import org.culturegraph.metamorph.core.MultiMapProvider;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -15,8 +14,9 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  */
 public final class JenaWriter implements StreamReceiver {
-
-	private static final int DEFAULT_BATCH_SIZE = 1000;
+	public static final String NAMESPACES_CONF = "namespaces";
+	public static final int DEFAULT_BATCH_SIZE = 1000;
+	
 	private static final String HTTP = "http://";
 	private final Model model;
 	private Resource currentResource;
@@ -28,19 +28,19 @@ public final class JenaWriter implements StreamReceiver {
 	
 	public JenaWriter() {
 		model = ModelFactory.createDefaultModel();
-
 	}
+	
 	
 	public JenaWriter(final Model model) {
 		this.model = model;
 	}
 	
-	public Model getModel(){
-		return model;
+	public void configure(final MultiMapProvider multiMapProvider){
+		model.setNsPrefixes(multiMapProvider.getMap(NAMESPACES_CONF));
 	}
 	
-	public void setNsPrefixes(final Map<String, String> prefixes){
-		model.setNsPrefixes(prefixes);
+	public Model getModel(){
+		return model;
 	}
 	
 	@Override
