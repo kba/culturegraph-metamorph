@@ -3,7 +3,7 @@ package org.culturegraph.metamorph.functions;
 /**
  * @author Markus Michael Geipel
  */
-public final class Substring extends AbstractFunction {
+final class Substring extends AbstractFunction {
 
 	private int start;
 	private int end;

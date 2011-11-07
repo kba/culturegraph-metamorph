@@ -1,18 +1,30 @@
 package org.culturegraph.metamorph.functions;
 
-import org.culturegraph.metamorph.core.KeyValueStoreAggregator;
+import java.util.Map;
+
+import org.culturegraph.metamorph.core.MultiMapProvider;
 
 /**
  * @author Markus Michael Geipel
  * @status Experimental
  */
-abstract class AbstractFunction implements Function {
+public abstract class AbstractFunction implements Function {
+
+	private MultiMapProvider multiMapProvider;
+
+	protected final Map<String, String> getMap(final String mapName){
+		return multiMapProvider.getMap(mapName);
+	}
+	
+	protected final String getValue(final String mapName, final String key) {
+		return multiMapProvider.getValue(mapName, key);
+	}
+	
+	@Override
+	public abstract String process(final String value);
 
 	@Override
-	public abstract String process(final String  value);
-
-	@Override
-	public void setKeyValueStoreAggregator(final KeyValueStoreAggregator dataSourceProvider) {
-		// do nothing
+	public final void setMultiMapProvider(final MultiMapProvider multiMapProvider) {
+		this.multiMapProvider = multiMapProvider;
 	}
 }

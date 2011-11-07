@@ -20,20 +20,20 @@ import org.slf4j.LoggerFactory;
  * @author Markus Michael Geipel
  * 
  */
-public final class StandardReaderFactory extends AbstractReaderFactory {
+public final class DefaultReaderFactory extends AbstractReaderFactory {
 	public static final String PROPERTY_LOCATION_NAME = "metamorph.readers.properties";
 	public static final String DEFAULT_PROPERTIES_LOCATION = "metamorph-readers.properties";
 	
 	private static final String INSTANTIATION_PROBLEM = " could not be instantiated";
 	
 		
-	private static final Logger LOG = LoggerFactory.getLogger(StandardReaderFactory.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultReaderFactory.class);
 
 	private final Map<String, Class<? extends Reader>> readerClasses = new HashMap<String, Class<? extends Reader>>();
 
 	@SuppressWarnings("unchecked")
 	// protected by "if (Reader.class.isAssignableFrom(clazz)) {"
-	public StandardReaderFactory() {
+	public DefaultReaderFactory() {
 		super();
 		String propertiesLocation = System.getProperty(PROPERTY_LOCATION_NAME);
 		if(propertiesLocation==null){
@@ -64,7 +64,7 @@ public final class StandardReaderFactory extends AbstractReaderFactory {
 					LOG.debug("Reader for '" + format + "': " + className);
 				} else {
 					LOG.warn(className + " does not implement " + Reader.class.getName() + " registration with "
-							+ StandardReaderFactory.class.getSimpleName() + " failed.");
+							+ DefaultReaderFactory.class.getSimpleName() + " failed.");
 				}
 			} catch (ClassNotFoundException e) {
 				LOG.warn(className + " not found", e);

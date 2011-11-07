@@ -34,7 +34,7 @@ public final class MetamorphTest implements DataReceiver {
 	
 	private static Metamorph newMetamorphWithData(final DataReceiver receiver){
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
+		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		final Data data = new Data();
 		data.setName(NAME);
 		data.setDataReceiver(receiver);
@@ -46,7 +46,7 @@ public final class MetamorphTest implements DataReceiver {
 	public void testSimpleMapping() {
 		final Metamorph metamorph = newMetamorphWithData(this);
 		namedValue = null;
-		metamorph.startRecord();
+		metamorph.startRecord(null);
 		
 		//simple mapping without entity
 		metamorph.literal(NON_MATCHING_PATH1, VALUE);
@@ -76,7 +76,7 @@ public final class MetamorphTest implements DataReceiver {
 	public void testFeedback() {
 	
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
+		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		Data data;
 		
 		data = new Data();
@@ -91,7 +91,7 @@ public final class MetamorphTest implements DataReceiver {
 		
 		namedValue = null;
 		
-		metamorph.startRecord();
+		metamorph.startRecord(null);
 		metamorph.literal(MATCHING_PATH, VALUE);
 		Assert.assertNotNull(namedValue);
 		Assert.assertEquals(VALUE, namedValue.getValue());
@@ -104,9 +104,9 @@ public final class MetamorphTest implements DataReceiver {
 	@Test(expected=MetamorphException.class)
 	public void testEntityBorderBalanceCheck1(){
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
+		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		
-		metamorph.startRecord();
+		metamorph.startRecord(null);
 		metamorph.startEntity(ENTITY_NAME);
 		metamorph.startEntity(ENTITY_NAME);
 		metamorph.endEntity();
@@ -116,9 +116,9 @@ public final class MetamorphTest implements DataReceiver {
 	@Test(expected=MetamorphException.class)
 	public void testEntityBorderBalanceCheck2(){
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setOutputStreamReceiver(EMPTY_RECEIVER);
+		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		
-		metamorph.startRecord();
+		metamorph.startRecord(null);
 		metamorph.startEntity(ENTITY_NAME);
 		metamorph.endEntity();
 		metamorph.endEntity();

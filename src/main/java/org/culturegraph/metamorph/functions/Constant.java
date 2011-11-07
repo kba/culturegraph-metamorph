@@ -5,7 +5,7 @@ package org.culturegraph.metamorph.functions;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-public final class Constant extends AbstractFunction {
+final class Constant extends AbstractFunction {
 
 	private String value;
 

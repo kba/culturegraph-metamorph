@@ -4,7 +4,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-import org.culturegraph.metamorph.core.MetamorphDefinitionException;
+import org.culturegraph.metamorph.core.MetamorphException;
 
 /**
  * Simple {@link StreamReceiver} for debugging. Formats the received messages,
@@ -26,12 +26,12 @@ public final class ConsoleWriter implements StreamReceiver {
 		try {
 			writer = new PrintWriter(new OutputStreamWriter(System.out, "UTF8"));
 		} catch (UnsupportedEncodingException e) {
-			throw new MetamorphDefinitionException(e);
+			throw new MetamorphException(e);
 		}
 	}
 	
 	@Override
-	public void startRecord() {
+	public void startRecord(final String identifier) {
 		++count;
 		writer.println("RECORD " + count);
 	}

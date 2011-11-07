@@ -34,6 +34,7 @@ public final class SimpleMabReaderTest {
 	@Test
 	public void testGetId() throws IOException {
 		final FileInputStream inputStream = new FileInputStream(DataFilePath.TITLE_MAB);
+		
 		final BufferedReader breader = new BufferedReader(new InputStreamReader(inputStream));
 		
 		String line = breader.readLine();
@@ -43,5 +44,7 @@ public final class SimpleMabReaderTest {
 			}
 			line = breader.readLine();
 		}
+		
+		breader.close();
 	}
 }

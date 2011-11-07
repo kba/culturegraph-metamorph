@@ -8,7 +8,7 @@ package org.culturegraph.metamorph.stream;
 public class DefaultStreamReceiver implements StreamReceiver {
 
 	@Override
-	public void startRecord(){/* do nothing */}
+	public void startRecord(final String identifier){/* do nothing */}
 
 	@Override
 	public void endRecord(){/* do nothing */}

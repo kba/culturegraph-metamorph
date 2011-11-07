@@ -30,7 +30,7 @@ public final class ListMapCollector extends DefaultStreamReceiver {
 	}
 
 	@Override
-	public void startRecord(){
+	public void startRecord(final String identifier){
 		listMap.clear();
 	}
 	

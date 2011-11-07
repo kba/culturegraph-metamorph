@@ -1,8 +1,7 @@
 package org.culturegraph.metamorph.core;
 
 import org.culturegraph.metamorph.core.Data.Mode;
-import org.culturegraph.metamorph.functions.Constant;
-import org.culturegraph.metamorph.functions.Regexp;
+import org.culturegraph.metamorph.functions.AbstractFunction;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,6 +12,8 @@ import org.junit.Test;
  */
 public final class DataTest {
 	
+
+
 	private static final String DEFAULT_NAME = "name";
 	private static final String DEFAULT_VALUE = "value";
 	private static final String INPUT = "alkjfoeijf38";
@@ -25,16 +26,9 @@ public final class DataTest {
 	private static final String WRONG_NAME = "wrong name";
 	private static final String WRONG_VALUE = "wrong value";
 	
-	
-	private final Constant constant1 = new Constant();
-	private final Constant constant2 = new Constant();
-	private final Regexp regexp = new Regexp();
-
-	public DataTest() {
-		constant1.setValue(CONSTANT_A);
-		constant2.setValue(CONSTANT_B);
-		regexp.setMatch(CONSTANT_A);
-	}
+	private final Constant constant1 = new Constant(CONSTANT_A);
+	private final Constant constant2 = new Constant(CONSTANT_B);
+	private final Match regexp = new Match(CONSTANT_A);
 	
 	@Test
 	public void testSimpleReceive() {
@@ -118,4 +112,41 @@ public final class DataTest {
 		data.setName(DEFAULT_NAME);
 		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT, ENTITY_COUNT);
 	}
+	
+	private static final class Constant extends AbstractFunction{
+
+		private final String constant;
+
+		public Constant(final String constant) {
+			super();
+			this.constant = constant;
+		}
+
+		@Override
+		public String process(final String value) {
+			return constant;
+		}
+
+	}
+
+	private static final class Match extends AbstractFunction {
+
+		private final String match;
+
+		public Match(final String match) {
+			super();
+			this.match = match;
+		}
+
+		@Override
+		public String process(final String value) {
+			if(match.equals(value)){
+				return value;
+			}
+			return null;
+		}
+
+	}
 }
+
+

@@ -26,7 +26,7 @@ public final class MapCollector extends DefaultStreamReceiver {
 	}
 	
 	@Override
-	public void startRecord(){
+	public void startRecord(final String identifier){
 		map.clear();
 	}
 

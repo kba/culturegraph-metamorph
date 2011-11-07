@@ -19,7 +19,11 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 	private final Map<String, String> variables = new HashMap<String, String>();
 	private final Set<String> variableNames = new HashSet<String>();
 	private final DataProcessorImpl dataProcessor = new DataProcessorImpl();
-	private DataReceiver dataReceiver;
+//	private DataReceiver dataReceiver;
+
+	public CollectLiteral(final Metamorph metamorph) {
+		super(metamorph);
+	}
 
 	@Override
 	protected void emit() {
@@ -30,7 +34,7 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 		if (value == null) {
 			return;
 		}
-		dataReceiver.data(name, value, getRecordCount(), getEntityCount());
+		getMetamorph().data(name, value, getRecordCount(), getEntityCount());
 	}
 
 	@Override
@@ -67,12 +71,4 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 		dataProcessor.addFunction(function);
 	}
 
-	/**
-	 * @param dataReceiver
-	 *            the dataReceiver to set
-	 */
-	public void setDataReceiver(final DataReceiver dataReceiver) {
-		assert dataReceiver != null;
-		this.dataReceiver = dataReceiver;
-	}
 }

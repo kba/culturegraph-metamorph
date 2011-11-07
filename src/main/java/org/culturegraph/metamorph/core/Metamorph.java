@@ -1,6 +1,7 @@
 package org.culturegraph.metamorph.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,11 +14,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Transforms a data stream send via the {@link StreamReceiver} interface. Use
+ * {@link MetamorphBuilder} to create an instance based on an xml description
+ * 
  * @author Markus Michael Geipel
- * @status Experimental
  */
-public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator, DataReceiver {
+public final class Metamorph implements StreamReceiver, DataReceiver, MultiMapProvider {
 
+	
+	
 	private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
@@ -26,28 +31,27 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 
 	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
 	private final Map<String, List<EntityEndListener>> entityEndListeners = new HashMap<String, List<EntityEndListener>>();
-	
+
 	private final Map<String, String> entityMap = new HashMap<String, String>();
 
-	private final Map<String, KeyValueStore> keyValueStores = new HashMap<String, KeyValueStore>();
+	private final Map<String, Map<String, String>> multiMap = new HashMap<String, Map<String, String>>();
 	private final Deque<String> entityStack = new LinkedList<String>();
 	private final StringBuilder entityPath = new StringBuilder();
 	private final Deque<Integer> entityCountStack = new LinkedList<Integer>();
 
 	private StreamReceiver outputStreamReceiver;
-	private MetamorphErrorHandler errorHandler = new MetamorphErrorHandler() {
-		@Override
-		public void error(final Exception exception) {
-			throw new MetamorphException("An unhandled exception occured", exception);
-		}
-	};
+	private MetamorphErrorHandler errorHandler = new DefaultErrorHandler();
 
 	private int recordCount;
 	private int entityCount;
 
 	private char entityMarker = DEFAULT_ENTITY_MARKER;
 
-	public void setEntityMarker(final char entityMarker) {
+	protected Metamorph() {
+		//keep constructor in package
+	}
+	
+	protected void setEntityMarker(final char entityMarker) {
 		this.entityMarker = entityMarker;
 	}
 
@@ -65,21 +69,24 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 		}
 		matchingDataSources.add(data);
 	}
-	
-	protected void registerRegexpDataSource(final Data data, final String regexp) {
-		assert data != null && regexp != null;
-		
-		
-	}
 
 	@Override
-	public void startRecord() {
+	public void startRecord(final String identifier) {
 		entityCountStack.clear();
 		entityStack.clear();
-		
+
 		++recordCount;
 		entityCountStack.add(Integer.valueOf(entityCount));
-		outputStreamReceiver.startRecord();
+		
+		final String identifierFinal;
+		if(identifier==null){
+			identifierFinal = String.valueOf(recordCount);
+		}else{
+			identifierFinal = identifier;
+		}
+		outputStreamReceiver.startRecord(identifierFinal);
+		literal("_id", identifierFinal);
+		
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("#" + recordCount);
 		}
@@ -88,13 +95,12 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	@Override
 	public void endRecord() {
 
-
 		outputStreamReceiver.endRecord();
-		
+
 		entityCount = 0;
 		entityCountStack.removeLast();
 		if (!entityCountStack.isEmpty()) {
-			
+
 			throw new IllegalMorphStateException(ENTITIES_NOT_BALANCED);
 		}
 	}
@@ -176,8 +182,7 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	 * @param streamReceiver
 	 *            the outputHandler to set
 	 */
-	protected void setOutputStreamReceiver(final StreamReceiver streamReceiver) {
-
+	public void setStreamReceiver(final StreamReceiver streamReceiver) {
 		if (streamReceiver == null) {
 			throw new IllegalArgumentException("'streamReceiver' must not be null");
 		}
@@ -187,35 +192,26 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 	/**
 	 * @return the outputStreamReceiver
 	 */
-	protected StreamReceiver getOutputStreamReceiver() {
+	protected StreamReceiver getStreamReceiver() {
 		return outputStreamReceiver;
-	}
-
-	@Override
-	public String getValue(final String source, final String key) {
-		final KeyValueStore keyValueStore = keyValueStores.get(source);
-		if (keyValueStore == null) {
-			return null;
-		}
-		return keyValueStore.get(key);
 	}
 
 	/**
 	 * @param mapName
 	 * @param keyValueStore
 	 */
-	public void addKeyValueStore(final String mapName, final KeyValueStore keyValueStore) {
-		keyValueStores.put(mapName, keyValueStore);
+	public void addMap(final String mapName, final Map<String, String> map) {
+		multiMap.put(mapName, map);
 	}
 
 	@Override
 	public void data(final String name, final String value, final int recordCount, final int entityCount) {
 		if (name == null || value == null) {
 			LOG.warn("Empty data received. This is not suposed to happen. Please file a bugreport");
-		}else{
-			if(name.length()!=0 && name.charAt(0)==FEEDBACK_CHAR){
+		} else {
+			if (name.length() != 0 && name.charAt(0) == FEEDBACK_CHAR) {
 				dispatch(name, value);
-			}else{
+			} else {
 				outputStreamReceiver.literal(name, value);
 			}
 		}
@@ -238,5 +234,34 @@ public final class Metamorph implements StreamReceiver, KeyValueStoreAggregator,
 			entityEndListeners.put(entityName, matchingListeners);
 		}
 		matchingListeners.add(entityEndListener);
+	}
+
+	
+	/**
+	 * 
+	 * @param mapName
+	 * @return map corresponding to mapName. Never <code>null</code>. If there is no corresponding {@link Map}, and empty one is returned
+	 */
+	@Override
+	public Map<String, String> getMap(final String mapName) {
+		final Map<String, String> map = multiMap.get(mapName);
+		if(map==null){
+			return Collections.emptyMap();
+		}
+		return map;
+	}
+
+	public Map<String, Map<String, String>> getMultiMap() {
+		return multiMap;
+	}
+
+	@Override
+	public String getValue(final String mapName, final String key) {
+		final Map<String, String> map = getMap(mapName);
+		final String value = map.get(key);
+		if (value == null) {
+			return map.get(MultiMapProvider.DEFAULT_MAP_KEY);
+		}
+		return null;
 	}
 }

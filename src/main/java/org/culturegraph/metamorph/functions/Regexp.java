@@ -13,7 +13,7 @@ import org.culturegraph.metamorph.util.Util;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-public final class Regexp extends AbstractFunction {
+final class Regexp extends AbstractFunction {
 
 	private static final String TRUE = "true";
 	private Matcher matcher;

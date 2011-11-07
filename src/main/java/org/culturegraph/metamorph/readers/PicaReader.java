@@ -26,7 +26,7 @@ public final class PicaReader extends AbstractReader{
 
 	@Override
 	protected void processRecord(final String record) {
-		getStreamReceiver().startRecord();
+		getStreamReceiver().startRecord(extractIdFromRecord(record));
 		
 		try{
 			for (String field : FIELD_PATTERN.split(record)) {
@@ -66,7 +66,8 @@ public final class PicaReader extends AbstractReader{
 	
 	
 	
-	public static String extractIdFromRawRecord(final String record) {
+	public static String extractIdFromRecord(final String record) {
+		// TODO tune!
 		final Matcher idMatcher = ID_PATTERN.matcher(record);
 		if(idMatcher.find()){
 			return idMatcher.group(1);
@@ -76,6 +77,6 @@ public final class PicaReader extends AbstractReader{
 
 	@Override
 	public String getId(final String record) {
-		return extractIdFromRawRecord(record);
+		return extractIdFromRecord(record);
 	}
 }

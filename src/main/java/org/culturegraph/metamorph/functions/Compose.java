@@ -5,7 +5,7 @@ package org.culturegraph.metamorph.functions;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-public final class Compose extends AbstractFunction {
+final class Compose extends AbstractFunction {
 
 	private String prefix = "";
 	private String postfix = "";

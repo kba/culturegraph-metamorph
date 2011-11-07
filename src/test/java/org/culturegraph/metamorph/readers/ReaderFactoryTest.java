@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * tests {@link AbstractReaderFactory} and {@link StandardReaderFactory}
+ * tests {@link AbstractReaderFactory} and {@link DefaultReaderFactory}
  * 
  * @author Markus Michael Geipel
  *
@@ -23,7 +23,7 @@ public final class ReaderFactoryTest {
 	@AfterClass
 	public static void cleanProperties(){
 		System.getProperties().remove(AbstractReaderFactory.IMPLEMENTATION_NAME);
-		System.getProperties().remove(StandardReaderFactory.PROPERTY_LOCATION_NAME);
+		System.getProperties().remove(DefaultReaderFactory.PROPERTY_LOCATION_NAME);
 	}
 	
 	@Test
@@ -32,7 +32,7 @@ public final class ReaderFactoryTest {
 		
 		readerFactory = AbstractReaderFactory.newInstance();
 		Assert.assertTrue("The default reader registry was not correctly loaded",
-				readerFactory instanceof StandardReaderFactory);
+				readerFactory instanceof DefaultReaderFactory);
 
 		System.setProperty(AbstractReaderFactory.IMPLEMENTATION_NAME, DummyReaderRegistry.class.getName());
 		readerFactory = AbstractReaderFactory.newInstance();
@@ -42,7 +42,7 @@ public final class ReaderFactoryTest {
 	
 	@Test
 	public void testStandartReaderRegistration() {
-		final ReaderFactory readerFactory = new StandardReaderFactory();
+		final ReaderFactory readerFactory = new DefaultReaderFactory();
 		final Set<String> formats = readerFactory.getSupportedFormats();
 		
 		Assert.assertTrue("missing standard formats", NUMBER_OF_STANDARD_FORMATS <= formats.size());
@@ -56,11 +56,11 @@ public final class ReaderFactoryTest {
 	public void testAlternativeFormatBindings() {
 		ReaderFactory readerFactory;
 				
-		readerFactory = new StandardReaderFactory();
+		readerFactory = new DefaultReaderFactory();
 		Assert.assertFalse(readerFactory.isFormatSupported(ALT_FORMAT));
 		
-		System.setProperty(StandardReaderFactory.PROPERTY_LOCATION_NAME, "metamorph-alt-readers.properties");
-		readerFactory = new StandardReaderFactory();
+		System.setProperty(DefaultReaderFactory.PROPERTY_LOCATION_NAME, "metamorph-alt-readers.properties");
+		readerFactory = new DefaultReaderFactory();
 		Assert.assertTrue(readerFactory.isFormatSupported(ALT_FORMAT));
 	}
 }

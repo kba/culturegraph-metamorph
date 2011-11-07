@@ -24,6 +24,6 @@ public abstract class AbstractReaderFactory implements ReaderFactory {
 				}
 				throw new MetamorphException(className + " could not be instantiated as it is not a subclass of " + AbstractReaderFactory.class.getName());
 		}
-		return new StandardReaderFactory();
+		return new DefaultReaderFactory();
 	}
 }

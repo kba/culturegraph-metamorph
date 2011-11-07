@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.culturegraph</groupId>
 	<artifactId>metamorph</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<name>Metamorph, Transformation Language for Metadata</name>
 
 	<properties>
@@ -90,6 +90,8 @@
 				<artifactId>findbugs-maven-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
+					<threshold>High</threshold>
+
 					<findbugsXmlOutput>true</findbugsXmlOutput>
 				</configuration>
 				<executions>
@@ -127,19 +129,19 @@
 	</build>
 	<dependencies>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>de.dnb</groupId> -->
-<!-- 			<artifactId>charsets</artifactId> -->
-<!-- 			<version>1.2.20</version> -->
-<!-- 			<scope>compile</scope> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>de.dnb</groupId> -->
+		<!-- <artifactId>charsets</artifactId> -->
+		<!-- <version>1.2.20</version> -->
+		<!-- <scope>compile</scope> -->
+		<!-- </dependency> -->
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.marc4j</groupId> -->
-<!-- 			<artifactId>marc4j</artifactId> -->
-<!-- 			<version>2.4</version> -->
-<!-- 			<scope>compile</scope> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.marc4j</groupId> -->
+		<!-- <artifactId>marc4j</artifactId> -->
+		<!-- <version>2.4</version> -->
+		<!-- <scope>compile</scope> -->
+		<!-- </dependency> -->
 
 		<!-- Testing -->
 		<dependency>
@@ -163,6 +165,13 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>com.hp.hpl.jena</groupId>
+			<artifactId>jena</artifactId>
+			<version>2.6.4</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 </project>

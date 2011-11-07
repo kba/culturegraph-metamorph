@@ -3,7 +3,6 @@ package org.culturegraph.metamorph.core;
 import java.io.File;
 
 import org.culturegraph.metamorph.DataFilePath;
-import org.culturegraph.metamorph.stream.ConsoleWriter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,14 +12,14 @@ import org.junit.Test;
  */
 public final class MetamorphBuilderTest {
 
-	@Test(expected=MetamorphDefinitionException.class)
+	@Test(expected=MetamorphBuilder.MetamorphDefinitionException.class)
 	public void testShemaVerification() {
-		MetamorphBuilder.build(new File(DataFilePath.SYTAX_ERROR_MM), new ConsoleWriter());
+		MetamorphBuilder.build(new File(DataFilePath.SYTAX_ERROR_MM));
 	}
 	
 	@Test
 	public void testBuild() {
-		final Metamorph metamorph = MetamorphBuilder.build(new File(DataFilePath.PND_PICA_MM), new ConsoleWriter());
+		final Metamorph metamorph = MetamorphBuilder.build(new File(DataFilePath.PND_PICA_MM));
 		Assert.assertNotNull(metamorph);
 	}
 }

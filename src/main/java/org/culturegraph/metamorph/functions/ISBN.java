@@ -8,7 +8,7 @@ import org.culturegraph.metamorph.core.MetamorphException;
 /**
  * @author Markus Michael Geipel
  */
-public final class ISBN extends AbstractFunction {
+final class ISBN extends AbstractFunction {
 	private static final String CHECK = "0123456789X0";
 	
 	private static final String APOSTROPH = "'";

@@ -3,14 +3,12 @@ package org.culturegraph.metamorph;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.culturegraph.metamorph.readers.AbstractReaderFactory;
-import org.culturegraph.metamorph.readers.Reader;
-import org.culturegraph.metamorph.readers.ReaderFactory;
+import org.culturegraph.metamorph.readers.MultiFormatReader;
 import org.culturegraph.metamorph.stream.ConsoleWriter;
 
 /**
- * Example which reads mab2, pica and marc21 files and prints the result to the console
- * using a {@link ConsoleWriter}.
+ * Example which reads mab2, pica and marc21 files and prints the result to the
+ * console using a {@link ConsoleWriter}.
  * 
  * @author Markus Michael Geipel
  */
@@ -25,28 +23,29 @@ public final class Read {
 	 * @throws IOException
 	 */
 	public static void main(final String[] args) throws IOException {
-		if (args.length !=1) {
-			System.err.println("Usage: Read FILE");
+		final MultiFormatReader reader;
+		if (args.length == 1) {
+			reader = new MultiFormatReader();
+		} else if (args.length == 2) {
+			reader = new MultiFormatReader(args[1]);
+		} else {
+			System.err.println("Usage: Read FILE [MORPHDEF]");
 			return;
 		}
 
-		final ReaderFactory readerRegistry = AbstractReaderFactory.newInstance();
+		reader.setStreamReceiver(new ConsoleWriter());
 
 		final String fileName = args[0];
-		final int dotPos = fileName.lastIndexOf('.');
-		if (dotPos < 0) {
-			System.err.println("Extention missing");
-		} else {
-			final String extension = fileName.substring(dotPos + 1);
-			final Reader reader = readerRegistry.newReader(extension);
-
-			if (reader == null) {
-				System.err.println("Extention not recognized");
-				return;
-			}
-			reader.setStreamReceiver(new ConsoleWriter());
-			reader.read(new FileInputStream(fileName));
-		}
+		final String extension = getExtention(fileName);
+		reader.setFormat(extension);
+		reader.read(new FileInputStream(fileName));
 	}
 
+	private static String getExtention(final String fileName) {
+		final int dotPos = fileName.lastIndexOf('.');
+		if (dotPos < 0) {
+			throw new IllegalArgumentException("Extention missing");
+		}
+		return fileName.substring(dotPos + 1);
+	}
 }

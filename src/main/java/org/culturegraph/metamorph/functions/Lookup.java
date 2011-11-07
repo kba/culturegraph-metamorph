@@ -1,29 +1,20 @@
 package org.culturegraph.metamorph.functions;
 
-import org.culturegraph.metamorph.core.KeyValueStoreAggregator;
 
 /**
  * @author Markus Michael Geipel
- * @status Experimental
  */
-public final class Lookup implements Function {
+final class Lookup extends AbstractFunction {
 
-	private KeyValueStoreAggregator keyValueStoreProvider;
-	private String datastoreName;
 
+	private String mapName;
 
 	@Override
 	public String process(final String key) {
-			return keyValueStoreProvider.getValue(datastoreName, key);
-	}
-	
-	public void setIn(final String datastoreName){
-		this.datastoreName = datastoreName;
+		return getValue(mapName, key);
 	}
 
-
-	@Override
-	public void setKeyValueStoreAggregator(final KeyValueStoreAggregator dataSourceProvider) {
-		this.keyValueStoreProvider = dataSourceProvider;
+	public void setIn(final String datastoreName) {
+		this.mapName = datastoreName;
 	}
 }

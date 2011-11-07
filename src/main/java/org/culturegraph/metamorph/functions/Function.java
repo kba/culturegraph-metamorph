@@ -1,13 +1,14 @@
 package org.culturegraph.metamorph.functions;
 
-import org.culturegraph.metamorph.core.KeyValueStoreAggregator;
+import org.culturegraph.metamorph.core.Metamorph;
+import org.culturegraph.metamorph.core.MultiMapProvider;
 
 /**
+ * Interface for functions used in {@link Metamorph}
  * @author Markus Michael Geipel
- * @status Experimental
  */
 public interface Function {
 	String process(String value);
 
-	void setKeyValueStoreAggregator(KeyValueStoreAggregator keyValueStoreProvider);
+	void setMultiMapProvider(MultiMapProvider multiMapProvider);
 }

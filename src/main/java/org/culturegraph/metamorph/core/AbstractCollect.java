@@ -24,8 +24,16 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 	private boolean sameEntity;
 	private String name;
 	private String value;
-
+	private final Metamorph metamorph;
 	private final Set<Data> dataSources = new HashSet<Data>();
+	
+	public AbstractCollect(final Metamorph metamorph) {
+		this.metamorph = metamorph;
+	}
+	
+	protected Metamorph getMetamorph(){
+		return metamorph;
+	}
 
 	
 	protected final int getRecordCount() {
