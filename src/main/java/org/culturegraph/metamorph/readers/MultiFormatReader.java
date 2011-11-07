@@ -39,41 +39,48 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 	public MultiFormatReader() {
 		morphDefinition = null;
 	}
-	
-	public Metamorph getMetamorph(){
+
+	public Metamorph getMetamorph() {
 		return metamorphs.get(currentFormat);
 	}
 
 	public void setErrorHandler(final MetamorphErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
 	}
-	
-	public String getFormat(){
+
+	public String getFormat() {
 		return currentFormat;
 	}
 
 	public void setFormat(final String format) {
+		if (format == null) {
+			throw new IllegalArgumentException("'format' must not be null");
+		}
+
 		currentReader = openReaders.get(format);
 		currentFormat = format;
-		if (null == currentReader) {
-			currentReader = readerFactory.newReader(format);
-			openReaders.put(format, currentReader);
 
-			if (morphDefinition == null && streamReceiver!=null) {
-				currentReader.setStreamReceiver(streamReceiver);
-			} else {
-				final String morphDefinitionFinal = morphDefinition + '.' + format;
-				final Metamorph metamorph = MetamorphBuilder.build(morphDefinitionFinal);
-				metamorphs.put(format, metamorph);
-				metamorph.setErrorHandler(this);
-				currentReader.setStreamReceiver(metamorph);
-				if(streamReceiver!=null){
-					metamorph.setStreamReceiver(streamReceiver);
-				}
-			}
+		if (null != currentReader) {
+			return;
 		}
-	}
+		currentReader = readerFactory.newReader(format);
+		openReaders.put(format, currentReader);
 
+		
+		if (morphDefinition==null && streamReceiver != null) {
+			currentReader.setStreamReceiver(streamReceiver);
+		}else if (morphDefinition != null) {
+			final String morphDefinitionFinal = morphDefinition + '.' + format;
+			final Metamorph metamorph = MetamorphBuilder.build(morphDefinitionFinal);
+			metamorphs.put(format, metamorph);
+			metamorph.setErrorHandler(this);
+			currentReader.setStreamReceiver(metamorph);
+			if (streamReceiver != null) {
+				metamorph.setStreamReceiver(streamReceiver);
+			}
+		} 
+
+	}
 
 	@Override
 	public void setStreamReceiver(final StreamReceiver streamReceiver) {

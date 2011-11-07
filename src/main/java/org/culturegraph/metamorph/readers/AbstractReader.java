@@ -43,6 +43,7 @@ public abstract class AbstractReader implements Reader{
 			}
 			line = reader.readLine();
 		}
+		reader.close();
 	}
 	
 	protected abstract Charset getCharset();
