@@ -45,5 +45,6 @@ public final class SimpleMarcReaderTest {
 			}
 			line = breader.readLine();
 		}
+		breader.close();
 	}
 }
