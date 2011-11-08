@@ -260,7 +260,7 @@ public final class MetamorphBuilder {
 
 		/**
 		 * @param mapName
-		 *            of {@link KeyValueStore}
+		 *            of map
 		 */
 		private void createMap(final String mapName, final String defaultValue) {
 			map = new HashMap<String, String>();
