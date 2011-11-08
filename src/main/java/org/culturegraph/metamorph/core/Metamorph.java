@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.culturegraph.metamorph.stream.StreamSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamReceiver, DataReceiver, MultiMapProvider {
+public final class Metamorph implements StreamReceiver, StreamSender,DataReceiver, MultiMapProvider {
 
 	
 	
@@ -182,6 +183,7 @@ public final class Metamorph implements StreamReceiver, DataReceiver, MultiMapPr
 	 * @param streamReceiver
 	 *            the outputHandler to set
 	 */
+	@Override
 	public void setStreamReceiver(final StreamReceiver streamReceiver) {
 		if (streamReceiver == null) {
 			throw new IllegalArgumentException("'streamReceiver' must not be null");
