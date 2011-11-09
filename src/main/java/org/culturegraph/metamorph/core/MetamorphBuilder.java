@@ -62,7 +62,8 @@ public final class MetamorphBuilder {
 		final String morphDefPath = morphDef + ".xml";
 		final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(morphDefPath);
 		if(inputStream==null){
-			throw new MetamorphDefinitionException(NOT_FOUND_ERROR + ": " + morphDefPath);
+			return build(new File(morphDefPath));
+			//throw new MetamorphDefinitionException(NOT_FOUND_ERROR + ": " + morphDefPath);
 		}
 		return build(inputStream);
 	}
