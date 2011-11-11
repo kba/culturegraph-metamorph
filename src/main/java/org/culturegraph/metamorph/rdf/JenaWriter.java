@@ -1,10 +1,14 @@
 package org.culturegraph.metamorph.rdf;
 
+import java.util.Map;
+
+import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.core.MultiMapProvider;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
@@ -24,7 +28,8 @@ public final class JenaWriter implements StreamReceiver {
 	private long count;
 	private BatchFinishedListener batchFinishedListener;
 	private Resource blankNode;
-	
+	private MultiMapProvider multiMapProvider;
+	private String homePrefix;
 	
 	public JenaWriter() {
 		model = ModelFactory.createDefaultModel();
@@ -36,7 +41,16 @@ public final class JenaWriter implements StreamReceiver {
 	}
 	
 	public void configure(final MultiMapProvider multiMapProvider){
-		model.setNsPrefixes(multiMapProvider.getMap(NAMESPACES_CONF));
+		final Map<String, String> namespaces = multiMapProvider.getMap(NAMESPACES_CONF);
+		if(namespaces==null){
+			throw new MetamorphException("namespaces map is missing");
+		}
+		model.setNsPrefixes(namespaces);
+		homePrefix = namespaces.get("");
+		if(homePrefix==null){
+			throw new MetamorphException("home namespace is missing. (set \"\" namespace)");
+		}
+		this.multiMapProvider = multiMapProvider;
 	}
 	
 	public Model getModel(){
@@ -45,7 +59,7 @@ public final class JenaWriter implements StreamReceiver {
 	
 	@Override
 	public void startRecord(final String identifier) {
-		currentResource = model.createResource(HTTP + identifier);
+		currentResource = model.createResource(homePrefix + identifier);
 
 	}
 
@@ -63,7 +77,7 @@ public final class JenaWriter implements StreamReceiver {
 	@Override
 	public void startEntity(final String name) {
 		blankNode = model.createResource();
-		currentResource.addProperty(model.createProperty(name), blankNode);
+		currentResource.addProperty(createProperty(name), blankNode);
 	}
 
 	@Override
@@ -82,10 +96,25 @@ public final class JenaWriter implements StreamReceiver {
 
 	private void addProperty(final Resource resource, final String name, final String value) {
 		if(value.startsWith(HTTP)){
-			resource.addProperty(model.createProperty(name), model.createResource(value));
+			resource.addProperty(createProperty(name), model.createResource(value));
 		}else{
-			resource.addProperty(model.createProperty(name), value);
+			resource.addProperty(createProperty(name), value);
 		}
+	}
+	
+	private Property createProperty(final String name){
+		if(name.startsWith(HTTP)){
+			return model.createProperty(name);
+		}
+		
+		final int cut = name.indexOf(':');
+		if(cut>0){
+			final String prefix = multiMapProvider.getValue(NAMESPACES_CONF, name.substring(0, cut));
+			if(prefix!=null){
+				return model.createProperty(prefix, name.substring(cut+1));
+			}
+		}
+		throw new MetamorphException("'" + name + "' is not a valid URI");
 	}
 
 	/**
@@ -108,8 +137,6 @@ public final class JenaWriter implements StreamReceiver {
 	public void setBatchFinishedListener(final BatchFinishedListener batchFinishedListener) {
 		this.batchFinishedListener = batchFinishedListener;
 	}
-
-
 	
 	public interface BatchFinishedListener {
 		void onBatchFinished(final Model model);

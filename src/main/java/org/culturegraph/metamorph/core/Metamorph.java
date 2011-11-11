@@ -86,7 +86,7 @@ public final class Metamorph implements StreamReceiver, StreamSender,DataReceive
 			identifierFinal = identifier;
 		}
 		outputStreamReceiver.startRecord(identifierFinal);
-		literal("_id", identifierFinal);
+		literal(StreamReceiver.ID_NAME, identifierFinal);
 		
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("#" + recordCount);
@@ -264,6 +264,6 @@ public final class Metamorph implements StreamReceiver, StreamSender,DataReceive
 		if (value == null) {
 			return map.get(MultiMapProvider.DEFAULT_MAP_KEY);
 		}
-		return null;
+		return value;
 	}
 }
