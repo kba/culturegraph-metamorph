@@ -23,7 +23,7 @@ public abstract class AbstractReader implements Reader{
 	private StreamReceiver streamReceiver;
 	
 @Override
-public void read(final java.io.Reader reader)  throws IOException {
+public final void read(final java.io.Reader reader)  throws IOException {
 	if(reader==null){
 		throw new IllegalArgumentException("'reader' must be set");
 	}
