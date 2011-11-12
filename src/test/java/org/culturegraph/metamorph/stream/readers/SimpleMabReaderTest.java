@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.culturegraph.metamorph.DataFilePath;
-import org.culturegraph.metamorph.stream.readers.MabReader;
 import org.culturegraph.metamorph.stream.receivers.CountingStreamReceiver;
 import org.junit.Assert;
 import org.junit.Test;

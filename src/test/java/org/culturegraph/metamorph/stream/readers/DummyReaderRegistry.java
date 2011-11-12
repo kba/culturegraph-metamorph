@@ -3,9 +3,6 @@ package org.culturegraph.metamorph.stream.readers;
 import java.util.Collections;
 import java.util.Set;
 
-import org.culturegraph.metamorph.stream.readers.AbstractReaderFactory;
-import org.culturegraph.metamorph.stream.readers.Reader;
-
 /**
  * dummy used by {@link ReaderFactoryTest}
  * 

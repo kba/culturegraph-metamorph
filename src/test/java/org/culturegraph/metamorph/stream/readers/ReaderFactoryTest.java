@@ -4,9 +4,6 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
-import org.culturegraph.metamorph.stream.readers.AbstractReaderFactory;
-import org.culturegraph.metamorph.stream.readers.DefaultReaderFactory;
-import org.culturegraph.metamorph.stream.readers.ReaderFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
