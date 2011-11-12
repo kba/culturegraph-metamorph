@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.stream;
+package org.culturegraph.metamorph.stream.receivers;
 
 import org.culturegraph.metamorph.types.ListMap;
 

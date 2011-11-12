@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.readers;
+package org.culturegraph.metamorph.stream.readers;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.culturegraph.metamorph.DataFilePath;
-import org.culturegraph.metamorph.stream.CountingStreamReceiver;
+import org.culturegraph.metamorph.stream.readers.MabReader;
+import org.culturegraph.metamorph.stream.readers.MarcReader;
+import org.culturegraph.metamorph.stream.receivers.CountingStreamReceiver;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,7 +29,7 @@ public final class SimpleMarcReaderTest {
 	@Test
 	public void testRead() throws IOException {
 		reader.setStreamReceiver(countStreamReceiver);
-		reader.read(new FileInputStream(DataFilePath.TITLE_MARC_LINEBREAKS));
+		reader.read(new FileInputStream(DataFilePath.TITLE_MARC));
 		
 		Assert.assertEquals("Number of read records is incorrect", NUM_RECORDS, countStreamReceiver.getNumRecords());
 		Assert.assertEquals("Number of read literals is incorrect", NUM_LITERALS, countStreamReceiver.getNumLiterals());
@@ -35,7 +37,7 @@ public final class SimpleMarcReaderTest {
 	
 	@Test
 	public void testGetId() throws IOException {
-		final FileInputStream inputStream = new FileInputStream(DataFilePath.TITLE_MARC_LINEBREAKS);
+		final FileInputStream inputStream = new FileInputStream(DataFilePath.TITLE_MARC);
 		final BufferedReader breader = new BufferedReader(new InputStreamReader(inputStream));
 		
 		String line = breader.readLine();

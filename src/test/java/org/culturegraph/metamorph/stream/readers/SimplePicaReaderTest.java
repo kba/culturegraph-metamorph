@@ -1,10 +1,10 @@
-package org.culturegraph.metamorph.readers;
+package org.culturegraph.metamorph.stream.readers;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.culturegraph.metamorph.DataFilePath;
-import org.culturegraph.metamorph.stream.CountingStreamReceiver;
+import org.culturegraph.metamorph.stream.receivers.CountingStreamReceiver;
 import org.junit.Assert;
 import org.junit.Test;
 

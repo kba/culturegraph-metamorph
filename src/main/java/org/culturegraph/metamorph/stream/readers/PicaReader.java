@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.readers;
+package org.culturegraph.metamorph.stream.readers;
 
 import java.nio.charset.Charset;
 import java.util.regex.Matcher;
@@ -18,8 +18,8 @@ public final class PicaReader extends AbstractReader{
 
 	private static final String FIELD_DELIMITER = "\u001e";
 	private static final String SUB_DELIMITER = "\u001f";
-	private static final Pattern FIELD_PATTERN = Pattern.compile(FIELD_DELIMITER);
-	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(SUB_DELIMITER);
+	private static final Pattern FIELD_PATTERN = Pattern.compile(FIELD_DELIMITER, Pattern.LITERAL);
+	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(SUB_DELIMITER, Pattern.LITERAL);
 	private static final String ID_PATTERN_STRING = FIELD_DELIMITER + "003@ " + SUB_DELIMITER + "0(.*?)" + FIELD_DELIMITER;
 	private static final Pattern ID_PATTERN = Pattern.compile(ID_PATTERN_STRING);
 

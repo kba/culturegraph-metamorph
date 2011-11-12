@@ -1,10 +1,11 @@
-package org.culturegraph.metamorph.readers;
+package org.culturegraph.metamorph.stream.readers;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.StreamHandler;
 
 import org.culturegraph.metamorph.stream.StreamSender;
+
 
 
 
@@ -22,7 +23,8 @@ public interface Reader extends StreamSender{
 	 * @throws IOException
 	 */
 	void read(final InputStream inputStream) throws IOException;
-
+	void read(final java.io.Reader reader) throws IOException;
+	
 	void read(final String entry);
 
 

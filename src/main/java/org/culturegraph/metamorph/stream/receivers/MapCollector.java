@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.stream;
+package org.culturegraph.metamorph.stream.receivers;
 
 import java.util.HashMap;
 import java.util.Map;

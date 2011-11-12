@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.readers;
+package org.culturegraph.metamorph.stream.readers;
 
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
@@ -16,8 +16,8 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
 public final class MabReader extends AbstractReader {
 	
 	private static final String FIELD_END = "\u001e";
-	private static final Pattern FIELD_PATTERN = Pattern.compile(FIELD_END);
-	private static final Pattern SUBFIELD_PATTERN = Pattern.compile("\u001f");
+	private static final Pattern FIELD_PATTERN = Pattern.compile(FIELD_END, Pattern.LITERAL);
+	private static final Pattern SUBFIELD_PATTERN = Pattern.compile("\u001f", Pattern.LITERAL);
 	private static final String RECORD_END = "\u001d";
 
 	private static final int FIELD_NAME_SIZE = 4;

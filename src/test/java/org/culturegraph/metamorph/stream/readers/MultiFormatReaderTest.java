@@ -1,5 +1,6 @@
-package org.culturegraph.metamorph.readers;
+package org.culturegraph.metamorph.stream.readers;
 
+import org.culturegraph.metamorph.stream.readers.MultiFormatReader;
 import org.junit.Assert;
 import org.junit.Test;
 

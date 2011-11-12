@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.readers;
+package org.culturegraph.metamorph.stream.readers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,28 +22,35 @@ public abstract class AbstractReader implements Reader{
 
 	private StreamReceiver streamReceiver;
 	
-
+@Override
+public void read(final java.io.Reader reader)  throws IOException {
+	if(reader==null){
+		throw new IllegalArgumentException("'reader' must be set");
+	}
+	
+	if(streamReceiver==null){
+		throw new IllegalStateException("StreamReceiver must be set");
+	}
+	
+	final BufferedReader bufferedReader = new BufferedReader(reader);
+	
+	String line = bufferedReader.readLine();
+	while (line != null) {
+		if(!line.isEmpty()){
+			processRecord(line);
+		}
+		line = bufferedReader.readLine();
+	}
+	bufferedReader.close();
+	
+}
+	
 	@Override
 	public final void read(final InputStream inputStream) throws IOException {
-
 		if(inputStream==null){
 			throw new IllegalArgumentException("InputStream must be set");
 		}
-		
-		if(streamReceiver==null){
-			throw new IllegalStateException("StreamReceiver must be set");
-		}
-		
-		final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, getCharset()));
-		
-		String line = reader.readLine();
-		while (line != null) {
-			if(!line.isEmpty()){
-				processRecord(line);
-			}
-			line = reader.readLine();
-		}
-		reader.close();
+		read(new InputStreamReader(inputStream, getCharset()));
 	}
 	
 	protected abstract Charset getCharset();

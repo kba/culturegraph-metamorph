@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.readers;
+package org.culturegraph.metamorph.stream.readers;
 
 import org.culturegraph.metamorph.core.MetamorphException;
 import org.culturegraph.metamorph.util.Util;

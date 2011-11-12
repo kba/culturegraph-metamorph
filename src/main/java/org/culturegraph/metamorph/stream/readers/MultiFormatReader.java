@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.readers;
+package org.culturegraph.metamorph.stream.readers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,5 +137,11 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 	@Override
 	public void error(final Exception exception) {
 		errorHandler.error(exception);
+	}
+
+	@Override
+	public void read(final java.io.Reader reader) throws IOException {
+		currentReader.read(reader);
+		
 	}
 }

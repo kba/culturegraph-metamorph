@@ -2,7 +2,7 @@ package org.culturegraph.metamorph.core;
 
 import junit.framework.Assert;
 
-import org.culturegraph.metamorph.stream.MapCollector;
+import org.culturegraph.metamorph.stream.receivers.MapCollector;
 import org.junit.Test;
 
 /**
