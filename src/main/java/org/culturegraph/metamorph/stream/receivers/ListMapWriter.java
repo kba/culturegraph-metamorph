@@ -10,6 +10,7 @@ import org.culturegraph.metamorph.types.ListMap;
 public final class ListMapWriter extends DefaultStreamReceiver {
 
 	private ListMap<String, String> listMap;
+	private String currentId;
 	
 	public ListMapWriter() {
 		super();
@@ -32,10 +33,15 @@ public final class ListMapWriter extends DefaultStreamReceiver {
 	@Override
 	public void startRecord(final String identifier){
 		listMap.clear();
+		currentId = identifier;
 	}
 	
 	@Override
 	public void literal(final String name, final String value) {
 		listMap.put(name, value);
+	}
+
+	public String getCurrentId() {
+		return currentId;
 	}
 }

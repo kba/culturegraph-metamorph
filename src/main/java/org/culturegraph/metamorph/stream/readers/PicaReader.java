@@ -26,7 +26,18 @@ public final class PicaReader extends AbstractReader{
 
 	@Override
 	protected void processRecord(final String record) {
-		getStreamReceiver().startRecord(extractIdFromRecord(record));
+		read(record, getStreamReceiver());
+	}
+	
+	
+
+	@Override
+	protected Charset getCharset() {
+		return Charset.forName("UTF8");
+	}
+	
+	public static void read(final String record, final StreamReceiver receiver){
+		receiver.startRecord(extractIdFromRecord(record));
 		
 		try{
 			for (String field : FIELD_PATTERN.split(record)) {
@@ -43,27 +54,21 @@ public final class PicaReader extends AbstractReader{
 					firstSubfield = 1;
 				}
 				
-				getStreamReceiver().startEntity(fieldName);
+				receiver.startEntity(fieldName);
 	
 				for (int i = firstSubfield; i < subfields.length; ++i) {
 					final String subfield = subfields[i];
-					getStreamReceiver().literal(subfield.substring(0, 1), subfield.substring(1));
+					receiver.literal(subfield.substring(0, 1), subfield.substring(1));
 				}
-				getStreamReceiver().endEntity();
+				receiver.endEntity();
 				
 			}
 		}catch(IndexOutOfBoundsException exception){
 			throw new RecordFormatException("[" + record + "]", exception);
 		}finally{
-			getStreamReceiver().endRecord();
+			receiver.endRecord();
 		}
 	}
-
-	@Override
-	protected Charset getCharset() {
-		return Charset.forName("UTF8");
-	}
-	
 	
 	
 	public static String extractIdFromRecord(final String record) {
