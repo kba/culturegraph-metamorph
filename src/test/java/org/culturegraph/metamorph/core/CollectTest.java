@@ -2,7 +2,7 @@ package org.culturegraph.metamorph.core;
 
 import junit.framework.Assert;
 
-import org.culturegraph.metamorph.stream.receivers.MapCollector;
+import org.culturegraph.metamorph.stream.receivers.MapWriter;
 import org.junit.Test;
 
 /**
@@ -27,7 +27,7 @@ public final class CollectTest {
 	private final Data dataA = newData(NAME_A);
 	private final Data dataB = newData(NAME_B);
 	
-	private final MapCollector mapCollector = new MapCollector();
+	private final MapWriter mapCollector = new MapWriter();
 	private final Metamorph metamorph = new Metamorph();
 	
 	public CollectTest() {

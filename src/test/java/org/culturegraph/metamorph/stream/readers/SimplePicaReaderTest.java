@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.culturegraph.metamorph.DataFilePath;
-import org.culturegraph.metamorph.stream.receivers.CountingStreamReceiver;
+import org.culturegraph.metamorph.stream.receivers.CountingWriter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,7 +19,7 @@ public final class SimplePicaReaderTest {
 	private static final int NUM_LITERALS=288;
 	
 	private final Reader reader = new PicaReader();
-	private final CountingStreamReceiver countStreamReceiver =  new CountingStreamReceiver();
+	private final CountingWriter countStreamReceiver =  new CountingWriter();
 
 	@Test
 	public void testRead() throws IOException {

@@ -6,7 +6,7 @@ package org.culturegraph.metamorph.stream.receivers;
  * 
  * @author Markus Michael Geipel
  */
-public final class CountingStreamReceiver extends DefaultStreamReceiver {
+public final class CountingWriter extends DefaultStreamReceiver {
 	private int numRecords;
 	private int numEntities;
 	private int numLiterals;

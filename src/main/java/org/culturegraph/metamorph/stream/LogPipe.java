@@ -12,14 +12,12 @@ public final class LogPipe implements StreamReceiver, StreamSender{
 	@Override
 	public void setStreamReceiver(final StreamReceiver streamReceiver) {
 		this.receiver = streamReceiver;
-		
 	}
 
 	@Override
 	public void startRecord(final String identifier) {
 		LOG.info("start record " + identifier);
 		receiver.startRecord(identifier);
-		
 	}
 
 	@Override

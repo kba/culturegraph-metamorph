@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.culturegraph.metamorph.DataFilePath;
-import org.culturegraph.metamorph.stream.receivers.CountingStreamReceiver;
+import org.culturegraph.metamorph.stream.receivers.CountingWriter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public final class SimpleMarcReaderTest {
 	private static final int NUM_LITERALS=765;
 	
 	private final MarcReader reader = new MarcReader();
-	private final CountingStreamReceiver countStreamReceiver =  new CountingStreamReceiver();
+	private final CountingWriter countStreamReceiver =  new CountingWriter();
 
 		
 	@Test

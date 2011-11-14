@@ -7,16 +7,16 @@ import org.culturegraph.metamorph.types.ListMap;
  * 
  * @author Markus Michael Geipel
  */
-public final class ListMapCollector extends DefaultStreamReceiver {
+public final class ListMapWriter extends DefaultStreamReceiver {
 
 	private ListMap<String, String> listMap;
 	
-	public ListMapCollector() {
+	public ListMapWriter() {
 		super();
 		listMap = new ListMap<String, String>();
 	}	
 	
-	public ListMapCollector(final ListMap<String,String> listMap){
+	public ListMapWriter(final ListMap<String,String> listMap){
 		super();
 		this.listMap = listMap;
 	}

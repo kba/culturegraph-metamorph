@@ -8,11 +8,11 @@ import java.util.Map;
  * 
  * @author Markus Michael Geipel
  */
-public final class MapCollector extends DefaultStreamReceiver {
+public final class MapWriter extends DefaultStreamReceiver {
 
 	private final Map<String, String> map;
 
-	public MapCollector() {
+	public MapWriter() {
 		super();
 		map = new HashMap<String, String>();
 	}
@@ -20,7 +20,7 @@ public final class MapCollector extends DefaultStreamReceiver {
 	/**
 	 * @param map is filled with the received results.
 	 */
-	public MapCollector(final Map<String, String> map){
+	public MapWriter(final Map<String, String> map){
 		super();
 		this.map = map;
 	}

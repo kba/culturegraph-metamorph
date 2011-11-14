@@ -9,11 +9,11 @@ import org.culturegraph.metamorph.types.NamedValue;
  * Collects {@link NamedValue}s in a {@link Set}. So there will not be duplicates.
  * @author Markus Michael Geipel
  */
-public final class SetCollector extends DefaultStreamReceiver {
+public final class SetWriter extends DefaultStreamReceiver {
 
 	private final Set<NamedValue> set;
 
-	public SetCollector() {
+	public SetWriter() {
 		super();
 		set=new HashSet<NamedValue>();
 	}
@@ -21,7 +21,7 @@ public final class SetCollector extends DefaultStreamReceiver {
 	/**
 	 * @param set is filled with the received results.
 	 */
-	public SetCollector(final Set<NamedValue> set) {
+	public SetWriter(final Set<NamedValue> set) {
 		super();
 		this.set = set;
 	}

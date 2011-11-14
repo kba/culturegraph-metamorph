@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.culturegraph.metamorph.DataFilePath;
-import org.culturegraph.metamorph.stream.receivers.CountingStreamReceiver;
+import org.culturegraph.metamorph.stream.receivers.CountingWriter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public final class SimpleMabReaderTest {
 	private static final int NUM_RECORDS=10;
 	private static final int NUM_LITERALS=520;
 	private final MabReader reader = new MabReader();
-	private final CountingStreamReceiver countStreamReceiver =  new CountingStreamReceiver();
+	private final CountingWriter countStreamReceiver =  new CountingWriter();
 	
 	@Test
 	public void testRead() throws IOException {
