@@ -44,4 +44,9 @@ public final class ListMapWriter extends DefaultStreamReceiver {
 	public String getCurrentId() {
 		return currentId;
 	}
+	
+	@Override
+	public String toString() {
+		return listMap.toString();
+	}
 }
