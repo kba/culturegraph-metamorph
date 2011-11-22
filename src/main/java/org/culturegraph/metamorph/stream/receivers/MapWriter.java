@@ -1,14 +1,16 @@
 package org.culturegraph.metamorph.stream.receivers;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Collects the received results in a {@link Map}. Duplicate names are thus lost.
  * 
  * @author Markus Michael Geipel
  */
-public final class MapWriter extends DefaultStreamReceiver {
+public final class MapWriter extends DefaultStreamReceiver implements Map<String, String> {
 
 	private final Map<String, String> map;
 
@@ -35,11 +37,61 @@ public final class MapWriter extends DefaultStreamReceiver {
 		map.put(name, value);
 	}
 
-	/**
-	 * @return the map
-	 */
-	public Map<String, String> getMap() {
-		return map;
+	@Override
+	public int size() {
+		return map.size();
+	}
+	@Override
+	public boolean isEmpty() {
+		return map.isEmpty();
+	}
+	@Override
+	public boolean containsKey(final Object key) {
+		return map.containsKey(key);
+	}
+	@Override
+	public boolean containsValue(final Object value) {
+		return map.containsValue(value);
+	}
+	@Override
+	public String get(final Object key) {
+		return map.get(key);
+	}
+	@Override
+	public String put(final String key, final String value) {
+		return map.put(key, value);
+	}
+	@Override
+	public String remove(final Object key) {
+		return map.remove(key);
+	}
+	@Override
+	public void putAll(final Map<? extends String, ? extends String> otherMap) {
+		map.putAll(otherMap);
+	}
+	@Override
+	public void clear() {
+		map.clear();
+	}
+	@Override
+	public Set<String> keySet() {
+		return map.keySet();
+	}
+	@Override
+	public Collection<String> values() {
+		return map.values();
+	}
+	@Override
+	public Set<java.util.Map.Entry<String, String>> entrySet() {
+		return map.entrySet();
+	}
+	@Override
+	public boolean equals(final Object obj) {
+		return map.equals(obj);
+	}
+	@Override
+	public int hashCode() {
+		return map.hashCode();
 	}
 
 }

@@ -1,6 +1,5 @@
 package org.culturegraph.metamorph.stream.receivers;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.culturegraph.metamorph.stream.CGEntity;
@@ -10,17 +9,17 @@ public final class CGEntityWriter implements StreamReceiver {
 
 	private PrintWriter out;
 
-	public void setPrintWriter(PrintWriter out) {
-		this.out = out;
-	}
-
 	public CGEntityWriter(final java.io.Writer writer) {
 		out = new PrintWriter(writer);
 
 	}
 	
 	public CGEntityWriter() {
-		
+		//nothing
+	}
+	
+	public void setPrintWriter(final PrintWriter out) {
+		this.out = out;
 	}
 	
 	@Override

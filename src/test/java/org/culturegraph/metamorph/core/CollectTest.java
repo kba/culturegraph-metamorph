@@ -60,13 +60,13 @@ public final class CollectTest {
 		wireCollect(collectEntity);
 		cleanUp();
 		
-		Assert.assertEquals(0, mapCollector.getMap().size());
+		Assert.assertEquals(0, mapCollector.size());
 		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
-		Assert.assertEquals(0, mapCollector.getMap().size());
+		Assert.assertEquals(0, mapCollector.size());
 		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
-		Assert.assertEquals(2, mapCollector.getMap().size());
-		Assert.assertEquals(VALUE_A, mapCollector.getMap().get(NAME_A));
-		Assert.assertEquals(VALUE_B, mapCollector.getMap().get(NAME_B));
+		Assert.assertEquals(2, mapCollector.size());
+		Assert.assertEquals(VALUE_A, mapCollector.get(NAME_A));
+		Assert.assertEquals(VALUE_B, mapCollector.get(NAME_B));
 	}
 	
 
@@ -174,7 +174,7 @@ public final class CollectTest {
 		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
 		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertEquals(COMPASITION_AB, getReceived());
-		mapCollector.getMap().clear();
+		mapCollector.clear();
 		
 		dataA.data(ORIGIN_NAME, VALUE_A, 1, 0);
 		Assert.assertTrue(nothingReceived());
@@ -186,15 +186,15 @@ public final class CollectTest {
 	}
 	
 	private String getReceived(){
-		return mapCollector.getMap().get(COLLECT_NAME);
+		return mapCollector.get(COLLECT_NAME);
 	}
 	
 	private void cleanUp(){
-		mapCollector.getMap().clear();
+		mapCollector.clear();
 	}
 	
 	private boolean nothingReceived(){
-		return mapCollector.getMap().isEmpty();
+		return mapCollector.isEmpty();
 	}
 
 }

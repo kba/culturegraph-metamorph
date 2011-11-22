@@ -58,6 +58,6 @@ public final class NamedValue  implements Comparable<NamedValue>{
 	
 	@Override
 	public String toString() {
-		return name + "=" + value;
+		return name + ":" + value;
 	}
 }

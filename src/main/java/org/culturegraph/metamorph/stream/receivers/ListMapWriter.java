@@ -7,7 +7,7 @@ import org.culturegraph.metamorph.types.ListMap;
  * 
  * @author Markus Michael Geipel
  */
-public final class ListMapWriter extends DefaultStreamReceiver {
+public final class ListMapWriter extends DefaultStreamReceiver{
 
 	private ListMap<String, String> listMap;
 	private String currentId;
