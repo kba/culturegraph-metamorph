@@ -36,6 +36,7 @@ public final class Metamorph implements StreamReceiver, StreamSender,DataReceive
 	private final Map<String, String> entityMap = new HashMap<String, String>();
 
 	private final Map<String, Map<String, String>> multiMap = new HashMap<String, Map<String, String>>();
+	
 	private final Deque<String> entityStack = new LinkedList<String>();
 	private final StringBuilder entityPath = new StringBuilder();
 	private final Deque<Integer> entityCountStack = new LinkedList<Integer>();
@@ -75,7 +76,10 @@ public final class Metamorph implements StreamReceiver, StreamSender,DataReceive
 	public void startRecord(final String identifier) {
 		entityCountStack.clear();
 		entityStack.clear();
-
+		if(entityPath.length()!=0){
+			entityPath.delete(0, entityPath.length());
+		}
+		entityCount = 0;
 		++recordCount;
 		entityCountStack.add(Integer.valueOf(entityCount));
 		
@@ -87,21 +91,13 @@ public final class Metamorph implements StreamReceiver, StreamSender,DataReceive
 		}
 		outputStreamReceiver.startRecord(identifierFinal);
 		literal(StreamReceiver.ID_NAME, identifierFinal);
-		
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("#" + recordCount);
-		}
 	}
 
 	@Override
 	public void endRecord() {
-
 		outputStreamReceiver.endRecord();
-
-		entityCount = 0;
 		entityCountStack.removeLast();
 		if (!entityCountStack.isEmpty()) {
-
 			throw new IllegalMorphStateException(ENTITIES_NOT_BALANCED);
 		}
 	}
@@ -112,9 +108,6 @@ public final class Metamorph implements StreamReceiver, StreamSender,DataReceive
 		entityCountStack.add(Integer.valueOf(entityCount));
 		entityStack.add(name);
 		entityPath.append(name + entityMarker);
-		if (LOG.isTraceEnabled()) {
-			LOG.trace(entityCount + "> " + entityPath.toString() + " (" + entityStack.size() + ")");
-		}
 		final String toEntity = entityMap.get(name);
 		if (toEntity != null) {
 			outputStreamReceiver.startEntity(toEntity);
@@ -123,9 +116,6 @@ public final class Metamorph implements StreamReceiver, StreamSender,DataReceive
 
 	@Override
 	public void endEntity() {
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("< " + entityPath.toString());
-		}
 
 		final int end = entityPath.length();
 		try {
@@ -153,9 +143,6 @@ public final class Metamorph implements StreamReceiver, StreamSender,DataReceive
 
 	@Override
 	public void literal(final String name, final String value) {
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("\t- " + name + "=" + value);
-		}
 
 		final String path = entityPath.toString() + name;
 		dispatch(path, value);

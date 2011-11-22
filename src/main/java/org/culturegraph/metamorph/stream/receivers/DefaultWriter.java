@@ -28,7 +28,7 @@ public final class DefaultWriter implements StreamReceiver {
 	@Override
 	public void startRecord(final String identifier) {
 		++count;
-		out.println("RECORD " + count);
+		out.println("RECORD " + count + ": " + identifier);
 	}
 
 	@Override

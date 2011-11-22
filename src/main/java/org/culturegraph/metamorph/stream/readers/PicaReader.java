@@ -65,9 +65,8 @@ public final class PicaReader extends AbstractReader{
 			}
 		}catch(IndexOutOfBoundsException exception){
 			throw new RecordFormatException("[" + record + "]", exception);
-		}finally{
-			receiver.endRecord();
 		}
+		receiver.endRecord();
 	}
 	
 	

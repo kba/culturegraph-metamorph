@@ -67,9 +67,8 @@ public final class MarcReader extends AbstractReader {
 			}
 		} catch (IndexOutOfBoundsException exception) {
 			throw new RecordFormatException(record, exception);
-		} finally {
-			receiver.endRecord();
-		}
+		} 
+		receiver.endRecord();
 	}
 
 	public static String extractIdFromRawRecord(final String record) {

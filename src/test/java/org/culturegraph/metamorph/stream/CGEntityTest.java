@@ -16,6 +16,9 @@ import org.culturegraph.metamorph.stream.receivers.DefaultWriter;
 import org.junit.Test;
 
 public final class CGEntityTest {
+	
+//rivate final LogPipe logPipe = new LogPipe();
+	
 	@Test
 	public void testReadWriteRead() throws IOException {
 		final Reader picaReader = new PicaReader();
@@ -23,6 +26,7 @@ public final class CGEntityTest {
 		final DefaultWriter referenceWriter = new DefaultWriter(refereceStringWriter);
 		
 		picaReader.setStreamReceiver(referenceWriter);
+		//logPipe.setStreamReceiver(referenceWriter);
 		picaReader.read(new FileInputStream(DataFilePath.PND_PICA));
 		referenceWriter.flush();
 		
@@ -40,6 +44,7 @@ public final class CGEntityTest {
 		final DefaultWriter finalWriter = new DefaultWriter(finalStringWriter);
 		
 		reader.setStreamReceiver(finalWriter);
+		//logPipe.setStreamReceiver(finalWriter);
 		reader.read(new StringReader(tempStringWriter.toString()));
 		finalWriter.flush();
 		

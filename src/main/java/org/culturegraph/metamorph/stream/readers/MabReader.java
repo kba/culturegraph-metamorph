@@ -76,9 +76,8 @@ public final class MabReader extends AbstractReader {
 			}
 		} catch (IndexOutOfBoundsException e) {
 			throw new RecordFormatException("[" + record + "]", e);
-		} finally {
-			receiver.endRecord();
-		}
+		} 
+		receiver.endRecord();
 	}
 
 	@Override
