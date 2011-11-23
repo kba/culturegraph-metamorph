@@ -34,6 +34,7 @@ public final class FunctionFactory {
 		registerFunction("replace", Replace.class);
 		registerFunction("isbn", ISBN.class);
 		registerFunction("equals", Equals.class);
+		registerFunction("htmlanchor", HtmlAnchor.class);
 
 		availableFunctions = Collections.unmodifiableSet(functionClasses.keySet());
 	}
@@ -42,7 +43,7 @@ public final class FunctionFactory {
 	private void registerFunction(final String name, final Class<? extends Function> clazz) {
 
 		functionClasses.put(name, clazz);
-		LOG.debug("Reader for '" + name + "': " + clazz.getName());
+		LOG.debug("Registered function '" + name + "': " + clazz.getName());
 
 		final Map<String, Method> methodMap = new HashMap<String, Method>();
 		functionMethodMaps.put(clazz, methodMap);

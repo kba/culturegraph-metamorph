@@ -42,10 +42,18 @@ public final class MetamorphBuilder {
 	private static final String PARSE_ERROR = "Error parsing transformation definition: ";
 	private static final String NOT_FOUND_ERROR = "Definition file not found";
 
-	private MetamorphBuilder() {/* no instances exist */
+	private final String morphDef;
+
+	public MetamorphBuilder(final String morphDef) {
+		// TODO caching the definition would be cool!
+		this.morphDef = morphDef;
 	}
 	
-	public static void wire(final StreamSender sender, final Metamorph metamorph, final StreamReceiver receiver){
+	public Metamorph build(){
+		return build(morphDef);
+	}
+
+	public static void wire(final StreamSender sender, final Metamorph metamorph, final StreamReceiver receiver) {
 		sender.setStreamReceiver(metamorph);
 		metamorph.setStreamReceiver(receiver);
 	}
@@ -57,32 +65,33 @@ public final class MetamorphBuilder {
 			throw new MetamorphDefinitionException(NOT_FOUND_ERROR, e);
 		}
 	}
-	
+
 	public static Metamorph build(final String morphDef) {
 		final String morphDefPath = morphDef + ".xml";
-		final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(morphDefPath);
-		if(inputStream==null){
+		final InputStream inputStream = Thread.currentThread().getContextClassLoader()
+				.getResourceAsStream(morphDefPath);
+		if (inputStream == null) {
 			return build(new File(morphDefPath));
-			//throw new MetamorphDefinitionException(NOT_FOUND_ERROR + ": " + morphDefPath);
+			// throw new MetamorphDefinitionException(NOT_FOUND_ERROR + ": " +
+			// morphDefPath);
 		}
 		return build(inputStream);
 	}
 
 	public static Metamorph build(final InputStream inputStream) {
-		if(inputStream==null){
+		if (inputStream == null) {
 			throw new IllegalArgumentException("'inputStream' must not be null");
 		}
 		return build(new InputSource(inputStream));
 	}
 
-
 	public static Metamorph build(final InputSource inputSource) {
-		if(inputSource==null){
+		if (inputSource == null) {
 			throw new IllegalArgumentException("'inputSource' must not be null");
 		}
 		final Metamorph metamorph = new Metamorph();
 		final MetamorphDefinitionHandler transformationContentHandler = new MetamorphDefinitionHandler(metamorph);
-		
+
 		try {
 			// XMLReader erzeugen
 			final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -110,11 +119,10 @@ public final class MetamorphBuilder {
 		} catch (SAXException e) {
 			throw new MetamorphDefinitionException(e);
 		}
-		
+
 		return metamorph;
 	}
-	
-	
+
 	private static final class MetamorphDefinitionHandler implements ContentHandler {
 
 		private static final String GROUP_TAG = "group";
@@ -138,7 +146,6 @@ public final class MetamorphBuilder {
 		private static final Object METAMORPH_TAG = "metamorph";
 		private static final String MARKER_ATTR = "entityMarker";
 		private static final String OCCURENCE_ATTR = "occurence";
-		
 
 		private String emitGroupName;
 		private String emitGroupValue;
@@ -154,7 +161,6 @@ public final class MetamorphBuilder {
 		public MetamorphDefinitionHandler(final Metamorph metamorph) {
 			this.metamorph = metamorph;
 		}
-
 
 		@Override
 		public void startElement(final String uri, final String localName, final String qName, final Attributes atts)
@@ -191,7 +197,6 @@ public final class MetamorphBuilder {
 			}
 		}
 
-
 		private void registerCollector(final String tag, final Attributes atts) {
 			final boolean reset = atts.getValue(RESET_ATTR) != null && TRUE.equals(atts.getValue(RESET_ATTR));
 			final boolean sameEntity = atts.getValue(SAME_ENTITY_ATTR) != null
@@ -222,7 +227,7 @@ public final class MetamorphBuilder {
 			} else if (GROUP_TAG.equals(localName)) {
 				emitGroupName = null;
 				emitGroupValue = null;
-			} else if (MAP_TAG.equals(localName)){
+			} else if (MAP_TAG.equals(localName)) {
 				map = null;
 			}
 		}
@@ -265,7 +270,7 @@ public final class MetamorphBuilder {
 		 */
 		private void createMap(final String mapName, final String defaultValue) {
 			map = new HashMap<String, String>();
-			if(defaultValue!=null){
+			if (defaultValue != null) {
 				map.put(MultiMapProvider.DEFAULT_MAP_KEY, defaultValue);
 			}
 			metamorph.addMap(mapName, map);
@@ -367,7 +372,6 @@ public final class MetamorphBuilder {
 			// do nothing
 		}
 	}
-	
 
 	private static final class MetamorphBuilderErrorHandler implements ErrorHandler {
 
@@ -390,7 +394,7 @@ public final class MetamorphBuilder {
 			throw new MetamorphDefinitionException(PARSE_ERROR + exception.getMessage(), exception);
 		}
 	}
-	
+
 	public static final class MetamorphDefinitionException extends RuntimeException {
 
 		private static final long serialVersionUID = -3130648074493084946L;
