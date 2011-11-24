@@ -1,9 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+<!-- 	<parent> -->
+<!-- 		<groupId>de.dnb.maven</groupId> -->
+<!-- 		<artifactId>masterpom</artifactId> -->
+<!-- 		<version>1.0.0</version> -->
+<!-- 	</parent> -->
 	<groupId>org.culturegraph</groupId>
 	<artifactId>metamorph</artifactId>
-	<version>0.1</version>
+	<version>0.2</version>
 	<name>Metamorph, Transformation Language for Metadata</name>
 
 	<properties>
@@ -13,12 +18,12 @@
 		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>project_internal</id>
-			<url>file://${basedir}/lib</url>
-		</repository>
-	</repositories>
+<!-- 	<repositories> -->
+<!-- 		<repository> -->
+<!-- 			<id>project_internal</id> -->
+<!-- 			<url>file://${basedir}/lib</url> -->
+<!-- 		</repository> -->
+<!-- 	</repositories> -->
 
 	<build>
 		<plugins>
@@ -42,7 +47,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>org.culturegraph.metamorph.Morph</mainClass>
+							<mainClass>org.culturegraph.metamorph.Read</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -85,6 +90,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
@@ -103,6 +109,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>

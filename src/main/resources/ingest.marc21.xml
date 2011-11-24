@@ -7,6 +7,8 @@
 	<name>Marc21 to PropertyRecord</name>
 	<annotation></annotation>
 
+
+
 	<collect-literal name="cg:typeOfWork" value="${first}${second}">
 		<data source="level" name="first" />
 		<data source="multipart" name="second" />

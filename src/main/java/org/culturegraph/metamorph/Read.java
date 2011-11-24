@@ -1,14 +1,16 @@
 package org.culturegraph.metamorph;
 
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
-import org.culturegraph.metamorph.readers.MultiFormatReader;
-import org.culturegraph.metamorph.stream.ConsoleWriter;
+import org.culturegraph.metamorph.stream.readers.MultiFormatReader;
+import org.culturegraph.metamorph.stream.receivers.DefaultWriter;
 
 /**
  * Example which reads mab2, pica and marc21 files and prints the result to the
- * console using a {@link ConsoleWriter}.
+ * console using a {@link DefaultWriter}.
  * 
  * @author Markus Michael Geipel
  */
@@ -32,13 +34,14 @@ public final class Read {
 			System.err.println("Usage: Read FILE [MORPHDEF]");
 			return;
 		}
-
-		reader.setStreamReceiver(new ConsoleWriter());
+		final DefaultWriter consoleWriter = new DefaultWriter(new BufferedWriter(new OutputStreamWriter(System.out, "UTF8")));
+		reader.setStreamReceiver(consoleWriter);
 
 		final String fileName = args[0];
 		final String extension = getExtention(fileName);
 		reader.setFormat(extension);
 		reader.read(new FileInputStream(fileName));
+		consoleWriter.flush();
 	}
 
 	private static String getExtention(final String fileName) {

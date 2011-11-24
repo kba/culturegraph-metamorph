@@ -49,7 +49,7 @@
 		<complexType>
 			<sequence>
 				<element ref="tns:annotation" minOccurs="0" maxOccurs="1" />
-				<element ref="tns:data" minOccurs="2" maxOccurs="unbounded" />
+				<element ref="tns:data" minOccurs="1" maxOccurs="unbounded" />
 				<group ref="tns:function" minOccurs="0" maxOccurs="unbounded"/>
 			</sequence>
 			<attribute name="name" type="string" use="optional" />
@@ -133,6 +133,13 @@
 	<element name="compose">
 		<complexType>
 			<attribute name="prefix" type="string" use="optional" />
+			<attribute name="postfix" type="string" use="optional" />
+		</complexType>
+	</element>
+	
+	<element name="htmlanchor">
+		<complexType>
+			<attribute name="prefix" type="string" use="required" />
 			<attribute name="postfix" type="string" use="optional" />
 		</complexType>
 	</element>
@@ -222,6 +229,7 @@
 			<element ref="tns:lookup" />
 			<element ref="tns:isbn" />
 			<element ref="tns:equals" />
+			<element ref="tns:htmlanchor"/>
 		</choice>
 	</group>
 	

@@ -1,6 +1,7 @@
 package org.culturegraph.metamorph.types;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,10 @@ public final class ListMap<K,V>{
 	public Set<Entry<K, List<V>>> entrySet(){
 		return map.entrySet();
 	}
+	
+	public Set<K> keySet(){
+		return map.keySet();
+	}
 
 
 	public void put(final K name, final V value) {
@@ -53,6 +58,17 @@ public final class ListMap<K,V>{
 		}
 		
 		values.add(value);
+	}
+	
+	public void putAll(final K name, final Collection<V> addValues) {
+		
+		List<V> values = map.get(name);
+		if(values == null){
+			values = new ArrayList<V>();
+			map.put(name, values);
+		}
+		
+		values.addAll(addValues);
 	}
 
 	public List<V> get(final K name){

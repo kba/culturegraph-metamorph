@@ -1,7 +1,10 @@
 package org.culturegraph.metamorph.core;
 
-import org.culturegraph.metamorph.stream.DefaultStreamReceiver;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.culturegraph.metamorph.stream.receivers.DefaultStreamReceiver;
 import org.culturegraph.metamorph.types.NamedValue;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,6 +17,7 @@ import org.junit.Test;
 public final class MetamorphTest implements DataReceiver {
 	
 	private static final String NAME = "name";
+
 	
 	private static final String VALUE = "s234234ldkfj";
 	
@@ -28,6 +32,9 @@ public final class MetamorphTest implements DataReceiver {
 	private static final StreamReceiver EMPTY_RECEIVER = new DefaultStreamReceiver();
 
 	private static final String FEEDBACK_VAR = "@var";
+
+	private static final String MAP_NAME = "sdfklsjef";
+	
 	
 	private NamedValue namedValue;
 
@@ -70,6 +77,23 @@ public final class MetamorphTest implements DataReceiver {
 		metamorph.endEntity();
 		metamorph.literal(LITERAL_NAME, VALUE);
 		Assert.assertNull(namedValue);
+	}
+	
+	@Test
+	public void testMultiMap(){
+		final Metamorph metamorph = new Metamorph();
+		final Map<String, String> map = new HashMap<String, String>();
+		map.put(NAME, VALUE);
+		
+		metamorph.addMap(MAP_NAME, map);
+		Assert.assertNotNull(metamorph.getMap(MAP_NAME));
+		Assert.assertNotNull(metamorph.getValue(MAP_NAME,NAME));
+		Assert.assertEquals(VALUE, metamorph.getValue(MAP_NAME,NAME));
+		
+		map.put(MultiMapProvider.DEFAULT_MAP_KEY, VALUE);
+		Assert.assertNotNull(metamorph.getValue(MAP_NAME,"sdfadsfsdf"));
+		Assert.assertEquals(VALUE, metamorph.getValue(MAP_NAME,"sdfsdf"));
+		
 	}
 	
 	@Test
