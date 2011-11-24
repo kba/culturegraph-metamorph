@@ -8,7 +8,7 @@
 <!-- 	</parent> -->
 	<groupId>org.culturegraph</groupId>
 	<artifactId>metamorph</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.3-SNAPSHOT</version>
 	<name>Metamorph, Transformation Language for Metadata</name>
 
 	<properties>
