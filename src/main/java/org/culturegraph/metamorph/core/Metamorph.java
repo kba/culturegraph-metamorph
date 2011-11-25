@@ -150,31 +150,39 @@ public final class Metamorph implements StreamReceiver, StreamSender, DataReceiv
 
 	@Override
 	public void literal(final String name, final String value) {
-
+		if (entityCountStack.isEmpty()) {
+			throw new IllegalMorphStateException("Cannot receive literals outside of records");
+		}
+		
 		final String path = entityPath.toString() + name;
 		dispatch(path, value);
 
 	}
 
-	private void dispatch(final String key, final String value) {
-
-		List<Data> matchingReceiver;
-		matchingReceiver = dataSources.get(key); // find appropriate receiver
-		if (!elseSource.isEmpty() && matchingReceiver == null && !key.isEmpty() && key.charAt(0) != '_') {
-			matchingReceiver = elseSource;// try the receiver
-										// for leftovers
+	private void dispatch(final String path, final String value) {
+		final List<Data> matchingData = findMatchingData(path);
+		if (null != matchingData) {
+			dispatchToData(path, value, matchingData);
 		}
-
-		if (null != matchingReceiver) {
-			for (Data receiver : matchingReceiver) {
-				if (entityCountStack.isEmpty()) {
-					throw new IllegalMorphStateException("Cannot receive literals outside of records");
-				}
-				try {
-					receiver.data(key, value, recordCount, entityCountStack.getLast().intValue());
-				} catch (MetamorphException e) {
-					errorHandler.error(e);
-				}
+	}
+	
+	private List<Data> findMatchingData(final String path){
+		List<Data> matchingData;
+		matchingData = dataSources.get(path); // find appropriate receiver
+		if (!elseSource.isEmpty() && matchingData == null && !path.isEmpty() && path.charAt(0) != '_') {
+			matchingData = elseSource;// try the receiver
+									// for leftovers
+		}
+		return matchingData;
+	}
+	
+	private void dispatchToData(final String key, final String value, final List<Data> dataList){
+		final int entityCount = entityCountStack.getLast().intValue();
+		for (Data data : dataList) {
+			try {
+				data.data(key, value, recordCount, entityCount);
+			} catch (MetamorphException e) {
+				errorHandler.error(e);
 			}
 		}
 	}
