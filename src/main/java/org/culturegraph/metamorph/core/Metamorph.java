@@ -97,7 +97,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, DataReceiv
 			identifierFinal = identifier;
 		}
 		outputStreamReceiver.startRecord(identifierFinal);
-		literal(StreamReceiver.ID_NAME, identifierFinal);
+		dispatch(StreamReceiver.ID_NAME, identifierFinal, null);
 	}
 
 	@Override
@@ -153,30 +153,43 @@ public final class Metamorph implements StreamReceiver, StreamSender, DataReceiv
 		if (entityCountStack.isEmpty()) {
 			throw new IllegalMorphStateException("Cannot receive literals outside of records");
 		}
-		
+
 		final String path = entityPath.toString() + name;
-		dispatch(path, value);
+		dispatch(path, value, elseSource);
 
 	}
 
-	private void dispatch(final String path, final String value) {
-		final List<Data> matchingData = findMatchingData(path);
+	/**
+	 * @param path
+	 * @param value
+	 * @param fallback
+	 */
+	private void dispatch(final String path, final String value, final List<Data> fallback) {
+		final List<Data> matchingData = findMatchingData(path, fallback);
 		if (null != matchingData) {
-			dispatchToData(path, value, matchingData);
+			send(path, value, matchingData);
 		}
 	}
-	
-	private List<Data> findMatchingData(final String path){
-		List<Data> matchingData;
-		matchingData = dataSources.get(path); // find appropriate receiver
-		if (!elseSource.isEmpty() && matchingData == null && !path.isEmpty() && path.charAt(0) != '_') {
-			matchingData = elseSource;// try the receiver
-									// for leftovers
+
+	/**
+	 * @param path
+	 * @param fallback
+	 * @return
+	 */
+	private List<Data> findMatchingData(final String path, final List<Data> fallback) {
+		final List<Data> matchingData = dataSources.get(path);
+		if (matchingData == null) {
+			return fallback;
 		}
 		return matchingData;
 	}
-	
-	private void dispatchToData(final String key, final String value, final List<Data> dataList){
+
+	/**
+	 * @param key
+	 * @param value
+	 * @param dataList destination
+	 */
+	private void send(final String key, final String value, final List<Data> dataList) {
 		final int entityCount = entityCountStack.getLast().intValue();
 		for (Data data : dataList) {
 			try {
@@ -220,7 +233,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, DataReceiv
 			LOG.warn("Empty data received. This is not suposed to happen. Please file a bugreport");
 		} else {
 			if (name.length() != 0 && name.charAt(0) == FEEDBACK_CHAR) {
-				dispatch(name, value);
+				dispatch(name, value, null);
 			} else {
 				outputStreamReceiver.literal(name, value);
 			}
