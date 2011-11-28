@@ -15,11 +15,13 @@ import java.util.Set;
  */
 public final class ListMap<K,V>{
 
+	private String identifier;
 	private final Map<K, List<V>> map = new HashMap<K, List<V>>();
 	
 	
 	public void clear(){
 		map.clear();
+		identifier = null;
 	}
 	
 	public void removeKey(final K key){
@@ -94,5 +96,13 @@ public final class ListMap<K,V>{
 	@Override
 	public String toString() {
 		return map.toString();
+	}
+
+	public void setId(final String identifier) {
+		this.identifier = identifier;
+	}
+
+	public String getId() {
+		return identifier;
 	}
 }
