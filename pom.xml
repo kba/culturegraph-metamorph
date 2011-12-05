@@ -25,6 +25,97 @@
 <!-- 		</repository> -->
 <!-- 	</repositories> -->
 
+	<profiles>
+		<profile>
+			<id>jenkins</id>
+			<activation>
+				<property>
+					<name>BUILD_NUMBER</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-checkstyle-plugin</artifactId>
+						<version>2.6</version>
+						<configuration>
+							<configLocation>${basedir}/developers/checkstyle_rules.xml</configLocation>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>checkstyle</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>cobertura-maven-plugin</artifactId>
+						<version>2.5.1</version>
+						<configuration>
+							<formats>
+								<format>xml</format>
+							</formats>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>cobertura</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>findbugs-maven-plugin</artifactId>
+						<version>2.3.2</version>
+						<configuration>
+							<threshold>High</threshold>
+
+							<findbugsXmlOutput>true</findbugsXmlOutput>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-pmd-plugin</artifactId>
+						<version>2.5</version>
+						<configuration>
+							<linkXRef>true</linkXRef>
+
+							<rulesets>
+								<ruleset>${basedir}/developers/pmd_rules.xml</ruleset>
+							</rulesets>
+						</configuration>
+
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>pmd</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -51,85 +142,6 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
-
-
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<configLocation>${basedir}/developers/checkstyle_rules.xml</configLocation>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>checkstyle</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<formats>
-						<format>xml</format>
-					</formats>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>cobertura</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<threshold>High</threshold>
-
-					<findbugsXmlOutput>true</findbugsXmlOutput>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<linkXRef>true</linkXRef>
-
-					<rulesets>
-						<ruleset>${basedir}/developers/pmd_rules.xml</ruleset>
-					</rulesets>
-				</configuration>
-
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>pmd</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 		</plugins>
