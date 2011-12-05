@@ -27,6 +27,7 @@
 	
 	<data source="002@.0" name="dcterms:format">
 		<substring start="0" end="1"/>
+		 <lookup in="material"/>
 	</data>
 
 	<data source="003@.0" name="cg:sourceRecordId" />
@@ -172,6 +173,11 @@
 		<entry name="p" value="journalSeriesNewspaper" />
 	</map>
 		
+		<map name="material">
+		<entry name="A" value="print"/>
+		<entry name="B" value="audiovisual"/>
+		<entry name="O" value="online"/>
+		</map>
 	<!-- 
 	<map name="statusList">
 		<entry name="a" value="provisorischerDatensatz" />
