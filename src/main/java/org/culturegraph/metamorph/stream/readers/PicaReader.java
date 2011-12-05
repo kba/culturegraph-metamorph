@@ -5,6 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parses a raw Picaplus stream (utf8 encoding assumed).
@@ -23,6 +25,7 @@ public final class PicaReader extends AbstractReader{
 	private static final String ID_PATTERN_STRING = FIELD_DELIMITER + "003@ " + SUB_DELIMITER + "0(.*?)" + FIELD_DELIMITER;
 	private static final Pattern ID_PATTERN = Pattern.compile(ID_PATTERN_STRING);
 
+	private static final Logger LOG = LoggerFactory.getLogger(PicaReader.class);
 
 	@Override
 	protected void processRecord(final String record) {
@@ -46,6 +49,7 @@ public final class PicaReader extends AbstractReader{
 				
 				final String fieldName;
 				final int firstSubfield;
+				LOG.info(field);
 				if(subfields[1].charAt(0)=='S'){
 					fieldName = subfields[0].trim() + subfields[1].charAt(1);
 					firstSubfield = 2;
