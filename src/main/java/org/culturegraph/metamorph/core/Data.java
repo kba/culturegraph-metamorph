@@ -1,31 +1,29 @@
 package org.culturegraph.metamorph.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Implementation of the <code>&lt;data&gt;</code> tag.
  * 
  * @author Markus Michael Geipel
  */
-final class Data extends DataProcessorImpl implements DataSender, DataReceiver {
+final class Data extends DataProcessorImpl implements DataSender, DataReceiver, EntityEndListener {
 
 	/**
 	 * @author Markus Michael Geipel
 	 * @status Experimental
 	 */
 	public enum Mode {
-		AS_VALUE, AS_NAME
+		VALUE, NAME, META, COUNT
 	}
-
-	private static final Logger LOG = LoggerFactory.getLogger(Data.class);
 
 	private String name;
 	private String value;
-	private Mode mode = Mode.AS_VALUE;
+	// private String meta;
+
+	private Mode mode = Mode.VALUE;
 	private DataReceiver dataReceiver;
 	private int occurence;
 	private int occurenceCount;
+	private int processingCount;
 
 	private int oldRecordCount;
 
@@ -35,50 +33,63 @@ final class Data extends DataProcessorImpl implements DataSender, DataReceiver {
 
 	}
 
+	private String fallback(final String value, final String fallbackValue) {
+		if (value == null) {
+			return fallbackValue;
+		}
+		return value;
+	}
+
 	@Override
 	public void data(final String recName, final String recValue, final int recordCount, final int entityCount) {
 		assert dataReceiver != null;
 
-		if (occurence > 0) {
-			updateOccurence(recordCount);
-			if (!isOccurenceOK()) {
-				return;
-			}
+		updateCounts(recordCount);
+		if (!isOccurenceOK()) {
+			return;
 		}
 
 		final String tempData = applyFunctions(recValue);
 		if (tempData == null) {
 			return;
 		}
+		++processingCount;
 
-		String currentName = name;
-		if (currentName == null) {
-			currentName = recName;
+		switch (mode) {
+		case NAME:
+			dataReceiver.data(fallback(name, tempData), fallback(value, recValue), recordCount, entityCount);
+			break;
+		case VALUE:
+			dataReceiver.data(fallback(name, recName), fallback(value, tempData), recordCount, entityCount);
+			break;
+		case META:
+			// dataReceiver.data(finalName, finalValue, recordCount,
+			// entityCount);
+			break;
+		case COUNT:
+			// nothing to do. count is emitted when the record is over
+			break;
 		}
 
-		String currentValue = value;
-
-		if (Mode.AS_NAME.equals(mode) && name == null) {
-			currentName = tempData;
-		} else if (currentValue == null) {
-			currentValue = tempData;
-		}
-
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("emiting literal " + currentName + "=" + currentValue);
-		}
-		dataReceiver.data(currentName, currentValue, recordCount, entityCount);
+		// if (Mode.NAME.equals(mode)) {
+		// finalName = tempData;
+		// } else if (finalValue == null) {
+		// finalValue = tempData;
+		// }
+		//
+		// dataReceiver.data(finalName, finalValue, recordCount, entityCount);
 	}
 
 	private boolean isOccurenceOK() {
-		return occurence == occurenceCount;
+		return occurence == 0 || occurence == occurenceCount;
 	}
 
-	private void updateOccurence(final int recordCount) {
+	private void updateCounts(final int recordCount) {
 		if (recordCount == oldRecordCount) {
 			++occurenceCount;
 		} else {
 			occurenceCount = 1;
+			processingCount = 0;
 			oldRecordCount = recordCount;
 		}
 	}
@@ -131,6 +142,13 @@ final class Data extends DataProcessorImpl implements DataSender, DataReceiver {
 	 */
 	public String getDefaultValue() {
 		return value;
+	}
+
+	@Override
+	public void onEntityEnd(final String entityName) {
+		if (Mode.COUNT == mode) {
+			dataReceiver.data(name, String.valueOf(processingCount), oldRecordCount, 0);
+		}
 	}
 
 }

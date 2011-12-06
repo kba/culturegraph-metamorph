@@ -48,8 +48,8 @@ public final class MetamorphBuilder {
 		// TODO caching the definition would be cool!
 		this.morphDef = morphDef;
 	}
-	
-	public Metamorph build(){
+
+	public Metamorph build() {
 		return build(morphDef);
 	}
 
@@ -311,11 +311,7 @@ public final class MetamorphBuilder {
 				collect.addData(data);
 			}
 
-			if (NAME_ATTR.equals(mode)) {
-				data.setMode(Data.Mode.AS_NAME);
-			} else {
-				data.setMode(Data.Mode.AS_VALUE);
-			}
+			data.setMode(Data.Mode.valueOf(mode.toUpperCase()));
 
 			metamorph.registerDataSource(data, source);
 

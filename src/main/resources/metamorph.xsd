@@ -87,8 +87,9 @@
 					maxOccurs="unbounded" />
 			</sequence>
 			<attribute name="source" type="string" use="required" />
-			<!-- 			<attribute name="regExp" type="boolean" use="optional" default="true"/> -->
-			<attribute name="as" type="tns:asAttribute" use="optional" />
+			
+			<attribute name="as" type="tns:asAttribute" use="optional" default="value"/>
+			
 			<attribute name="name" type="string" use="optional" />
 			<attribute name="value" type="string" use="optional" />
 
@@ -183,6 +184,8 @@
 		<restriction base="string">
 			<enumeration value="name" />
 			<enumeration value="value" />
+			<enumeration value="meta" />
+			<enumeration value="count" />
 		</restriction>
 	</simpleType>
 

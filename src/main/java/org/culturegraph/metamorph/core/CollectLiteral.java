@@ -54,7 +54,7 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 
 	@Override
 	protected void onAddData(final Data data) {
-		data.setMode(Mode.AS_VALUE);
+		data.setMode(Mode.VALUE);
 		if (data.getDefaultName() == null) {
 			data.setName(String.valueOf(getDataCount()));
 		}

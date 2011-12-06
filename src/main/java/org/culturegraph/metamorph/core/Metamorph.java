@@ -22,13 +22,15 @@ import org.slf4j.LoggerFactory;
  */
 public final class Metamorph implements StreamReceiver, StreamSender, DataReceiver, MultiMapProvider {
 
+	public static final String ELSE_KEYWORD = "_else";
+	public static final String RECORD_KEYWORD = "record";
+	public static final char FEEDBACK_CHAR = '@';
+	
 	private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 	private static final char DEFAULT_ENTITY_MARKER = '.';
-	private static final char FEEDBACK_CHAR = '@';
-
-	private static final String ELSE_NAME = "_else";
+	
 
 	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
 	private final List<Data> elseSource = new ArrayList<Data>();
@@ -66,7 +68,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, DataReceiv
 	protected void registerDataSource(final Data data, final String path) {
 		assert data != null && path != null;
 
-		if (ELSE_NAME.equals(path)) {
+		if (ELSE_KEYWORD.equals(path)) {
 			elseSource.add(data);
 		} else {
 
@@ -102,6 +104,9 @@ public final class Metamorph implements StreamReceiver, StreamSender, DataReceiv
 
 	@Override
 	public void endRecord() {
+
+		notifyEntityEndListeners(RECORD_KEYWORD);
+		
 		outputStreamReceiver.endRecord();
 		entityCountStack.removeLast();
 		if (!entityCountStack.isEmpty()) {
@@ -131,12 +136,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, DataReceiv
 			final String name = entityStack.removeLast();
 			entityCountStack.removeLast();
 
-			final List<EntityEndListener> matchingListeners = entityEndListeners.get(name);
-			if (null != matchingListeners) {
-				for (EntityEndListener listener : matchingListeners) {
-					listener.onEntityEnd(name);
-				}
-			}
+			notifyEntityEndListeners(name);
 
 			final String toEntity = entityMap.get(name);
 			if (toEntity != null) {
@@ -146,6 +146,16 @@ public final class Metamorph implements StreamReceiver, StreamSender, DataReceiv
 		} catch (NoSuchElementException exc) {
 			throw new IllegalMorphStateException(ENTITIES_NOT_BALANCED + ": " + exc.getMessage(), exc);
 		}
+	}
+
+	private void notifyEntityEndListeners(final String name) {
+		final List<EntityEndListener> matchingListeners = entityEndListeners.get(name);
+		if (null != matchingListeners) {
+			for (EntityEndListener listener : matchingListeners) {
+				listener.onEntityEnd(name);
+			}
+		}
+
 	}
 
 	@Override
@@ -187,7 +197,8 @@ public final class Metamorph implements StreamReceiver, StreamSender, DataReceiv
 	/**
 	 * @param key
 	 * @param value
-	 * @param dataList destination
+	 * @param dataList
+	 *            destination
 	 */
 	private void send(final String key, final String value, final List<Data> dataList) {
 		final int entityCount = entityCountStack.getLast().intValue();

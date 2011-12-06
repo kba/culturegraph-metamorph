@@ -12,14 +12,19 @@ public final class Util {
 	}
 
 	public static String format(final String format, final Map<String, String> variables) {
-		final StringBuilder builder = new StringBuilder();
-		final char[] formatChars = format.toCharArray();
+		if(format.indexOf('$')<0){ // shortcut if there is nothing to replace
+			return format;
+		}
+		
 		int varStart = 0;
 		int varEnd = 0;
 		int oldEnd = 0;
 		String varName;
 		String varValue;
 
+		final StringBuilder builder = new StringBuilder();
+		final char[] formatChars = format.toCharArray();
+		
 		while (true) {
 			varStart = format.indexOf("${", oldEnd);
 			varEnd = format.indexOf('}', varStart);
