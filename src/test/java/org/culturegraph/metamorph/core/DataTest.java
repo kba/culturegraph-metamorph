@@ -74,17 +74,17 @@ public final class DataTest {
 			public void data(final String name, final String value,  final int recordCount,
 					final int entityCount) {
 				Assert.assertEquals("wrong record count", RECORD_COUNT+1, recordCount);
-				Assert.assertEquals(WRONG_COUNT, String.valueOf(2), value);
+				Assert.assertEquals(WRONG_COUNT, String.valueOf(3), value);
 				Assert.assertEquals(WRONG_NAME, DEFAULT_NAME, name);
-				
-
 			}
 		});
 		data.setName(DEFAULT_NAME);
 		data.setMode(Mode.COUNT);
 		
 		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT, ENTITY_COUNT); // just a decoy
+		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT, ENTITY_COUNT); // just a decoy
 		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT+1, ENTITY_COUNT); // counter will be reset on record count change
+		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT+1, ENTITY_COUNT);
 		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT+1, ENTITY_COUNT);
 		data.onEntityEnd(Metamorph.RECORD_KEYWORD); // emit count
 	}

@@ -13,6 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.culturegraph.metamorph.core.Data.Mode;
 import org.culturegraph.metamorph.functions.Function;
 import org.culturegraph.metamorph.functions.FunctionFactory;
 import org.culturegraph.metamorph.stream.StreamReceiver;
@@ -310,9 +311,14 @@ public final class MetamorphBuilder {
 			} else {
 				collect.addData(data);
 			}
+			
+			final Data.Mode dataMode = Data.Mode.valueOf(mode.toUpperCase());
+			data.setMode(dataMode);
 
-			data.setMode(Data.Mode.valueOf(mode.toUpperCase()));
-
+			if(dataMode==Mode.COUNT){
+				metamorph.addEntityEndListener(data, Metamorph.RECORD_KEYWORD);
+			}
+			
 			metamorph.registerDataSource(data, source);
 
 			if (LOG.isDebugEnabled()) {
