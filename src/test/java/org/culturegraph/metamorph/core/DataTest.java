@@ -27,6 +27,7 @@ public final class DataTest {
 	private static final String WRONG_NAME = "wrong name";
 	private static final String WRONG_VALUE = "wrong value";
 	private static final String WRONG_COUNT = "wrong count";
+	private static final int THREE = 3;
 	
 	private final Constant constant1 = new Constant(CONSTANT_A);
 	private final Constant constant2 = new Constant(CONSTANT_B);
@@ -74,7 +75,7 @@ public final class DataTest {
 			public void data(final String name, final String value,  final int recordCount,
 					final int entityCount) {
 				Assert.assertEquals("wrong record count", RECORD_COUNT+1, recordCount);
-				Assert.assertEquals(WRONG_COUNT, String.valueOf(3), value);
+				Assert.assertEquals(WRONG_COUNT, String.valueOf(THREE), value);
 				Assert.assertEquals(WRONG_NAME, DEFAULT_NAME, name);
 			}
 		});
@@ -102,22 +103,27 @@ public final class DataTest {
 		data.data(ORIGIN_NAME, DEFAULT_VALUE, RECORD_COUNT, ENTITY_COUNT); // this is the correct one
 		data.data(ORIGIN_NAME, WRONG_VALUE, RECORD_COUNT, ENTITY_COUNT); 
 		
-		data.setOccurence(3);
+		data.setOccurence(THREE);
 		data.data(ORIGIN_NAME, WRONG_VALUE, RECORD_COUNT+1, ENTITY_COUNT);
 		data.data(ORIGIN_NAME, WRONG_VALUE, RECORD_COUNT+1, ENTITY_COUNT); 
 		data.data(ORIGIN_NAME, DEFAULT_VALUE, RECORD_COUNT+1, ENTITY_COUNT); // this is the correct one
 		
-		Assert.assertEquals(2, receiver.values.size());
-		Assert.assertEquals(DEFAULT_VALUE, receiver.values.get(0));
-		Assert.assertEquals(DEFAULT_VALUE, receiver.values.get(1));
+		Assert.assertEquals(2, receiver.getValues().size());
+		Assert.assertEquals(DEFAULT_VALUE, receiver.getValues().get(0));
+		Assert.assertEquals(DEFAULT_VALUE, receiver.getValues().get(1));
 	}
 	
-	protected static class CollectingDataReceiver implements DataReceiver{
-		final List<String> values = new ArrayList<String>();
+	protected static final class CollectingDataReceiver implements DataReceiver{
+		private final List<String> values = new ArrayList<String>();
+		protected List<String> getValues() {
+			return values;
+		}
 		@Override
-		public void data(String name, String value, int recordCount, int entityCount) {
+		public void data(final String name, final String value, final int recordCount, final int entityCount) {
 			values.add(value);
 		}
+		
+		
 	}
 	
 	@Test
