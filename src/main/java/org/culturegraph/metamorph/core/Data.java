@@ -69,6 +69,8 @@ final class Data extends DataProcessorImpl implements DataSender, DataReceiver, 
 		case COUNT:
 			// nothing to do. count is emitted when the record is over
 			break;
+		default:
+			break;
 		}
 
 		// if (Mode.NAME.equals(mode)) {

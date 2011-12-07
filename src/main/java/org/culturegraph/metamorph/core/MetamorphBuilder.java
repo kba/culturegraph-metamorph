@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -312,7 +313,7 @@ public final class MetamorphBuilder {
 				collect.addData(data);
 			}
 			
-			final Data.Mode dataMode = Data.Mode.valueOf(mode.toUpperCase());
+			final Data.Mode dataMode = Data.Mode.valueOf(mode.toUpperCase(Locale.US));
 			data.setMode(dataMode);
 
 			if(dataMode==Mode.COUNT){
