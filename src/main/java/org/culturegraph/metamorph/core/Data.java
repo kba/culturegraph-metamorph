@@ -7,10 +7,6 @@ package org.culturegraph.metamorph.core;
  */
 final class Data extends DataProcessorImpl implements DataSender, DataReceiver, EntityEndListener {
 
-	/**
-	 * @author Markus Michael Geipel
-	 * @status Experimental
-	 */
 	public enum Mode {
 		VALUE, NAME, META, COUNT
 	}
@@ -28,9 +24,7 @@ final class Data extends DataProcessorImpl implements DataSender, DataReceiver, 
 	private int oldRecordCount;
 
 	public void setOccurence(final int occurence) {
-
 		this.occurence = occurence;
-
 	}
 
 	private String fallback(final String value, final String fallbackValue) {

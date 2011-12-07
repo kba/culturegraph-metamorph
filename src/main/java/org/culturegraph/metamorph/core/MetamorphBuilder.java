@@ -314,7 +314,11 @@ public final class MetamorphBuilder {
 			}
 			
 			final Data.Mode dataMode = Data.Mode.valueOf(mode.toUpperCase(Locale.US));
-			data.setMode(dataMode);
+			if(dataMode==null){
+				data.setMode(Mode.VALUE);
+			}else{
+				data.setMode(dataMode);
+			}
 
 			if(dataMode==Mode.COUNT){
 				metamorph.addEntityEndListener(data, Metamorph.RECORD_KEYWORD);
