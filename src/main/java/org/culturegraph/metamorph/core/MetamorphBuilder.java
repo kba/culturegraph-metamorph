@@ -210,8 +210,22 @@ public final class MetamorphBuilder {
 				collect = new CollectLiteral(metamorph);
 			}
 
-			collect.setName(atts.getValue(NAME_ATTR));
-			collect.setValue(atts.getValue(VALUE_ATTR));
+			if (emitGroupName == null) {
+				collect.setName(atts.getValue(NAME_ATTR));
+			} else {
+				collect.setName(emitGroupName);
+			}
+
+			if (emitGroupValue == null) {
+				collect.setValue(atts.getValue(VALUE_ATTR));
+			} else {
+				collect.setValue(emitGroupValue);
+			}
+//			
+//			collect.setName();
+//			collect.setValue(atts.getValue(VALUE_ATTR));
+//			
+			
 			collect.setReset(reset);
 			collect.setSameEntity(sameEntity);
 
