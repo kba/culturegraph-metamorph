@@ -9,7 +9,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.culturegraph.metamorph.core.MetamorphException;
-import org.culturegraph.metamorph.util.Util;
+import org.culturegraph.metamorph.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ public final class DefaultReaderFactory extends AbstractReaderFactory {
 			propertiesLocation = DEFAULT_PROPERTIES_LOCATION;
 		}
 		
-		final ClassLoader loader = Util.getClassLoader();
+		final ClassLoader loader = ReflectionUtil.getClassLoader();
 		final InputStream inStream = loader.getResourceAsStream(propertiesLocation);
 		final Properties properties = new Properties();
 

@@ -185,6 +185,23 @@ public final class CollectTest {
 		
 	}
 	
+	@Test
+	public void testChooseLiteral() {
+		final ChooseLiteral chooseLiteral = new ChooseLiteral(metamorph);
+		chooseLiteral.setValue(VALUE_A);
+		wireCollect(chooseLiteral);
+
+		cleanUp();
+		
+		Assert.assertTrue(nothingReceived());
+		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		Assert.assertTrue(nothingReceived());
+		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		Assert.assertTrue(nothingReceived());
+		chooseLiteral.onEntityEnd(null);
+		Assert.assertEquals(VALUE_A, getReceived());		
+	}
+	
 	private String getReceived(){
 		return mapCollector.get(COLLECT_NAME);
 	}

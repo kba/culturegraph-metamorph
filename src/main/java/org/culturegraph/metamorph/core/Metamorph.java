@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.culturegraph.metamorph.multimap.MultiMapProvider;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.StreamSender;
 import org.slf4j.Logger;
@@ -268,6 +269,10 @@ public final class Metamorph implements StreamReceiver, StreamSender, DataReceiv
 			entityEndListeners.put(entityName, matchingListeners);
 		}
 		matchingListeners.add(entityEndListener);
+	}
+	
+	protected void addRecordEndListener(final EntityEndListener entityEndListener) {
+		addEntityEndListener(entityEndListener, RECORD_KEYWORD);
 	}
 
 	/**

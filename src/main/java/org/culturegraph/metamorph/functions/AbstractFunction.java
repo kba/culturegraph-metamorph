@@ -2,7 +2,7 @@ package org.culturegraph.metamorph.functions;
 
 import java.util.Map;
 
-import org.culturegraph.metamorph.core.MultiMapProvider;
+import org.culturegraph.metamorph.multimap.MultiMapProvider;
 
 /**
  * @author Markus Michael Geipel

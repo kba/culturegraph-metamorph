@@ -3,6 +3,7 @@ package org.culturegraph.metamorph.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.culturegraph.metamorph.multimap.MultiMapProvider;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.receivers.DefaultStreamReceiver;
 import org.culturegraph.metamorph.types.NamedValue;

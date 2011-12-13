@@ -17,6 +17,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.culturegraph.metamorph.core.Data.Mode;
 import org.culturegraph.metamorph.functions.Function;
 import org.culturegraph.metamorph.functions.FunctionFactory;
+import org.culturegraph.metamorph.multimap.MultiMapProvider;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.StreamSender;
 import org.slf4j.Logger;
@@ -131,6 +132,7 @@ public final class MetamorphBuilder {
 		private static final String DATA_TAG = "data";
 		private static final String COLLECT_LITERAL_TAG = "collect-literal";
 		private static final String COLLECT_ENTITY_TAG = "collect-entity";
+		private static final String CHOOSE_LITERAL_TAG = "choose-literal";
 		private static final String MAP_TAG = "map";
 		private static final String ENTRY_TAG = "entry";
 		private static final String NAME_ATTR = "name";
@@ -168,7 +170,7 @@ public final class MetamorphBuilder {
 		public void startElement(final String uri, final String localName, final String qName, final Attributes atts)
 				throws SAXException {
 
-			if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName)) {
+			if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName) || CHOOSE_LITERAL_TAG.equals(localName)) {
 				registerCollector(localName, atts);
 
 			} else if (GROUP_TAG.equals(localName)) {
@@ -206,8 +208,13 @@ public final class MetamorphBuilder {
 
 			if (COLLECT_ENTITY_TAG.equals(tag)) {
 				collect = new CollectEntity(metamorph);
-			} else {
+			} else if (COLLECT_LITERAL_TAG.equals(tag)) {
 				collect = new CollectLiteral(metamorph);
+			} else if (CHOOSE_LITERAL_TAG.equals(tag)) {
+				collect = new ChooseLiteral(metamorph);
+				if (atts.getValue(FORCE_ON_END_ATTR) == null) {
+					metamorph.addRecordEndListener(collect);
+				}
 			}
 
 			if (emitGroupName == null) {

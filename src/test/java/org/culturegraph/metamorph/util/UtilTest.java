@@ -8,7 +8,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 /**
- * tests {@link Util}
+ * tests {@link StringUtil}
  * 
  * @author Markus Michael Geipel
  *
@@ -22,12 +22,12 @@ public final class UtilTest {
 		vars.put("b", "Hawaii");
 		vars.put("bb", "Hula");
 
-		Assert.assertEquals("Aloha Hawaii", Util.format("${a} ${b}", vars));
-		Assert.assertEquals("AlohaHawaii", Util.format("${a}${b}", vars));
-		Assert.assertEquals("Aloha${b", Util.format("${a}${b", vars));
-		Assert.assertEquals("XAloha${b", Util.format("X${a}${b", vars));
-		Assert.assertEquals("XX", Util.format("X${ab}X", vars));
-		Assert.assertEquals("XHulaXHulaX", Util.format("X${bb}X${bb}X", vars));
-		Assert.assertEquals("{a}Hawaii", Util.format("{a}${b}", vars));
+		Assert.assertEquals("Aloha Hawaii", StringUtil.format("${a} ${b}", vars));
+		Assert.assertEquals("AlohaHawaii", StringUtil.format("${a}${b}", vars));
+		Assert.assertEquals("Aloha${b", StringUtil.format("${a}${b", vars));
+		Assert.assertEquals("XAloha${b", StringUtil.format("X${a}${b", vars));
+		Assert.assertEquals("XX", StringUtil.format("X${ab}X", vars));
+		Assert.assertEquals("XHulaXHulaX", StringUtil.format("X${bb}X${bb}X", vars));
+		Assert.assertEquals("{a}Hawaii", StringUtil.format("{a}${b}", vars));
 	}
 }

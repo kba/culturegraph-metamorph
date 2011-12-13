@@ -1,7 +1,7 @@
 package org.culturegraph.metamorph.functions;
 
 import org.culturegraph.metamorph.core.Metamorph;
-import org.culturegraph.metamorph.core.MultiMapProvider;
+import org.culturegraph.metamorph.multimap.MultiMapProvider;
 
 /**
  * Interface for functions used in {@link Metamorph}

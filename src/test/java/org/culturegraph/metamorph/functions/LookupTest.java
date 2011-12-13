@@ -6,7 +6,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
-import org.culturegraph.metamorph.core.MultiMapProvider;
+import org.culturegraph.metamorph.multimap.MultiMapProvider;
 import org.junit.Test;
 
 

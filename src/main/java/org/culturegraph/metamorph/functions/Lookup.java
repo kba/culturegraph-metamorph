@@ -6,8 +6,9 @@ package org.culturegraph.metamorph.functions;
  */
 final class Lookup extends AbstractFunction {
 
-
 	private String mapName;
+	
+	
 
 	@Override
 	public String process(final String key) {

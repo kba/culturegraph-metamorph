@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.culturegraph.metamorph.core.Data.Mode;
 import org.culturegraph.metamorph.functions.Function;
-import org.culturegraph.metamorph.util.Util;
+import org.culturegraph.metamorph.util.StringUtil;
 
 /**
  * Corresponds to the <code>&lt;collect-literal&gt;</code> tag.
@@ -27,8 +27,8 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 
 	@Override
 	protected void emit() {
-		final String name = Util.format(getName(), variables);
-		String value = Util.format(getValue(), variables);
+		final String name = StringUtil.format(getName(), variables);
+		String value = StringUtil.format(getValue(), variables);
 
 		value = dataProcessor.applyFunctions(value);
 		if (value == null) {
