@@ -259,8 +259,8 @@ public final class MetamorphBuilder {
 			final Function function = functionFactory.newFunction(name, attributes);
 			function.setMultiMapProvider(metamorph);
 
-			if (collect instanceof DataProcessor && data == null) {
-				((DataProcessor) collect).addFunction(function);
+			if (collect instanceof ValueProcessor && data == null) {
+				((ValueProcessor) collect).addFunction(function);
 			} else if (data != null) {
 				data.addFunction(function);
 			}

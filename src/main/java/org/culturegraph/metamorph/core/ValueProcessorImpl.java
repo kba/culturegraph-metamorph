@@ -11,7 +11,7 @@ import org.culturegraph.metamorph.functions.Function;
  * 
  * @author Markus Michael Geipel
  */
-class DataProcessorImpl implements DataProcessor {
+class ValueProcessorImpl implements ValueProcessor {
 	//private static final Logger LOG = LoggerFactory.getLogger(DataProcessorImpl.class);
 	
 	private final List<Function> functions = new LinkedList<Function>();

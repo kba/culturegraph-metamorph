@@ -14,11 +14,11 @@ import org.culturegraph.metamorph.util.StringUtil;
  * 
  * @author Markus Michael Geipel
  */
-final class CollectLiteral extends AbstractCollect implements DataProcessor {
+final class CollectLiteral extends AbstractCollect implements ValueProcessor {
 
 	private final Map<String, String> variables = new HashMap<String, String>();
 	private final Set<String> variableNames = new HashSet<String>();
-	private final DataProcessorImpl dataProcessor = new DataProcessorImpl();
+	private final ValueProcessorImpl dataProcessor = new ValueProcessorImpl();
 //	private DataReceiver dataReceiver;
 
 	public CollectLiteral(final Metamorph metamorph) {

@@ -15,7 +15,7 @@ import org.junit.Test;
  * 
  * @author Markus Michael Geipel
  */
-public final class MetamorphTest implements DataReceiver {
+public final class MetamorphTest implements NamedValueReceiver {
 	
 	private static final String NAME = "name";
 
@@ -43,7 +43,7 @@ public final class MetamorphTest implements DataReceiver {
 	private NamedValue namedValue;
 
 	
-	private static Metamorph newMetamorphWithData(final DataReceiver receiver){
+	private static Metamorph newMetamorphWithData(final NamedValueReceiver receiver){
 		final Metamorph metamorph = new Metamorph();
 		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		final Data data = new Data(SOURCE);

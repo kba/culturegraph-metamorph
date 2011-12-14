@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamReceiver, StreamSender, DataReceiver, MultiMapProvider {
+public final class Metamorph implements StreamReceiver, StreamSender, NamedValueReceiver, MultiMapProvider {
 
 	public static final String ELSE_KEYWORD = "_else";
 	public static final String RECORD_KEYWORD = "record";

@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-abstract class AbstractCollect implements DataReceiver, Collect {
+abstract class AbstractCollect implements NamedValueReceiver, Collect {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 

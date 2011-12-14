@@ -37,7 +37,7 @@ public final class DataTest {
 	@Test
 	public void testSimpleReceive() {
 		final Data data = new Data(SOURCE);
-		data.setDataReceiver(new DataReceiver() {
+		data.setDataReceiver(new NamedValueReceiver() {
 			@Override
 			public void data(final String name, final String value,  final int recordCount,
 					final int entityCount) {
@@ -54,7 +54,7 @@ public final class DataTest {
 	@Test
 	public void testConstantValueAndName() {
 		final Data data = new Data(SOURCE);
-		data.setDataReceiver(new DataReceiver() {
+		data.setDataReceiver(new NamedValueReceiver() {
 			@Override
 			public void data(final String name, final String value,  final int recordCount,
 					final int entityCount) {
@@ -71,7 +71,7 @@ public final class DataTest {
 	@Test
 	public void testCount() {
 		final Data data = new Data(SOURCE);
-		data.setDataReceiver(new DataReceiver() {
+		data.setDataReceiver(new NamedValueReceiver() {
 			@Override
 			public void data(final String name, final String value,  final int recordCount,
 					final int entityCount) {
@@ -114,7 +114,7 @@ public final class DataTest {
 		Assert.assertEquals(DEFAULT_VALUE, receiver.getValues().get(1));
 	}
 	
-	protected static final class CollectingDataReceiver implements DataReceiver{
+	protected static final class CollectingDataReceiver implements NamedValueReceiver{
 		private final List<String> values = new ArrayList<String>();
 		protected List<String> getValues() {
 			return values;
@@ -130,7 +130,7 @@ public final class DataTest {
 	@Test
 	public void testDataToName() {
 		final Data data = new Data(SOURCE);
-		data.setDataReceiver(new DataReceiver() {
+		data.setDataReceiver(new NamedValueReceiver() {
 			@Override
 			public void data(final String name, final String value,  final int recordCount,
 					final int entityCount) {
@@ -148,7 +148,7 @@ public final class DataTest {
 		final Data data = new Data(SOURCE);
 		data.addFunction(constant1);
 		data.addFunction(constant2);
-		data.setDataReceiver(new DataReceiver() {
+		data.setDataReceiver(new NamedValueReceiver() {
 			@Override
 			public void data(final String name, final String value, final int recordCount,
 					final int entityCount) {
@@ -165,7 +165,7 @@ public final class DataTest {
 		final Data data = new Data(SOURCE);
 		data.addFunction(constant2);
 		data.addFunction(regexp);
-		data.setDataReceiver(new DataReceiver() {
+		data.setDataReceiver(new NamedValueReceiver() {
 			@Override
 			public void data(final String name, final String value, final int recordCount,
 					final int entityCount) {

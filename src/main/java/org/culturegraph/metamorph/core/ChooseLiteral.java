@@ -16,13 +16,13 @@ import org.culturegraph.metamorph.util.StringUtil;
  * @author Christoph BÃ¶hme <c.boehme@dnb.de>
  *
  */
-final class ChooseLiteral extends AbstractCollect implements DataProcessor{
+final class ChooseLiteral extends AbstractCollect implements ValueProcessor{
 
 	private String value;
 	private String name;
 	private int priority = Integer.MAX_VALUE;
 	private final Map<String, Integer> priorities = new HashMap<String, Integer>();
-	private final DataProcessorImpl dataProcessor = new DataProcessorImpl();
+	private final ValueProcessorImpl dataProcessor = new ValueProcessorImpl();
 	private int nextPriority;
 	
 	/**

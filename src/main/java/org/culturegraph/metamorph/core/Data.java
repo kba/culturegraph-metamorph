@@ -5,7 +5,7 @@ package org.culturegraph.metamorph.core;
  * 
  * @author Markus Michael Geipel
  */
-final class Data extends DataProcessorImpl implements DataReceiver, EntityEndListener {
+final class Data extends ValueProcessorImpl implements NamedValueReceiver, EntityEndListener {
 
 	public enum Mode {
 		VALUE, NAME, META, COUNT
@@ -17,7 +17,7 @@ final class Data extends DataProcessorImpl implements DataReceiver, EntityEndLis
 	private final String source;
 
 	private Mode mode = Mode.VALUE;
-	private DataReceiver dataReceiver;
+	private NamedValueReceiver dataReceiver;
 	private int occurence;
 	private int occurenceCount;
 	private int processingCount;
@@ -109,7 +109,7 @@ final class Data extends DataProcessorImpl implements DataReceiver, EntityEndLis
 	 * @param dataReceiver
 	 *            the dataReceiver to set
 	 */
-	public void setDataReceiver(final DataReceiver dataReceiver) {
+	public void setDataReceiver(final NamedValueReceiver dataReceiver) {
 		assert dataReceiver != null;
 		this.dataReceiver = dataReceiver;
 	}
@@ -117,7 +117,7 @@ final class Data extends DataProcessorImpl implements DataReceiver, EntityEndLis
 	/**
 	 * @return the dataReceiver
 	 */
-	public DataReceiver getDataReceiver() {
+	public NamedValueReceiver getDataReceiver() {
 		return dataReceiver;
 	}
 
