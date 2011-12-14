@@ -29,5 +29,7 @@ public final class UtilTest {
 		Assert.assertEquals("XX", StringUtil.format("X${ab}X", vars));
 		Assert.assertEquals("XHulaXHulaX", StringUtil.format("X${bb}X${bb}X", vars));
 		Assert.assertEquals("{a}Hawaii", StringUtil.format("{a}${b}", vars));
+		Assert.assertEquals("Hula$Hula", StringUtil.format("${bb}$${bb}", vars));
+		
 	}
 }

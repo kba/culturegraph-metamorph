@@ -70,5 +70,4 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 	public void addFunction(final Function function) {
 		dataProcessor.addFunction(function);
 	}
-
 }

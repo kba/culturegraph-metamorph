@@ -6,6 +6,8 @@ package org.culturegraph.metamorph.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.culturegraph.metamorph.core.Data.Mode;
+import org.culturegraph.metamorph.functions.Function;
 import org.culturegraph.metamorph.util.StringUtil;
 
 /**
@@ -14,12 +16,13 @@ import org.culturegraph.metamorph.util.StringUtil;
  * @author Christoph BÃ¶hme <c.boehme@dnb.de>
  *
  */
-final class ChooseLiteral extends AbstractCollect {
+final class ChooseLiteral extends AbstractCollect implements DataProcessor{
 
 	private String value;
 	private String name;
 	private int priority = Integer.MAX_VALUE;
 	private final Map<String, Integer> priorities = new HashMap<String, Integer>();
+	private final DataProcessorImpl dataProcessor = new DataProcessorImpl();
 	private int nextPriority;
 	
 	/**
@@ -34,7 +37,12 @@ final class ChooseLiteral extends AbstractCollect {
 	 */
 	@Override
 	protected void emit() {
+		value = dataProcessor.applyFunctions(value);
+		if (value == null) {
+			return;
+		}
 		getMetamorph().data(StringUtil.fallback(getName(), name), StringUtil.fallback(getValue(), value), getRecordCount(), getEntityCount());
+		clear();
 	}
 
 	/* (non-Javadoc)
@@ -71,7 +79,16 @@ final class ChooseLiteral extends AbstractCollect {
 
 	@Override
 	protected void onAddData(final Data data) {
+		data.setMode(Mode.VALUE);
+		if (data.getDefaultName() == null) {
+			data.setName(data.getSource());
+		}
 		priorities.put(data.getDefaultName(), Integer.valueOf(nextPriority));
 		nextPriority += 1;
+	}
+	
+	@Override
+	public void addFunction(final Function function) {
+		dataProcessor.addFunction(function);
 	}
 }

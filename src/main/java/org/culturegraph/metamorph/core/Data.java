@@ -14,6 +14,7 @@ final class Data extends DataProcessorImpl implements DataReceiver, EntityEndLis
 	private String name;
 	private String value;
 	// private String meta;
+	private final String source;
 
 	private Mode mode = Mode.VALUE;
 	private DataReceiver dataReceiver;
@@ -23,8 +24,22 @@ final class Data extends DataProcessorImpl implements DataReceiver, EntityEndLis
 
 	private int oldRecordCount;
 
+//	public Data() {
+//		super();
+//		this.source = null;
+//	}
+	
+	public Data(final String source) {
+		super();
+		this.source = source;
+	}
+	
 	public void setOccurence(final int occurence) {
 		this.occurence = occurence;
+	}
+	
+	public String getSource(){
+		return source;
 	}
 
 	private static String fallback(final String value, final String fallbackValue) {

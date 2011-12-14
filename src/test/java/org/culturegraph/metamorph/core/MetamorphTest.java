@@ -35,6 +35,9 @@ public final class MetamorphTest implements DataReceiver {
 	private static final String FEEDBACK_VAR = "@var";
 
 	private static final String MAP_NAME = "sdfklsjef";
+
+
+	private static final String SOURCE = "fantasy";
 	
 	
 	private NamedValue namedValue;
@@ -43,7 +46,7 @@ public final class MetamorphTest implements DataReceiver {
 	private static Metamorph newMetamorphWithData(final DataReceiver receiver){
 		final Metamorph metamorph = new Metamorph();
 		metamorph.setStreamReceiver(EMPTY_RECEIVER);
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		data.setName(NAME);
 		data.setDataReceiver(receiver);
 		metamorph.registerDataSource(data, MATCHING_PATH);
@@ -104,12 +107,12 @@ public final class MetamorphTest implements DataReceiver {
 		metamorph.setStreamReceiver(EMPTY_RECEIVER);
 		Data data;
 		
-		data = new Data();
+		data = new Data(SOURCE);
 		data.setName(FEEDBACK_VAR);
 		data.setDataReceiver(metamorph);
 		metamorph.registerDataSource(data, MATCHING_PATH);
 		
-		data = new Data();
+		data = new Data(SOURCE);
 		data.setName(NAME);
 		data.setDataReceiver(this);
 		metamorph.registerDataSource(data, FEEDBACK_VAR);

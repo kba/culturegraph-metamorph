@@ -14,6 +14,7 @@
 					<element ref="tns:group" />
 					<element ref="tns:collect-literal" />
 					<element ref="tns:collect-entity" />
+					<element ref="tns:choose-literal" />
 					<element ref="tns:data" />
 				</choice>
 				<element ref="tns:map" minOccurs="0" maxOccurs="unbounded" />
@@ -50,7 +51,7 @@
 			<sequence>
 				<element ref="tns:annotation" minOccurs="0" maxOccurs="1" />
 				<element ref="tns:data" minOccurs="1" maxOccurs="unbounded" />
-				<group ref="tns:function" minOccurs="0" maxOccurs="unbounded"/>
+				<group ref="tns:function" minOccurs="0" maxOccurs="unbounded" />
 			</sequence>
 			<attribute name="name" type="string" use="optional" />
 			<attribute name="value" type="string" use="optional" />
@@ -60,6 +61,19 @@
 			<attribute name="sameEntity" type="boolean" use="optional"
 				default="false" />
 			<attribute name="forceOnEnd" type="string" use="optional" />
+		</complexType>
+	</element>
+
+	<element name="choose-literal">
+		<complexType>
+			<sequence>
+				<element ref="tns:annotation" minOccurs="0" maxOccurs="1" />
+				<element ref="tns:data" minOccurs="1" maxOccurs="unbounded" />
+				<group ref="tns:function" minOccurs="0" maxOccurs="unbounded" />
+			</sequence>
+			<attribute name="name" type="string" use="optional" />
+			<attribute name="value" type="string" use="optional" />
+			<attribute name="forceOnEnd" type="string" use="optional" default="record" />
 		</complexType>
 	</element>
 
@@ -78,40 +92,26 @@
 		</complexType>
 	</element>
 
-	<element name="choose-literal">
-		<complexType>
-			<sequence>
-				<element ref="tns:annotation" minOccurs="0" maxOccurs="1" />
-				<element ref="tns:data" minOccurs="1" maxOccurs="unbounded" />
-			</sequence>
-			<attribute name="name" type="string" use="required" />
-			<attribute name="reset" type="boolean" use="optional"
-				default="false" />
-			<attribute name="sameEntity" type="boolean" use="optional"
-				default="false" />
-			<attribute name="forceOnEnd" type="string" use="optional" />
-		</complexType>
-	</element>
-	
+
+
 	<element name="data">
 		<complexType>
 			<sequence>
-				<element ref="tns:annotation" minOccurs="0"
-					maxOccurs="1" />
-				<group ref="tns:function" minOccurs="0"
-					maxOccurs="unbounded" />
+				<element ref="tns:annotation" minOccurs="0" maxOccurs="1" />
+				<group ref="tns:function" minOccurs="0" maxOccurs="unbounded" />
 			</sequence>
 			<attribute name="source" type="string" use="required" />
-			
-			<attribute name="as" type="tns:asAttribute" use="optional" default="value"/>
-			
+
+			<attribute name="as" type="tns:asAttribute" use="optional"
+				default="value" />
+
 			<attribute name="name" type="string" use="optional" />
 			<attribute name="value" type="string" use="optional" />
 
 			<attribute name="occurence" use="optional">
 				<simpleType>
 					<restriction base="int">
-						<minInclusive value="0"/>
+						<minInclusive value="0" />
 					</restriction>
 				</simpleType>
 			</attribute>
@@ -152,7 +152,7 @@
 			<attribute name="postfix" type="string" use="optional" />
 		</complexType>
 	</element>
-	
+
 	<element name="htmlanchor">
 		<complexType>
 			<attribute name="prefix" type="string" use="required" />
@@ -217,23 +217,23 @@
 			<attribute name="start" default="0" use="optional">
 				<simpleType>
 					<restriction base="int">
-						<minInclusive value="0"/>
+						<minInclusive value="0" />
 					</restriction>
 				</simpleType>
 			</attribute>
 			<attribute name="end" use="optional" default="0">
 				<simpleType>
 					<restriction base="int">
-						<minInclusive value="0"/>
+						<minInclusive value="0" />
 					</restriction>
 				</simpleType>
 			</attribute>
 		</complexType>
 	</element>
-	
+
 	<element name="equals">
 		<complexType>
-			<attribute name="string" type="string" use="required"/>
+			<attribute name="string" type="string" use="required" />
 		</complexType>
 	</element>
 
@@ -247,10 +247,10 @@
 			<element ref="tns:lookup" />
 			<element ref="tns:isbn" />
 			<element ref="tns:equals" />
-			<element ref="tns:htmlanchor"/>
+			<element ref="tns:htmlanchor" />
 		</choice>
 	</group>
-	
+
 
 
 </schema>

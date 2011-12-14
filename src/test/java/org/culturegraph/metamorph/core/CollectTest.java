@@ -23,6 +23,7 @@ public final class CollectTest {
 	private static final String SPACE = " ";
 	private static final String COMPASITION_AB = VALUE_A + SPACE + VALUE_B;
 	private static final String COMPASITION_AC = VALUE_A + SPACE + VALUE_C;
+	private static final String SOURCE = "fantasy";
 	
 	private final Data dataA = newData(NAME_A);
 	private final Data dataB = newData(NAME_B);
@@ -35,7 +36,7 @@ public final class CollectTest {
 	}
 	
 	private static Data newData(final String name){
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		data.setName(name);
 		return data;
 	}
@@ -189,6 +190,7 @@ public final class CollectTest {
 	public void testChooseLiteral() {
 		final ChooseLiteral chooseLiteral = new ChooseLiteral(metamorph);
 		chooseLiteral.setValue(VALUE_A);
+		
 		wireCollect(chooseLiteral);
 
 		cleanUp();
@@ -202,6 +204,8 @@ public final class CollectTest {
 		Assert.assertEquals(VALUE_A, getReceived());		
 	}
 	
+	
+		
 	private String getReceived(){
 		return mapCollector.get(COLLECT_NAME);
 	}

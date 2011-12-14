@@ -169,18 +169,16 @@ public final class MetamorphBuilder {
 		@Override
 		public void startElement(final String uri, final String localName, final String qName, final Attributes atts)
 				throws SAXException {
-
-			if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName) || CHOOSE_LITERAL_TAG.equals(localName)) {
-				registerCollector(localName, atts);
-
+			if (DATA_TAG.equals(localName)) {
+				registerDataSource(atts.getValue(SOURCE_ATTR), atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR),
+						atts.getValue(AS_ATTR), atts.getValue(OCCURENCE_ATTR));
 			} else if (GROUP_TAG.equals(localName)) {
 				emitGroupName = atts.getValue(NAME_ATTR);
 				emitGroupValue = atts.getValue(VALUE_ATTR);
 
-			} else if (DATA_TAG.equals(localName)) {
-				registerDataSource(atts.getValue(SOURCE_ATTR), atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR),
-						atts.getValue(AS_ATTR), atts.getValue(OCCURENCE_ATTR));
-
+			} else if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName) || CHOOSE_LITERAL_TAG.equals(localName)) {
+				registerCollector(localName, atts);
+				
 			} else if (MAP_TAG.equals(localName)) {
 				createMap(atts.getValue(NAME_ATTR), atts.getValue(DEFAULT_ATTR));
 
@@ -212,9 +210,6 @@ public final class MetamorphBuilder {
 				collect = new CollectLiteral(metamorph);
 			} else if (CHOOSE_LITERAL_TAG.equals(tag)) {
 				collect = new ChooseLiteral(metamorph);
-				if (atts.getValue(FORCE_ON_END_ATTR) == null) {
-					metamorph.addRecordEndListener(collect);
-				}
 			}
 
 			if (emitGroupName == null) {
@@ -310,7 +305,7 @@ public final class MetamorphBuilder {
 		private void registerDataSource(final String source, final String name, final String value, final String mode,
 				final String occurence) {
 
-			data = new Data();
+			data = new Data(source);
 
 			if (occurence != null) {
 				data.setOccurence(Integer.parseInt(occurence));

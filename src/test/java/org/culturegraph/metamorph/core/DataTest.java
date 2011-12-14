@@ -23,6 +23,7 @@ public final class DataTest {
 	private static final String CONSTANT_A = "AAA";
 	private static final String CONSTANT_B = "BBB";
 	private static final String ORIGIN_NAME = "s;lkepo";
+	private static final String SOURCE = "fantasy";
 	
 	private static final String WRONG_NAME = "wrong name";
 	private static final String WRONG_VALUE = "wrong value";
@@ -35,7 +36,7 @@ public final class DataTest {
 	
 	@Test
 	public void testSimpleReceive() {
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		data.setDataReceiver(new DataReceiver() {
 			@Override
 			public void data(final String name, final String value,  final int recordCount,
@@ -52,7 +53,7 @@ public final class DataTest {
 	
 	@Test
 	public void testConstantValueAndName() {
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		data.setDataReceiver(new DataReceiver() {
 			@Override
 			public void data(final String name, final String value,  final int recordCount,
@@ -69,7 +70,7 @@ public final class DataTest {
 	
 	@Test
 	public void testCount() {
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		data.setDataReceiver(new DataReceiver() {
 			@Override
 			public void data(final String name, final String value,  final int recordCount,
@@ -93,7 +94,7 @@ public final class DataTest {
 	@Test
 	public void testOccurence() {
 
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		final CollectingDataReceiver receiver = new CollectingDataReceiver();
 		data.setDataReceiver(receiver);
 		data.setName(DEFAULT_NAME);
@@ -128,7 +129,7 @@ public final class DataTest {
 	
 	@Test
 	public void testDataToName() {
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		data.setDataReceiver(new DataReceiver() {
 			@Override
 			public void data(final String name, final String value,  final int recordCount,
@@ -144,7 +145,7 @@ public final class DataTest {
 	
 	@Test
 	public void testFunctionProcessing() {
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		data.addFunction(constant1);
 		data.addFunction(constant2);
 		data.setDataReceiver(new DataReceiver() {
@@ -161,7 +162,7 @@ public final class DataTest {
 	
 	@Test
 	public void testFunctionProcessingBreak() {
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		data.addFunction(constant2);
 		data.addFunction(regexp);
 		data.setDataReceiver(new DataReceiver() {
