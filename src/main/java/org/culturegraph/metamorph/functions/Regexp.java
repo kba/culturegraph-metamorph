@@ -43,7 +43,7 @@ final class Regexp extends AbstractFunction {
 	
 	private String matchAndFormat(){
 		tempVars.clear();
-		for (int i = 0; i < matcher.groupCount(); ++i) {
+		for (int i = 0; i <= matcher.groupCount(); ++i) {
 			tempVars.put(String.valueOf(i), matcher.group(i));
 		}
 		return StringUtil.format(format, tempVars); 
