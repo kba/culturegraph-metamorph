@@ -223,10 +223,6 @@ public final class MetamorphBuilder {
 			} else {
 				collect.setValue(emitGroupValue);
 			}
-//			
-//			collect.setName();
-//			collect.setValue(atts.getValue(VALUE_ATTR));
-//			
 			
 			collect.setReset(reset);
 			collect.setSameEntity(sameEntity);
@@ -240,7 +236,7 @@ public final class MetamorphBuilder {
 		public void endElement(final String uri, final String localName, final String qName) throws SAXException {
 			if (DATA_TAG.equals(localName)) {
 				data = null;
-			} else if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName)) {
+			} else if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName) || CHOOSE_LITERAL_TAG.equals(localName)) {
 				collect = null;
 			} else if (GROUP_TAG.equals(localName)) {
 				emitGroupName = null;

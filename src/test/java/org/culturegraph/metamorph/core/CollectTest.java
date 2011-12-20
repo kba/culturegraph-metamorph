@@ -95,6 +95,27 @@ public final class CollectTest {
 	
 	
 	@Test
+	public void testCollectLiteralWithForceOnEnd() {
+		
+		final CollectLiteral collectLiteral = new CollectLiteral(metamorph);
+		collectLiteral.setValue(VALUE_FORMAT);
+		wireCollect(collectLiteral);
+		cleanUp();
+		
+		Assert.assertTrue(nothingReceived());
+		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		Assert.assertTrue(nothingReceived());
+		
+		collectLiteral.onEntityEnd(Metamorph.RECORD_KEYWORD);
+		
+	
+		
+		Assert.assertEquals(COMPASITION_AB, getReceived());
+	
+	}
+	
+	
+	@Test
 	public void testCollectLiteralWithOccurence() {
 		
 		final Data data1 = newData(NAME_A);
