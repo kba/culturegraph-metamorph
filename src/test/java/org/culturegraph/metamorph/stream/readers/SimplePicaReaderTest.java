@@ -17,8 +17,8 @@ import org.junit.Test;
  */
 public final class SimplePicaReaderTest {
 
-	private static final int NUM_RECORDS = 10;
-	private static final int NUM_LITERALS = 288;
+	private static final int NUM_RECORDS = 11;
+	private static final int NUM_LITERALS = 289;
 
 	private final Reader reader = new PicaReader();
 	private final CountingWriter countStreamReceiver = new CountingWriter();
@@ -28,10 +28,7 @@ public final class SimplePicaReaderTest {
 		reader.setStreamReceiver(countStreamReceiver);
 		reader.read(new FileInputStream(DataFilePath.PND_PICA));
 
-		Assert.assertEquals("Number of records is incorrect", NUM_RECORDS,
-				countStreamReceiver.getNumRecords());
-		Assert.assertEquals("Number of literals is incorrect", NUM_LITERALS,
-				countStreamReceiver.getNumLiterals());
+
 
 		/*
 		 * record contains no id
@@ -43,14 +40,14 @@ public final class SimplePicaReaderTest {
 			// nothing to do
 		}
 		/*
-		 * record contains empty field
+		 * record contains empty fields (should be skipped)
 		 */
-		try {
-			reader.read("\u001e003@ \u001f012235" + "\u001e\n");
-			Assert.fail("Expected RecordFormatException!");
-		} catch (RecordFormatException e) {
-			// nothing to do
-		}
+		reader.read("\u001e\u001e003@ \u001f012235" + "\u001e\u001e");
+		
+		Assert.assertEquals("Number of records is incorrect", NUM_RECORDS,
+				countStreamReceiver.getNumRecords());
+		Assert.assertEquals("Number of literals is incorrect", NUM_LITERALS,
+				countStreamReceiver.getNumLiterals());
 
 	}
 }

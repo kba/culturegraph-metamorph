@@ -44,6 +44,7 @@ public final class PicaReader extends AbstractReader {
 	 * <li>receiver.literal for each subfield of the field</li>
 	 * <li>receiver.endEntity</li>
 	 * </ol>
+	 * Fields without any subfield will be skipped.<br>
 	 * <strong>Special handling of subfield 'S':</strong> the code of
 	 * "control subfields" (subfield name='S') will be appended to the
 	 * fieldName. E.g.: 041A $Sa would be mapped to the fieldName 041Aa
@@ -55,30 +56,26 @@ public final class PicaReader extends AbstractReader {
 		receiver.startRecord(extractIdFromRecord(record));
 		for (String field : FIELD_PATTERN.split(record)) {
 			final String[] subfields = SUBFIELD_PATTERN.split(field);
-			if (subfields.length < 2) {
-				throw new RecordFormatException("Field with name'" + field
-						+ "' did not contain any subfield. Record: " + record);
+			if (subfields.length > 1) {
+				final String fieldName;
+				final int firstSubfield;
+				if (subfields[1].charAt(0) == 'S') {
+					fieldName = subfields[0].trim() + subfields[1].charAt(1);
+					firstSubfield = 2;
+				} else {
+					fieldName = subfields[0].trim();
+					firstSubfield = 1;
+				}
+
+				receiver.startEntity(fieldName);
+
+				for (int i = firstSubfield; i < subfields.length; ++i) {
+					final String subfield = subfields[i];
+					receiver.literal(subfield.substring(0, 1),
+							subfield.substring(1));
+				}
+				receiver.endEntity();
 			}
-			final String fieldName;
-			final int firstSubfield;
-			if (subfields[1].charAt(0) == 'S') {
-				fieldName = subfields[0].trim() + subfields[1].charAt(1);
-				firstSubfield = 2;
-			} else {
-				fieldName = subfields[0].trim();
-				firstSubfield = 1;
-			}
-
-			receiver.startEntity(fieldName);
-
-			for (int i = firstSubfield; i < subfields.length; ++i) {
-				final String subfield = subfields[i];
-				receiver.literal(subfield.substring(0, 1),
-						subfield.substring(1));
-			}
-
-			receiver.endEntity();
-
 		}
 		receiver.endRecord();
 	}
