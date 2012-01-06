@@ -68,6 +68,9 @@ public final class FunctionFactory {
 			for (Map.Entry<String, String> attribute : attributes.entrySet()) {
 				final String methodName = attribute.getKey().toLowerCase();
 				final Method method = functionMethodMaps.get(clazz).get(methodName);
+				if(null==method){
+					throw new MetamorphException("Cannot set '" + methodName + "' for function '" + name +"'");
+				}
 				method.invoke(function, attribute.getValue());
 			}
 			return function;

@@ -76,8 +76,6 @@ public final class MetamorphBuilder {
 				.getResourceAsStream(morphDefPath);
 		if (inputStream == null) {
 			return build(new File(morphDefPath));
-			// throw new MetamorphDefinitionException(NOT_FOUND_ERROR + ": " +
-			// morphDefPath);
 		}
 		return build(inputStream);
 	}
@@ -170,6 +168,7 @@ public final class MetamorphBuilder {
 		}
 
 	
+		@SuppressWarnings("unchecked") // problem obviated by check isAssignableFrom(clazz)
 		@Override
 		public void startElement(final String uri, final String localName, final String qName, final Attributes atts)
 				throws SAXException {
@@ -191,7 +190,7 @@ public final class MetamorphBuilder {
 				if(Function.class.isAssignableFrom(clazz)){
 					functionFactory.registerFunction(atts.getValue(NAME_ATTR), (Class<? extends Function>) clazz);
 				}else{
-					throw new MetamorphDefinitionException(className + " must implement interface 'Function'");					
+					throw new MetamorphDefinitionException(className + " does not implement interface 'Function'");					
 				}
 			}else if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName) || CHOOSE_LITERAL_TAG.equals(localName)) {
 			

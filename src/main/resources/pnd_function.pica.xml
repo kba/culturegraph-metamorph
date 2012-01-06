@@ -9,7 +9,7 @@
 	<name>Umsetzung der PND</name>
 
 
-	<function name="my:compose" class="org.culturegraph.metamorph.functions.Compose"/>
+	<function name="comp" class="org.culturegraph.metamorph.functions.Compose"/>
 
 	<group name="rdaGr2:identifierForThePerson">
 		<data source="007Q.0">
@@ -25,7 +25,7 @@
 
 
 	<data source="028A.a" name="surname" >
-		<my:compose prefix="GURK"/>
+		<my:comp prefix="GURK" />
 	</data>
 	
 
