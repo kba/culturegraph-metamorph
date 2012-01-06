@@ -14,8 +14,6 @@
 		<lookup in="workList" />
 	</data>
 
-
-
 	<data source="002@.0" name="cg:typeOfConWork">
 		<substring start="1" end="2" />
 		<lookup in="workListContinuousWorks" />

@@ -20,6 +20,7 @@ import org.culturegraph.metamorph.functions.FunctionFactory;
 import org.culturegraph.metamorph.multimap.MultiMapProvider;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.StreamSender;
+import org.culturegraph.metamorph.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -133,6 +134,7 @@ public final class MetamorphBuilder {
 		private static final String COLLECT_LITERAL_TAG = "collect-literal";
 		private static final String COLLECT_ENTITY_TAG = "collect-entity";
 		private static final String CHOOSE_LITERAL_TAG = "choose-literal";
+		private static final String FUNCTION_TAG = "function";
 		private static final String MAP_TAG = "map";
 		private static final String ENTRY_TAG = "entry";
 		private static final String NAME_ATTR = "name";
@@ -150,6 +152,7 @@ public final class MetamorphBuilder {
 		private static final Object METAMORPH_TAG = "metamorph";
 		private static final String MARKER_ATTR = "entityMarker";
 		private static final String OCCURENCE_ATTR = "occurence";
+		private static final String CLASS_ATTR = "class";
 
 		private String emitGroupName;
 		private String emitGroupValue;
@@ -166,6 +169,7 @@ public final class MetamorphBuilder {
 			this.metamorph = metamorph;
 		}
 
+	
 		@Override
 		public void startElement(final String uri, final String localName, final String qName, final Attributes atts)
 				throws SAXException {
@@ -176,7 +180,21 @@ public final class MetamorphBuilder {
 				emitGroupName = atts.getValue(NAME_ATTR);
 				emitGroupValue = atts.getValue(VALUE_ATTR);
 
-			} else if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName) || CHOOSE_LITERAL_TAG.equals(localName)) {
+			} else if(FUNCTION_TAG.equals(localName)){
+				final Class<?> clazz;
+				final String className = atts.getValue(CLASS_ATTR);
+				try {
+					clazz = ReflectionUtil.getClassLoader().loadClass(className);
+				} catch (ClassNotFoundException e) {
+					throw new MetamorphDefinitionException("Class '" + className + "' not found.", e);
+				}
+				if(Function.class.isAssignableFrom(clazz)){
+					functionFactory.registerFunction(atts.getValue(NAME_ATTR), (Class<? extends Function>) clazz);
+				}else{
+					throw new MetamorphDefinitionException(className + " must implement interface 'Function'");					
+				}
+			}else if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName) || CHOOSE_LITERAL_TAG.equals(localName)) {
+			
 				registerCollector(localName, atts);
 				
 			} else if (MAP_TAG.equals(localName)) {
@@ -184,7 +202,6 @@ public final class MetamorphBuilder {
 
 			} else if (functionFactory.getAvailableFunctions().contains(localName)) {
 				registerFunction(localName, attributesToMap(atts));
-
 			} else if (ENTRY_TAG.equals(localName)) {
 				map.put(atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR));
 

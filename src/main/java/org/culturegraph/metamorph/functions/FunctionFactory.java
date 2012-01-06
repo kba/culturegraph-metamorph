@@ -40,7 +40,7 @@ public final class FunctionFactory {
 	}
 
 
-	private void registerFunction(final String name, final Class<? extends Function> clazz) {
+	public void registerFunction(final String name, final Class<? extends Function> clazz) {
 
 		functionClasses.put(name, clazz);
 		LOG.debug("Registered function '" + name + "': " + clazz.getName());
