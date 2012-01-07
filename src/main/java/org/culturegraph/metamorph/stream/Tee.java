@@ -7,18 +7,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Replicates an event stream to an arbitrary number of {@link StreamReceiver}s. 
+ * 
  * @author Christoph Böhme <c.boehme@dnb.de>
  *
  */
-public final class Tee implements StreamReceiver {
+public final class Tee implements StreamReceiver, StreamSender {
 
-	
 	private final List<StreamReceiver> receivers = new ArrayList<StreamReceiver>();
-
-
+	
+	@Override
+	public void setStreamReceiver(final StreamReceiver streamReceiver) {
+		if(!receivers.contains(streamReceiver)){ // inefficient for large lists. Maybe use a HashMap...
+			addStreamReceiver(streamReceiver);
+		}
+	}
+	
+	
 	public void setStreamReceivers(final StreamReceiver receiver1, final StreamReceiver receiver2) {
-		receivers.add(receiver1);
-		receivers.add(receiver2);
+		setStreamReceiver(receiver1);
+		setStreamReceiver(receiver2);
 	}
 	
 	public void addStreamReceiver(final StreamReceiver receiver){
@@ -79,5 +87,7 @@ public final class Tee implements StreamReceiver {
 			receiver.literal(name, value);
 		}
 	}
+
+
 
 }
