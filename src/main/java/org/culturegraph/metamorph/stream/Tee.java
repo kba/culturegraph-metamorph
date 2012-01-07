@@ -3,27 +3,41 @@
  */
 package org.culturegraph.metamorph.stream;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Christoph Böhme <c.boehme@dnb.de>
  *
  */
-public class Tee implements StreamReceiver {
+public final class Tee implements StreamReceiver {
 
-	private StreamReceiver receiver1;
-	private StreamReceiver receiver2;
+	
+	private final List<StreamReceiver> receivers = new ArrayList<StreamReceiver>();
 
-	public void setStreamReceivers(StreamReceiver receiver1, StreamReceiver receiver2) {
-		this.receiver1 = receiver1;
-		this.receiver2 = receiver2;
+
+	public void setStreamReceivers(final StreamReceiver receiver1, final StreamReceiver receiver2) {
+		receivers.add(receiver1);
+		receivers.add(receiver2);
+	}
+	
+	public void addStreamReceiver(final StreamReceiver receiver){
+		receivers.add(receiver);
+	}
+	
+	public void removeStreamReceiver(final StreamReceiver receiver){
+		receivers.remove(receiver);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.culturegraph.metamorph.stream.StreamReceiver#startRecord(java.lang.String)
 	 */
 	@Override
-	public void startRecord(String identifier) {
-		receiver1.startRecord(identifier);
-		receiver2.startRecord(identifier);
+	public void startRecord(final String identifier) {
+		for (StreamReceiver receiver : receivers) {
+			receiver.startRecord(identifier);
+		}
+
 	}
 
 	/* (non-Javadoc)
@@ -31,17 +45,19 @@ public class Tee implements StreamReceiver {
 	 */
 	@Override
 	public void endRecord() {
-		receiver1.endRecord();
-		receiver2.endRecord();
+		for (StreamReceiver receiver : receivers) {
+			receiver.endRecord();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.culturegraph.metamorph.stream.StreamReceiver#startEntity(java.lang.String)
 	 */
 	@Override
-	public void startEntity(String name) {
-		receiver1.startEntity(name);
-		receiver2.startEntity(name);
+	public void startEntity(final String name) {
+		for (StreamReceiver receiver : receivers) {
+			receiver.startEntity(name);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -49,17 +65,19 @@ public class Tee implements StreamReceiver {
 	 */
 	@Override
 	public void endEntity() {
-		receiver1.endEntity();
-		receiver2.endEntity();
+		for (StreamReceiver receiver : receivers) {
+			receiver.endEntity();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.culturegraph.metamorph.stream.StreamReceiver#literal(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void literal(String name, String value) {
-		receiver1.literal(name, value);
-		receiver2.literal(name, value);
+	public void literal(final String name, final String value) {
+		for (StreamReceiver receiver : receivers) {
+			receiver.literal(name, value);
+		}
 	}
 
 }
