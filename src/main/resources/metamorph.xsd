@@ -185,6 +185,11 @@
 				default="false"></attribute>
 		</complexType>
 	</element>
+	
+	<element name="trim">
+		<complexType>
+		</complexType>
+	</element>
 
 
 	<element name="map">
@@ -270,7 +275,7 @@
 			<element ref="tns:isbn" />
 			<element ref="tns:equals" />
 			<element ref="tns:htmlanchor" />
-			<element ref="tns:normalize-utf8" />
+			<element ref="tns:trim"/>
 			<any namespace="##other" processContents="lax"></any>
 			
 		</choice>
