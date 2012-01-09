@@ -35,6 +35,7 @@ public final class FunctionFactory {
 		registerFunction("isbn", ISBN.class);
 		registerFunction("equals", Equals.class);
 		registerFunction("htmlanchor", HtmlAnchor.class);
+		registerFunction("trim", Trim.class);
 		registerFunction("normalize-utf8", NormalizeUTF8.class);
 		
 		availableFunctions = Collections.unmodifiableSet(functionClasses.keySet());

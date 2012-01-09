@@ -36,12 +36,8 @@ public final class CGEntityReader extends AbstractReader {
 			for (int i = 1; i < fields.length; ++i) {
 
 				if (fields[i].charAt(0) == CGEntity.LITERAL_MARKER) {
-					final String[] parts = SUBFIELD_PATTERN.split(fields[i]);
-					if(parts.length == 1){
-						receiver.literal(parts[0].substring(1), "");
-					}else {
-						receiver.literal(parts[0].substring(1), parts[1].replace(CGEntity.NEWLINE_ESC, CGEntity.NEWLINE));
-					}
+					final String[] parts = SUBFIELD_PATTERN.split(fields[i], -1);
+					receiver.literal(parts[0].substring(1), parts[1].replace(CGEntity.NEWLINE_ESC, CGEntity.NEWLINE));
 				} else if (fields[i].charAt(0) == CGEntity.ENTITY_START_MARKER) {
 					receiver.startEntity(fields[i].substring(1));
 				} else if (fields[i].charAt(0) == CGEntity.ENTITY_END_MARKER) {
