@@ -254,6 +254,10 @@
 			<attribute name="string" type="string" use="required" />
 		</complexType>
 	</element>
+	
+	<element name="normalize-utf8">
+		<complexType />
+	</element>
 
 	<group name="functions">
 		<choice>
@@ -266,6 +270,7 @@
 			<element ref="tns:isbn" />
 			<element ref="tns:equals" />
 			<element ref="tns:htmlanchor" />
+			<element ref="tns:normalize-utf8" />
 			<any namespace="##other" processContents="lax"></any>
 			
 		</choice>
