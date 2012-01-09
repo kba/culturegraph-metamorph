@@ -10,6 +10,9 @@ import org.culturegraph.metamorph.types.ListMap;
  */
 public final class ListMapWriter extends ListMap<String, String> implements StreamReceiver{
 
+	
+	
+	
 	@Override
 	public void startRecord(final String identifier){
 		clear();

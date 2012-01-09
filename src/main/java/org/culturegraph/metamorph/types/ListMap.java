@@ -17,6 +17,8 @@ public class ListMap<K,V> implements Map<K, List<V>>, Record{
 	private String identifier;
 	private final Map<K, List<V>> map; 
 	
+
+
 	public ListMap() {
 		super();
 		map = new HashMap<K, List<V>>();
@@ -25,6 +27,10 @@ public class ListMap<K,V> implements Map<K, List<V>>, Record{
 	public ListMap(final Map<K, List<V>> map) {
 		super();
 		this.map = map;
+	}
+	
+	protected final Map<K, List<V>> getMap() {
+		return map;
 	}
 	
 	@Override
