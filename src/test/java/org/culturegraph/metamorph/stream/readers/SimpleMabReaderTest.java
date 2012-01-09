@@ -24,7 +24,7 @@ public final class SimpleMabReaderTest {
 	
 	@Test
 	public void testRead() throws IOException {
-		reader.setStreamReceiver(countStreamReceiver);
+		reader.setReceiver(countStreamReceiver);
 		reader.read(new FileInputStream(DataFilePath.TITLE_MAB));
 		
 		Assert.assertEquals("Number of read records is incorrect", NUM_RECORDS, countStreamReceiver.getNumRecords());

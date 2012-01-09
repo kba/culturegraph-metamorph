@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public final class MapWriter extends DefaultStreamReceiver implements Map<String, String> {
 
-	private final Map<String, String> map;
+	private Map<String, String> map;
 
 	public MapWriter() {
 		super();
@@ -24,6 +24,10 @@ public final class MapWriter extends DefaultStreamReceiver implements Map<String
 	 */
 	public MapWriter(final Map<String, String> map){
 		super();
+		this.map = map;
+	}
+	
+	protected void setMap(final Map<String, String> map) {
 		this.map = map;
 	}
 	

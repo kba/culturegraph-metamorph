@@ -58,8 +58,8 @@ public final class MetamorphBuilder {
 	}
 
 	public static void wire(final StreamSender sender, final Metamorph metamorph, final StreamReceiver receiver) {
-		sender.setStreamReceiver(metamorph);
-		metamorph.setStreamReceiver(receiver);
+		sender.setReceiver(metamorph);
+		metamorph.setReceiver(receiver);
 	}
 
 	public static Metamorph build(final File file) {

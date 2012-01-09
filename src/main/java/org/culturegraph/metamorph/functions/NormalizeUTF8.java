@@ -12,7 +12,7 @@ import java.text.Normalizer.Form;
  * @author Christoph Böhme <c.boehme@dnb.de>
  *
  */
-public final class NormalizeUTF8 extends AbstractFunction {
+final class NormalizeUTF8 extends AbstractFunction {
 
 	@Override
 	public String process(final String value) {

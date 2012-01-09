@@ -25,7 +25,7 @@ public final class SimplePicaReaderTest {
 
 	@Test
 	public void testRead() throws IOException {
-		reader.setStreamReceiver(countStreamReceiver);
+		reader.setReceiver(countStreamReceiver);
 		reader.read(new FileInputStream(DataFilePath.PND_PICA));
 
 

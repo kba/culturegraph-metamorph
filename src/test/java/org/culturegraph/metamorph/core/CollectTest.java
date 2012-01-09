@@ -33,7 +33,7 @@ public final class CollectTest {
 	private final Metamorph metamorph = new Metamorph();
 	
 	public CollectTest() {
-		metamorph.setStreamReceiver(mapCollector);
+		metamorph.setReceiver(mapCollector);
 	}
 	
 	private static Data newData(final String name){

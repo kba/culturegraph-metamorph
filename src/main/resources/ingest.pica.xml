@@ -100,15 +100,24 @@
 
 	<data source="019@a" name="cg:countryCodeIso" />
 
-	<group name="dcterms:title">
+	<group name="@dcterms:title">
 		<data source="021A.a" />
 		<data source="021B.a" />
 	</group>
 
-	<group name="cg:additionToTitle">
+	<data source="@dcterms:title" name="dcterms:title">
+		<normalize-utf8 />
+	</data>
+
+	<group name="@cg:additionToTitle">
 		<data source="021A.d" />
 		<data source="021B.d" />
 	</group>
+
+	<data source="@cg:additionToTitle" name="cg:additionToTitle">
+		<normalize-utf8 />
+	</data>
+
 
 	<data source="021A.9" name="cg:broaderWorkId" />
 

@@ -1,5 +1,6 @@
 package org.culturegraph.metamorph.stream.receivers;
 
+import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.types.ListMap;
 
 /**
@@ -7,43 +8,32 @@ import org.culturegraph.metamorph.types.ListMap;
  * 
  * @author Markus Michael Geipel
  */
-public final class ListMapWriter extends DefaultStreamReceiver{
-
-	private ListMap<String, String> listMap;
-
-	
-	public ListMapWriter() {
-		super();
-		listMap = new ListMap<String, String>();
-	}	
-	
-	public ListMapWriter(final ListMap<String,String> listMap){
-		super();
-		this.listMap = listMap;
-	}
-	
-	public ListMap<String, String> getListMap() {
-		return listMap;
-	}
-
-	public void setListMap(final ListMap<String, String> listMap) {
-		this.listMap = listMap;
-	}
+public final class ListMapWriter extends ListMap<String, String> implements StreamReceiver{
 
 	@Override
 	public void startRecord(final String identifier){
-		listMap.clear();
-		listMap.setId(identifier);
+		clear();
+		setId(identifier);
 	}
 	
 	@Override
 	public void literal(final String name, final String value) {
-		listMap.put(name, value);
+		put(name, value);
 	}
-
 
 	@Override
-	public String toString() {
-		return listMap.toString();
+	public void endRecord() {
+		// nothing to do
 	}
+
+	@Override
+	public void startEntity(final String name) {
+		 // nothing to do
+	}
+
+	@Override
+	public void endEntity() {
+		//  nothing to do
+	}
+
 }

@@ -17,16 +17,17 @@ public final class Tee implements StreamReceiver, StreamSender {
 	private final List<StreamReceiver> receivers = new ArrayList<StreamReceiver>();
 	
 	@Override
-	public void setStreamReceiver(final StreamReceiver streamReceiver) {
+	public <R extends StreamReceiver> R setReceiver(final R streamReceiver) {
 		if(!receivers.contains(streamReceiver)){ // inefficient for large lists. Maybe use a HashMap...
 			addStreamReceiver(streamReceiver);
 		}
+		return streamReceiver;
 	}
 	
 	
 	public void setStreamReceivers(final StreamReceiver receiver1, final StreamReceiver receiver2) {
-		setStreamReceiver(receiver1);
-		setStreamReceiver(receiver2);
+		setReceiver(receiver1);
+		setReceiver(receiver2);
 	}
 	
 	public void addStreamReceiver(final StreamReceiver receiver){

@@ -6,52 +6,63 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 /**
  * 
  * @author Markus Michael Geipel
  */
-public final class ListMap<K,V>{
+public class ListMap<K,V> implements Map<K, List<V>>, Record{
 
 	private String identifier;
-	private final Map<K, List<V>> map = new HashMap<K, List<V>>();
+	private final Map<K, List<V>> map; 
 	
+	public ListMap() {
+		super();
+		map = new HashMap<K, List<V>>();
+	}
 	
-	public void clear(){
+	public ListMap(final Map<K, List<V>> map) {
+		super();
+		this.map = map;
+	}
+	
+	@Override
+	public final void clear(){
 		map.clear();
 		identifier = null;
 	}
 	
-	public void removeKey(final K key){
+	public final void removeKey(final K key){
 		map.remove(key);
 	}
 	
 	
-	public void clearKey(final K key){
+	public final void clearKey(final K key){
 		final List<V> values = map.get(key);
 		if(values!=null){
 			values.clear();
 		}
 	}
 
-	public void clearAllKeys(){
+	public final void clearAllKeys(){
 		for(Entry<K, List<V>> entry : map.entrySet()){
 			entry.getValue().clear();
 		}
 	}
 	
-	public Set<Entry<K, List<V>>> entrySet(){
+	@Override
+	public final Set<Entry<K, List<V>>> entrySet(){
 		return map.entrySet();
 	}
 	
-	public Set<K> keySet(){
+	@Override
+	public final Set<K> keySet(){
 		return map.keySet();
 	}
 
 
-	public void put(final K name, final V value) {
+	public final void put(final K name, final V value) {
 		
 		List<V> values = map.get(name);
 		if(values == null){
@@ -62,7 +73,7 @@ public final class ListMap<K,V>{
 		values.add(value);
 	}
 	
-	public void putAll(final K name, final Collection<V> addValues) {
+	public final void putAll(final K name, final Collection<V> addValues) {
 		
 		List<V> values = map.get(name);
 		if(values == null){
@@ -73,7 +84,8 @@ public final class ListMap<K,V>{
 		values.addAll(addValues);
 	}
 
-	public List<V> get(final K name){
+	@Override
+	public final List<V> get(final Object name){
 		final List<V> values = map.get(name);
 		if(values==null){
 			return Collections.emptyList();
@@ -81,11 +93,11 @@ public final class ListMap<K,V>{
 		return values;
 	}
 	
-	public boolean existsKey(final K name){
+	public final boolean existsKey(final K name){
 		return getFirst(name)!=null;
 	}
 	
-	public V getFirst(final K name){
+	public final V getFirst(final K name){
 		final List<V> values = map.get(name);
 		if(values==null || values.isEmpty()){
 			return null;
@@ -94,15 +106,58 @@ public final class ListMap<K,V>{
 	}
 	
 	@Override
-	public String toString() {
+	public final String toString() {
 		return map.toString();
 	}
 
-	public void setId(final String identifier) {
+	@Override
+	public final void setId(final String identifier) {
 		this.identifier = identifier;
 	}
 
-	public String getId() {
+	@Override
+	public final String getId() {
 		return identifier;
+	}
+
+	@Override
+	public final int size() {
+		return map.size();
+	}
+
+	@Override
+	public final boolean isEmpty() {
+		return map.isEmpty();
+	}
+
+	@Override
+	public final boolean containsKey(final Object key) {
+		return map.containsKey(key);
+	}
+
+	@Override
+	public final boolean containsValue(final Object value) {
+		return map.containsValue(value);
+	}
+
+	@Override
+	public final List<V> put(final K key, final List<V> value) {
+		return map.put(key, value);
+	}
+
+	@Override
+	public final List<V> remove(final Object key) {
+		return map.remove(key);
+	}
+
+	@Override
+	public final void putAll(final Map<? extends K, ? extends List<V>> putMap) {
+		map.putAll(putMap);
+		
+	}
+
+	@Override
+	public final Collection<List<V>> values() {
+		return map.values();
 	}
 }

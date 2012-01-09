@@ -16,8 +16,9 @@ public final class LogPipe implements StreamReceiver, StreamSender {
 	private StreamReceiver receiver;
 
 	@Override
-	public void setStreamReceiver(final StreamReceiver streamReceiver) {
+	public <R extends StreamReceiver> R  setReceiver(final R streamReceiver) {
 		this.receiver = streamReceiver;
+		return streamReceiver;
 	}
 
 	@Override

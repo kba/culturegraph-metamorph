@@ -11,8 +11,9 @@ public final class ListMapReader implements StreamSender {
 	private StreamReceiver streamReceiver;
 
 	@Override
-	public void setStreamReceiver(final StreamReceiver streamReceiver) {
+	public <R extends StreamReceiver> R  setReceiver(final R streamReceiver) {
 		this.streamReceiver = streamReceiver;
+		return streamReceiver;
 	}
 	
 	public void read(final ListMap<String, String> listMap){

@@ -217,11 +217,12 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 	 *            the outputHandler to set
 	 */
 	@Override
-	public void setStreamReceiver(final StreamReceiver streamReceiver) {
+	public <R extends StreamReceiver> R  setReceiver(final R streamReceiver) {
 		if (streamReceiver == null) {
 			throw new IllegalArgumentException("'streamReceiver' must not be null");
 		}
 		this.outputStreamReceiver = streamReceiver;
+		return streamReceiver;
 	}
 
 	/**
