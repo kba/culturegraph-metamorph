@@ -190,6 +190,16 @@
 		<complexType>
 		</complexType>
 	</element>
+	
+	<element name="equals">
+		<complexType>
+			<attribute name="string" type="string" use="required" />
+		</complexType>
+	</element>
+	
+	<element name="normalize-utf8">
+		<complexType />
+	</element>
 
 
 	<element name="map">
@@ -254,15 +264,7 @@
 		</complexType>
 	</element>
 
-	<element name="equals">
-		<complexType>
-			<attribute name="string" type="string" use="required" />
-		</complexType>
-	</element>
-	
-	<element name="normalize-utf8">
-		<complexType />
-	</element>
+
 
 	<group name="functions">
 		<choice>
@@ -276,6 +278,7 @@
 			<element ref="tns:equals" />
 			<element ref="tns:htmlanchor" />
 			<element ref="tns:trim"/>
+			<element ref="tns:normalize-utf8"/>
 			<any namespace="##other" processContents="lax"></any>
 			
 		</choice>

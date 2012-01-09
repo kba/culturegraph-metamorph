@@ -15,7 +15,7 @@ import java.text.Normalizer.Form;
 public final class NormalizeUTF8 extends AbstractFunction {
 
 	@Override
-	public String process(String value) {
+	public String process(final String value) {
 		if (value != null) {
 			return Normalizer.normalize(value, Form.NFC);
 		}
