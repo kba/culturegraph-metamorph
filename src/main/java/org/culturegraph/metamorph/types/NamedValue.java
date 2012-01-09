@@ -1,6 +1,7 @@
 package org.culturegraph.metamorph.types;
 
 /**
+ * Stores an immutable name-value-pair. The hash code is precomputed during instantiation. 
  * @author Markus Michael Geipel
  */
 public final class NamedValue  implements Comparable<NamedValue>{
