@@ -17,7 +17,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.culturegraph.metamorph.core.Data.Mode;
 import org.culturegraph.metamorph.functions.Function;
 import org.culturegraph.metamorph.functions.FunctionFactory;
-import org.culturegraph.metamorph.multimap.MultiMapProvider;
+import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.StreamSender;
 import org.culturegraph.metamorph.util.ReflectionUtil;
@@ -301,9 +301,9 @@ public final class MetamorphBuilder {
 		private void createMap(final String mapName, final String defaultValue) {
 			map = new HashMap<String, String>();
 			if (defaultValue != null) {
-				map.put(MultiMapProvider.DEFAULT_MAP_KEY, defaultValue);
+				map.put(SimpleMultiMap.DEFAULT_MAP_KEY, defaultValue);
 			}
-			metamorph.addMap(mapName, map);
+			metamorph.putMap(mapName, map);
 
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("new map: " + mapName);

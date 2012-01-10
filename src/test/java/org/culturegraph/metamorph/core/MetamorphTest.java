@@ -3,7 +3,7 @@ package org.culturegraph.metamorph.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.culturegraph.metamorph.multimap.MultiMapProvider;
+import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.receivers.DefaultStreamReceiver;
 import org.culturegraph.metamorph.types.NamedValue;
@@ -89,12 +89,12 @@ public final class MetamorphTest implements NamedValueReceiver {
 		final Map<String, String> map = new HashMap<String, String>();
 		map.put(NAME, VALUE);
 		
-		metamorph.addMap(MAP_NAME, map);
+		metamorph.putMap(MAP_NAME, map);
 		Assert.assertNotNull(metamorph.getMap(MAP_NAME));
 		Assert.assertNotNull(metamorph.getValue(MAP_NAME,NAME));
 		Assert.assertEquals(VALUE, metamorph.getValue(MAP_NAME,NAME));
 		
-		map.put(MultiMapProvider.DEFAULT_MAP_KEY, VALUE);
+		map.put(SimpleMultiMap.DEFAULT_MAP_KEY, VALUE);
 		Assert.assertNotNull(metamorph.getValue(MAP_NAME,"sdfadsfsdf"));
 		Assert.assertEquals(VALUE, metamorph.getValue(MAP_NAME,"sdfsdf"));
 		

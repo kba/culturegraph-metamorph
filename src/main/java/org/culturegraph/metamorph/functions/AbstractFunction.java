@@ -2,7 +2,7 @@ package org.culturegraph.metamorph.functions;
 
 import java.util.Map;
 
-import org.culturegraph.metamorph.multimap.MultiMapProvider;
+import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 
 /**
  * @author Markus Michael Geipel
@@ -10,7 +10,7 @@ import org.culturegraph.metamorph.multimap.MultiMapProvider;
  */
 public abstract class AbstractFunction implements Function {
 
-	private MultiMapProvider multiMapProvider;
+	private SimpleMultiMap multiMapProvider;
 
 	protected final Map<String, String> getMap(final String mapName){
 		return multiMapProvider.getMap(mapName);
@@ -24,7 +24,7 @@ public abstract class AbstractFunction implements Function {
 	public abstract String process(final String value);
 
 	@Override
-	public final void setMultiMapProvider(final MultiMapProvider multiMapProvider) {
+	public final void setMultiMapProvider(final SimpleMultiMap multiMapProvider) {
 		this.multiMapProvider = multiMapProvider;
 	}
 }

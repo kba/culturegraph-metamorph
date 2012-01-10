@@ -1,7 +1,6 @@
 package org.culturegraph.metamorph.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.culturegraph.metamorph.multimap.MultiMapProvider;
+import org.culturegraph.metamorph.multimap.MultiMap;
+import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.StreamSender;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamReceiver, StreamSender, NamedValueReceiver, MultiMapProvider {
+public final class Metamorph implements StreamReceiver, StreamSender, NamedValueReceiver, SimpleMultiMap {
 
 	public static final String ELSE_KEYWORD = "_else";
 	public static final String RECORD_KEYWORD = "record";
@@ -35,13 +35,10 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 
 	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
 	private final List<Data> elseSource = new ArrayList<Data>();
-
 	private final Map<String, List<EntityEndListener>> entityEndListeners = new HashMap<String, List<EntityEndListener>>();
-
 	private final Map<String, String> entityMap = new HashMap<String, String>();
-
-	private final Map<String, Map<String, String>> multiMap = new HashMap<String, Map<String, String>>();
-
+	private final SimpleMultiMap multiMap = new MultiMap();
+	
 	private final Deque<String> entityStack = new LinkedList<String>();
 	private final StringBuilder entityPath = new StringBuilder();
 	private final Deque<Integer> entityCountStack = new LinkedList<Integer>();
@@ -234,13 +231,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		return outputStreamReceiver;
 	}
 
-	/**
-	 * @param mapName
-	 * @param keyValueStore
-	 */
-	public void addMap(final String mapName, final Map<String, String> map) {
-		multiMap.put(mapName, map);
-	}
+
 
 	@Override
 	public void data(final String name, final String value, final int recordCount, final int entityCount) {
@@ -277,33 +268,24 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 	protected void addRecordEndListener(final EntityEndListener entityEndListener) {
 		addEntityEndListener(entityEndListener, RECORD_KEYWORD);
 	}
-
-	/**
-	 * 
-	 * @param mapName
-	 * @return map corresponding to mapName. Never <code>null</code>. If there
-	 *         is no corresponding {@link Map}, and empty one is returned
-	 */
+	
 	@Override
 	public Map<String, String> getMap(final String mapName) {
-		final Map<String, String> map = multiMap.get(mapName);
-		if (map == null) {
-			return Collections.emptyMap();
-		}
-		return map;
-	}
-
-	public Map<String, Map<String, String>> getMultiMap() {
-		return multiMap;
+		return multiMap.getMap(mapName);
 	}
 
 	@Override
 	public String getValue(final String mapName, final String key) {
-		final Map<String, String> map = getMap(mapName);
-		final String value = map.get(key);
-		if (value == null) {
-			return map.get(MultiMapProvider.DEFAULT_MAP_KEY);
-		}
-		return value;
+		return multiMap.getValue(mapName, key);
+	}
+
+	@Override
+	public Map<String, String> putMap(final String mapName, final  Map<String, String> map) {
+		return multiMap.putMap(mapName, map);
+	}
+
+	@Override
+	public String putValue(final String mapName, final String key, final String value) {
+		return multiMap.putValue(mapName, key, value);
 	}
 }

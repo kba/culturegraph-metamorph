@@ -189,14 +189,12 @@ public final class NamedValueListWriter implements StreamReceiver, List<NamedVal
 			collection.add(list);
 			list = new ArrayList<NamedValue>();
 		}
-		
 	}
 
 
 	@Override
 	public void startEntity(final String name) {
 		// nothing
-		
 	}
 
 

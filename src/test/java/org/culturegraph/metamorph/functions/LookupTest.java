@@ -1,12 +1,12 @@
 package org.culturegraph.metamorph.functions;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.Assert;
 
-import org.culturegraph.metamorph.multimap.MultiMapProvider;
+import org.culturegraph.metamorph.multimap.MultiMap;
+import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.junit.Test;
 
 
@@ -28,7 +28,7 @@ public final class LookupTest {
 	@Test
 	public void testLookup() {
 		final Lookup lookup = new Lookup();
-		final SimpleMultiMapProvider multiMapProvider = new SimpleMultiMapProvider();
+		final SimpleMultiMap multiMapProvider = new MultiMap();
 		final Map<String, String> map = new HashMap<String, String>();
 		map.put(KEY, VALUE);
 		
@@ -43,38 +43,9 @@ public final class LookupTest {
 		Assert.assertEquals(VALUE, lookup.process(KEY));
 		Assert.assertNull(lookup.process(KEY_WRONG));
 		
-		map.put(MultiMapProvider.DEFAULT_MAP_KEY, VALUE);
+		map.put(SimpleMultiMap.DEFAULT_MAP_KEY, VALUE);
 		Assert.assertEquals(VALUE, lookup.process(KEY_WRONG));
 	}
 	
-	private static final class SimpleMultiMapProvider implements MultiMapProvider{
-		private final Map<String, Map<String, String>> multiMap = new HashMap<String, Map<String,String>>();
-		
-		protected SimpleMultiMapProvider() {
-			// nothing
-		}
-		
-		public void putMap(final String name, final Map<String, String> map){
-			multiMap.put(name, map);
-		}
-		
-		@Override
-		public Map<String, String> getMap(final String mapName) {
-			final Map<String, String> map = multiMap.get(mapName);
-			if(map==null){
-				return Collections.emptyMap();
-			}
-			return map;
-		}
-
-		@Override
-		public String getValue(final String mapName, final String key) {
-			final Map<String, String> map = getMap(mapName);
-			final String value = map.get(key);
-			if (value == null) {
-				return map.get(MultiMapProvider.DEFAULT_MAP_KEY);
-			}
-			return value;
-		}
-	}
+	
 }
