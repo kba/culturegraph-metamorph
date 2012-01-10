@@ -15,7 +15,7 @@ import org.culturegraph.metamorph.types.ListMap;
  * 
  * @author Markus Michael Geipel
  */
-public final class ListMapWriter implements StreamReceiver, Collector<ListMap<String, String>>{
+public final class ListMapWriter implements StreamReceiver, Collector<ListMap<String, String>>, Map<String, List<String>>{
 	
 	private Collection<ListMap<String, String>> collection;
 	private ListMap<String, String> listMap = new ListMap<String, String>();
