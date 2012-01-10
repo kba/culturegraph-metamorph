@@ -91,6 +91,8 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		}
 		entityCount = 0;
 		++recordCount;
+		recordCount %= Integer.MAX_VALUE;
+		
 		entityCountStack.add(Integer.valueOf(entityCount));
 
 		final String identifierFinal;

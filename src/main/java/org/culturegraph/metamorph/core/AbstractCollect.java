@@ -181,10 +181,13 @@ abstract class AbstractCollect implements NamedValueReceiver, Collect {
 	}
 
 	@Override
-	public void onEntityEnd(final String name) {
+	public final void onEntityEnd(final String name) {
+		
 		if(!alreadyEmitted){
 			emit();
+			alreadyEmitted = true;
 		}
+		
 	}
 
 	/**

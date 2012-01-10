@@ -37,10 +37,6 @@ final class CollectLiteral extends AbstractCollect implements ValueProcessor {
 		getMetamorph().data(name, value, getRecordCount(), getEntityCount());
 	}
 
-	@Override
-	public void onEntityEnd(final String entityName) {
-		emit();
-	}
 
 	@Override
 	protected boolean isComplete() {

@@ -174,7 +174,7 @@
 		<data source="24514.b" />
 	</group>
 
-	<data source="n@cg:additionToTitle" name="cg:additionToTitle">
+	<data source="@cg:additionToTitle" name="cg:additionToTitle">
 		<normalize-utf8 />
 	</data>
 
@@ -208,7 +208,7 @@
 		<data source="2603 .a" />
 	</group>
 
-	<data source="@xbib:publicationPlace">
+	<data source="@xbib:publicationPlace" name="xbib:publicationPlace">
 		<normalize-utf8 />
 	</data>
 
