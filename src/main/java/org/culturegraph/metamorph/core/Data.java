@@ -156,7 +156,7 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Entit
 	}
 
 	@Override
-	public void onEntityEnd(final String entityName) {
+	public void onEntityEnd(final String entityName, final int recordCount, final int entityCount) {
 		if (Mode.COUNT == mode) {
 			dataReceiver.data(name, String.valueOf(processingCount), oldRecordCount, 0);
 		}

@@ -25,11 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 /**
@@ -43,7 +41,6 @@ public final class MetamorphBuilder {
 	private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 	private static final String SCHEMA_FILE = "metamorph.xsd";
 	private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
-	private static final String PARSE_ERROR = "Error parsing transformation definition: ";
 	private static final String NOT_FOUND_ERROR = "Definition file not found";
 
 	private final String morphDef;
@@ -107,7 +104,7 @@ public final class MetamorphBuilder {
 			saxParser.setProperty(JAXP_SCHEMA_SOURCE, schemaUrl.toString());
 
 			final XMLReader xmlReader = saxParser.getXMLReader();
-			final MetamorphBuilderErrorHandler handler = new MetamorphBuilderErrorHandler();
+			final MetamorphDefinitionParserErrorHandler handler = new MetamorphDefinitionParserErrorHandler();
 			xmlReader.setErrorHandler(handler);
 
 			xmlReader.setContentHandler(transformationContentHandler);
@@ -406,55 +403,5 @@ public final class MetamorphBuilder {
 		public void processingInstruction(final String target, final String data) throws SAXException {
 			// do nothing
 		}
-	}
-
-	private static final class MetamorphBuilderErrorHandler implements ErrorHandler {
-
-		protected MetamorphBuilderErrorHandler() {
-			// to avoid synthetic accessor methods
-		}
-
-		@Override
-		public void warning(final SAXParseException exception) throws SAXException {
-			throw new MetamorphDefinitionException(PARSE_ERROR + exception.getMessage(), exception);
-		}
-
-		@Override
-		public void fatalError(final SAXParseException exception) throws SAXException {
-			throw new MetamorphDefinitionException(PARSE_ERROR + exception.getMessage(), exception);
-		}
-
-		@Override
-		public void error(final SAXParseException exception) throws SAXException {
-			throw new MetamorphDefinitionException(PARSE_ERROR + exception.getMessage(), exception);
-		}
-	}
-
-	public static final class MetamorphDefinitionException extends RuntimeException {
-
-		private static final long serialVersionUID = -3130648074493084946L;
-
-		/**
-		 * @param message
-		 */
-		public MetamorphDefinitionException(final String message) {
-			super(message);
-		}
-
-		/**
-		 * @param cause
-		 */
-		public MetamorphDefinitionException(final Throwable cause) {
-			super(cause);
-		}
-
-		/**
-		 * @param message
-		 * @param cause
-		 */
-		public MetamorphDefinitionException(final String message, final Throwable cause) {
-			super(message, cause);
-		}
-
 	}
 }

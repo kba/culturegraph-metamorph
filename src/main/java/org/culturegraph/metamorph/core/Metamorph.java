@@ -152,7 +152,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		final List<EntityEndListener> matchingListeners = entityEndListeners.get(name);
 		if (null != matchingListeners) {
 			for (EntityEndListener listener : matchingListeners) {
-				listener.onEntityEnd(name);
+				listener.onEntityEnd(name, recordCount, entityCount);
 			}
 		}
 

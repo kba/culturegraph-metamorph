@@ -150,6 +150,7 @@ abstract class AbstractCollect implements NamedValueReceiver, Collect {
 			if (reset) {
 				LOG.trace("reset because of emit");
 				clear();
+				alreadyEmitted= false;
 			}
 		}
 	}
@@ -181,13 +182,10 @@ abstract class AbstractCollect implements NamedValueReceiver, Collect {
 	}
 
 	@Override
-	public final void onEntityEnd(final String name) {
-		
-		if(!alreadyEmitted){
-			emit();
-			alreadyEmitted = true;
+	public void onEntityEnd(final String entityName, final int recordCount, final int entityCount) {
+		if(oldRecord==recordCount && !alreadyEmitted && (!sameEntity || oldEntity == entityCount)){
+				emit();
 		}
-		
 	}
 
 	/**

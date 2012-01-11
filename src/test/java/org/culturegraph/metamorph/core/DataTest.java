@@ -88,7 +88,7 @@ public final class DataTest {
 		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT+1, ENTITY_COUNT); // counter will be reset on record count change
 		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT+1, ENTITY_COUNT);
 		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT+1, ENTITY_COUNT);
-		data.onEntityEnd(Metamorph.RECORD_KEYWORD); // emit count
+		data.onEntityEnd(Metamorph.RECORD_KEYWORD, RECORD_COUNT+1, ENTITY_COUNT); // emit count
 	}
 	
 	@Test

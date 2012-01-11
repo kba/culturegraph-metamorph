@@ -109,7 +109,7 @@ public final class CollectTest {
 		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
 		Assert.assertTrue(nothingReceived());
 		
-		collectLiteral.onEntityEnd(Metamorph.RECORD_KEYWORD);
+		collectLiteral.onEntityEnd(Metamorph.RECORD_KEYWORD, 0,0);
 		
 	
 		
@@ -224,7 +224,7 @@ public final class CollectTest {
 		Assert.assertTrue(nothingReceived());
 		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertTrue(nothingReceived());
-		chooseLiteral.onEntityEnd(null);
+		chooseLiteral.onEntityEnd(null,0,0);
 		Assert.assertEquals(VALUE_A, getReceived());		
 	}
 	
