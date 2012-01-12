@@ -3,8 +3,6 @@
  */
 package org.culturegraph.metamorph.stream.receivers;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 
@@ -15,7 +13,7 @@ import org.junit.Test;
 public class CheckWriterTest {
 
 	@Test
-	public void testSuccessfulChecking() {
+	public void generalCheck() {
 		CheckWriter w = new CheckWriter();
 		
 		w.startRecord("01");
@@ -94,7 +92,7 @@ public class CheckWriterTest {
 					w.literal("LastName", "Kafka");
 				w.endEntity();
 			w.endRecord();			
-		assertTrue(w.endChecking());
+		w.endChecking();
 	}
 	
 	@Test(expected=IllegalStateException.class)
@@ -110,6 +108,168 @@ public class CheckWriterTest {
 			w.startRecord("01");
 				w.literal("Name", "von Beethoven");
 			w.endRecord();		
-		assertTrue(w.endChecking());
+		w.endChecking();
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void invalidRecordIdentifier() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord("1");
+			w.literal("LastName", "von Beethoven");
+			w.literal("FirstName", "Ludwig");
+		w.endRecord();
+		
+		w.startChecking();
+			w.startRecord("0");
+				w.literal("LastName", "von Beethoven");
+				w.literal("FirstName", "Ludwig");
+			w.endRecord();		
+		w.endChecking();
+	}
+	
+	@Test
+	public void changedRecordOrder() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord("1");
+			w.literal("Name", "Karl");
+		w.endRecord();
+		w.startRecord("2");
+			w.literal("Name", "Gustav");
+		w.endRecord();
+		
+		w.startChecking();		
+			w.startRecord("2");
+				w.literal("Name", "Gustav");
+			w.endRecord();
+			w.startRecord("1");
+				w.literal("Name", "Karl");
+			w.endRecord();
+		w.endChecking();		
+	}
+	
+	@Test
+	public void strictRecordOrder() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord("1");
+			w.literal("Name", "Heinz");
+		w.endRecord();
+		w.startRecord("2");
+			w.literal("Name", "Karl");
+		w.endRecord();
+		
+		w.setStrictRecordOrder(true);
+		
+		w.startChecking();		
+			w.startRecord("1");
+				w.literal("Name", "Heinz");
+			w.endRecord();
+			w.startRecord("2");
+				w.literal("Name", "Karl");
+			w.endRecord();
+		w.endChecking();			
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void invalidRecordOrderByIdentifier() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord("1");
+			w.literal("Name", "Heinz");
+		w.endRecord();
+		w.startRecord("2");
+			w.literal("Name", "Karl");
+		w.endRecord();
+		
+		w.setStrictRecordOrder(true);
+		
+		w.startChecking();		
+			w.startRecord("2");
+				w.literal("Name", "Karl");
+			w.endRecord();
+			w.startRecord("1");
+				w.literal("Name", "Heinz");
+			w.endRecord();
+		w.endChecking();			
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void invalidRecordOrderByContent() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord(null);
+			w.literal("Name", "Karl");
+		w.endRecord();
+		w.startRecord(null);
+			w.literal("Name", "Heinz");
+		w.endRecord();
+		
+		w.setStrictRecordOrder(true);
+		
+		w.startChecking();		
+			w.startRecord(null);
+				w.literal("Name", "Heinz");
+			w.endRecord();
+			w.startRecord(null);
+				w.literal("Name", "Karl");
+			w.endRecord();
+		w.endChecking();			
+	}
+
+	@Test
+	public void changedLiteralValueOrder() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord("1");
+			w.literal("Name", "Franz");
+			w.literal("Name", "Gustav");
+		w.endRecord();
+		
+		w.startChecking();
+			w.startRecord("1");
+				w.literal("Name", "Gustav");
+				w.literal("Name", "Franz");
+			w.endRecord();
+		w.endChecking();
+	}
+
+	@Test
+	public void strictLiteralValueOrder() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord("1");
+			w.literal("Name", "Franz");
+			w.literal("Name", "Gustav");
+		w.endRecord();
+		
+		w.setStrictValueOrder(true);
+		
+		w.startChecking();
+			w.startRecord("1");
+				w.literal("Name", "Franz");
+				w.literal("Name", "Gustav");
+			w.endRecord();
+		w.endChecking();
+	}
+
+	@Test(expected=IllegalStateException.class)
+	public void invalidLiteralValueOrder() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord("1");
+			w.literal("Name", "Franz");
+			w.literal("Name", "Gustav");
+		w.endRecord();
+		
+		w.setStrictValueOrder(true);
+		
+		w.startChecking();
+			w.startRecord("1");
+				w.literal("Name", "Gustav");
+				w.literal("Name", "Franz");
+			w.endRecord();
+		w.endChecking();
 	}
 }
