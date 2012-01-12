@@ -1,7 +1,6 @@
 package org.culturegraph.metamorph.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -33,8 +32,6 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 	private static final char DEFAULT_ENTITY_MARKER = '.';
 	
-
-	private static final String ELSE_NAME = "_else";
 
 	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
 	private final List<Data> elseSource = new ArrayList<Data>();

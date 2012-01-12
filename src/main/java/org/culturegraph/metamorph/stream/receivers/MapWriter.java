@@ -5,18 +5,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.culturegraph.metamorph.stream.Collector;
+import org.culturegraph.metamorph.stream.StreamReceiver;
+
 /**
  * Collects the received results in a {@link Map}. Duplicate names are thus lost.
  * 
  * @author Markus Michael Geipel
  */
-public final class MapWriter extends DefaultStreamReceiver implements Map<String, String> {
-
-	private final Map<String, String> map;
+public final class MapWriter implements StreamReceiver, Map<String, String> , Collector<Map<String, String>>{
+	
+	private Collection<Map<String, String>> collection;
+	
+	private Map<String, String> map;
 
 	public MapWriter() {
 		super();
 		map = new HashMap<String, String>();
+		collection=null;
+	}
+	
+	public MapWriter(final Collection<Map<String, String>> collection) {
+		super();
+		map = new HashMap<String, String>();
+		this.collection=collection;
 	}
 	
 	/**
@@ -24,6 +36,20 @@ public final class MapWriter extends DefaultStreamReceiver implements Map<String
 	 */
 	public MapWriter(final Map<String, String> map){
 		super();
+		this.map = map;
+	}
+	
+	@Override
+	public Collection<Map<String, String>> getCollection() {
+		return collection;
+	}
+
+	@Override
+	public void setCollection(final Collection<Map<String, String>> collection) {
+		this.collection = collection;
+	}
+	
+	protected void setMap(final Map<String, String> map) {
 		this.map = map;
 	}
 	
@@ -92,6 +118,26 @@ public final class MapWriter extends DefaultStreamReceiver implements Map<String
 	@Override
 	public int hashCode() {
 		return map.hashCode();
+	}
+
+	@Override
+	public void endRecord() {
+		if(collection!=null){
+			collection.add(map);
+			map=new HashMap<String, String>();
+		}
+		
+	}
+
+	@Override
+	public void startEntity(final String name) {
+		// do nothing
+		
+	}
+
+	@Override
+	public void endEntity() {
+		// do nothing
 	}
 
 }

@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.culturegraph.metamorph.stream.Collector;
+import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.types.NamedValue;
 
 /**
@@ -13,13 +15,20 @@ import org.culturegraph.metamorph.types.NamedValue;
  * 
  * @author Markus Michael Geipel
  */
-public final class NamedValueListWriter extends DefaultStreamReceiver implements List<NamedValue> {
+public final class NamedValueListWriter implements StreamReceiver, List<NamedValue>, Collector<List<NamedValue>> {
 
-	private final List<NamedValue> list;
+	private Collection<List<NamedValue>> collection;
+	private List<NamedValue> list;
 
 	public NamedValueListWriter() {
 		super();
 		list = new ArrayList<NamedValue>();
+	}
+	
+	public NamedValueListWriter(final Collection<List<NamedValue>> collection) {
+		super();
+		list = new ArrayList<NamedValue>();
+		this.collection = collection;
 	}
 	
 
@@ -159,6 +168,39 @@ public final class NamedValueListWriter extends DefaultStreamReceiver implements
 	@Override
 	public List<NamedValue> subList(final int fromIndex, final int toIndex) {
 		return list.subList(fromIndex, toIndex);
+	}
+
+
+	@Override
+	public Collection<List<NamedValue>> getCollection() {
+		return collection;
+	}
+
+
+	@Override
+	public void setCollection(final Collection<List<NamedValue>> collection) {
+		this.collection = collection;
+	}
+
+
+	@Override
+	public void endRecord() {
+		if(collection!=null){
+			collection.add(list);
+			list = new ArrayList<NamedValue>();
+		}
+	}
+
+
+	@Override
+	public void startEntity(final String name) {
+		// nothing
+	}
+
+
+	@Override
+	public void endEntity() {
+		// nothing
 	}
 
 }

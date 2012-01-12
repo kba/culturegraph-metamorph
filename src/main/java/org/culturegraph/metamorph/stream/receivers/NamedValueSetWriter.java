@@ -5,35 +5,52 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.culturegraph.metamorph.stream.Collector;
+import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.types.NamedValue;
 
 /**
  * Collects {@link NamedValue}s in a {@link Set}. So there will not be duplicates.
  * @author Markus Michael Geipel
  */
-public final class NamedValueSetWriter extends DefaultStreamReceiver implements Set<NamedValue>{
+public final class NamedValueSetWriter  implements StreamReceiver, Set<NamedValue>, Collector<Set<NamedValue>>{
 
-
-
-	private final Set<NamedValue> set;
+	private Collection<Set<NamedValue>> collection;
+	private Set<NamedValue> set;
 
 	public NamedValueSetWriter() {
 		super();
 		set=new HashSet<NamedValue>();
+		this.collection =null;
+		
 	}
 	
 	/**
 	 * @param set is filled with the received results.
 	 */
-	public NamedValueSetWriter(final Set<NamedValue> set) {
+	public NamedValueSetWriter(final Collection<Set<NamedValue>> collection) {
 		super();
-		this.set = set;
+		set=new HashSet<NamedValue>();
+		this.collection = collection;
 	}
 	
+	
+	@Override
+	public Collection<Set<NamedValue>> getCollection() {
+		return collection;
+	}
+
+	@Override
+	public void setCollection(final Collection<Set<NamedValue>> collection) {
+		this.collection = collection;
+	}
+	
+
 	@Override
 	public void startRecord(final String identifier){
 		set.clear();
 	}
+
 
 	@Override
 	public void literal(final String name, final String value) {
@@ -103,6 +120,27 @@ public final class NamedValueSetWriter extends DefaultStreamReceiver implements 
 	@Override
 	public int hashCode() {
 		return set.hashCode();
+	}
+
+	@Override
+	public void endRecord() {
+		if(collection!=null){
+			collection.add(set);
+			set=new HashSet<NamedValue>();
+		}
+		
+	}
+
+	@Override
+	public void startEntity(final String name) {
+		// nothing
+		
+	}
+
+	@Override
+	public void endEntity() {
+		// nothing
+		
 	}
 
 }

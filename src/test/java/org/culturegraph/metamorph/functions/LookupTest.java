@@ -48,14 +48,4 @@ public final class LookupTest {
 	}
 	
 	
-		@Override
-		public String getValue(final String mapName, final String key) {
-			final Map<String, String> map = getMap(mapName);
-			final String value = map.get(key);
-			if (value == null) {
-				return map.get(MultiMapProvider.DEFAULT_MAP_KEY);
-			}
-			return value;
-		}
-	}
 }

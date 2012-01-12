@@ -7,13 +7,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Provides the functions for {@link Metamorph}. 
+ * By the default it contains the stardard function set.
+ * New functions can be registered during runtime.
+ * 
+ * @author Markus Michael Geipel
+ *
+ */
 public final class FunctionFactory {
-
-
 
 	private static final String INSTANTIATION_PROBLEM = " could not be instantiated";
 
@@ -35,12 +42,14 @@ public final class FunctionFactory {
 		registerFunction("isbn", ISBN.class);
 		registerFunction("equals", Equals.class);
 		registerFunction("htmlanchor", HtmlAnchor.class);
-
+		registerFunction("trim", Trim.class);
+		registerFunction("normalize-utf8", NormalizeUTF8.class);
+		
 		availableFunctions = Collections.unmodifiableSet(functionClasses.keySet());
 	}
 
 
-	private void registerFunction(final String name, final Class<? extends Function> clazz) {
+	public void registerFunction(final String name, final Class<? extends Function> clazz) {
 
 		functionClasses.put(name, clazz);
 		LOG.debug("Registered function '" + name + "': " + clazz.getName());
@@ -68,6 +77,9 @@ public final class FunctionFactory {
 			for (Map.Entry<String, String> attribute : attributes.entrySet()) {
 				final String methodName = attribute.getKey().toLowerCase();
 				final Method method = functionMethodMaps.get(clazz).get(methodName);
+				if(null==method){
+					throw new MetamorphException("Cannot set '" + methodName + "' for function '" + name +"'");
+				}
 				method.invoke(function, attribute.getValue());
 			}
 			return function;

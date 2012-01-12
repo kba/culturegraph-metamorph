@@ -25,7 +25,7 @@ public final class CGEntityTest {
 		final StringWriter refereceStringWriter = new StringWriter();
 		final DefaultWriter referenceWriter = new DefaultWriter(refereceStringWriter);
 		
-		picaReader.setStreamReceiver(referenceWriter);
+		picaReader.setReceiver(referenceWriter);
 		//logPipe.setStreamReceiver(referenceWriter);
 		picaReader.read(new FileInputStream(DataFilePath.PND_PICA));
 		referenceWriter.flush();
@@ -34,7 +34,7 @@ public final class CGEntityTest {
 		final StringWriter tempStringWriter = new StringWriter();
 		final CGEntityWriter writer = new CGEntityWriter(tempStringWriter);
 				
-		picaReader.setStreamReceiver(writer);
+		picaReader.setReceiver(writer);
 		picaReader.read(new FileInputStream(DataFilePath.PND_PICA));
 		writer.flush();
 		
@@ -43,7 +43,7 @@ public final class CGEntityTest {
 		final CGEntityReader reader = new CGEntityReader();
 		final DefaultWriter finalWriter = new DefaultWriter(finalStringWriter);
 		
-		reader.setStreamReceiver(finalWriter);
+		reader.setReceiver(finalWriter);
 		//logPipe.setStreamReceiver(finalWriter);
 		reader.read(new StringReader(tempStringWriter.toString()));
 		finalWriter.flush();

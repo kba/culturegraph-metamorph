@@ -1,7 +1,7 @@
 package org.culturegraph.metamorph.stream.readers;
 
 import org.culturegraph.metamorph.core.MetamorphException;
-import org.culturegraph.metamorph.util.Util;
+import org.culturegraph.metamorph.util.ReflectionUtil;
 
 
 
@@ -18,7 +18,7 @@ public abstract class AbstractReaderFactory implements ReaderFactory {
 		final String className = System.getProperty(IMPLEMENTATION_NAME);
 	
 		if (className != null) {
-				final Object obj = Util.instantiateClass(className);
+				final Object obj = ReflectionUtil.instantiateClass(className);
 				if (obj instanceof AbstractReaderFactory) {
 					return (ReaderFactory) obj;
 				}

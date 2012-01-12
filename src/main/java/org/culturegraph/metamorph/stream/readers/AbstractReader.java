@@ -69,7 +69,8 @@ public final void read(final java.io.Reader reader)  throws IOException {
 	}
 	
 	@Override
-	public final void setStreamReceiver(final StreamReceiver streamReceiver) {
-		this.streamReceiver = streamReceiver;		
+	public final <R extends StreamReceiver> R  setReceiver(final R streamReceiver) {
+		this.streamReceiver = streamReceiver;
+		return streamReceiver;
 	}
 }

@@ -15,8 +15,6 @@ import org.junit.Test;
  */
 public final class DataTest {
 	
-
-
 	private static final String DEFAULT_NAME = "name";
 	private static final String DEFAULT_VALUE = "value";
 	private static final String INPUT = "alkjfoeijf38";

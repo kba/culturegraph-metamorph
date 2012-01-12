@@ -37,7 +37,7 @@
 	</collect-entity>
 
 
-	<collect-literal name="gnd:variantNameForThePerson"
+	<collect-literal name="gnd:preferredName"
 		value="${surname}${forename}${prefix}${personalname}${qualifier}"
 		forceOnEnd="028A">
 		<data source="028A.a" name="surname" />
@@ -51,6 +51,22 @@
 			<compose prefix=" &lt;" postfix="&gt;" />
 		</data>
 		<data source="028A.5" name="personalname" />
+	</collect-literal>
+	
+	<collect-literal name="gnd:variantNameForThePerson"
+		value="${surname}${forename}${prefix}${personalname}${qualifier}"
+		forceOnEnd="028@">
+		<data source="028@.a" name="surname" />
+		<data source="028@.d" name="forename">
+			<compose prefix=", " />
+		</data>
+		<data source="028@.c" name="prefix">
+			<compose prefix=" " />
+		</data>
+		<data source="028@.l" name="qualifier">
+			<compose prefix=" &lt;" postfix="&gt;" />
+		</data>
+		<data source="028@.5" name="personalname" />
 	</collect-literal>
 
 	<data name="rdaGr2:dateOfBirth" source="032Aa.a">

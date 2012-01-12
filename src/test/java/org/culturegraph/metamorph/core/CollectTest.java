@@ -242,13 +242,4 @@ public final class CollectTest {
 		return mapCollector.isEmpty();
 	}
 
-	
-	private void cleanUp(){
-		mapCollector.clear();
-	}
-	
-	private boolean nothingReceived(){
-		return mapCollector.isEmpty();
-	}
-
 }

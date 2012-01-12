@@ -68,35 +68,38 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 
 		
 		if (morphDefinition==null && streamReceiver != null) {
-			currentReader.setStreamReceiver(streamReceiver);
+			currentReader.setReceiver(streamReceiver);
 		}else if (morphDefinition != null) {
 			final String morphDefinitionFinal = morphDefinition + '.' + format;
 			final Metamorph metamorph = MetamorphBuilder.build(morphDefinitionFinal);
 			metamorphs.put(format, metamorph);
 			metamorph.setErrorHandler(this);
-			currentReader.setStreamReceiver(metamorph);
+			currentReader.setReceiver(metamorph);
 			if (streamReceiver != null) {
-				metamorph.setStreamReceiver(streamReceiver);
+				metamorph.setReceiver(streamReceiver);
 			}
 		} 
 
 	}
 
 	@Override
-	public void setStreamReceiver(final StreamReceiver streamReceiver) {
+	public <R extends StreamReceiver> R setReceiver(final R streamReceiver) {
 		if (streamReceiver == null) {
 			throw new IllegalArgumentException(ERROR_RECEIVER_NULL);
 		}
+		
 		this.streamReceiver = streamReceiver;
 		if (morphDefinition == null) {
 			for (Reader reader : openReaders.values()) {
-				reader.setStreamReceiver(streamReceiver);
+				reader.setReceiver(streamReceiver);
 			}
 		} else {
 			for (Metamorph metamorph : metamorphs.values()) {
-				metamorph.setStreamReceiver(streamReceiver);
+				metamorph.setReceiver(streamReceiver);
 			}
 		}
+		
+		return streamReceiver;
 	}
 
 	@Override

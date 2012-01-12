@@ -1,5 +1,13 @@
 package org.culturegraph.metamorph.stream.receivers;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.culturegraph.metamorph.stream.Collector;
+import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.types.ListMap;
 
 /**
@@ -7,33 +15,122 @@ import org.culturegraph.metamorph.types.ListMap;
  * 
  * @author Markus Michael Geipel
  */
-public final class ListMapWriter extends DefaultStreamReceiver{
-
-	private ListMap<String, String> listMap;
-	private String currentId;
+public final class ListMapWriter implements StreamReceiver, Collector<ListMap<String, String>>, Map<String, List<String>>{
 	
+	private Collection<ListMap<String, String>> collection;
+	private ListMap<String, String> listMap = new ListMap<String, String>();
+
 	public ListMapWriter() {
-		super();
-		listMap = new ListMap<String, String>();
-	}	
-	
-	public ListMapWriter(final ListMap<String,String> listMap){
-		super();
-		this.listMap = listMap;
+		// nothing to do 
 	}
 	
-	public ListMap<String, String> getListMap() {
-		return listMap;
+	public ListMapWriter(final Collection<ListMap<String, String>> collection) {
+		this.collection = collection;
+	}
+	
+	public void clear() {
+		listMap.clear();
 	}
 
-	public void setListMap(final ListMap<String, String> listMap) {
-		this.listMap = listMap;
+	public void removeKey(final String key) {
+		listMap.removeKey(key);
+	}
+
+	public void clearKey(final String key) {
+		listMap.clearKey(key);
+	}
+
+	public void clearAllKeys() {
+		listMap.clearAllKeys();
+	}
+
+	public Set<Entry<String, List<String>>> entrySet() {
+		return listMap.entrySet();
+	}
+
+	public Set<String> keySet() {
+		return listMap.keySet();
+	}
+
+	public void put(final String name, final String value) {
+		listMap.put(name, value);
+	}
+
+	public void putAll(final String name, final Collection<String> addValues) {
+		listMap.putAll(name, addValues);
+	}
+
+	@Override
+	public int hashCode() {
+		return listMap.hashCode();
+	}
+
+	public List<String> get(final Object name) {
+		return listMap.get(name);
+	}
+
+	public boolean existsKey(final String name) {
+		return listMap.existsKey(name);
+	}
+
+	public String getFirst(final String name) {
+		return listMap.getFirst(name);
+	}
+
+	@Override
+	public String toString() {
+		return listMap.toString();
+	}
+
+	public void setId(final String identifier) {
+		listMap.setId(identifier);
+	}
+
+	public String getId() {
+		return listMap.getId();
+	}
+
+	public int size() {
+		return listMap.size();
+	}
+
+	public boolean isEmpty() {
+		return listMap.isEmpty();
+	}
+
+	public boolean containsKey(final Object key) {
+		return listMap.containsKey(key);
+	}
+
+	public boolean containsValue(final Object value) {
+		return listMap.containsValue(value);
+	}
+
+	public List<String> put(final String key, final List<String> value) {
+		return listMap.put(key, value);
+	}
+
+	public List<String> remove(final Object key) {
+		return listMap.remove(key);
+	}
+
+	public void putAll(final Map<? extends String, ? extends List<String>> putMap) {
+		listMap.putAll(putMap);
+	}
+
+	public Collection<List<String>> values() {
+		return listMap.values();
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return listMap.equals(obj);
 	}
 
 	@Override
 	public void startRecord(final String identifier){
 		listMap.clear();
-		currentId = identifier;
+		listMap.setId(identifier);
 	}
 	
 	@Override
@@ -41,12 +138,32 @@ public final class ListMapWriter extends DefaultStreamReceiver{
 		listMap.put(name, value);
 	}
 
-	public String getCurrentId() {
-		return currentId;
-	}
-	
 	@Override
-	public String toString() {
-		return listMap.toString();
+	public void endRecord() {
+		if(collection!=null){
+			collection.add(listMap);
+			listMap = new ListMap<String, String>();
+		}
 	}
+
+	@Override
+	public void startEntity(final String name) {
+		 // nothing to do
+	}
+
+	@Override
+	public void endEntity() {
+		//  nothing to do
+	}
+
+	@Override
+	public Collection<ListMap<String, String>> getCollection() {
+		return collection;
+	}
+
+	@Override
+	public void setCollection(final Collection<ListMap<String, String>> collection) {
+		this.collection = collection;
+	}
+
 }

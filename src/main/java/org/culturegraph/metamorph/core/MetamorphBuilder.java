@@ -49,10 +49,6 @@ public final class MetamorphBuilder {
 		// TODO caching the definition would be cool!
 		this.morphDef = morphDef;
 	}
-	
-	public Metamorph build(){
-		return build(morphDef);
-	}
 
 	public Metamorph build() {
 		return build(morphDef);
@@ -407,33 +403,5 @@ public final class MetamorphBuilder {
 		public void processingInstruction(final String target, final String data) throws SAXException {
 			// do nothing
 		}
-	}
-
-	public static final class MetamorphDefinitionException extends RuntimeException {
-
-		private static final long serialVersionUID = -3130648074493084946L;
-
-		/**
-		 * @param message
-		 */
-		public MetamorphDefinitionException(final String message) {
-			super(message);
-		}
-
-		/**
-		 * @param cause
-		 */
-		public MetamorphDefinitionException(final Throwable cause) {
-			super(cause);
-		}
-
-		/**
-		 * @param message
-		 * @param cause
-		 */
-		public MetamorphDefinitionException(final String message, final Throwable cause) {
-			super(message, cause);
-		}
-
 	}
 }
