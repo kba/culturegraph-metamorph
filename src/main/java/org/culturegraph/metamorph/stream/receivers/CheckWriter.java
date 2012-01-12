@@ -336,7 +336,7 @@ public class CheckWriter implements StreamReceiver {
 		Event activeGroup = null;
 		boolean foundInGroup = false;
 		boolean foundAnywhere = false;
-		loop:
+		boolean strictFailed = false;
 		for (Event ev: events) {
 			if (activeGroup != null) {
 				switch(ev.getType()) {
@@ -344,11 +344,11 @@ public class CheckWriter implements StreamReceiver {
 					if (level == 0 && ev.getState() == Event.State.AVAILABLE && !foundInGroup) {
 						if (!compare(ev.getName(), name)) {
 							if (strictKeyOrder) {
-								break loop;
+								strictFailed = true;
 							}
 						} else {
 							if (strictValueOrder) {
-								break loop;
+								strictFailed = true;
 							}
 						}
 					}
@@ -361,7 +361,7 @@ public class CheckWriter implements StreamReceiver {
 							foundAnywhere = true;
 						} else {
 							if (!foundInGroup && strictKeyOrder) {
-								break loop;
+								strictFailed = true;
 							}
 						}
 					}
@@ -372,7 +372,7 @@ public class CheckWriter implements StreamReceiver {
 					if (level > 0) {
 						level -= 1;
 					} else {
-						if (foundInGroup) {
+						if (foundInGroup && !strictFailed) {
 							activeGroup.setState(Event.State.SUSPENDED_GROUP);
 						} else {
 							setAvailable(activeGroup);
@@ -387,6 +387,7 @@ public class CheckWriter implements StreamReceiver {
 					activeGroup = ev;
 					level = 0;
 					foundInGroup = false;
+					strictFailed = false;
 				}			
 			}
 		}
@@ -403,7 +404,7 @@ public class CheckWriter implements StreamReceiver {
 		boolean consumed = true;
 		boolean foundInGroup = false;
 		boolean foundAnywhere = false;
-		loop:
+		boolean strictFailed = false;
 		for (Event ev: events) {
 			if (activeGroup != null) {
 				switch(ev.getType()) {
@@ -419,17 +420,17 @@ public class CheckWriter implements StreamReceiver {
 						consumed = consumed && (ev.getState() == Event.State.CONSUMED);
 						level -= 1;
 					} else {
-						if (!foundInGroup) {
+						if (!foundInGroup && !strictFailed) {
 							if (consumed) {
 								activeGroup.setState(Event.State.CONSUMED);
 								ev.setState(Event.State.CONSUMED);
 								foundInGroup = true;
 								foundAnywhere = true;
 							} else {
-								if (strictValueOrder) {
-									break loop;
-								}
 								setAvailable(activeGroup);
+								if (strictValueOrder) {
+									strictFailed = true;
+								}
 							}
 						} else {
 							setAvailable(activeGroup);
@@ -462,7 +463,7 @@ public class CheckWriter implements StreamReceiver {
 		Event activeGroup = null;
 		boolean foundInGroup = false;
 		boolean foundAnywhere = false;
-		loop:
+		boolean strictFailed = false;
 		for (Event ev: events) {
 			if (activeGroup != null) {
 				switch(ev.getType()) {
@@ -470,11 +471,11 @@ public class CheckWriter implements StreamReceiver {
 					if (level == 0 && ev.getState() == Event.State.AVAILABLE && !foundInGroup) {
 						if(!compare(ev.getName(), name)) {
 							if (strictKeyOrder) {
-								break loop;
+								strictFailed = true;
 							}
 						} else {
 							if (strictValueOrder) {
-								break loop;
+								strictFailed = true;
 							}
 						}
 					}
@@ -485,7 +486,7 @@ public class CheckWriter implements StreamReceiver {
 					if (level > 0) {
 						level -= 1;
 					} else {
-						if (!foundInGroup) {
+						if (!foundInGroup || strictFailed) {
 							setAvailable(activeGroup);					
 						}
 						activeGroup = null;
@@ -500,12 +501,12 @@ public class CheckWriter implements StreamReceiver {
 								foundAnywhere = true;
 							} else {
 								if (strictValueOrder) {
-									break loop;
+									strictFailed = true;
 								}
 							}
 						} else {
 							if (strictKeyOrder) {
-								break loop;
+								strictFailed = true;
 							}
 						}
 					}
@@ -517,6 +518,7 @@ public class CheckWriter implements StreamReceiver {
 					activeGroup = ev;
 					level = 0;
 					foundInGroup = false;
+					strictFailed = false;
 				}
 			}
 		}

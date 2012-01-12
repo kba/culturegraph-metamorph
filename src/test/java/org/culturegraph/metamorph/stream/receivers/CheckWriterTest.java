@@ -272,4 +272,32 @@ public class CheckWriterTest {
 			w.endRecord();
 		w.endChecking();
 	}
+
+	//@Test(expected=IllegalStateException.class)
+	@Test
+	public void strictLiteralValueOrderRandomRecordOrder() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord(null);
+			w.literal("Name", "Franz");
+			w.literal("Name", "Gustav");
+		w.endRecord();
+		w.startRecord(null);
+			w.literal("Name", "Gustav");
+			w.literal("Name", "Franz");
+		w.endRecord();
+		
+		w.setStrictValueOrder(true);
+		
+		w.startChecking();
+			w.startRecord(null);
+				w.literal("Name", "Gustav");
+				w.literal("Name", "Franz");
+			w.endRecord();
+			w.startRecord(null);
+				w.literal("Name", "Franz");
+				w.literal("Name", "Gustav");
+			w.endRecord();
+		w.endChecking();
+	}
 }
