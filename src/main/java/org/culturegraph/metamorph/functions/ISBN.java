@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import org.culturegraph.metamorph.core.MetamorphException;
 
 /**
+ * Offers ISBN conversions
+ * 
  * @author Markus Michael Geipel
  */
 final class ISBN extends AbstractFunction {

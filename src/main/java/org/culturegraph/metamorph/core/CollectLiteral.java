@@ -7,18 +7,18 @@ import java.util.Set;
 
 import org.culturegraph.metamorph.core.Data.Mode;
 import org.culturegraph.metamorph.functions.Function;
-import org.culturegraph.metamorph.util.Util;
+import org.culturegraph.metamorph.util.StringUtil;
 
 /**
  * Corresponds to the <code>&lt;collect-literal&gt;</code> tag.
  * 
  * @author Markus Michael Geipel
  */
-final class CollectLiteral extends AbstractCollect implements DataProcessor {
+final class CollectLiteral extends AbstractCollect implements ValueProcessor {
 
 	private final Map<String, String> variables = new HashMap<String, String>();
 	private final Set<String> variableNames = new HashSet<String>();
-	private final DataProcessorImpl dataProcessor = new DataProcessorImpl();
+	private final ValueProcessorImpl dataProcessor = new ValueProcessorImpl();
 //	private DataReceiver dataReceiver;
 
 	public CollectLiteral(final Metamorph metamorph) {
@@ -27,8 +27,8 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 
 	@Override
 	protected void emit() {
-		final String name = Util.format(getName(), variables);
-		String value = Util.format(getValue(), variables);
+		final String name = StringUtil.format(getName(), variables);
+		String value = StringUtil.format(getValue(), variables);
 
 		value = dataProcessor.applyFunctions(value);
 		if (value == null) {
@@ -37,10 +37,6 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 		getMetamorph().data(name, value, getRecordCount(), getEntityCount());
 	}
 
-	@Override
-	public void onEntityEnd(final String entityName) {
-		emit();
-	}
 
 	@Override
 	protected boolean isComplete() {
@@ -54,7 +50,7 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 
 	@Override
 	protected void onAddData(final Data data) {
-		data.setMode(Mode.AS_VALUE);
+		data.setMode(Mode.VALUE);
 		if (data.getDefaultName() == null) {
 			data.setName(String.valueOf(getDataCount()));
 		}
@@ -70,5 +66,4 @@ final class CollectLiteral extends AbstractCollect implements DataProcessor {
 	public void addFunction(final Function function) {
 		dataProcessor.addFunction(function);
 	}
-
 }

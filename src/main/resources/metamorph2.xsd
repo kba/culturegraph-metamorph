@@ -9,6 +9,10 @@
 			<sequence minOccurs="1" maxOccurs="1">
 				<element ref="tns:name" maxOccurs="1" minOccurs="0" />
 				<element ref="tns:annotation" maxOccurs="1" minOccurs="0" />
+				
+				
+				
+				
 				<element ref="tns:entity" maxOccurs="unbounded" minOccurs="0" />
 				<element ref="tns:function" minOccurs="0" maxOccurs="unbounded"/>
 				<choice maxOccurs="unbounded" minOccurs="0">

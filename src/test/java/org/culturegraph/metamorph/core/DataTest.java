@@ -1,5 +1,8 @@
 package org.culturegraph.metamorph.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.culturegraph.metamorph.core.Data.Mode;
 import org.culturegraph.metamorph.functions.AbstractFunction;
 import org.junit.Assert;
@@ -22,9 +25,12 @@ public final class DataTest {
 	private static final String CONSTANT_A = "AAA";
 	private static final String CONSTANT_B = "BBB";
 	private static final String ORIGIN_NAME = "s;lkepo";
+	private static final String SOURCE = "fantasy";
 	
 	private static final String WRONG_NAME = "wrong name";
 	private static final String WRONG_VALUE = "wrong value";
+	private static final String WRONG_COUNT = "wrong count";
+	private static final int THREE = 3;
 	
 	private final Constant constant1 = new Constant(CONSTANT_A);
 	private final Constant constant2 = new Constant(CONSTANT_B);
@@ -32,8 +38,8 @@ public final class DataTest {
 	
 	@Test
 	public void testSimpleReceive() {
-		final Data data = new Data();
-		data.setDataReceiver(new DataReceiver() {
+		final Data data = new Data(SOURCE);
+		data.setDataReceiver(new NamedValueReceiver() {
 			@Override
 			public void data(final String name, final String value,  final int recordCount,
 					final int entityCount) {
@@ -49,8 +55,8 @@ public final class DataTest {
 	
 	@Test
 	public void testConstantValueAndName() {
-		final Data data = new Data();
-		data.setDataReceiver(new DataReceiver() {
+		final Data data = new Data(SOURCE);
+		data.setDataReceiver(new NamedValueReceiver() {
 			@Override
 			public void data(final String name, final String value,  final int recordCount,
 					final int entityCount) {
@@ -65,9 +71,68 @@ public final class DataTest {
 	}
 	
 	@Test
+	public void testCount() {
+		final Data data = new Data(SOURCE);
+		data.setDataReceiver(new NamedValueReceiver() {
+			@Override
+			public void data(final String name, final String value,  final int recordCount,
+					final int entityCount) {
+				Assert.assertEquals("wrong record count", RECORD_COUNT+1, recordCount);
+				Assert.assertEquals(WRONG_COUNT, String.valueOf(THREE), value);
+				Assert.assertEquals(WRONG_NAME, DEFAULT_NAME, name);
+			}
+		});
+		data.setName(DEFAULT_NAME);
+		data.setMode(Mode.COUNT);
+		
+		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT, ENTITY_COUNT); // just a decoy
+		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT, ENTITY_COUNT); // just a decoy
+		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT+1, ENTITY_COUNT); // counter will be reset on record count change
+		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT+1, ENTITY_COUNT);
+		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT+1, ENTITY_COUNT);
+		data.onEntityEnd(Metamorph.RECORD_KEYWORD, RECORD_COUNT+1, ENTITY_COUNT); // emit count
+	}
+	
+	@Test
+	public void testOccurence() {
+
+		final Data data = new Data(SOURCE);
+		final CollectingDataReceiver receiver = new CollectingDataReceiver();
+		data.setDataReceiver(receiver);
+		data.setName(DEFAULT_NAME);
+		data.setOccurence(2);
+		
+		data.data(ORIGIN_NAME, WRONG_VALUE, RECORD_COUNT, ENTITY_COUNT);
+		data.data(ORIGIN_NAME, DEFAULT_VALUE, RECORD_COUNT, ENTITY_COUNT); // this is the correct one
+		data.data(ORIGIN_NAME, WRONG_VALUE, RECORD_COUNT, ENTITY_COUNT); 
+		
+		data.setOccurence(THREE);
+		data.data(ORIGIN_NAME, WRONG_VALUE, RECORD_COUNT+1, ENTITY_COUNT);
+		data.data(ORIGIN_NAME, WRONG_VALUE, RECORD_COUNT+1, ENTITY_COUNT); 
+		data.data(ORIGIN_NAME, DEFAULT_VALUE, RECORD_COUNT+1, ENTITY_COUNT); // this is the correct one
+		
+		Assert.assertEquals(2, receiver.getValues().size());
+		Assert.assertEquals(DEFAULT_VALUE, receiver.getValues().get(0));
+		Assert.assertEquals(DEFAULT_VALUE, receiver.getValues().get(1));
+	}
+	
+	protected static final class CollectingDataReceiver implements NamedValueReceiver{
+		private final List<String> values = new ArrayList<String>();
+		protected List<String> getValues() {
+			return values;
+		}
+		@Override
+		public void data(final String name, final String value, final int recordCount, final int entityCount) {
+			values.add(value);
+		}
+		
+		
+	}
+	
+	@Test
 	public void testDataToName() {
-		final Data data = new Data();
-		data.setDataReceiver(new DataReceiver() {
+		final Data data = new Data(SOURCE);
+		data.setDataReceiver(new NamedValueReceiver() {
 			@Override
 			public void data(final String name, final String value,  final int recordCount,
 					final int entityCount) {
@@ -76,16 +141,16 @@ public final class DataTest {
 			}
 		});
 		data.setValue(DEFAULT_VALUE);
-		data.setMode(Mode.AS_NAME);
+		data.setMode(Mode.NAME);
 		data.data(ORIGIN_NAME, INPUT, RECORD_COUNT, ENTITY_COUNT);
 	}
 	
 	@Test
 	public void testFunctionProcessing() {
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		data.addFunction(constant1);
 		data.addFunction(constant2);
-		data.setDataReceiver(new DataReceiver() {
+		data.setDataReceiver(new NamedValueReceiver() {
 			@Override
 			public void data(final String name, final String value, final int recordCount,
 					final int entityCount) {
@@ -99,10 +164,10 @@ public final class DataTest {
 	
 	@Test
 	public void testFunctionProcessingBreak() {
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		data.addFunction(constant2);
 		data.addFunction(regexp);
-		data.setDataReceiver(new DataReceiver() {
+		data.setDataReceiver(new NamedValueReceiver() {
 			@Override
 			public void data(final String name, final String value, final int recordCount,
 					final int entityCount) {

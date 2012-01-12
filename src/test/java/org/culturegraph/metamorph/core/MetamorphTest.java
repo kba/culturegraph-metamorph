@@ -3,6 +3,7 @@ package org.culturegraph.metamorph.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.receivers.DefaultStreamReceiver;
 import org.culturegraph.metamorph.types.NamedValue;
@@ -14,7 +15,7 @@ import org.junit.Test;
  * 
  * @author Markus Michael Geipel
  */
-public final class MetamorphTest implements DataReceiver {
+public final class MetamorphTest implements NamedValueReceiver {
 	
 	private static final String NAME = "name";
 
@@ -34,15 +35,18 @@ public final class MetamorphTest implements DataReceiver {
 	private static final String FEEDBACK_VAR = "@var";
 
 	private static final String MAP_NAME = "sdfklsjef";
+
+
+	private static final String SOURCE = "fantasy";
 	
 	
 	private NamedValue namedValue;
 
 	
-	private static Metamorph newMetamorphWithData(final DataReceiver receiver){
+	private static Metamorph newMetamorphWithData(final NamedValueReceiver receiver){
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setStreamReceiver(EMPTY_RECEIVER);
-		final Data data = new Data();
+		metamorph.setReceiver(EMPTY_RECEIVER);
+		final Data data = new Data(SOURCE);
 		data.setName(NAME);
 		data.setDataReceiver(receiver);
 		metamorph.registerDataSource(data, MATCHING_PATH);
@@ -85,12 +89,12 @@ public final class MetamorphTest implements DataReceiver {
 		final Map<String, String> map = new HashMap<String, String>();
 		map.put(NAME, VALUE);
 		
-		metamorph.addMap(MAP_NAME, map);
+		metamorph.putMap(MAP_NAME, map);
 		Assert.assertNotNull(metamorph.getMap(MAP_NAME));
 		Assert.assertNotNull(metamorph.getValue(MAP_NAME,NAME));
 		Assert.assertEquals(VALUE, metamorph.getValue(MAP_NAME,NAME));
 		
-		map.put(MultiMapProvider.DEFAULT_MAP_KEY, VALUE);
+		map.put(SimpleMultiMap.DEFAULT_MAP_KEY, VALUE);
 		Assert.assertNotNull(metamorph.getValue(MAP_NAME,"sdfadsfsdf"));
 		Assert.assertEquals(VALUE, metamorph.getValue(MAP_NAME,"sdfsdf"));
 		
@@ -100,15 +104,15 @@ public final class MetamorphTest implements DataReceiver {
 	public void testFeedback() {
 	
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setStreamReceiver(EMPTY_RECEIVER);
+		metamorph.setReceiver(EMPTY_RECEIVER);
 		Data data;
 		
-		data = new Data();
+		data = new Data(SOURCE);
 		data.setName(FEEDBACK_VAR);
 		data.setDataReceiver(metamorph);
 		metamorph.registerDataSource(data, MATCHING_PATH);
 		
-		data = new Data();
+		data = new Data(SOURCE);
 		data.setName(NAME);
 		data.setDataReceiver(this);
 		metamorph.registerDataSource(data, FEEDBACK_VAR);
@@ -128,7 +132,7 @@ public final class MetamorphTest implements DataReceiver {
 	@Test(expected=MetamorphException.class)
 	public void testEntityBorderBalanceCheck1(){
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setStreamReceiver(EMPTY_RECEIVER);
+		metamorph.setReceiver(EMPTY_RECEIVER);
 		
 		metamorph.startRecord(null);
 		metamorph.startEntity(ENTITY_NAME);
@@ -140,7 +144,7 @@ public final class MetamorphTest implements DataReceiver {
 	@Test(expected=MetamorphException.class)
 	public void testEntityBorderBalanceCheck2(){
 		final Metamorph metamorph = new Metamorph();
-		metamorph.setStreamReceiver(EMPTY_RECEIVER);
+		metamorph.setReceiver(EMPTY_RECEIVER);
 		
 		metamorph.startRecord(null);
 		metamorph.startEntity(ENTITY_NAME);

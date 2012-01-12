@@ -7,25 +7,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.culturegraph.metamorph.core.Data.Mode;
 import org.culturegraph.metamorph.functions.Function;
 import org.culturegraph.metamorph.functions.FunctionFactory;
+import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.StreamSender;
+import org.culturegraph.metamorph.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 /**
@@ -39,7 +41,6 @@ public final class MetamorphBuilder {
 	private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 	private static final String SCHEMA_FILE = "metamorph.xsd";
 	private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
-	private static final String PARSE_ERROR = "Error parsing transformation definition: ";
 	private static final String NOT_FOUND_ERROR = "Definition file not found";
 
 	private final String morphDef;
@@ -53,9 +54,13 @@ public final class MetamorphBuilder {
 		return build(morphDef);
 	}
 
+	public Metamorph build() {
+		return build(morphDef);
+	}
+
 	public static void wire(final StreamSender sender, final Metamorph metamorph, final StreamReceiver receiver) {
-		sender.setStreamReceiver(metamorph);
-		metamorph.setStreamReceiver(receiver);
+		sender.setReceiver(metamorph);
+		metamorph.setReceiver(receiver);
 	}
 
 	public static Metamorph build(final File file) {
@@ -72,8 +77,6 @@ public final class MetamorphBuilder {
 				.getResourceAsStream(morphDefPath);
 		if (inputStream == null) {
 			return build(new File(morphDefPath));
-			// throw new MetamorphDefinitionException(NOT_FOUND_ERROR + ": " +
-			// morphDefPath);
 		}
 		return build(inputStream);
 	}
@@ -105,7 +108,7 @@ public final class MetamorphBuilder {
 			saxParser.setProperty(JAXP_SCHEMA_SOURCE, schemaUrl.toString());
 
 			final XMLReader xmlReader = saxParser.getXMLReader();
-			final MetamorphBuilderErrorHandler handler = new MetamorphBuilderErrorHandler();
+			final MetamorphDefinitionParserErrorHandler handler = new MetamorphDefinitionParserErrorHandler();
 			xmlReader.setErrorHandler(handler);
 
 			xmlReader.setContentHandler(transformationContentHandler);
@@ -129,6 +132,8 @@ public final class MetamorphBuilder {
 		private static final String DATA_TAG = "data";
 		private static final String COLLECT_LITERAL_TAG = "collect-literal";
 		private static final String COLLECT_ENTITY_TAG = "collect-entity";
+		private static final String CHOOSE_LITERAL_TAG = "choose-literal";
+		private static final String FUNCTION_TAG = "function";
 		private static final String MAP_TAG = "map";
 		private static final String ENTRY_TAG = "entry";
 		private static final String NAME_ATTR = "name";
@@ -146,6 +151,7 @@ public final class MetamorphBuilder {
 		private static final Object METAMORPH_TAG = "metamorph";
 		private static final String MARKER_ATTR = "entityMarker";
 		private static final String OCCURENCE_ATTR = "occurence";
+		private static final String CLASS_ATTR = "class";
 
 		private String emitGroupName;
 		private String emitGroupValue;
@@ -162,27 +168,40 @@ public final class MetamorphBuilder {
 			this.metamorph = metamorph;
 		}
 
+	
+		@SuppressWarnings("unchecked") // problem obviated by check isAssignableFrom(clazz)
 		@Override
 		public void startElement(final String uri, final String localName, final String qName, final Attributes atts)
 				throws SAXException {
-
-			if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName)) {
-				registerCollector(localName, atts);
-
+			if (DATA_TAG.equals(localName)) {
+				registerDataSource(atts.getValue(SOURCE_ATTR), atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR),
+						atts.getValue(AS_ATTR), atts.getValue(OCCURENCE_ATTR));
 			} else if (GROUP_TAG.equals(localName)) {
 				emitGroupName = atts.getValue(NAME_ATTR);
 				emitGroupValue = atts.getValue(VALUE_ATTR);
 
-			} else if (DATA_TAG.equals(localName)) {
-				registerDataSource(atts.getValue(SOURCE_ATTR), atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR),
-						atts.getValue(AS_ATTR), atts.getValue(OCCURENCE_ATTR));
-
+			} else if(FUNCTION_TAG.equals(localName)){
+				final Class<?> clazz;
+				final String className = atts.getValue(CLASS_ATTR);
+				try {
+					clazz = ReflectionUtil.getClassLoader().loadClass(className);
+				} catch (ClassNotFoundException e) {
+					throw new MetamorphDefinitionException("Class '" + className + "' not found.", e);
+				}
+				if(Function.class.isAssignableFrom(clazz)){
+					functionFactory.registerFunction(atts.getValue(NAME_ATTR), (Class<? extends Function>) clazz);
+				}else{
+					throw new MetamorphDefinitionException(className + " does not implement interface 'Function'");					
+				}
+			}else if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName) || CHOOSE_LITERAL_TAG.equals(localName)) {
+			
+				registerCollector(localName, atts);
+				
 			} else if (MAP_TAG.equals(localName)) {
 				createMap(atts.getValue(NAME_ATTR), atts.getValue(DEFAULT_ATTR));
 
 			} else if (functionFactory.getAvailableFunctions().contains(localName)) {
 				registerFunction(localName, attributesToMap(atts));
-
 			} else if (ENTRY_TAG.equals(localName)) {
 				map.put(atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR));
 
@@ -204,12 +223,24 @@ public final class MetamorphBuilder {
 
 			if (COLLECT_ENTITY_TAG.equals(tag)) {
 				collect = new CollectEntity(metamorph);
-			} else {
+			} else if (COLLECT_LITERAL_TAG.equals(tag)) {
 				collect = new CollectLiteral(metamorph);
+			} else if (CHOOSE_LITERAL_TAG.equals(tag)) {
+				collect = new ChooseLiteral(metamorph);
 			}
 
-			collect.setName(atts.getValue(NAME_ATTR));
-			collect.setValue(atts.getValue(VALUE_ATTR));
+			if (emitGroupName == null) {
+				collect.setName(atts.getValue(NAME_ATTR));
+			} else {
+				collect.setName(emitGroupName);
+			}
+
+			if (emitGroupValue == null) {
+				collect.setValue(atts.getValue(VALUE_ATTR));
+			} else {
+				collect.setValue(emitGroupValue);
+			}
+			
 			collect.setReset(reset);
 			collect.setSameEntity(sameEntity);
 
@@ -222,7 +253,7 @@ public final class MetamorphBuilder {
 		public void endElement(final String uri, final String localName, final String qName) throws SAXException {
 			if (DATA_TAG.equals(localName)) {
 				data = null;
-			} else if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName)) {
+			} else if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName) || CHOOSE_LITERAL_TAG.equals(localName)) {
 				collect = null;
 			} else if (GROUP_TAG.equals(localName)) {
 				emitGroupName = null;
@@ -241,8 +272,8 @@ public final class MetamorphBuilder {
 			final Function function = functionFactory.newFunction(name, attributes);
 			function.setMultiMapProvider(metamorph);
 
-			if (collect instanceof DataProcessor && data == null) {
-				((DataProcessor) collect).addFunction(function);
+			if (collect instanceof ValueProcessor && data == null) {
+				((ValueProcessor) collect).addFunction(function);
 			} else if (data != null) {
 				data.addFunction(function);
 			}
@@ -271,9 +302,9 @@ public final class MetamorphBuilder {
 		private void createMap(final String mapName, final String defaultValue) {
 			map = new HashMap<String, String>();
 			if (defaultValue != null) {
-				map.put(MultiMapProvider.DEFAULT_MAP_KEY, defaultValue);
+				map.put(SimpleMultiMap.DEFAULT_MAP_KEY, defaultValue);
 			}
-			metamorph.addMap(mapName, map);
+			metamorph.putMap(mapName, map);
 
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("new map: " + mapName);
@@ -287,7 +318,7 @@ public final class MetamorphBuilder {
 		private void registerDataSource(final String source, final String name, final String value, final String mode,
 				final String occurence) {
 
-			data = new Data();
+			data = new Data(source);
 
 			if (occurence != null) {
 				data.setOccurence(Integer.parseInt(occurence));
@@ -310,13 +341,18 @@ public final class MetamorphBuilder {
 			} else {
 				collect.addData(data);
 			}
-
-			if (NAME_ATTR.equals(mode)) {
-				data.setMode(Data.Mode.AS_NAME);
-			} else {
-				data.setMode(Data.Mode.AS_VALUE);
+			
+			final Data.Mode dataMode = Data.Mode.valueOf(mode.toUpperCase(Locale.US));
+			if(dataMode==null){
+				data.setMode(Mode.VALUE);
+			}else{
+				data.setMode(dataMode);
 			}
 
+			if(dataMode==Mode.COUNT){
+				metamorph.addEntityEndListener(data, Metamorph.RECORD_KEYWORD);
+			}
+			
 			metamorph.registerDataSource(data, source);
 
 			if (LOG.isDebugEnabled()) {
@@ -370,28 +406,6 @@ public final class MetamorphBuilder {
 		@Override
 		public void processingInstruction(final String target, final String data) throws SAXException {
 			// do nothing
-		}
-	}
-
-	private static final class MetamorphBuilderErrorHandler implements ErrorHandler {
-
-		protected MetamorphBuilderErrorHandler() {
-			// to avoid synthetic accessor methods
-		}
-
-		@Override
-		public void warning(final SAXParseException exception) throws SAXException {
-			throw new MetamorphDefinitionException(PARSE_ERROR + exception.getMessage(), exception);
-		}
-
-		@Override
-		public void fatalError(final SAXParseException exception) throws SAXException {
-			throw new MetamorphDefinitionException(PARSE_ERROR + exception.getMessage(), exception);
-		}
-
-		@Override
-		public void error(final SAXParseException exception) throws SAXException {
-			throw new MetamorphDefinitionException(PARSE_ERROR + exception.getMessage(), exception);
 		}
 	}
 

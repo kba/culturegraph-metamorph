@@ -3,6 +3,7 @@ package org.culturegraph.metamorph.core;
 import junit.framework.Assert;
 
 import org.culturegraph.metamorph.stream.receivers.MapWriter;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -23,6 +24,7 @@ public final class CollectTest {
 	private static final String SPACE = " ";
 	private static final String COMPASITION_AB = VALUE_A + SPACE + VALUE_B;
 	private static final String COMPASITION_AC = VALUE_A + SPACE + VALUE_C;
+	private static final String SOURCE = "fantasy";
 	
 	private final Data dataA = newData(NAME_A);
 	private final Data dataB = newData(NAME_B);
@@ -31,11 +33,11 @@ public final class CollectTest {
 	private final Metamorph metamorph = new Metamorph();
 	
 	public CollectTest() {
-		metamorph.setStreamReceiver(mapCollector);
+		metamorph.setReceiver(mapCollector);
 	}
 	
 	private static Data newData(final String name){
-		final Data data = new Data();
+		final Data data = new Data(SOURCE);
 		data.setName(name);
 		return data;
 	}
@@ -85,6 +87,29 @@ public final class CollectTest {
 		Assert.assertTrue(nothingReceived());
 		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertFalse(nothingReceived());
+		
+	
+		
+		Assert.assertEquals(COMPASITION_AB, getReceived());
+	
+	}
+	
+	
+	@Test
+	@Ignore
+	//TODO: implement
+	public void testCollectLiteralWithForceOnEnd() {
+		
+		final CollectLiteral collectLiteral = new CollectLiteral(metamorph);
+		collectLiteral.setValue(VALUE_FORMAT);
+		wireCollect(collectLiteral);
+		cleanUp();
+		
+		Assert.assertTrue(nothingReceived());
+		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		Assert.assertTrue(nothingReceived());
+		
+		collectLiteral.onEntityEnd(Metamorph.RECORD_KEYWORD, 0,0);
 		
 	
 		
@@ -185,9 +210,38 @@ public final class CollectTest {
 		
 	}
 	
+	@Test
+	public void testChooseLiteral() {
+		final ChooseLiteral chooseLiteral = new ChooseLiteral(metamorph);
+		chooseLiteral.setValue(VALUE_A);
+		
+		wireCollect(chooseLiteral);
+
+		cleanUp();
+		
+		Assert.assertTrue(nothingReceived());
+		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		Assert.assertTrue(nothingReceived());
+		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		Assert.assertTrue(nothingReceived());
+		chooseLiteral.onEntityEnd(null,0,0);
+		Assert.assertEquals(VALUE_A, getReceived());		
+	}
+	
+	
+		
 	private String getReceived(){
 		return mapCollector.get(COLLECT_NAME);
 	}
+	
+	private void cleanUp(){
+		mapCollector.clear();
+	}
+	
+	private boolean nothingReceived(){
+		return mapCollector.isEmpty();
+	}
+
 	
 	private void cleanUp(){
 		mapCollector.clear();

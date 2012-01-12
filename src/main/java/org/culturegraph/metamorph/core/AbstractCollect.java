@@ -12,13 +12,14 @@ import org.slf4j.LoggerFactory;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-abstract class AbstractCollect implements DataReceiver, Collect {
+abstract class AbstractCollect implements NamedValueReceiver, Collect {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 
 	private int oldRecord;
 	private int oldEntity;
 	private int dataCount;
+	private boolean alreadyEmitted;
 	// private StreamReceiver streamReceiver;
 	private boolean reset;
 	private boolean sameEntity;
@@ -124,11 +125,13 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 	private void updateCounts(final int newRecord, final int newEntity) {
 		if (newRecord != oldRecord) {
 			clear();
+			alreadyEmitted = false;
 			oldRecord = newRecord;
 			LOG.trace("reset as records differ");
 		}
 		if (sameEntity && oldEntity != newEntity) {
 			clear();
+			alreadyEmitted = false;
 			oldEntity = newEntity;
 			LOG.trace("reset as entities differ");
 		}
@@ -143,9 +146,11 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 
 		if (isComplete()) {
 			emit();
+			alreadyEmitted = true;
 			if (reset) {
 				LOG.trace("reset because of emit");
 				clear();
+				alreadyEmitted= false;
 			}
 		}
 	}
@@ -177,8 +182,10 @@ abstract class AbstractCollect implements DataReceiver, Collect {
 	}
 
 	@Override
-	public void onEntityEnd(final String name) {
-		emit();
+	public void onEntityEnd(final String entityName, final int recordCount, final int entityCount) {
+		if(oldRecord==recordCount && !alreadyEmitted && (!sameEntity || oldEntity == entityCount)){
+				emit();
+		}
 	}
 
 	/**

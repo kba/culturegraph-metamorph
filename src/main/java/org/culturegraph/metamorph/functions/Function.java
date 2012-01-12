@@ -1,7 +1,7 @@
 package org.culturegraph.metamorph.functions;
 
 import org.culturegraph.metamorph.core.Metamorph;
-import org.culturegraph.metamorph.core.MultiMapProvider;
+import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 
 /**
  * Interface for functions used in {@link Metamorph}
@@ -10,5 +10,5 @@ import org.culturegraph.metamorph.core.MultiMapProvider;
 public interface Function {
 	String process(String value);
 
-	void setMultiMapProvider(MultiMapProvider multiMapProvider);
+	void setMultiMapProvider(SimpleMultiMap multiMapProvider);
 }

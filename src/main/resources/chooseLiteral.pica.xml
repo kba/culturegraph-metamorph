@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph xmlns="http://www.culturegraph.org/metamorph"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.culturegraph.org/metamorph metamorph.xsd"
+	entityMarker=".">
+
+	<name></name>
+	<annotation></annotation>
+
+	<!-- <choose-literal forceOnEnd="028@"> -->
+	<!-- <data source="028@.5" /> -->
+	<!-- <data source="028@.a" /> -->
+	<!-- </choose-literal> -->
+
+	<collect-literal name="@temp" value="${surname1}${surname2}"
+		sameEntity="true">
+		<data name="surname1" source="028A.a" />
+		<data name="surname2" source="028A.a" />
+		<lookup in="map"/>
+	</collect-literal>
+
+	<collect-literal name="${temp}" value="${forename}"
+		sameEntity="true">
+		<data name="temp" source="@temp" />
+		<data name="forename" source="028A.d" />
+	</collect-literal>
+	
+
+	<map name="map">
+		<entry name="HussellHussell" value="Hussell Entity" />
+	</map>
+
+</metamorph>

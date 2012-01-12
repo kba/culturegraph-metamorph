@@ -35,7 +35,7 @@ public final class Read {
 			return;
 		}
 		final DefaultWriter consoleWriter = new DefaultWriter(new BufferedWriter(new OutputStreamWriter(System.out, "UTF8")));
-		reader.setStreamReceiver(consoleWriter);
+		reader.setReceiver(consoleWriter);
 
 		final String fileName = args[0];
 		final String extension = getExtention(fileName);

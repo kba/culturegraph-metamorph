@@ -4,6 +4,6 @@ package org.culturegraph.metamorph.core;
  * 
  * @author Markus Michael Geipel
  */
-interface DataReceiver {
+interface NamedValueReceiver {
 	void data(String name, String value, int recordCount, int entityCount);
 }
