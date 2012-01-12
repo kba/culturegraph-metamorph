@@ -307,16 +307,14 @@ public class CheckWriter implements StreamReceiver {
 					consumed = consumed && (ev.getState() == Event.State.CONSUMED);
 					break;		
 				case END_RECORD:
-					if (ev.getState() == Event.State.AVAILABLE) {
-						if (!recordFound && consumed) {
-							activeGroup.setState(Event.State.CONSUMED);
-							ev.setState(Event.State.CONSUMED);
-							recordFound = true;							
-						} else {
-							setAvailable(activeGroup);					
-						}
-						activeGroup = null;
+					if (!recordFound && consumed) {
+						activeGroup.setState(Event.State.CONSUMED);
+						ev.setState(Event.State.CONSUMED);
+						recordFound = true;							
+					} else {
+						setAvailable(activeGroup);					
 					}
+					activeGroup = null;
 					break;		
 				case START_RECORD:  // Do nothing
 				}
@@ -421,25 +419,23 @@ public class CheckWriter implements StreamReceiver {
 						consumed = consumed && (ev.getState() == Event.State.CONSUMED);
 						level -= 1;
 					} else {
-						if (ev.getState() == Event.State.AVAILABLE) {
-							if (!foundInGroup) {
-								if (consumed) {
-									activeGroup.setState(Event.State.CONSUMED);
-									ev.setState(Event.State.CONSUMED);
-									foundInGroup = true;
-									foundAnywhere = true;
-								} else {
-									if (strictValueOrder) {
-										break loop;
-									}
-									setAvailable(activeGroup);
-								}
+						if (!foundInGroup) {
+							if (consumed) {
+								activeGroup.setState(Event.State.CONSUMED);
+								ev.setState(Event.State.CONSUMED);
+								foundInGroup = true;
+								foundAnywhere = true;
 							} else {
+								if (strictValueOrder) {
+									break loop;
+								}
 								setAvailable(activeGroup);
 							}
-							parentGroup.setState(Event.State.ACTIVE_GROUP);
-							activeGroup = null;
+						} else {
+							setAvailable(activeGroup);
 						}
+						parentGroup.setState(Event.State.ACTIVE_GROUP);
+						activeGroup = null;
 					}	
 					break;
 				case START_RECORD:  // Do Nothing
