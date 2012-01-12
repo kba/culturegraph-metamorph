@@ -273,7 +273,6 @@ public class CheckWriterTest {
 		w.endChecking();
 	}
 
-	//@Test(expected=IllegalStateException.class)
 	@Test
 	public void strictLiteralValueOrderRandomRecordOrder() {
 		CheckWriter w = new CheckWriter();

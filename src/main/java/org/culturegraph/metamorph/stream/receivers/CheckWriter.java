@@ -342,26 +342,22 @@ public class CheckWriter implements StreamReceiver {
 				switch(ev.getType()) {
 				case LITERAL:
 					if (level == 0 && ev.getState() == Event.State.AVAILABLE && !foundInGroup) {
-						if (!compare(ev.getName(), name)) {
-							if (strictKeyOrder) {
-								strictFailed = true;
-							}
+						if (compare(ev.getName(), name)) {
+							strictFailed = strictFailed || strictValueOrder;
 						} else {
-							if (strictValueOrder) {
-								strictFailed = true;
-							}
+							strictFailed = strictFailed || strictKeyOrder;
 						}
 					}
 					break;
 				case START_ENTITY:
-					if (level == 0 && ev.getState() == Event.State.AVAILABLE) {
+					if (level == 0 && ev.getState() == Event.State.AVAILABLE && !strictFailed) {
 						if(compare(ev.getName(), name)) {
 							ev.setState(Event.State.ACTIVE_GROUP);
 							foundInGroup = true;
 							foundAnywhere = true;
 						} else {
-							if (!foundInGroup && strictKeyOrder) {
-								strictFailed = true;
+							if (!foundInGroup) {
+								strictFailed = strictFailed || strictKeyOrder;
 							}
 						}
 					}
@@ -372,7 +368,7 @@ public class CheckWriter implements StreamReceiver {
 					if (level > 0) {
 						level -= 1;
 					} else {
-						if (foundInGroup && !strictFailed) {
+						if (foundInGroup) {
 							activeGroup.setState(Event.State.SUSPENDED_GROUP);
 						} else {
 							setAvailable(activeGroup);
@@ -428,9 +424,7 @@ public class CheckWriter implements StreamReceiver {
 								foundAnywhere = true;
 							} else {
 								setAvailable(activeGroup);
-								if (strictValueOrder) {
-									strictFailed = true;
-								}
+								strictFailed = strictFailed || strictValueOrder;
 							}
 						} else {
 							setAvailable(activeGroup);
@@ -469,14 +463,10 @@ public class CheckWriter implements StreamReceiver {
 				switch(ev.getType()) {
 				case START_ENTITY:
 					if (level == 0 && ev.getState() == Event.State.AVAILABLE && !foundInGroup) {
-						if(!compare(ev.getName(), name)) {
-							if (strictKeyOrder) {
-								strictFailed = true;
-							}
+						if(compare(ev.getName(), name)) {
+							strictFailed = strictFailed || strictValueOrder;
 						} else {
-							if (strictValueOrder) {
-								strictFailed = true;
-							}
+							strictFailed = strictFailed || strictKeyOrder;
 						}
 					}
 					level += 1;  
@@ -492,7 +482,7 @@ public class CheckWriter implements StreamReceiver {
 						activeGroup = null;
 					}
 					break;
-				case LITERAL:
+				case LITERAL:					
 					if (level == 0 && ev.getState() == Event.State.AVAILABLE && !foundInGroup) {
 						if (compare(ev.getName(), name)) {
 							if (compare(ev.getValue(), value)) {
@@ -500,14 +490,10 @@ public class CheckWriter implements StreamReceiver {
 								foundInGroup = true;
 								foundAnywhere = true;
 							} else {
-								if (strictValueOrder) {
-									strictFailed = true;
-								}
+								strictFailed = strictFailed || strictValueOrder;
 							}
 						} else {
-							if (strictKeyOrder) {
-								strictFailed = true;
-							}
+							strictFailed = strictFailed || strictKeyOrder;
 						}
 					}
 					break;
