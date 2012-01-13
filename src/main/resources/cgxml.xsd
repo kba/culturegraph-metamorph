@@ -2,14 +2,12 @@
 <schema xmlns:tns="http://www.culturegraph.org/cgxml"
 	targetNamespace="http://www.culturegraph.org/cgxml" xmlns="http://www.w3.org/2001/XMLSchema">
 
-<!-- 	<include schemaLocation="" /> -->
-
 	<element name="cgxml">
 		<complexType>
 			<sequence>
 				<element ref="tns:records" />
 			</sequence>
-			<attribute name="version" type="string" use="required" />
+			<attribute name="version" type="string" use="required" fixed="1.0"/>
 		</complexType>
 	</element>
 

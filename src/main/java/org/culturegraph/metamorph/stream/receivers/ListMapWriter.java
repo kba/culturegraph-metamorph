@@ -3,7 +3,6 @@ package org.culturegraph.metamorph.stream.receivers;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.culturegraph.metamorph.stream.Collector;
@@ -28,6 +27,7 @@ public final class ListMapWriter implements StreamReceiver, Collector<ListMap<St
 		this.collection = collection;
 	}
 	
+	@Override
 	public void clear() {
 		listMap.clear();
 	}
@@ -44,10 +44,12 @@ public final class ListMapWriter implements StreamReceiver, Collector<ListMap<St
 		listMap.clearAllKeys();
 	}
 
+	@Override
 	public Set<Entry<String, List<String>>> entrySet() {
 		return listMap.entrySet();
 	}
 
+	@Override
 	public Set<String> keySet() {
 		return listMap.keySet();
 	}
@@ -65,6 +67,7 @@ public final class ListMapWriter implements StreamReceiver, Collector<ListMap<St
 		return listMap.hashCode();
 	}
 
+	@Override
 	public List<String> get(final Object name) {
 		return listMap.get(name);
 	}
@@ -90,34 +93,42 @@ public final class ListMapWriter implements StreamReceiver, Collector<ListMap<St
 		return listMap.getId();
 	}
 
+	@Override
 	public int size() {
 		return listMap.size();
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return listMap.isEmpty();
 	}
 
+	@Override
 	public boolean containsKey(final Object key) {
 		return listMap.containsKey(key);
 	}
 
+	@Override
 	public boolean containsValue(final Object value) {
 		return listMap.containsValue(value);
 	}
 
+	@Override
 	public List<String> put(final String key, final List<String> value) {
 		return listMap.put(key, value);
 	}
 
+	@Override
 	public List<String> remove(final Object key) {
 		return listMap.remove(key);
 	}
 
+	@Override
 	public void putAll(final Map<? extends String, ? extends List<String>> putMap) {
 		listMap.putAll(putMap);
 	}
 
+	@Override
 	public Collection<List<String>> values() {
 		return listMap.values();
 	}

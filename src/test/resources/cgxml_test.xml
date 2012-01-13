@@ -1,27 +1,27 @@
-<cgxml xmlns="http://www.culturegraph.org/cgxml">
+<cgxml xmlns="http://www.culturegraph.org/cgxml" version="1.0">
 	
 	<records>
 		<record id="1">
 			<literal name="Name" value="Thomas Mann" />
 			<entity name="Address">
 				<entity name="Street">
-					<literal name="Street" value="Hmm" />
-					<literal name="Number" value="3" />
+					<literal name="Street" value="Alte Landstrasse" />
+					<literal name="Number" value="39" />
 				</entity>
-				<literal name="City" value="Lübeck" />
+				<literal name="City" value="Kilchberg" />
 				<literal name="Postcode" />
 			</entity>
 		</record>
 		
 		<record>
-			<literal name="Name" value="Karl Marx" />
+			<literal name="Name" value="Günter Grass" />
 			<entity name="Address">
 				<entity name="Street">
-					<literal name="Street" value="HmmHmm" />
-					<literal name="Number" value="4" />
+					<literal name="Street" value="Glockengießerstraße" />
+					<literal name="Number" value="21" />
 				</entity>
 				<literal name="City" value="Lübeck" />
-				<literal name="Postcode" value="12343"/>
+				<literal name="Postcode" value="23552"/>
 			</entity>
 		</record>
 	</records>

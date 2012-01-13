@@ -5,30 +5,88 @@ package org.culturegraph.metamorph.stream.readers;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.URL;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author Christoph Böhme <c.boehme@dnb.de>
  *
  */
-public class CGXmlReader implements Reader {
+public final class CGXmlReader implements Reader {
+		
+	private final class CGXmlHandler extends DefaultHandler {
+		private static final String RECORD_TAG = "record";
+		private static final String ENTITY_TAG = "entity";
+		private static final String LITERAL_TAG = "literal";
+		private static final String ID_ATTR = "id";
+		private static final String NAME_ATTR = "name";
+		private static final String VALUE_ATTR = "value";
 	
-	private static final String RECORD_TAG = "record";
-	private static final String ENTITY_TAG = "entity";
-	private static final String LITERAL_TAG = "literal";
-	private static final String ID_ATTR = "id";
-	private static final String NAME_ATTR = "name";
-	private static final String VALUE_ATTR = "value";
+		/**
+		 * 
+		 */
+		public CGXmlHandler() {
+			// Nothing to do
+		}
 
-	private StreamReceiver receiver;
+		@Override
+		public void startElement(final String uri, final String localName, 
+				final String qName, final Attributes attributes) {
+			if (RECORD_TAG.equals(localName)) {
+				receiver.startRecord(attributes.getValue("", ID_ATTR));
+			} else if (ENTITY_TAG.equals(localName)) {
+				receiver.startEntity(attributes.getValue("", NAME_ATTR));
+			} else if (LITERAL_TAG.equals(localName)) {
+				receiver.literal(attributes.getValue("", NAME_ATTR), 
+						attributes.getValue("", VALUE_ATTR));
+			}
+		}
+		
+		@Override 
+		public void endElement(final String uri, final String localName, 
+				final String qName) {
+			if (RECORD_TAG.equals(localName)) {
+				receiver.endRecord();
+			} else if (ENTITY_TAG.equals(localName)) {
+				receiver.endEntity();
+			}
+		}
+		
+		@Override
+		public void error(SAXParseException e) {
+			throw new RuntimeException(e);
+		}
+		
+		@Override
+		public void fatalError(SAXParseException e) {
+			throw new RuntimeException(e);			
+		}
+		
+		@Override
+		public void warning(SAXParseException e) {
+			throw new RuntimeException(e);			
+		}
+	}
+	
+	private static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+	private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
+	private static final String SCHEMA_FILE = "cgxml.xsd";
+
+	protected StreamReceiver receiver;
 
 	@Override
 	public final <R extends StreamReceiver> R  setReceiver(final R receiver) {
@@ -43,10 +101,10 @@ public class CGXmlReader implements Reader {
 
 	@Override
 	public void read(final InputStream inputStream) throws IOException {
-		if(inputStream==null){
+		if(inputStream == null){
 			throw new IllegalArgumentException("InputStream must be set");
 		}
-		read(new InputStreamReader(inputStream, "UTF-8"));		
+		read(new InputSource(inputStream));
 	}
 	
 	@Override
@@ -57,38 +115,47 @@ public class CGXmlReader implements Reader {
 			// We do not expect any errors when processing a string
 		}
 	}
-		
-	// TODO: Add schema validation
+	
 	@Override
 	public void read(final java.io.Reader reader) throws IOException {
-		final XMLInputFactory factory = XMLInputFactory.newInstance();
-		// factory.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.TRUE);
-		factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
+		if(reader == null){
+			throw new IllegalArgumentException("Reader must be set");
+		}
+		read(new InputSource(reader));
+	}
+	
+	public void read(final InputSource inputSource) throws IOException {
+		final SAXParserFactory factory = SAXParserFactory.newInstance();
+		factory.setNamespaceAware(true);
+		factory.setValidating(true);
+
+		final URL schemaUrl = Thread.currentThread().getContextClassLoader().getResource(SCHEMA_FILE);
+		
 		
 		try {
-			final XMLStreamReader stream = factory.createXMLStreamReader(reader);
+			final SAXParser saxParser = factory.newSAXParser();
 			
-			while (stream.hasNext()) {
-				final int type = stream.next();
-				if (type == XMLStreamConstants.START_ELEMENT) {
-					if (RECORD_TAG.equals(stream.getLocalName())) {
-						receiver.startRecord(stream.getAttributeValue(null, ID_ATTR));
-					} else if (ENTITY_TAG.equals(stream.getLocalName())) {
-						receiver.startEntity(stream.getAttributeValue(null, NAME_ATTR));
-					} else if (LITERAL_TAG.equals(stream.getLocalName())) {
-						receiver.literal(stream.getAttributeValue(null, NAME_ATTR), 
-								stream.getAttributeValue(null, VALUE_ATTR));
-					}
-				} else if (type == XMLStreamConstants.END_ELEMENT) {
-					if (RECORD_TAG.equals(stream.getLocalName())) {
-						receiver.endRecord();
-					} else if (ENTITY_TAG.equals(stream.getLocalName())) {
-						receiver.endEntity();
-					}
-				}
-			}
-			stream.close();
-		} catch (XMLStreamException e) {
+			saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			saxParser.setProperty(JAXP_SCHEMA_SOURCE, schemaUrl.toString());
+
+			final XMLReader xmlReader = saxParser.getXMLReader();
+
+			CGXmlHandler handler = new CGXmlHandler();
+			
+			xmlReader.setErrorHandler(handler);
+			xmlReader.setContentHandler(handler);
+
+			xmlReader.parse(inputSource);
+		} catch (SAXNotRecognizedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
