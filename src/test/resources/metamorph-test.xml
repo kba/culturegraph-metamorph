@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph-test version="1.0">
+	
+	<test-case>
+		<input href="" type="" />
+		
+		<metamorph href="" />
+		
+		<output href="" />
+	</test-case>
+	
+	<test-case>
+		<input type="">
+		</input>
+		
+		<metamorph xmlns="http://www.culturegraph.org/metamorph">
+			<data name="" src="" />
+		</metamorph>
+		
+		<output xmlns="http://www.culturegraph.org/cgxml">
+			<records>
+				<record>
+					<literal name="" value="" />
+					<literal name="" value"" />
+					<entity name="">
+						<literal name="" />
+					</entity>
+				</record>
+			</records>
+		</output>
+	</test-case>
+	
+</metamorph-test>
