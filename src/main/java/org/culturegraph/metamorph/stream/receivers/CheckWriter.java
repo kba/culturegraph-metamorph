@@ -315,7 +315,7 @@ public class CheckWriter implements StreamReceiver {
 						setAvailable(activeGroup);					
 					}
 					activeGroup = null;
-					break;		
+					break;
 				case START_RECORD:  // Do nothing
 				}
 			} else {
@@ -335,8 +335,8 @@ public class CheckWriter implements StreamReceiver {
 		int level = 0;
 		Event activeGroup = null;
 		boolean foundInGroup = false;
-		boolean foundAnywhere = false;
 		boolean strictFailed = false;
+		boolean foundAnywhere = false;
 		for (Event ev: events) {
 			if (activeGroup != null) {
 				switch(ev.getType()) {
@@ -384,7 +384,7 @@ public class CheckWriter implements StreamReceiver {
 					level = 0;
 					foundInGroup = false;
 					strictFailed = false;
-				}			
+				}
 			}
 		}
 		
@@ -399,8 +399,8 @@ public class CheckWriter implements StreamReceiver {
 		Event activeGroup = null;
 		boolean consumed = true;
 		boolean foundInGroup = false;
-		boolean foundAnywhere = false;
 		boolean strictFailed = false;
+		boolean foundAnywhere = false;
 		for (Event ev: events) {
 			if (activeGroup != null) {
 				switch(ev.getType()) {
@@ -456,8 +456,8 @@ public class CheckWriter implements StreamReceiver {
 		int level = 0;
 		Event activeGroup = null;
 		boolean foundInGroup = false;
-		boolean foundAnywhere = false;
 		boolean strictFailed = false;
+		boolean foundAnywhere = false;
 		for (Event ev: events) {
 			if (activeGroup != null) {
 				switch(ev.getType()) {

@@ -18,32 +18,32 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
  * @author "Markus Michael Geipel"
  * @see StreamReceiver
  */
-public abstract class AbstractReader implements Reader{
+public abstract class AbstractReader implements Reader {
 
 	private StreamReceiver streamReceiver;
 	
-@Override
-public final void read(final java.io.Reader reader)  throws IOException {
-	if(reader==null){
-		throw new IllegalArgumentException("'reader' must be set");
-	}
-	
-	if(streamReceiver==null){
-		throw new IllegalStateException("StreamReceiver must be set");
-	}
-	
-	final BufferedReader bufferedReader = new BufferedReader(reader);
-	
-	String line = bufferedReader.readLine();
-	while (line != null) {
-		if(!line.isEmpty()){
-			processRecord(line);
+	@Override
+	public final void read(final java.io.Reader reader)  throws IOException {
+		if(reader==null){
+			throw new IllegalArgumentException("'reader' must be set");
 		}
-		line = bufferedReader.readLine();
+		
+		if(streamReceiver==null){
+			throw new IllegalStateException("StreamReceiver must be set");
+		}
+		
+		final BufferedReader bufferedReader = new BufferedReader(reader);
+		
+		String line = bufferedReader.readLine();
+		while (line != null) {
+			if(!line.isEmpty()){
+				processRecord(line);
+			}
+			line = bufferedReader.readLine();
+		}
+		bufferedReader.close();
+		
 	}
-	bufferedReader.close();
-	
-}
 	
 	@Override
 	public final void read(final InputStream inputStream) throws IOException {

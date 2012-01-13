@@ -217,6 +217,103 @@ public class CheckWriterTest {
 			w.endRecord();
 		w.endChecking();			
 	}
+	
+	@Test
+	public void changedEntityKeyOrder() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord("1");
+			w.startEntity("Entity-1");
+				w.literal("Literal-1", "A");
+			w.endEntity();
+			w.startEntity("Entity-1");
+				w.literal("Literal-2", "B");
+			w.endEntity();
+			w.startEntity("Entity-2");
+				w.literal("Literal-3", "C");
+			w.endEntity();
+		w.endRecord();
+		
+		w.startChecking();
+		w.startRecord("1");
+			w.startEntity("Entity-1");
+				w.literal("Literal-2", "B");
+			w.endEntity();
+			w.startEntity("Entity-2");
+				w.literal("Literal-3", "C");
+			w.endEntity();
+			w.startEntity("Entity-1");
+				w.literal("Literal-1", "A");
+			w.endEntity();
+		w.endRecord();
+		w.endChecking();
+	}	
+	
+	@Test
+	public void strictEntityKeyOrder() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord("1");
+			w.startEntity("Entity-1");
+				w.literal("Literal-1", "A");
+			w.endEntity();
+			w.startEntity("Entity-1");
+				w.literal("Literal-2", "B");
+			w.endEntity();
+			w.startEntity("Entity-2");
+				w.literal("Literal-3", "C");
+			w.endEntity();
+		w.endRecord();
+		
+		w.setStrictKeyOrder(true);
+		
+		w.startChecking();
+		w.startRecord("1");
+			w.startEntity("Entity-1");
+				w.literal("Literal-1", "A");
+			w.endEntity();
+			w.startEntity("Entity-1");
+				w.literal("Literal-2", "B");
+			w.endEntity();
+			w.startEntity("Entity-2");
+				w.literal("Literal-3", "C");
+			w.endEntity();
+		w.endRecord();
+		w.endChecking();
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void invalidEntityKeyOrder() {
+		CheckWriter w = new CheckWriter();
+		
+		w.startRecord("1");
+			w.startEntity("Entity-1");
+				w.literal("Literal-1", "A");
+			w.endEntity();
+			w.startEntity("Entity-1");
+				w.literal("Literal-2", "B");
+			w.endEntity();
+			w.startEntity("Entity-2");
+				w.literal("Literal-3", "C");
+			w.endEntity();
+		w.endRecord();
+		
+		w.setStrictKeyOrder(true);
+		
+		w.startChecking();
+		w.startRecord("1");
+			w.startEntity("Entity-1");
+				w.literal("Literal-2", "B");
+			w.endEntity();
+			w.startEntity("Entity-2");
+				w.literal("Literal-3", "C");
+			w.endEntity();
+			w.startEntity("Entity-1");
+				w.literal("Literal-1", "A");
+			w.endEntity();
+		w.endRecord();
+		w.endChecking();
+	}
 
 	@Test
 	public void changedLiteralValueOrder() {
