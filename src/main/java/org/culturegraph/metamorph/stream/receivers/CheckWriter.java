@@ -12,9 +12,34 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
  * @author Christoph Böhme <c.boehme@dnb.de>
  *
  */
-public class CheckWriter implements StreamReceiver {
+public final class CheckWriter implements StreamReceiver {
 
+	/*
+	 * Error messages:
+	 */
+	private static final String NAME_MUST_NOT_BE_NULL = 
+			"name must not be null";
 	
+	private static final String NO_RECORD_FOUND = "No record found";
+	private static final String NO_ENTITY_FOUND = "No entity found";
+	private static final String NO_LITERAL_FOUND = "No literal found";
+	
+	private static final String NOT_IN_RECORD = "Not in record";
+	private static final String NOT_IN_ENTITY = "Not in entity";
+	private static final String STILL_IN_ENTITY = "Still in entity";
+	private static final String ALREADY_IN_RECORD = "Already in record";
+	
+	private static final String OPEN_RECORD_EXISTS = "Open record exists";
+	private static final String UNCONSUMED_RECORDS_EXIST = 
+			"Unconsumed records exist";
+	
+	private static final String NOT_IN_COLLECTING_MODE = "Not in collecting mode";
+	private static final String NOT_IN_CHECKING_MODE = "Not in checking mode";
+	private static final String NOT_IN_COLLECTING_OR_CHECKING_MODE = 
+			"Not in collecting or checking mode";
+	private static final String CANNOT_CHANGE_STRICT_ORDER_SETTING_WHILE_CHECKING = 
+			"Cannot change strict-order setting while checking";
+
 	private static class Event {
 		public enum Type {
 			START_RECORD, END_RECORD, START_ENTITY, END_ENTITY, LITERAL
@@ -83,9 +108,9 @@ public class CheckWriter implements StreamReceiver {
 		COLLECTING, CHECKING, DONE
 	}
 	
-	private boolean strictRecordOrder = false;
-	private boolean strictKeyOrder = false;
-	private boolean strictValueOrder = false;
+	private boolean strictRecordOrder;
+	private boolean strictKeyOrder;
+	private boolean strictValueOrder;
 	
 	private Mode mode;	
 	private int nestingLevel;
@@ -99,9 +124,9 @@ public class CheckWriter implements StreamReceiver {
 		return strictRecordOrder;
 	}
 	
-	public void setStrictRecordOrder(boolean strict) {
+	public void setStrictRecordOrder(final boolean strict) {
 		if (mode == Mode.CHECKING) {
-			throw new IllegalStateException("Cannot change strict-order setting while checking");
+			throw new IllegalStateException(CANNOT_CHANGE_STRICT_ORDER_SETTING_WHILE_CHECKING);
 		}
 		
 		strictRecordOrder = strict;
@@ -111,9 +136,9 @@ public class CheckWriter implements StreamReceiver {
 		return strictKeyOrder;
 	}
 	
-	public void setStrictKeyOrder(boolean strict) {
+	public void setStrictKeyOrder(final boolean strict) {
 		if (mode == Mode.CHECKING) {
-			throw new IllegalStateException("Cannot change strict-order setting while checking");
+			throw new IllegalStateException(CANNOT_CHANGE_STRICT_ORDER_SETTING_WHILE_CHECKING);
 		}
 		
 		strictKeyOrder = strict;
@@ -123,9 +148,9 @@ public class CheckWriter implements StreamReceiver {
 		return strictValueOrder;
 	}
 	
-	public void setStrictValueOrder(boolean strict) {
+	public void setStrictValueOrder(final boolean strict) {
 		if (mode == Mode.CHECKING) {
-			throw new IllegalStateException("Cannot change strict-order setting while checking");
+			throw new IllegalStateException(CANNOT_CHANGE_STRICT_ORDER_SETTING_WHILE_CHECKING);
 		}
 		
 		strictValueOrder = strict;
@@ -143,10 +168,10 @@ public class CheckWriter implements StreamReceiver {
 	
 	public void startChecking() {
 		if (mode != Mode.COLLECTING) {
-			throw new IllegalStateException("Not in collecting mode");
+			throw new IllegalStateException(NOT_IN_COLLECTING_MODE);
 		}
 		if (nestingLevel != 0) {
-			throw new IllegalStateException("Open records and/or open entities exist");
+			throw new IllegalStateException(OPEN_RECORD_EXISTS);
 		}
 		
 		mode = Mode.CHECKING;
@@ -158,25 +183,25 @@ public class CheckWriter implements StreamReceiver {
 	
 	public void endChecking() {
 		if (mode != Mode.CHECKING) {
-			throw new IllegalStateException("Not in checking mode");
+			throw new IllegalStateException(NOT_IN_CHECKING_MODE);
 		}
 		if (nestingLevel != 0) {
-			throw new IllegalStateException("Open records and/or open entities exist");
+			throw new IllegalStateException(OPEN_RECORD_EXISTS);
 		}
 		
 		mode = Mode.DONE;
 		
 		for (Event ev: events) {
 			if (ev.getState() != Event.State.CONSUMED) {
-				throw new IllegalStateException("Unconsumed records exist");
+				throw new IllegalStateException(UNCONSUMED_RECORDS_EXIST);
 			}
 		}
 	}
 	
 	@Override
-	public void startRecord(String identifier) {
+	public void startRecord(final String identifier) {
 		if (nestingLevel != 0) {
-			throw new IllegalStateException("Already in record");
+			throw new IllegalStateException(ALREADY_IN_RECORD);
 		}
 		
 		nestingLevel += 1;
@@ -188,15 +213,16 @@ public class CheckWriter implements StreamReceiver {
 			checkStartRecord(identifier);
 			break;
 		case DONE:
-			throw new IllegalStateException("Not in collecting or checking mode");
+			throw new IllegalStateException(NOT_IN_COLLECTING_OR_CHECKING_MODE);
 		}
 	}
 
 	@Override
 	public void endRecord() {
-		if (nestingLevel != 1) {
-			throw new IllegalStateException(nestingLevel == 0 ? 
-					"Not in record" : "Still in entity");
+		if (nestingLevel == 0) { 
+			throw new IllegalStateException(NOT_IN_RECORD);
+		} else if (nestingLevel != 1) {
+			throw new IllegalStateException(STILL_IN_ENTITY);			
 		}
 		
 		nestingLevel -= 1;
@@ -208,17 +234,17 @@ public class CheckWriter implements StreamReceiver {
 			checkEndRecord();
 			break;
 		case DONE:
-			throw new IllegalStateException("Not in collecting or checking mode");
+			throw new IllegalStateException(NOT_IN_COLLECTING_OR_CHECKING_MODE);
 		}
 	}
 
 	@Override
-	public void startEntity(String name) {
+	public void startEntity(final String name) {
 		if (name == null) {
-			throw new IllegalArgumentException("name must not be null");
+			throw new IllegalArgumentException(NAME_MUST_NOT_BE_NULL);
 		}
 		if (nestingLevel < 1) {
-			throw new IllegalStateException("Not in record");
+			throw new IllegalStateException(NOT_IN_RECORD);
 		}
 		
 		nestingLevel += 1;
@@ -230,14 +256,14 @@ public class CheckWriter implements StreamReceiver {
 			checkStartEntity(name);
 			break;
 		case DONE:
-			throw new IllegalStateException("Not in collecting or checking mode");
+			throw new IllegalStateException(NOT_IN_COLLECTING_OR_CHECKING_MODE);
 		}
 	}
 
 	@Override
 	public void endEntity() {
 		if (nestingLevel < 2) {
-			throw new IllegalStateException("Not in entity");
+			throw new IllegalStateException(NOT_IN_ENTITY);
 		}
 		
 		nestingLevel -= 1;
@@ -249,17 +275,17 @@ public class CheckWriter implements StreamReceiver {
 			checkEndEntity();
 			break;
 		case DONE:
-			throw new IllegalStateException("Not in collecting or checking mode");
+			throw new IllegalStateException(NOT_IN_COLLECTING_OR_CHECKING_MODE);
 		}
 	}
 
 	@Override
-	public void literal(String name, String value) {
+	public void literal(final String name, final String value) {
 		if (name == null) {
-			throw new IllegalArgumentException("name must not be null");
+			throw new IllegalArgumentException(NAME_MUST_NOT_BE_NULL);
 		}
 		if (nestingLevel < 1) {
-			throw new IllegalStateException("Not in record");
+			throw new IllegalStateException(NOT_IN_RECORD);
 		}
 		
 		switch (mode) {
@@ -270,7 +296,7 @@ public class CheckWriter implements StreamReceiver {
 			checkLiteral(name, value);
 			break;
 		case DONE:
-			throw new IllegalStateException("Not in collecting or checking mode");
+			throw new IllegalStateException(NOT_IN_COLLECTING_OR_CHECKING_MODE);
 		}
 	}
 
@@ -290,7 +316,7 @@ public class CheckWriter implements StreamReceiver {
 			}
 		}
 		if (!recordFound) {
-			throw new IllegalStateException("No record found");
+			throw new IllegalStateException(NO_RECORD_FOUND);
 		}
 	}
 	
@@ -327,7 +353,7 @@ public class CheckWriter implements StreamReceiver {
 		}
 		
 		if (!recordFound) {
-			throw new IllegalStateException("No record found");
+			throw new IllegalStateException(NO_RECORD_FOUND);
 		}		
 	}
 	
@@ -389,7 +415,7 @@ public class CheckWriter implements StreamReceiver {
 		}
 		
 		if (!foundAnywhere) {
-			throw new IllegalStateException("No entity found");
+			throw new IllegalStateException(NO_ENTITY_FOUND);
 		}		
 	}
 	
@@ -406,7 +432,7 @@ public class CheckWriter implements StreamReceiver {
 				switch(ev.getType()) {
 				case START_ENTITY:
 					level += 1;
-					//$FALL-THROUGH$
+					//$FALL-THROUGH$, fallsthrough
 				case LITERAL:
 					consumed = consumed && (ev.getState() == Event.State.CONSUMED);
 					break;
@@ -448,7 +474,7 @@ public class CheckWriter implements StreamReceiver {
 		}
 		
 		if (!foundAnywhere) {
-			throw new IllegalStateException("No entity found");
+			throw new IllegalStateException(NO_ENTITY_FOUND);
 		}		
 	}
 	
@@ -510,15 +536,18 @@ public class CheckWriter implements StreamReceiver {
 		}
 		
 		if (!foundAnywhere) {
-			throw new IllegalStateException("No literal found");
+			throw new IllegalStateException(NO_LITERAL_FOUND);
 		}		
 	}
 	
 	private boolean compare(final String str1, final String str2) {
-		return str1 == null ? str2 == null : str1.equals(str2); 
+		if (str1 == null) {
+			return str2 == null;
+		}
+		return str1.equals(str2); 
 	}
 	
-	private void setAvailable(Event parent) {
+	private void setAvailable(final Event parent) {
 		int level = -1;	
 		for (Event ev: events) {
 			if (ev == parent || level >= 0) {
