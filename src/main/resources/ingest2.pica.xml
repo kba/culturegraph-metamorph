@@ -67,12 +67,12 @@
 	<data source="007Hg.0" name="cg:idRegioBVB" />
 	<data source="007Hh.0" name="cg:idRegioGBV" />
 
-	<data source="007Ib.0" name="cg:idBNB" />
-	<data source="007Ic.0" name="cg:idCasaliniLibri" />
-	<data source="007Ie.0" name="cg:idEKZ" />
-	<data source="007Ig.0" name="cg:idBNF" />
-	<data source="007Il.0" name="cg:idLOC" />
-	<data source="007Io.0" name="cg:idOCLC" />
+	<data source="007Ib.0" name="cg:bnb" />
+	<data source="007Ic.0" name="cg:casalini" />
+	<data source="007Ie.0" name="cg:ekz" />
+	<data source="007Ig.0" name="cg:bnf" />
+	<data source="007Il.0" name="cg:loc" />
+	<data source="007Io.0" name="cg:oclc" />
 
 	<data source="007E.0" name="cg:idUniversityScript" />
 
