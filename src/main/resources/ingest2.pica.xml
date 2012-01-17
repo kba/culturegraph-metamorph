@@ -25,7 +25,7 @@
 
 	<data source="003@.0" name="cg:sourceRecordId" />
 
-	<data source="004A.0" name="bibo:isbn">
+	<data source="004A.0" name="bibo:isbn13">
 		<isbn to="isbn13" />
 	</data>
 
@@ -37,18 +37,18 @@
 
 	<data source="004P.0" name="bibo:doi" />
 
-	<data source="004U.0" name="cg:uniformResourceName" />
+	<data source="004U.0" name="cg:urn" />
 
 	<data source="004R.0" name="bibo:handle" />
 
 	<data source="005I.0" name="bibo:issn" />
 	
 
-	<group name="cg:dnb">
+	<!--  <group name="cg:dnb">
 		<data source="006Y.0" />
 		<data source="003@.0" />
 	</group>
-
+-->
 	<data source="006Z.0" name="cg:zdb" />
 <!--  
 	<data source="006Y.0" name="xbib:identifierPatent" />
@@ -79,7 +79,7 @@
 	<data source="007Il.0" name="cg:loc" />
 	<data source="007Io.0" name="cg:oclc" />
 
-	<data source="007E.0" name="cg:idUniversityScript" />
+	<data source="007E.0" name="cg:uniScript" />
 
 	<!--  <data source="007P.0" name="xbib:fingerprint" /> -->
 
@@ -115,7 +115,7 @@
 	</data>
 
 
-	<data source="021A.9" name="cg:broaderWorkId" />
+<!-- <data source="021A.9" name="cg:broaderWorkId" />  -->	
 
 	<data source="021B.l" name="bibo:volume" />
 
@@ -182,15 +182,15 @@
 	</map>
 	
 	<map name="workList">
-		<entry name="a" value="independentWork" />
-		<entry name="F" value="independentWork" />
-		<entry name="c" value="dependentWork" />
-		<entry name="d" value="dependentWork" />
-		<entry name="E" value="dependentWork" />
-		<entry name="b" value="dependentWork" />
-		<entry name="f" value="dependentWork" />
-		<entry name="l" value="dependentWork" />
-		<entry name="p" value="dependentWork" />
+		<entry name="a" value="independent" />
+		<entry name="F" value="independent" />
+		<entry name="c" value="dependent" />
+		<entry name="d" value="dependent" />
+		<entry name="E" value="dependent" />
+		<entry name="b" value="dependent" />
+		<entry name="f" value="dependent" />
+		<entry name="l" value="dependent" />
+		<entry name="p" value="dependent" />
 	</map>
 	<map name="material">
 		<entry name="A" value="print" />
