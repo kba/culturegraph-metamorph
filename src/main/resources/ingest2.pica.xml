@@ -29,7 +29,7 @@
 		<isbn to="isbn13" />
 	</data>
 
-	<data source="004F.0" name="cg:idISMN" />
+	<data source="004F.0" name="cg:ismn" />
 
 	<data source="004K.0" name="bibo:gtin14 " />
 
