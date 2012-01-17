@@ -179,7 +179,12 @@
 	<map name="material">
 		<entry name="A" value="print" />
 		<entry name="B" value="audiovisual" />
+		<entry name="C" value="brailles" />
+		<entry name="E" value="microfiches" />
+		<entry name="K" value="maps" />
 		<entry name="O" value="online" />
+		<entry name="S" value="discs" />
+		<entry name="Z" value="multimedia" />
 	</map>
 	<!-- <map name="statusList"> <entry name="a" value="provisorischerDatensatz" 
 		/> <entry name="c" value="DatensatzNeuerscheinungsdienst" /> <entry name="d" 
