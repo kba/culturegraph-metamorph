@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.core;
+package org.culturegraph.metamorph.core2;
 
 import java.util.ArrayList;
 import java.util.Deque;

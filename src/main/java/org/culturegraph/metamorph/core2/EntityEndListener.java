@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.core;
+package org.culturegraph.metamorph.core2;
 
 /**
  * Used by {@link Metamorph} to flush collected data in {@link Collect}.

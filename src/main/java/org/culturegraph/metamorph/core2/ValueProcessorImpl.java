@@ -1,9 +1,9 @@
-package org.culturegraph.metamorph.core;
+package org.culturegraph.metamorph.core2;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.culturegraph.metamorph.functions.Function;
+import org.culturegraph.metamorph.core2.functions.Function;
 
 /**
  * Abstraction for classes which use chains of {@link Function}s to process data. If one {@link Function}
@@ -20,7 +20,7 @@ public class ValueProcessorImpl implements ValueProcessor {
 	public final String applyFunctions(final String data){
 		String tempData = data;
 		for (Function function : functions) {
-			tempData = function.process(tempData);
+			//tempData = function.process(tempData); //TODO change entirely!
 			if(tempData==null){
 				break;
 			}

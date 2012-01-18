@@ -6,8 +6,6 @@ import java.util.Map.Entry;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides {@link Metamorph} instances by key. For each {@link Thread} a
@@ -17,7 +15,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public final class ConcurrentMetamorphRegistry implements ReadOnlyRegistry<Metamorph> {
-	protected static final Logger LOG = LoggerFactory.getLogger(ConcurrentMetamorphRegistry.class);
 	
 	private final Map<String, ThreadLocal<Metamorph>> threadLocalMorphMap = new HashMap<String, ThreadLocal<Metamorph>>();
 
@@ -28,7 +25,6 @@ public final class ConcurrentMetamorphRegistry implements ReadOnlyRegistry<Metam
 			final ThreadLocal<Metamorph> threadLocal = new ThreadLocal<Metamorph>() {
 				@Override
 				protected Metamorph initialValue() {
-					LOG.debug("new Metamorph for'" + entry.getKey() + "' created.");
 					return MetamorphBuilder.build(entry.getValue());
 				}
 			};
