@@ -1,6 +1,5 @@
 package org.culturegraph.metamorph.stream.readers;
 
-import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.stream.StreamReceiver;
@@ -80,11 +79,7 @@ public final class MabReader extends AbstractReader {
 		receiver.endRecord();
 	}
 
-	@Override
-	protected Charset getCharset() {
-		return Charset.forName("UTF-8");
-		//return new MabCharset(false);
-	}
+
 
 	public static String extractIdFromRecord(final String record) {
 		try{

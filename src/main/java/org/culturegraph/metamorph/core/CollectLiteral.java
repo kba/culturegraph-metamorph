@@ -14,15 +14,21 @@ import org.culturegraph.metamorph.util.StringUtil;
  * 
  * @author Markus Michael Geipel
  */
-final class CollectLiteral extends AbstractCollect implements ValueProcessor {
+final class CollectLiteral extends AbstractCollect implements ValueProcessor, NamedValueSource{
 
 	private final Map<String, String> variables = new HashMap<String, String>();
 	private final Set<String> variableNames = new HashSet<String>();
-	private final ValueProcessorImpl dataProcessor = new ValueProcessorImpl();
+	private final ValueProcessorImpl valueProcessor = new ValueProcessorImpl();
 //	private DataReceiver dataReceiver;
+	private NamedValueReceiver namedValueReceiver;
 
-	public CollectLiteral(final Metamorph metamorph) {
-		super(metamorph);
+	public CollectLiteral() {
+		super();
+	}
+
+	public CollectLiteral(final NamedValueReceiver metamorph) {
+		super();
+		setNamedValueReceiver(metamorph);
 	}
 
 	@Override
@@ -30,11 +36,11 @@ final class CollectLiteral extends AbstractCollect implements ValueProcessor {
 		final String name = StringUtil.format(getName(), variables);
 		String value = StringUtil.format(getValue(), variables);
 
-		value = dataProcessor.applyFunctions(value);
+		value = valueProcessor.applyFunctions(value);
 		if (value == null) {
 			return;
 		}
-		getMetamorph().data(name, value, getRecordCount(), getEntityCount());
+		namedValueReceiver.receive(name, value, getRecordCount(), getEntityCount());
 	}
 
 
@@ -49,12 +55,13 @@ final class CollectLiteral extends AbstractCollect implements ValueProcessor {
 	}
 
 	@Override
-	protected void onAddData(final Data data) {
-		data.setMode(Mode.VALUE);
-		if (data.getDefaultName() == null) {
+	protected void onAddData(final NamedValueSource data) {
+		//data.setMode(Mode.VALUE);
+		
+		if (data.getName() == null) {
 			data.setName(String.valueOf(getDataCount()));
 		}
-		variableNames.add(data.getDefaultName());
+		variableNames.add(data.getName());
 	}
 
 	@Override
@@ -64,6 +71,12 @@ final class CollectLiteral extends AbstractCollect implements ValueProcessor {
 
 	@Override
 	public void addFunction(final Function function) {
-		dataProcessor.addFunction(function);
+		valueProcessor.addFunction(function);
+	}
+
+	@Override
+	public void setNamedValueReceiver(final NamedValueReceiver namedValueReceiver) {
+		this.namedValueReceiver = namedValueReceiver;
+		
 	}
 }

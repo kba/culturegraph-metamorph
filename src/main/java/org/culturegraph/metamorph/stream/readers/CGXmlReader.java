@@ -99,7 +99,7 @@ public final class CGXmlReader implements Reader {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
+
 	public void read(final InputStream inputStream) throws IOException {
 		if(inputStream == null){
 			throw new IllegalArgumentException("InputStream must be set");

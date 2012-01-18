@@ -3,7 +3,6 @@ package org.culturegraph.metamorph.functions;
 
 /**
  * @author Markus Michael Geipel
- * @status Experimental
  */
 final class Compose extends AbstractCompose{
 

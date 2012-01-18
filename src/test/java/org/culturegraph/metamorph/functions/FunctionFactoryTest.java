@@ -10,7 +10,8 @@ import org.junit.Test;
 public final class FunctionFactoryTest {
 	
 	
-	private static final String VALUE = "test";
+	private static final String INPUT = "testKiwi";
+	private static final String OUTPUT = "Kiwi";
 
 	@Test
 	public void testInitialization() {
@@ -18,8 +19,9 @@ public final class FunctionFactoryTest {
 		Assert.assertFalse(factory.getAvailableFunctions().isEmpty());
 		
 		final Map<String, String> attributes = new HashMap<String, String>();
-		attributes.put("value", VALUE);
-		final Function function = factory.newFunction("constant", attributes);
-		Assert.assertEquals(VALUE, function.process("slkdfjlskjf"));
+		attributes.put("pattern", "test");
+		attributes.put("with", "");
+		final Function function = factory.newFunction("replace", attributes);
+		Assert.assertEquals(OUTPUT, function.process(INPUT));
 	}
 }

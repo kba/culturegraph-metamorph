@@ -214,6 +214,7 @@ public final class MetamorphBuilder {
 
 		private void registerCollector(final String tag, final Attributes atts) {
 			final boolean reset = atts.getValue(RESET_ATTR) != null && TRUE.equals(atts.getValue(RESET_ATTR));
+			
 			final boolean sameEntity = atts.getValue(SAME_ENTITY_ATTR) != null
 					&& TRUE.equals(atts.getValue(SAME_ENTITY_ATTR));
 
@@ -221,6 +222,7 @@ public final class MetamorphBuilder {
 				collect = new CollectEntity(metamorph);
 			} else if (COLLECT_LITERAL_TAG.equals(tag)) {
 				collect = new CollectLiteral(metamorph);
+				
 			} else if (CHOOSE_LITERAL_TAG.equals(tag)) {
 				collect = new ChooseLiteral(metamorph);
 			}
@@ -266,7 +268,7 @@ public final class MetamorphBuilder {
 		private void registerFunction(final String name, final Map<String, String> attributes) {
 
 			final Function function = functionFactory.newFunction(name, attributes);
-			function.setMultiMapProvider(metamorph);
+			function.setMultiMap(metamorph);
 
 			if (collect instanceof ValueProcessor && data == null) {
 				((ValueProcessor) collect).addFunction(function);
@@ -333,9 +335,9 @@ public final class MetamorphBuilder {
 			}
 
 			if (collect == null) {
-				data.setDataReceiver(metamorph);
+				data.setNamedValueReceiver(metamorph);
 			} else {
-				collect.addData(data);
+				collect.addNamedValueSource(data);
 			}
 			
 			final Data.Mode dataMode = Data.Mode.valueOf(mode.toUpperCase(Locale.US));
@@ -349,7 +351,7 @@ public final class MetamorphBuilder {
 				metamorph.addEntityEndListener(data, Metamorph.RECORD_KEYWORD);
 			}
 			
-			metamorph.registerDataSource(data, source);
+			metamorph.registerData(data);
 
 			if (LOG.isDebugEnabled()) {
 				String receiver = "";
@@ -357,7 +359,7 @@ public final class MetamorphBuilder {
 					final Collect collect = (Collect) data.getDataReceiver();
 					receiver = "-> " + collect.getClass().getSimpleName() + " " + collect.getName();
 				}
-				LOG.debug(source + " -> (" + data.getDefaultName() + ", " + data.getDefaultValue() + ") " + receiver);
+				LOG.debug(source + " -> (" + data.getName() + ", " + data.getValue() + ") " + receiver);
 			}
 		}
 

@@ -9,6 +9,7 @@ import org.culturegraph.metamorph.multimap.SimpleMultiMap;
  */
 public interface Function {
 	String process(String value);
+	void putValue(String key, String value);
 
-	void setMultiMapProvider(SimpleMultiMap multiMapProvider);
+	void setMultiMap(SimpleMultiMap multiMapProvider);
 }

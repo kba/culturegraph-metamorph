@@ -3,17 +3,14 @@ package org.culturegraph.metamorph.stream.readers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 
 import org.culturegraph.metamorph.stream.StreamReceiver;
 
-
-
-
 /**
- * Parses a raw Picaplus stream (utf8 encoding assumed).
- * Events are handled by a {@link StreamReceiver}.
+ * Parses a raw Picaplus stream (utf8 encoding assumed). Events are handled by a
+ * {@link StreamReceiver}.
  * 
  * @author "Markus Michael Geipel"
  * @see StreamReceiver
@@ -21,7 +18,9 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
 public abstract class AbstractReader implements Reader {
 
 	private StreamReceiver streamReceiver;
-	
+
+
+
 	@Override
 	public final void read(final java.io.Reader reader)  throws IOException {
 		if(reader==null){
@@ -41,35 +40,36 @@ public abstract class AbstractReader implements Reader {
 			}
 			line = bufferedReader.readLine();
 		}
+
 		bufferedReader.close();
 		
 	}
 	
-	@Override
-	public final void read(final InputStream inputStream) throws IOException {
-		if(inputStream==null){
-			throw new IllegalArgumentException("InputStream must be set");
-		}
-		read(new InputStreamReader(inputStream, getCharset()));
-	}
-	
-	protected abstract Charset getCharset();
-	
+
+
+
+//	public final void read(final InputStream inputStream) throws IOException {
+//		if (inputStream == null) {
+//			throw new IllegalArgumentException("InputStream must be set");
+//		}
+//		read(new InputStreamReader(inputStream, getCharset()));
+//	}
+
 
 	@Override
-	public final void read(final String entry){
-		assert null!=entry && streamReceiver!=null;
-		processRecord(entry);
+	public final void read(final String entry) {
+		assert null != entry && streamReceiver != null;
+		processRecord(Normalizer.normalize(entry, Form.NFC));
 	}
 
 	protected abstract void processRecord(final String record);
 
-	protected final StreamReceiver getStreamReceiver(){
+	protected final StreamReceiver getStreamReceiver() {
 		return streamReceiver;
 	}
-	
+
 	@Override
-	public final <R extends StreamReceiver> R  setReceiver(final R streamReceiver) {
+	public final <R extends StreamReceiver> R setReceiver(final R streamReceiver) {
 		this.streamReceiver = streamReceiver;
 		return streamReceiver;
 	}

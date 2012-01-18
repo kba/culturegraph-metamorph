@@ -1,7 +1,7 @@
 package org.culturegraph.metamorph.stream.readers;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -102,19 +102,22 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 		return streamReceiver;
 	}
 
-	@Override
-	public void read(final InputStream inputStream) throws IOException {
-		if (streamReceiver == null) {
-			throw new IllegalStateException(ERROR_RECEIVER_NULL);
-		}
+//	@Override
+//	public void read(final InputStream inputStream) throws IOException {
+//		if (streamReceiver == null) {
+//			throw new IllegalStateException(ERROR_RECEIVER_NULL);
+//		}
+//
+//		try {
+//			currentReader.read(inputStream);
+//		} catch (MetamorphException e) {
+//			errorHandler.error(e);
+//		}
+//	}
 
-		try {
-			currentReader.read(inputStream);
-		} catch (MetamorphException e) {
-			errorHandler.error(e);
-		}
-	}
-
+	
+	
+	
 	@Override
 	public void read(final String entry) {
 		if (streamReceiver == null) {

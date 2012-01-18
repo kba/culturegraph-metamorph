@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 /**
  * @author Markus Michael Geipel
- * @status Experimental
  */
 final class Replace extends AbstractFunction {
 

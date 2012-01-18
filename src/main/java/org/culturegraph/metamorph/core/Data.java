@@ -5,10 +5,10 @@ package org.culturegraph.metamorph.core;
  * 
  * @author Markus Michael Geipel
  */
-final class Data extends ValueProcessorImpl implements NamedValueReceiver, EntityEndListener {
+final class Data extends ValueProcessorImpl implements NamedValueReceiver, NamedValueSource, EntityEndListener {
 
 	public enum Mode {
-		VALUE, NAME, META, COUNT
+		VALUE, COUNT
 	}
 
 	private String name;
@@ -24,11 +24,7 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Entit
 
 	private int oldRecordCount;
 
-//	public Data() {
-//		super();
-//		this.source = null;
-//	}
-	
+
 	public Data(final String source) {
 		super();
 		this.source = source;
@@ -50,7 +46,7 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Entit
 	}
 
 	@Override
-	public void data(final String recName, final String recValue, final int recordCount, final int entityCount) {
+	public void receive(final String recName, final String recValue, final int recordCount, final int entityCount) {
 		assert dataReceiver != null;
 
 		updateCounts(recordCount);
@@ -64,31 +60,12 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Entit
 		}
 		++processingCount;
 
-		switch (mode) {
-		case NAME:
-			dataReceiver.data(fallback(name, tempData), fallback(value, recValue), recordCount, entityCount);
-			break;
-		case VALUE:
-			dataReceiver.data(fallback(name, recName), fallback(value, tempData), recordCount, entityCount);
-			break;
-		case META:
-			// dataReceiver.data(finalName, finalValue, recordCount,
-			// entityCount);
-			break;
-		case COUNT:
-			// nothing to do. count is emitted when the record is over
-			break;
-		default:
-			break;
+		if(mode.equals(Mode.VALUE)){
+			dataReceiver.receive(fallback(name, recName), fallback(value, tempData), recordCount, entityCount);
 		}
+		
+		//dataReceiver.data(fallback(name, tempData), fallback(value, recValue), recordCount, entityCount);
 
-		// if (Mode.NAME.equals(mode)) {
-		// finalName = tempData;
-		// } else if (finalValue == null) {
-		// finalValue = tempData;
-		// }
-		//
-		// dataReceiver.data(finalName, finalValue, recordCount, entityCount);
 	}
 
 	private boolean isOccurenceOK() {
@@ -109,7 +86,8 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Entit
 	 * @param dataReceiver
 	 *            the dataReceiver to set
 	 */
-	public void setDataReceiver(final NamedValueReceiver dataReceiver) {
+	@Override
+	public void setNamedValueReceiver(final NamedValueReceiver dataReceiver) {
 		assert dataReceiver != null;
 		this.dataReceiver = dataReceiver;
 	}
@@ -129,6 +107,7 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Entit
 	 * @param name
 	 *            the defaultName to set
 	 */
+	@Override
 	public void setName(final String name) {
 		this.name = name;
 	}
@@ -137,6 +116,7 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Entit
 	 * @param value
 	 *            the defaultValue to set
 	 */
+	@Override
 	public void setValue(final String value) {
 		this.value = value;
 	}
@@ -144,21 +124,23 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Entit
 	/**
 	 * @return the defaultName
 	 */
-	public String getDefaultName() {
+	@Override
+	public String getName() {
 		return name;
 	}
 
 	/**
 	 * @return the defaultValue
 	 */
-	public String getDefaultValue() {
+	@Override
+	public String getValue() {
 		return value;
 	}
 
 	@Override
 	public void onEntityEnd(final String entityName, final int recordCount, final int entityCount) {
 		if (Mode.COUNT == mode) {
-			dataReceiver.data(name, String.valueOf(processingCount), oldRecordCount, 0);
+			dataReceiver.receive(name, String.valueOf(processingCount), oldRecordCount, 0);
 		}
 	}
 

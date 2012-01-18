@@ -5,6 +5,7 @@ package org.culturegraph.metamorph.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.culturegraph.metamorph.core.Data.Mode;
 import org.culturegraph.metamorph.functions.Function;
@@ -16,20 +17,26 @@ import org.culturegraph.metamorph.util.StringUtil;
  * @author Christoph BÃ¶hme <c.boehme@dnb.de>
  *
  */
-final class ChooseLiteral extends AbstractCollect implements ValueProcessor{
+final class ChooseLiteral extends AbstractCollect implements ValueProcessor, NamedValueSource{
 
 	private String value;
 	private String name;
 	private int priority = Integer.MAX_VALUE;
 	private final Map<String, Integer> priorities = new HashMap<String, Integer>();
-	private final ValueProcessorImpl dataProcessor = new ValueProcessorImpl();
+	private final ValueProcessorImpl valueProcessor = new ValueProcessorImpl();
 	private int nextPriority;
+	private NamedValueReceiver namedValueReceiver;
 	
 	/**
 	 * @param metamorph
 	 */
-	public ChooseLiteral(final Metamorph metamorph) {
-		super(metamorph);
+	public ChooseLiteral() {
+		super();
+	}
+
+	public ChooseLiteral(final NamedValueReceiver metamorph) {
+		super();
+		setNamedValueReceiver(metamorph);
 	}
 
 	/* (non-Javadoc)
@@ -37,11 +44,11 @@ final class ChooseLiteral extends AbstractCollect implements ValueProcessor{
 	 */
 	@Override
 	protected void emit() {
-		value = dataProcessor.applyFunctions(value);
+		value = valueProcessor.applyFunctions(value);
 		if (value == null) {
 			return;
 		}
-		getMetamorph().data(StringUtil.fallback(getName(), name), StringUtil.fallback(getValue(), value), getRecordCount(), getEntityCount());
+		namedValueReceiver.receive(StringUtil.fallback(getName(), name), StringUtil.fallback(getValue(), value), getRecordCount(), getEntityCount());
 		clear();
 	}
 
@@ -78,17 +85,22 @@ final class ChooseLiteral extends AbstractCollect implements ValueProcessor{
 	}
 
 	@Override
-	protected void onAddData(final Data data) {
-		data.setMode(Mode.VALUE);
-		if (data.getDefaultName() == null) {
-			data.setName(data.getSource());
+	protected void onAddData(final NamedValueSource namedValue) {
+		if (namedValue.getName() == null) {
+			namedValue.setName( String.valueOf(UUID.randomUUID()));
 		}
-		priorities.put(data.getDefaultName(), Integer.valueOf(nextPriority));
+		priorities.put(namedValue.getName(), Integer.valueOf(nextPriority));
 		nextPriority += 1;
 	}
 	
 	@Override
 	public void addFunction(final Function function) {
-		dataProcessor.addFunction(function);
+		valueProcessor.addFunction(function);
+	}
+
+	@Override
+	public void setNamedValueReceiver(final NamedValueReceiver namedValueReceiver) {
+		this.namedValueReceiver = namedValueReceiver;
+		
 	}
 }

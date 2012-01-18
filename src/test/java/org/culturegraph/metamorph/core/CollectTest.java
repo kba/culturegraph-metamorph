@@ -43,16 +43,16 @@ public final class CollectTest {
 	}
 	
 	private static Collect wireCollect(final Collect collect, final Data data1, final Data data2){
-		collect.addData(data1);
-		collect.addData(data2);
+		collect.addNamedValueSource(data1);
+		collect.addNamedValueSource(data2);
 		collect.setName(COLLECT_NAME);
 		return collect;
 	}
 	
 	
 	private void wireCollect(final Collect collect){
-		collect.addData(dataA);
-		collect.addData(dataB);
+		collect.addNamedValueSource(dataA);
+		collect.addNamedValueSource(dataB);
 		collect.setName(COLLECT_NAME);
 	}
 	
@@ -63,9 +63,9 @@ public final class CollectTest {
 		cleanUp();
 		
 		Assert.assertEquals(0, mapCollector.size());
-		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		dataA.receive(ORIGIN_NAME, VALUE_A, 0, 0);
 		Assert.assertEquals(0, mapCollector.size());
-		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		dataB.receive(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertEquals(2, mapCollector.size());
 		Assert.assertEquals(VALUE_A, mapCollector.get(NAME_A));
 		Assert.assertEquals(VALUE_B, mapCollector.get(NAME_B));
@@ -83,9 +83,9 @@ public final class CollectTest {
 		cleanUp();
 		
 		Assert.assertTrue(nothingReceived());
-		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		dataA.receive(ORIGIN_NAME, VALUE_A, 0, 0);
 		Assert.assertTrue(nothingReceived());
-		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		dataB.receive(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertFalse(nothingReceived());
 		
 	
@@ -106,7 +106,7 @@ public final class CollectTest {
 		cleanUp();
 		
 		Assert.assertTrue(nothingReceived());
-		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		dataA.receive(ORIGIN_NAME, VALUE_A, 0, 0);
 		Assert.assertTrue(nothingReceived());
 		
 		collectLiteral.onEntityEnd(Metamorph.RECORD_KEYWORD, 0,0);
@@ -134,27 +134,27 @@ public final class CollectTest {
 
 		cleanUp();
 		
-		data1.data(ORIGIN_NAME, VALUE_A, 0, 0);
-		data2.data(ORIGIN_NAME, VALUE_A, 0, 0);
-		data1.data(ORIGIN_NAME, VALUE_B, 0, 0);
-		data2.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		data1.receive(ORIGIN_NAME, VALUE_A, 0, 0);
+		data2.receive(ORIGIN_NAME, VALUE_A, 0, 0);
+		data1.receive(ORIGIN_NAME, VALUE_B, 0, 0);
+		data2.receive(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertFalse(nothingReceived());
 		Assert.assertEquals(COMPASITION_AB, getReceived());	
 		
 		cleanUp();
 	
-		data1.data(ORIGIN_NAME, VALUE_A, 0, 0);
-		data2.data(ORIGIN_NAME, VALUE_A, 0, 0);
-		data1.data(ORIGIN_NAME, VALUE_B, 0, 0);
-		data2.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		data1.receive(ORIGIN_NAME, VALUE_A, 0, 0);
+		data2.receive(ORIGIN_NAME, VALUE_A, 0, 0);
+		data1.receive(ORIGIN_NAME, VALUE_B, 0, 0);
+		data2.receive(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertTrue(nothingReceived());
 			
-		data1.data(ORIGIN_NAME, VALUE_A, 1, 0);
-		data2.data(ORIGIN_NAME, VALUE_A, 1, 0);
-		data1.data(ORIGIN_NAME, VALUE_B, 1, 0);
+		data1.receive(ORIGIN_NAME, VALUE_A, 1, 0);
+		data2.receive(ORIGIN_NAME, VALUE_A, 1, 0);
+		data1.receive(ORIGIN_NAME, VALUE_B, 1, 0);
 		Assert.assertTrue(nothingReceived());
 		
-		data2.data(ORIGIN_NAME, VALUE_B, 1, 0);
+		data2.receive(ORIGIN_NAME, VALUE_B, 1, 0);
 
 		Assert.assertFalse(nothingReceived());
 		Assert.assertEquals(COMPASITION_AB, getReceived());	
@@ -169,22 +169,22 @@ public final class CollectTest {
 
 		cleanUp();
 		
-		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
-		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		dataA.receive(ORIGIN_NAME, VALUE_A, 0, 0);
+		dataB.receive(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertEquals(COMPASITION_AB, getReceived());
 
 		cleanUp();
 		
 		collectLiteral.setReset(true);
-		dataB.data(ORIGIN_NAME, VALUE_C, 0, 0);
+		dataB.receive(ORIGIN_NAME, VALUE_C, 0, 0);
 		Assert.assertEquals(COMPASITION_AC, getReceived());
 		
 		cleanUp();
 		
 		collectLiteral.setReset(false);
-		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		dataB.receive(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertEquals(null, getReceived());
-		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		dataA.receive(ORIGIN_NAME, VALUE_A, 0, 0);
 		Assert.assertEquals(COMPASITION_AB, getReceived());
 	}
 	
@@ -196,16 +196,16 @@ public final class CollectTest {
 		
 		collectLiteral.setValue(VALUE_FORMAT);
 		wireCollect(collectLiteral);
-		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
-		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		dataA.receive(ORIGIN_NAME, VALUE_A, 0, 0);
+		dataB.receive(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertEquals(COMPASITION_AB, getReceived());
 		mapCollector.clear();
 		
-		dataA.data(ORIGIN_NAME, VALUE_A, 1, 0);
+		dataA.receive(ORIGIN_NAME, VALUE_A, 1, 0);
 		Assert.assertTrue(nothingReceived());
-		dataB.data(ORIGIN_NAME, VALUE_B, 2, 0);
+		dataB.receive(ORIGIN_NAME, VALUE_B, 2, 0);
 		Assert.assertTrue(nothingReceived());
-		dataA.data(ORIGIN_NAME, VALUE_A, 2, 0);
+		dataA.receive(ORIGIN_NAME, VALUE_A, 2, 0);
 		Assert.assertEquals(COMPASITION_AB, getReceived());
 		
 	}
@@ -220,9 +220,9 @@ public final class CollectTest {
 		cleanUp();
 		
 		Assert.assertTrue(nothingReceived());
-		dataA.data(ORIGIN_NAME, VALUE_A, 0, 0);
+		dataA.receive(ORIGIN_NAME, VALUE_A, 0, 0);
 		Assert.assertTrue(nothingReceived());
-		dataB.data(ORIGIN_NAME, VALUE_B, 0, 0);
+		dataB.receive(ORIGIN_NAME, VALUE_B, 0, 0);
 		Assert.assertTrue(nothingReceived());
 		chooseLiteral.onEntityEnd(null,0,0);
 		Assert.assertEquals(VALUE_A, getReceived());		

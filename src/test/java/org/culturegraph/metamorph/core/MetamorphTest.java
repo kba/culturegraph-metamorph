@@ -37,7 +37,7 @@ public final class MetamorphTest implements NamedValueReceiver {
 	private static final String MAP_NAME = "sdfklsjef";
 
 
-	private static final String SOURCE = "fantasy";
+	//private static final String SOURCE = "fantasy";
 	
 	
 	private NamedValue namedValue;
@@ -46,10 +46,10 @@ public final class MetamorphTest implements NamedValueReceiver {
 	private static Metamorph newMetamorphWithData(final NamedValueReceiver receiver){
 		final Metamorph metamorph = new Metamorph();
 		metamorph.setReceiver(EMPTY_RECEIVER);
-		final Data data = new Data(SOURCE);
+		final Data data = new Data(MATCHING_PATH);
 		data.setName(NAME);
-		data.setDataReceiver(receiver);
-		metamorph.registerDataSource(data, MATCHING_PATH);
+		data.setNamedValueReceiver(receiver);
+		metamorph.registerData(data);
 		return metamorph;
 	}
 	
@@ -107,15 +107,15 @@ public final class MetamorphTest implements NamedValueReceiver {
 		metamorph.setReceiver(EMPTY_RECEIVER);
 		Data data;
 		
-		data = new Data(SOURCE);
+		data = new Data(MATCHING_PATH);
 		data.setName(FEEDBACK_VAR);
-		data.setDataReceiver(metamorph);
-		metamorph.registerDataSource(data, MATCHING_PATH);
+		data.setNamedValueReceiver(metamorph);
+		metamorph.registerData(data);
 		
-		data = new Data(SOURCE);
+		data = new Data(FEEDBACK_VAR);
 		data.setName(NAME);
-		data.setDataReceiver(this);
-		metamorph.registerDataSource(data, FEEDBACK_VAR);
+		data.setNamedValueReceiver(this);
+		metamorph.registerData(data);
 		
 		namedValue = null;
 		
@@ -155,7 +155,7 @@ public final class MetamorphTest implements NamedValueReceiver {
 	
 
 	@Override
-	public void data(final String name, final String value,  final int recordCount,
+	public void receive(final String name, final String value,  final int recordCount,
 			final int entityCount) {
 		this.namedValue = new NamedValue(name, value);
 	}

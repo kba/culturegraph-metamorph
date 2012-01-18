@@ -26,11 +26,13 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 	public static final String ELSE_KEYWORD = "_else";
 	public static final String RECORD_KEYWORD = "record";
 	public static final char FEEDBACK_CHAR = '@';
+	public static final String METADATA = "__meta";
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 	private static final char DEFAULT_ENTITY_MARKER = '.';
+	
 	
 
 	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
@@ -63,7 +65,8 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		this.errorHandler = errorHandler;
 	}
 
-	protected void registerDataSource(final Data data, final String path) {
+	protected void registerData(final Data data) {
+		final String path = data.getSource();
 		assert data != null && path != null;
 
 		if (ELSE_KEYWORD.equals(path)) {
@@ -204,7 +207,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		final int entityCount = entityCountStack.getLast().intValue();
 		for (Data data : dataList) {
 			try {
-				data.data(key, value, recordCount, entityCount);
+				data.receive(key, value, recordCount, entityCount);
 			} catch (MetamorphException e) {
 				errorHandler.error(e);
 			}
@@ -234,7 +237,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 
 
 	@Override
-	public void data(final String name, final String value, final int recordCount, final int entityCount) {
+	public void receive(final String name, final String value, final int recordCount, final int entityCount) {
 		if (name == null || value == null) {
 			LOG.warn("Empty data received. This is not suposed to happen. Please file a bugreport");
 		} else {
@@ -287,5 +290,14 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 	@Override
 	public String putValue(final String mapName, final String key, final String value) {
 		return multiMap.putValue(mapName, key, value);
+	}
+	
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		builder.append("Ddata: " + multiMap + "\n");
+		builder.append("Used data sources: " + dataSources.keySet() + "\n");
+		builder.append("Listened endEntity() events: " +  entityEndListeners.keySet() + "\n");
+		return builder.toString();
 	}
 }

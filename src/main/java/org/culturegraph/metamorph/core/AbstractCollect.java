@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-abstract class AbstractCollect implements NamedValueReceiver, Collect {
+abstract class AbstractCollect implements  Collect {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 
@@ -20,21 +20,13 @@ abstract class AbstractCollect implements NamedValueReceiver, Collect {
 	private int oldEntity;
 	private int dataCount;
 	private boolean alreadyEmitted;
-	// private StreamReceiver streamReceiver;
 	private boolean reset;
 	private boolean sameEntity;
 	private String name;
 	private String value;
-	private final Metamorph metamorph;
-	private final Set<Data> dataSources = new HashSet<Data>();
+
+	private final Set<NamedValueSource> namedValueSources = new HashSet<NamedValueSource>();
 	
-	public AbstractCollect(final Metamorph metamorph) {
-		this.metamorph = metamorph;
-	}
-	
-	protected Metamorph getMetamorph(){
-		return metamorph;
-	}
 
 	
 	protected final int getRecordCount() {
@@ -76,8 +68,8 @@ abstract class AbstractCollect implements NamedValueReceiver, Collect {
 	/**
 	 * @return
 	 */
-	protected Set<Data> getDataSources() {
-		return dataSources;
+	protected Set<NamedValueSource> getNamedValueSources() {
+		return namedValueSources;
 	}
 
 	/**
@@ -139,7 +131,7 @@ abstract class AbstractCollect implements NamedValueReceiver, Collect {
 	
 
 	@Override
-	public final void data(final String name, final String value, final int recordCount, final int entityCount) {
+	public final void receive(final String name, final String value, final int recordCount, final int entityCount) {
 		updateCounts(recordCount, entityCount);
 
 		receive(name, value);
@@ -174,12 +166,15 @@ abstract class AbstractCollect implements NamedValueReceiver, Collect {
 	protected abstract void emit();
 
 	@Override
-	public final void addData(final Data data) {
+	public void addNamedValueSource(final NamedValueSource namedValueSource) {
 		++dataCount;
-		data.setDataReceiver(this);
-		dataSources.add(data);
-		onAddData(data);
+		namedValueSource.setNamedValueReceiver(this);
+		namedValueSources.add(namedValueSource);
+		onAddData(namedValueSource);
+		
 	}
+	
+
 
 	@Override
 	public void onEntityEnd(final String entityName, final int recordCount, final int entityCount) {
@@ -191,6 +186,6 @@ abstract class AbstractCollect implements NamedValueReceiver, Collect {
 	/**
 	 * @param data
 	 */
-	protected void onAddData(final Data data) {/* as default do nothing */
+	protected void onAddData(final NamedValueSource namedValueSource) {/* as default do nothing */
 	}
 }

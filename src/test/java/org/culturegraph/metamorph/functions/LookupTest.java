@@ -34,7 +34,7 @@ public final class LookupTest {
 		
 		multiMapProvider.putMap(MAP_NAME, map);
 		
-		lookup.setMultiMapProvider(multiMapProvider);
+		lookup.setMultiMap(multiMapProvider);
 		lookup.setIn(MAP_NAME_WRONG);
 		Assert.assertNull(lookup.process(KEY));
 		Assert.assertNull(lookup.process(KEY_WRONG));

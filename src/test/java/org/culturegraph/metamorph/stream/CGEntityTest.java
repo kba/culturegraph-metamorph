@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.stream;
 
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -17,7 +17,6 @@ import org.junit.Test;
 
 public final class CGEntityTest {
 	
-//rivate final LogPipe logPipe = new LogPipe();
 	
 	@Test
 	public void testReadWriteRead() throws IOException {
@@ -26,8 +25,7 @@ public final class CGEntityTest {
 		final DefaultWriter referenceWriter = new DefaultWriter(refereceStringWriter);
 		
 		picaReader.setReceiver(referenceWriter);
-		//logPipe.setStreamReceiver(referenceWriter);
-		picaReader.read(new FileInputStream(DataFilePath.PND_PICA));
+		picaReader.read(new FileReader(DataFilePath.PND_PICA));
 		referenceWriter.flush();
 		
 		
@@ -35,7 +33,7 @@ public final class CGEntityTest {
 		final CGEntityWriter writer = new CGEntityWriter(tempStringWriter);
 				
 		picaReader.setReceiver(writer);
-		picaReader.read(new FileInputStream(DataFilePath.PND_PICA));
+		picaReader.read(new FileReader(DataFilePath.PND_PICA));
 		writer.flush();
 		
 		
@@ -44,14 +42,10 @@ public final class CGEntityTest {
 		final DefaultWriter finalWriter = new DefaultWriter(finalStringWriter);
 		
 		reader.setReceiver(finalWriter);
-		//logPipe.setStreamReceiver(finalWriter);
 		reader.read(new StringReader(tempStringWriter.toString()));
 		finalWriter.flush();
 		
 		Assert.assertEquals(refereceStringWriter.toString(), finalStringWriter.toString());
-		
-		
 	
-		
 	}
 }

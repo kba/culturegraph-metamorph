@@ -1,6 +1,5 @@
 package org.culturegraph.metamorph.stream.readers;
 
-import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.stream.CGEntity;
@@ -19,10 +18,6 @@ public final class CGEntityReader extends AbstractReader {
 		return record.substring(0, cut);
 	}
 
-	@Override
-	protected Charset getCharset() {
-		return Charset.forName("UTF-8");
-	}
 
 	@Override
 	protected void processRecord(final String record) {

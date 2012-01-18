@@ -11,7 +11,6 @@ import org.culturegraph.metamorph.util.StringUtil;
 
 /**
  * @author Markus Michael Geipel
- * @status Experimental
  */
 final class Regexp extends AbstractFunction {
 

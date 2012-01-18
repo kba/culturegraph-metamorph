@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Provides the functions for {@link Metamorph}. 
- * By the default it contains the stardard function set.
+ * By the default it contains the standard function set.
  * New functions can be registered during runtime.
  * 
  * @author Markus Michael Geipel
@@ -33,19 +33,22 @@ public final class FunctionFactory {
 	public FunctionFactory() {
 		super();
 
-		registerFunction("constant", Constant.class);
 		registerFunction("regexp", Regexp.class);
 		registerFunction("substring", Substring.class);
 		registerFunction("compose", Compose.class);
 		registerFunction("lookup", Lookup.class);
+		registerFunction("whitelist", WhiteList.class);
+		registerFunction("blacklist", BlackList.class);
 		registerFunction("replace", Replace.class);
 		registerFunction("isbn", ISBN.class);
 		registerFunction("equals", Equals.class);
 		registerFunction("htmlanchor", HtmlAnchor.class);
 		registerFunction("trim", Trim.class);
 		registerFunction("normalize-utf8", NormalizeUTF8.class);
+		registerFunction("urlencode", URLEncode.class);
 		
-		availableFunctions = Collections.unmodifiableSet(functionClasses.keySet());
+		// define an unmodifiable view. Later registered functions are taken into account.
+		availableFunctions = Collections.unmodifiableSet(functionClasses.keySet()); 
 	}
 
 

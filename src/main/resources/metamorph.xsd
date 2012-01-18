@@ -2,7 +2,7 @@
 <schema xmlns:tns="http://www.culturegraph.org/metamorph"
 	targetNamespace="http://www.culturegraph.org/metamorph" xmlns="http://www.w3.org/2001/XMLSchema">
 
-<!-- 	<include schemaLocation="" /> -->
+	<!-- <include schemaLocation="" /> -->
 
 	<element name="metamorph">
 		<complexType>
@@ -10,7 +10,7 @@
 				<element ref="tns:name" maxOccurs="1" minOccurs="0" />
 				<element ref="tns:annotation" maxOccurs="1" minOccurs="0" />
 				<element ref="tns:entity" maxOccurs="unbounded" minOccurs="0" />
-				<element ref="tns:function" minOccurs="0" maxOccurs="unbounded"/>
+				<element ref="tns:function" minOccurs="0" maxOccurs="unbounded" />
 				<choice maxOccurs="unbounded" minOccurs="0">
 					<element ref="tns:group" />
 					<element ref="tns:collect-literal" />
@@ -37,12 +37,11 @@
 	<element name="function">
 
 		<complexType>
-			<attribute name="name" type="string" use="required"/>
+			<attribute name="name" type="string" use="required" />
 			<attribute name="class" use="required">
 				<simpleType>
 					<restriction base="string">
-						<pattern
-							value="([\p{L}_$][\p{L}\p{N}_$]*\.)*[\p{L}_$][\p{L}\p{N}_$]*">
+						<pattern value="([\p{L}_$][\p{L}\p{N}_$]*\.)*[\p{L}_$][\p{L}\p{N}_$]*">
 						</pattern>
 					</restriction>
 				</simpleType>
@@ -91,7 +90,8 @@
 			</sequence>
 			<attribute name="name" type="string" use="optional" />
 			<attribute name="value" type="string" use="optional" />
-			<attribute name="forceOnEnd" type="string" use="optional" default="record" />
+			<attribute name="forceOnEnd" type="string" use="optional"
+				default="record" />
 		</complexType>
 	</element>
 
@@ -185,19 +185,23 @@
 				default="false"></attribute>
 		</complexType>
 	</element>
-	
+
 	<element name="trim">
 		<complexType>
 		</complexType>
 	</element>
-	
+
 	<element name="equals">
 		<complexType>
 			<attribute name="string" type="string" use="required" />
 		</complexType>
 	</element>
-	
+
 	<element name="normalize-utf8">
+		<complexType />
+	</element>
+
+	<element name="urlencode">
 		<complexType />
 	</element>
 
@@ -277,10 +281,10 @@
 			<element ref="tns:isbn" />
 			<element ref="tns:equals" />
 			<element ref="tns:htmlanchor" />
-			<element ref="tns:trim"/>
-			<element ref="tns:normalize-utf8"/>
+			<element ref="tns:trim" />
+			<element ref="tns:normalize-utf8" />
 			<any namespace="##other" processContents="lax"></any>
-			
+
 		</choice>
 	</group>
 

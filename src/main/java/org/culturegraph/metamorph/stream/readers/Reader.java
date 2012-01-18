@@ -22,7 +22,7 @@ public interface Reader extends StreamSender{
 	 * Otherwise an {@link IllegalStateException} is thrown.
 	 * @throws IOException
 	 */
-	void read(final InputStream inputStream) throws IOException;
+	//void read(final InputStream inputStream) throws IOException;
 	void read(final java.io.Reader reader) throws IOException;
 	
 	void read(final String entry);

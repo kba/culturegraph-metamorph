@@ -14,16 +14,18 @@ import org.culturegraph.metamorph.types.NamedValue;
 final class CollectEntity extends AbstractCollect {
 
 	private final Set<NamedValue> literals = new HashSet<NamedValue>();
+	private final Metamorph metamorph;
 //	private StreamReceiver streamReceiver;
 
 	
 	public CollectEntity(final Metamorph metamorph) {
-		super(metamorph);
+		super();
+		this.metamorph = metamorph;
 	}
 	
 	@Override
 	protected void emit() {
-		final StreamReceiver streamReceiver = getMetamorph().getStreamReceiver();
+		final StreamReceiver streamReceiver = metamorph.getStreamReceiver();
 		streamReceiver.startEntity(getName());
 		for (NamedValue literal : literals) {
 			if (literal.getName() != null && literal.getValue() != null) {
