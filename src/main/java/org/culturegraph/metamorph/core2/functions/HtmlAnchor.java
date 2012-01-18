@@ -4,7 +4,7 @@ package org.culturegraph.metamorph.core2.functions;
 /**
  * @author Markus Michael Geipel
  */
-final class HtmlAnchor extends AbstractCompose {
+public final class HtmlAnchor extends AbstractCompose {
 	
 	private String title;
 	

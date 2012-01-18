@@ -5,7 +5,7 @@ package org.culturegraph.metamorph.core2.functions;
 /**
  * @author Markus Michael Geipel
  */
-final class WhiteList extends AbstractLookup {
+public final class WhiteList extends AbstractLookup {
 
 
 	@Override

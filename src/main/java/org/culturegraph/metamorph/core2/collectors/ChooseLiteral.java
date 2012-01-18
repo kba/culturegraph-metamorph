@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.culturegraph.metamorph.core2.Metamorph;
 import org.culturegraph.metamorph.core2.NamedValueReceiver;
 import org.culturegraph.metamorph.core2.NamedValueSource;
-import org.culturegraph.metamorph.core2.ValueProcessor;
-import org.culturegraph.metamorph.core2.ValueProcessorImpl;
 import org.culturegraph.metamorph.core2.functions.Function;
+import org.culturegraph.metamorph.core2.functions.ValueProcessorImpl;
 import org.culturegraph.metamorph.util.StringUtil;
 
 /**
@@ -20,7 +20,7 @@ import org.culturegraph.metamorph.util.StringUtil;
  * @author Christoph BÃ¶hme <c.boehme@dnb.de>
  *
  */
-public final class ChooseLiteral extends AbstractCollect implements ValueProcessor, NamedValueSource{
+public final class ChooseLiteral extends AbstractCollect implements NamedValueSource{
 
 	private String value;
 	private String name;
@@ -33,14 +33,11 @@ public final class ChooseLiteral extends AbstractCollect implements ValueProcess
 	/**
 	 * @param metamorph
 	 */
-	public ChooseLiteral() {
-		super();
-	}
-
-	public ChooseLiteral(final NamedValueReceiver metamorph) {
-		super();
+	public ChooseLiteral(final Metamorph metamorph) {
+		super(metamorph);
 		setNamedValueReceiver(metamorph);
 	}
+
 
 	/* (non-Javadoc)
 	 * @see org.culturegraph.metamorph.core.AbstractCollect#emit()

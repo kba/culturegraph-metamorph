@@ -1,6 +1,5 @@
-package org.culturegraph.metamorph.core2;
+package org.culturegraph.metamorph.core2.functions;
 
-import org.culturegraph.metamorph.core2.functions.Function;
 
 public interface ValueProcessor {
 

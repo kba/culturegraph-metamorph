@@ -1,5 +1,6 @@
 package org.culturegraph.metamorph.core2;
 
+import org.culturegraph.metamorph.core2.exceptions.MetamorphDefinitionException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;

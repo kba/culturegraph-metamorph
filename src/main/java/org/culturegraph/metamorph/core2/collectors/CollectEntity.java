@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.culturegraph.metamorph.core2.Metamorph;
+import org.culturegraph.metamorph.core2.functions.Function;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.types.NamedValue;
 
@@ -15,18 +16,16 @@ import org.culturegraph.metamorph.types.NamedValue;
 public final class CollectEntity extends AbstractCollect {
 
 	private final Set<NamedValue> literals = new HashSet<NamedValue>();
-	private final Metamorph metamorph;
-//	private StreamReceiver streamReceiver;
 
-	
+
+
 	public CollectEntity(final Metamorph metamorph) {
-		super();
-		this.metamorph = metamorph;
+		super(metamorph);
 	}
 	
 	@Override
 	protected void emit() {
-		final StreamReceiver streamReceiver = metamorph.getStreamReceiver();
+		final StreamReceiver streamReceiver = getMetamorph().getStreamReceiver();
 		streamReceiver.startEntity(getName());
 		for (NamedValue literal : literals) {
 			if (literal.getName() != null && literal.getValue() != null) {
@@ -49,5 +48,11 @@ public final class CollectEntity extends AbstractCollect {
 	@Override
 	protected void clear() {
 		literals.clear();
+	}
+
+	@Override
+	public void addFunction(final Function function) {
+		throw new UnsupportedOperationException();
+		
 	}
 }

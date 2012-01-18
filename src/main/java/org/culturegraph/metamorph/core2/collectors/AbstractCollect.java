@@ -3,6 +3,7 @@ package org.culturegraph.metamorph.core2.collectors;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.culturegraph.metamorph.core2.Metamorph;
 import org.culturegraph.metamorph.core2.NamedValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * @author Markus Michael Geipel
  * @status Experimental
  */
-public abstract class AbstractCollect implements  Collect {
+public abstract class AbstractCollect implements Collect {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 
@@ -25,11 +26,18 @@ public abstract class AbstractCollect implements  Collect {
 	private boolean sameEntity;
 	private String name;
 	private String value;
+	private final Metamorph metamorph;
 
 	private final Set<NamedValueSource> namedValueSources = new HashSet<NamedValueSource>();
-	
 
+	public AbstractCollect(final Metamorph metamorph) {
+		this.metamorph = metamorph;
+	}
 	
+	protected final Metamorph getMetamorph(){
+		return metamorph;
+	}
+
 	protected final int getRecordCount() {
 		return oldRecord;
 	}
@@ -37,7 +45,12 @@ public abstract class AbstractCollect implements  Collect {
 	protected final int getEntityCount() {
 		return oldEntity;
 	}
-	
+
+	@Override
+	public final void setFlushWith(final String flushEntity) {
+		metamorph.addEntityEndListener(this, flushEntity);
+	}
+
 	/**
 	 * @param sameEntity
 	 *            the sameEntity to set
@@ -129,7 +142,6 @@ public abstract class AbstractCollect implements  Collect {
 			LOG.trace("reset as entities differ");
 		}
 	}
-	
 
 	@Override
 	public final void receive(final String name, final String value, final int recordCount, final int entityCount) {
@@ -143,11 +155,10 @@ public abstract class AbstractCollect implements  Collect {
 			if (reset) {
 				LOG.trace("reset because of emit");
 				clear();
-				alreadyEmitted= false;
+				alreadyEmitted = false;
 			}
 		}
 	}
-
 
 	protected abstract void receive(final String name, final String value);
 
@@ -172,21 +183,24 @@ public abstract class AbstractCollect implements  Collect {
 		namedValueSource.setNamedValueReceiver(this);
 		namedValueSources.add(namedValueSource);
 		onAddData(namedValueSource);
-		
-	}
-	
 
+	}
 
 	@Override
 	public final void onEntityEnd(final String entityName, final int recordCount, final int entityCount) {
-		if(oldRecord==recordCount && !alreadyEmitted && (!sameEntity || oldEntity == entityCount)){
-				emit();
+		if (oldRecord == recordCount && !alreadyEmitted && (!sameEntity || oldEntity == entityCount)) {
+			emit();
 		}
 	}
 
 	/**
 	 * @param data
 	 */
-	protected void onAddData(final NamedValueSource namedValueSource) {/* as default do nothing */
+	protected void onAddData(final NamedValueSource namedValueSource) {/*
+																		 * as
+																		 * default
+																		 * do
+																		 * nothing
+																		 */
 	}
 }

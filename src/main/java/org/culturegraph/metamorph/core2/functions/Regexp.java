@@ -12,7 +12,7 @@ import org.culturegraph.metamorph.util.StringUtil;
 /**
  * @author Markus Michael Geipel
  */
-final class Regexp extends AbstractSimpleStatelessFunction {
+public final class Regexp extends AbstractSimpleStatelessFunction {
 
 	private static final String TRUE = "true";
 	private Matcher matcher;

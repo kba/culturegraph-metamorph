@@ -1,9 +1,8 @@
-package org.culturegraph.metamorph.core2;
+package org.culturegraph.metamorph.core2.functions;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.culturegraph.metamorph.core2.functions.Function;
 
 /**
  * Abstraction for classes which use chains of {@link Function}s to process data. If one {@link Function}

@@ -5,7 +5,7 @@ package org.culturegraph.metamorph.core2.functions;
 /**
  * @author Markus Michael Geipel
  */
-final class BlackList extends AbstractLookup {
+public final class BlackList extends AbstractLookup {
 
 	@Override
 	public String process(final String key) {

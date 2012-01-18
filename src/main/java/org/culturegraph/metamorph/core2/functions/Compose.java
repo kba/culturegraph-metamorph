@@ -4,7 +4,7 @@ package org.culturegraph.metamorph.core2.functions;
 /**
  * @author Markus Michael Geipel
  */
-final class Compose extends AbstractCompose{
+public final class Compose extends AbstractCompose{
 
 
 

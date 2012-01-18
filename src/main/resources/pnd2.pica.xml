@@ -10,7 +10,7 @@
 		<annotation></annotation>
 	</meta>
 	<functions>
-		<def name="comp" class="org.culturegraph.metamorph.functions.Compose" />
+		<def name="comp" class="org.culturegraph.metamorph.core2.functions.Compose" />
 	</functions>
 
 	<rules>

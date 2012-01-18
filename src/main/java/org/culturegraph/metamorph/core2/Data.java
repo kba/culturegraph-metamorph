@@ -1,28 +1,21 @@
 package org.culturegraph.metamorph.core2;
 
+import org.culturegraph.metamorph.core2.functions.ValueProcessorImpl;
+
 /**
  * Implementation of the <code>&lt;data&gt;</code> tag.
  * 
  * @author Markus Michael Geipel
  */
-final class Data extends ValueProcessorImpl implements NamedValueReceiver, NamedValueSource, EntityEndListener {
-
-	public enum Mode {
-		VALUE, COUNT
-	}
+final class Data extends ValueProcessorImpl implements NamedValueReceiver, NamedValueSource{
 
 	private String name;
 	private String value;
 	// private String meta;
 	private final String source;
 
-	private Mode mode = Mode.VALUE;
 	private NamedValueReceiver dataReceiver;
-	private int occurence;
-	private int occurenceCount;
-	private int processingCount;
 
-	private int oldRecordCount;
 
 
 	public Data(final String source) {
@@ -30,9 +23,7 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Named
 		this.source = source;
 	}
 	
-	public void setOccurence(final int occurence) {
-		this.occurence = occurence;
-	}
+
 	
 	public String getSource(){
 		return source;
@@ -49,38 +40,15 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Named
 	public void receive(final String recName, final String recValue, final int recordCount, final int entityCount) {
 		assert dataReceiver != null;
 
-		updateCounts(recordCount);
-		if (!isOccurenceOK()) {
-			return;
-		}
-
 		final String tempData = applyFunctions(recValue);
 		if (tempData == null) {
 			return;
 		}
-		++processingCount;
-
-		if(mode.equals(Mode.VALUE)){
-			dataReceiver.receive(fallback(name, recName), fallback(value, tempData), recordCount, entityCount);
-		}
 		
-		//dataReceiver.data(fallback(name, tempData), fallback(value, recValue), recordCount, entityCount);
+		dataReceiver.receive(fallback(name, recName), fallback(value, tempData), recordCount, entityCount);
 
 	}
 
-	private boolean isOccurenceOK() {
-		return occurence == 0 || occurence == occurenceCount;
-	}
-
-	private void updateCounts(final int recordCount) {
-		if (recordCount == oldRecordCount) {
-			++occurenceCount;
-		} else {
-			occurenceCount = 1;
-			processingCount = 0;
-			oldRecordCount = recordCount;
-		}
-	}
 
 	/**
 	 * @param dataReceiver
@@ -99,9 +67,7 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Named
 		return dataReceiver;
 	}
 
-	public void setMode(final Mode mode) {
-		this.mode = mode;
-	}
+
 
 	/**
 	 * @param name
@@ -137,11 +103,6 @@ final class Data extends ValueProcessorImpl implements NamedValueReceiver, Named
 		return value;
 	}
 
-	@Override
-	public void onEntityEnd(final String entityName, final int recordCount, final int entityCount) {
-		if (Mode.COUNT == mode) {
-			dataReceiver.receive(name, String.valueOf(processingCount), oldRecordCount, 0);
-		}
-	}
+
 
 }

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
@@ -15,14 +14,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.culturegraph.metamorph.core2.Data.Mode;
-import org.culturegraph.metamorph.core2.collectors.ChooseLiteral;
 import org.culturegraph.metamorph.core2.collectors.Collect;
-import org.culturegraph.metamorph.core2.collectors.CollectEntity;
-import org.culturegraph.metamorph.core2.collectors.CollectLiteral;
-import org.culturegraph.metamorph.core2.collectors.Group;
+import org.culturegraph.metamorph.core2.collectors.CollectFactory;
+import org.culturegraph.metamorph.core2.exceptions.MetamorphDefinitionException;
 import org.culturegraph.metamorph.core2.functions.Function;
 import org.culturegraph.metamorph.core2.functions.FunctionFactory;
+import org.culturegraph.metamorph.core2.functions.ValueProcessor;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +38,7 @@ import org.xml.sax.SAXException;
 public final class MetamorphBuilder2 {
 
 	public static enum MMTAG {
-		META, FUNCTIONS, RULES, MAPS, COMBINE, CHOOSE, ENTITY, SPLIT, EXTRACT, AGGREGATE, COUNT, MAP, ENTRY, DEF, GROUP, DATA, POSTPROCESS
+		META, FUNCTIONS, RULES, MAPS, ENTITY,  MAP, ENTRY, DEF, DATA, POSTPROCESS
 	}
 
 	public static enum ATTRITBUTE {
@@ -71,11 +68,11 @@ public final class MetamorphBuilder2 {
 		this.morphDef = morphDef;
 	}
 
-	public Metamorph build(){
+	public Metamorph build() {
 		return build(morphDef);
 	}
 
-	public static Metamorph build(final String morphDef){
+	public static Metamorph build(final String morphDef) {
 		if (morphDef == null) {
 			throw new IllegalArgumentException("'morphDef' must not be null");
 		}
@@ -101,7 +98,7 @@ public final class MetamorphBuilder2 {
 		}
 	}
 
-	public static Metamorph build(final InputStream inputStream){
+	public static Metamorph build(final InputStream inputStream) {
 		if (inputStream == null) {
 			throw new IllegalArgumentException("'inputStream' must not be null");
 		}
@@ -113,7 +110,6 @@ public final class MetamorphBuilder2 {
 			throw new MetamorphDefinitionException(e);
 		}
 	}
-
 
 	private static DocumentBuilder getDocumentBuilder() {
 
@@ -181,7 +177,7 @@ public final class MetamorphBuilder2 {
 
 		final Metamorph metamorph = new Metamorph();
 		final FunctionFactory functions = new FunctionFactory();
-		final CollectFactory collets = new CollectFactory();
+		final CollectFactory collects = new CollectFactory();
 
 		for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
 
@@ -193,7 +189,7 @@ public final class MetamorphBuilder2 {
 				handleFunctions(child, functions);
 				break;
 			case RULES:
-				handleRules(child, metamorph, functions);
+				handleRules(child, metamorph, functions, collects);
 				break;
 			case MAPS:
 				handleMaps(child, metamorph);
@@ -230,114 +226,66 @@ public final class MetamorphBuilder2 {
 		}
 	}
 
-	private static void handleRules(final Node node, final Metamorph metamorph, final FunctionFactory functions) {
+	private static void handleRules(final Node node, final Metamorph metamorph, final FunctionFactory functions,
+			final CollectFactory collects) {
 		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-			switch (tagOf(child)) {
-			case GROUP:
-				handleGroup(child, metamorph, functions);
-				break;
-			case DATA:
-				handleData((Element) child, metamorph, functions);
-				break;
-			case ENTITY:
-			case COMBINE:
-			case CHOOSE:
-			case AGGREGATE:
-				handleCollect(child, metamorph, functions);
-				break;
-			default:
-				illegalChild(child, node);
-			}
+			handleLiteralRule(child, null, metamorph, functions, collects);
 		}
 	}
 
-	private static Collect handleCollect(final Node node, final Metamorph metamorph, final FunctionFactory functions) {
+	private static void handleLiteralRule(final Node node, final Collect parent, final Metamorph metamorph,
+			final FunctionFactory functions, final CollectFactory collects) {
 
-		final boolean reset = TRUE.equals(getAttr(node, ATTRITBUTE.RESET));
-		final boolean sameEntity = TRUE.equals(getAttr(node, ATTRITBUTE.SAME_ENTITY));
+		final String nodeName = node.getNodeName();
+		if (collects.getAvailableClasses().contains(nodeName)) {
 
-		final Collect collect;
-		switch (tagOf(node)) {
+			final Collect innerCollect = handleCollect(node, metamorph, functions, collects);
+			if (parent != null && innerCollect instanceof NamedValueSource) {
+				final NamedValueSource namedValueSource = (NamedValueSource) innerCollect;
+				parent.addNamedValueSource(namedValueSource);
+			}
 
-		case ENTITY:
-			collect = new CollectEntity(metamorph);
-			break;
-		case COMBINE:
-			collect = new CollectLiteral(metamorph);
-			break;
-		case CHOOSE:
-			collect = new ChooseLiteral(metamorph);
-			break;
-		case AGGREGATE:
-			collect = null;
-			throw new IllegalArgumentException("Aggregate not implemented yet");
+		} else if ("data".equals(nodeName)) {
+			final Data data = handleData((Element) node, metamorph, functions);
+			if (parent != null) {
+				parent.addNamedValueSource(data);
+			}
+		} else {
+			illegalChild(node, node.getParentNode());
+		}
+	}
+
+	private static Collect handleCollect(final Node node, final Metamorph metamorph, final FunctionFactory functions,
+			final CollectFactory collects) {
 
 		
-		default:
-			illegalChild(node, node.getParentNode());
-			return null;
-		}
-		collect.setName(getAttr(node, ATTRITBUTE.NAME));
-		collect.setValue(getAttr(node, ATTRITBUTE.VALUE));
-		collect.setReset(reset);
-		collect.setSameEntity(sameEntity);
+		final Map<String, String> attributes = attributesToMap(node);
+		
+	
+		final Collect collect = collects.newInstance(node.getNodeName(), attributes  , metamorph);
 
 		final String flushWith = getAttr(node, ATTRITBUTE.FLUSH_WITH);
 		if (flushWith != null) {
 			metamorph.addEntityEndListener(collect, flushWith);
 		}
 
-		handleLiteralRule(node, collect, metamorph, functions);
-
-		return collect;
-	}
-
-	private static void handleLiteralRule(final Node node, final Collect parent, final Metamorph metamorph,
-			final FunctionFactory functions) {
-		switch (tagOf(node)) {
-		case GROUP:
-			parent.addNamedValueSource(handleGroup(node, metamorph, functions));
-			break;
-		case DATA:
-			final Data data = handleData((Element) node, metamorph, functions);
-			parent.addNamedValueSource(data);
-			break;
-		case COMBINE:
-		case CHOOSE:
-		case AGGREGATE:
-			final Collect innerCollect = handleCollect(node, metamorph, functions);
-			if (innerCollect instanceof NamedValueSource) {
-				final NamedValueSource namedValueSource = (NamedValueSource) innerCollect;
-				parent.addNamedValueSource(namedValueSource);
+		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
+			if ("postprocess".equals(child.getNodeName())) {
+				handlePostprocess(child, collect, metamorph, functions);
 			}
-			break;
-		default:
-			illegalChild(node, node.getParentNode());
-			break;
+			handleLiteralRule(child, collect, metamorph, functions, collects);
 		}
+		return collect;
 	}
 
 	private static Data handleData(final Element dataNode, final Metamorph metamorph, final FunctionFactory functions) {
 
 		final String source = getAttr(dataNode, ATTRITBUTE.SOURCE);
 		final Data data = new Data(source);
-
-		final String occurence = getAttr(dataNode, ATTRITBUTE.OCCURENCE);
-		if (occurence != null && !occurence.isEmpty()) {
-			data.setOccurence(Integer.parseInt(occurence));
-		}
-
+		
 		data.setName(getAttr(dataNode, ATTRITBUTE.NAME));
 		data.setValue(getAttr(dataNode, ATTRITBUTE.VALUE));
 
-		final String mode = getAttr(dataNode, ATTRITBUTE.MODE);
-		if (mode != null) {
-			final Data.Mode dataMode = Data.Mode.valueOf(mode.toUpperCase(Locale.US));
-			data.setMode(dataMode);
-			if (dataMode == Mode.COUNT) {
-				metamorph.addEntityEndListener(data, Metamorph.RECORD_KEYWORD);
-			}
-		}
 		for (Node childNode = dataNode.getFirstChild(); childNode != null; childNode = childNode.getNextSibling()) {
 			addFunctionToProcessor(functions, metamorph, childNode, data);
 		}
@@ -358,20 +306,6 @@ public final class MetamorphBuilder2 {
 			function.putValue(entryName, entryValue);
 		}
 		processor.addFunction(function);
-	}
-
-	private static Group handleGroup(final Node node, final Metamorph metamorph, final FunctionFactory functions) {
-		final Group group = new Group();
-		group.setName(getAttr(node, ATTRITBUTE.NAME));
-		group.setValue(getAttr(node, ATTRITBUTE.VALUE));
-
-		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-			if (tagOf(node).equals(MMTAG.POSTPROCESS)) {
-				handlePostprocess(child, group, metamorph, functions);
-			}
-			handleLiteralRule(child, group, metamorph, functions);
-		}
-		return group;
 	}
 
 	private static void handlePostprocess(final Node node, final ValueProcessor processor, final Metamorph metamorph,
@@ -405,7 +339,7 @@ public final class MetamorphBuilder2 {
 		}
 	}
 
-	public static void main(final String[] args){
+	public static void main(final String[] args) {
 		final Metamorph metamorph = MetamorphBuilder2.build("pnd2.pica");
 		System.out.println(metamorph);
 	}

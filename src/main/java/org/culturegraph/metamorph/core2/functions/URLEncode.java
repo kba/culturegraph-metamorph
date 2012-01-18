@@ -8,7 +8,7 @@ import org.culturegraph.metamorph.core.MetamorphException;
 /**
  * @author Markus Michael Geipel
  */
-final class URLEncode extends AbstractSimpleStatelessFunction {
+public final class URLEncode extends AbstractSimpleStatelessFunction {
 
 	@Override
 	public String process(final String value) {

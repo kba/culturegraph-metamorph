@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.culturegraph.metamorph.core2.Metamorph;
 import org.culturegraph.metamorph.core2.NamedValueReceiver;
 import org.culturegraph.metamorph.core2.NamedValueSource;
-import org.culturegraph.metamorph.core2.ValueProcessor;
-import org.culturegraph.metamorph.core2.ValueProcessorImpl;
 import org.culturegraph.metamorph.core2.functions.Function;
+import org.culturegraph.metamorph.core2.functions.ValueProcessorImpl;
 import org.culturegraph.metamorph.util.StringUtil;
 
 /**
@@ -17,7 +17,7 @@ import org.culturegraph.metamorph.util.StringUtil;
  * 
  * @author Markus Michael Geipel
  */
-public final class CollectLiteral extends AbstractCollect implements ValueProcessor, NamedValueSource{
+public final class CollectLiteral extends AbstractCollect implements NamedValueSource{
 
 	private final Map<String, String> variables = new HashMap<String, String>();
 	private final Set<String> variableNames = new HashSet<String>();
@@ -25,12 +25,9 @@ public final class CollectLiteral extends AbstractCollect implements ValueProces
 //	private DataReceiver dataReceiver;
 	private NamedValueReceiver namedValueReceiver;
 
-	public CollectLiteral() {
-		super();
-	}
 
-	public CollectLiteral(final NamedValueReceiver metamorph) {
-		super();
+	public CollectLiteral(final Metamorph metamorph) {
+		super(metamorph);
 		setNamedValueReceiver(metamorph);
 	}
 
@@ -80,6 +77,5 @@ public final class CollectLiteral extends AbstractCollect implements ValueProces
 	@Override
 	public void setNamedValueReceiver(final NamedValueReceiver namedValueReceiver) {
 		this.namedValueReceiver = namedValueReceiver;
-		
 	}
 }

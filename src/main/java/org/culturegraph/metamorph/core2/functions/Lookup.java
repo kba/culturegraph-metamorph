@@ -5,7 +5,7 @@ package org.culturegraph.metamorph.core2.functions;
 /**
  * @author Markus Michael Geipel
  */
-final class Lookup extends AbstractLookup {
+public final class Lookup extends AbstractLookup {
 
 
 	private String defaultValue;

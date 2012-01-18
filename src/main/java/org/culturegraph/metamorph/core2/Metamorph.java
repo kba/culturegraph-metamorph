@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.culturegraph.metamorph.core2.exceptions.IllegalMorphStateException;
+import org.culturegraph.metamorph.core2.exceptions.MetamorphException;
 import org.culturegraph.metamorph.multimap.MultiMap;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metamorph.stream.StreamReceiver;
@@ -257,7 +259,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		entityMap.put(from, toParam);
 	}
 
-	protected void addEntityEndListener(final EntityEndListener entityEndListener, final String entityName) {
+	public void addEntityEndListener(final EntityEndListener entityEndListener, final String entityName) {
 		assert entityEndListener != null && entityName != null;
 
 		List<EntityEndListener> matchingListeners = entityEndListeners.get(entityName);

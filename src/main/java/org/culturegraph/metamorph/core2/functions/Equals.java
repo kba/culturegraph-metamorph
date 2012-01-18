@@ -3,7 +3,7 @@ package org.culturegraph.metamorph.core2.functions;
 /**
  * @author Markus Michael Geipel
  */
-final class Equals extends AbstractSimpleStatelessFunction {
+public final class Equals extends AbstractSimpleStatelessFunction {
 
 	private String string;
 

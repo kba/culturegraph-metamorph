@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * @author Markus Michael Geipel
  */
-final class Replace extends AbstractSimpleStatelessFunction {
+public final class Replace extends AbstractSimpleStatelessFunction {
 
 	private Pattern pattern;
 	private String with;

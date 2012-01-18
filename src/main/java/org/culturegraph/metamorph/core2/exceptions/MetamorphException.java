@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.core2;
+package org.culturegraph.metamorph.core2.exceptions;
 
 /**
  * @author Markus Michael Geipel

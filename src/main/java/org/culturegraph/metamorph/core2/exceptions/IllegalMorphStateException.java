@@ -1,4 +1,5 @@
-package org.culturegraph.metamorph.core2;
+package org.culturegraph.metamorph.core2.exceptions;
+
 
 public final class IllegalMorphStateException extends MetamorphException {
 
