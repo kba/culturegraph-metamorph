@@ -3,6 +3,7 @@
  */
 package org.culturegraph.metamorph.stream.receivers;
 
+import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.junit.Test;
 
 
@@ -10,390 +11,370 @@ import org.junit.Test;
  * @author Christoph Böhme <c.boehme@dnb.de>
  *
  */
-public class CheckWriterTest {
+public final class CheckWriterTest {
 
 	@Test
 	public void generalCheck() {
-		CheckWriter w = new CheckWriter();
+		final EventStreamWriter w = new EventStreamWriter();		
+		w.startStream();
+			generalCheckRecord(w);
+		w.endStream();
 		
-		w.startRecord("01");
-			w.literal("Name", "Karl");
-			w.startEntity("Address");
-				w.literal("Street", "Meteorstreet 23");
-				w.literal("Town", "London");
-			w.endEntity();
-			w.startEntity("Address");
-				w.literal("Street", "Sunrise Avenue 12");
-				w.literal("Town", "Los Angeles");
-			w.endEntity();
-			w.startEntity("Numbers");
-				w.startEntity("Number");
-					w.literal("Name", "Home");
-					w.literal("Number", "+49 1234");
-				w.endEntity();
-				w.startEntity("Number");
-					w.literal("Name", "Home");
-					w.literal("Number", "+49 3453");
-				w.endEntity();
-				w.startEntity("Number");
-					w.literal("Number", "+49 123");
-				w.endEntity();
-			w.endEntity();
-		w.endRecord();
-		w.startRecord("02");
-			w.startEntity("Name");
-				w.literal("FirstName", "Franz");
-				w.literal("LastName", "Kafka");
-			w.endEntity();
-			w.startEntity("Name");
-				w.literal("FirstName", "Franz");
-			w.endEntity();
-			w.startEntity("Name");
-				w.literal("FirstName", "Franz");
-				w.literal("LastName", "Kafka");
-			w.endEntity();
-		w.endRecord();
-		
-		w.startChecking();	
-			w.startRecord("01");
-				w.literal("Name", "Karl");
-				w.startEntity("Address");
-					w.literal("Street", "Meteorstreet 23");
-					w.literal("Town", "London");
-				w.endEntity();
-				w.startEntity("Address");
-					w.literal("Town", "Los Angeles");
-					w.literal("Street", "Sunrise Avenue 12");
-				w.endEntity();
-				w.startEntity("Numbers");
-				w.startEntity("Number");
-					w.literal("Name", "Home");
-					w.literal("Number", "+49 1234");
-				w.endEntity();
-				w.startEntity("Number");
-					w.literal("Number", "+49 123");
-				w.endEntity();
-				w.startEntity("Number");
-					w.literal("Name", "Home");
-					w.literal("Number", "+49 3453");
-				w.endEntity();
-			w.endEntity();
-			w.endRecord();
-			w.startRecord("02");
-				w.startEntity("Name");
-					w.literal("FirstName", "Franz");
-				w.endEntity();
-				w.startEntity("Name");
-					w.literal("FirstName", "Franz");
-					w.literal("LastName", "Kafka");
-				w.endEntity();
-				w.startEntity("Name");
-					w.literal("FirstName", "Franz");
-					w.literal("LastName", "Kafka");
-				w.endEntity();
-			w.endRecord();			
-		w.endChecking();
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.startStream();	
+			generalCheckRecord(v);
+		v.endStream();
+	}
+	
+	private void generalCheckRecord(StreamReceiver r) {
+		r.startRecord("01");
+			r.literal("Name", "Karl");
+			r.startEntity("Address");
+				r.literal("Street", "Meteorstreet 23");
+				r.literal("Town", "London");
+			r.endEntity();
+			r.startEntity("Address");
+				r.literal("Town", "Los Angeles");
+				r.literal("Street", "Sunrise Avenue 12");
+			r.endEntity();
+			r.startEntity("Numbers");
+			r.startEntity("Number");
+				r.literal("Name", "Home");
+				r.literal("Number", "+49 1234");
+			r.endEntity();
+			r.startEntity("Number");
+				r.literal("Number", "+49 123");
+			r.endEntity();
+			r.startEntity("Number");
+				r.literal("Name", "Home");
+				r.literal("Number", "+49 3453");
+			r.endEntity();
+		r.endEntity();
+		r.endRecord();
+		r.startRecord("02");
+			r.startEntity("Name");
+				r.literal("FirstName", "Franz");
+			r.endEntity();
+			r.startEntity("Name");
+				r.literal("FirstName", "Franz");
+				r.literal("LastName", "Kafka");
+			r.endEntity();
+			r.startEntity("Name");
+				r.literal("FirstName", "Franz");
+				r.literal("LastName", "Kafka");
+			r.endEntity();
+		r.endRecord();					
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void missingLiteral() {
-		CheckWriter w = new CheckWriter();
-		
-		w.startRecord("01");
-			w.literal("Name", "von Beethoven");
-			w.literal("FirstName", "Ludwig");
-		w.endRecord();
-		
-		w.startChecking();
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
 			w.startRecord("01");
 				w.literal("Name", "von Beethoven");
-			w.endRecord();		
-		w.endChecking();
+				w.literal("FirstName", "Ludwig");
+			w.endRecord();
+		w.endStream();
+		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.startStream();	
+			v.startRecord("01");
+				v.literal("Name", "von Beethoven");
+			v.endRecord();		
+		v.endStream();
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void invalidRecordIdentifier() {
-		CheckWriter w = new CheckWriter();
-		
-		w.startRecord("1");
-			w.literal("LastName", "von Beethoven");
-			w.literal("FirstName", "Ludwig");
-		w.endRecord();
-		
-		w.startChecking();
-			w.startRecord("0");
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
+			w.startRecord("1");
 				w.literal("LastName", "von Beethoven");
 				w.literal("FirstName", "Ludwig");
-			w.endRecord();		
-		w.endChecking();
+			w.endRecord();
+		w.endStream();
+		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.startStream();	
+			v.startRecord("0");
+				v.literal("LastName", "von Beethoven");
+				v.literal("FirstName", "Ludwig");
+			v.endRecord();		
+		v.endStream();
 	}
 	
 	@Test
 	public void changedRecordOrder() {
-		CheckWriter w = new CheckWriter();
-		
-		w.startRecord("1");
-			w.literal("Name", "Karl");
-		w.endRecord();
-		w.startRecord("2");
-			w.literal("Name", "Gustav");
-		w.endRecord();
-		
-		w.startChecking();		
-			w.startRecord("2");
-				w.literal("Name", "Gustav");
-			w.endRecord();
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
 			w.startRecord("1");
 				w.literal("Name", "Karl");
 			w.endRecord();
-		w.endChecking();		
+			w.startRecord("2");
+				w.literal("Name", "Gustav");
+			w.endRecord();
+		w.endStream();
+		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.startStream();	
+			v.startRecord("2");
+				v.literal("Name", "Gustav");
+			v.endRecord();
+			v.startRecord("1");
+				v.literal("Name", "Karl");
+			v.endRecord();
+		v.endStream();		
 	}
 	
 	@Test
 	public void strictRecordOrder() {
-		CheckWriter w = new CheckWriter();
-		
-		w.startRecord("1");
-			w.literal("Name", "Heinz");
-		w.endRecord();
-		w.startRecord("2");
-			w.literal("Name", "Karl");
-		w.endRecord();
-		
-		w.setStrictRecordOrder(true);
-		
-		w.startChecking();		
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
 			w.startRecord("1");
 				w.literal("Name", "Heinz");
 			w.endRecord();
 			w.startRecord("2");
 				w.literal("Name", "Karl");
 			w.endRecord();
-		w.endChecking();			
+		w.endStream();
+		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), true);
+		v.startStream();	
+			v.startRecord("1");
+				v.literal("Name", "Heinz");
+			v.endRecord();
+			v.startRecord("2");
+				v.literal("Name", "Karl");
+			v.endRecord();
+		v.endStream();			
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void invalidRecordOrderByIdentifier() {
-		CheckWriter w = new CheckWriter();
-		
-		w.startRecord("1");
-			w.literal("Name", "Heinz");
-		w.endRecord();
-		w.startRecord("2");
-			w.literal("Name", "Karl");
-		w.endRecord();
-		
-		w.setStrictRecordOrder(true);
-		
-		w.startChecking();		
-			w.startRecord("2");
-				w.literal("Name", "Karl");
-			w.endRecord();
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
 			w.startRecord("1");
 				w.literal("Name", "Heinz");
 			w.endRecord();
-		w.endChecking();			
+			w.startRecord("2");
+				w.literal("Name", "Karl");
+			w.endRecord();
+		w.endStream();
+		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), true);
+		v.startStream();	
+			v.startRecord("2");
+				v.literal("Name", "Karl");
+			v.endRecord();
+			v.startRecord("1");
+				v.literal("Name", "Heinz");
+			v.endRecord();
+		v.endStream();
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void invalidRecordOrderByContent() {
-		CheckWriter w = new CheckWriter();
-		
-		w.startRecord(null);
-			w.literal("Name", "Karl");
-		w.endRecord();
-		w.startRecord(null);
-			w.literal("Name", "Heinz");
-		w.endRecord();
-		
-		w.setStrictRecordOrder(true);
-		
-		w.startChecking();		
-			w.startRecord(null);
-				w.literal("Name", "Heinz");
-			w.endRecord();
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
 			w.startRecord(null);
 				w.literal("Name", "Karl");
 			w.endRecord();
-		w.endChecking();			
+			w.startRecord(null);
+				w.literal("Name", "Heinz");
+			w.endRecord();
+		w.endStream();
+		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), true);
+		v.startStream();	
+			v.startRecord(null);
+				v.literal("Name", "Heinz");
+			v.endRecord();
+			v.startRecord(null);
+				v.literal("Name", "Karl");
+			v.endRecord();
+		v.endStream();
 	}
 	
 	@Test
 	public void changedEntityKeyOrder() {
-		CheckWriter w = new CheckWriter();
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
+			w.startRecord("1");
+				w.startEntity("Entity-1");
+					w.literal("Literal-1", "A");
+				w.endEntity();
+				w.startEntity("Entity-1");
+					w.literal("Literal-2", "B");
+				w.endEntity();
+				w.startEntity("Entity-2");
+					w.literal("Literal-3", "C");
+				w.endEntity();
+			w.endRecord();
+		w.endStream();
 		
-		w.startRecord("1");
-			w.startEntity("Entity-1");
-				w.literal("Literal-1", "A");
-			w.endEntity();
-			w.startEntity("Entity-1");
-				w.literal("Literal-2", "B");
-			w.endEntity();
-			w.startEntity("Entity-2");
-				w.literal("Literal-3", "C");
-			w.endEntity();
-		w.endRecord();
-		
-		w.startChecking();
-		w.startRecord("1");
-			w.startEntity("Entity-1");
-				w.literal("Literal-2", "B");
-			w.endEntity();
-			w.startEntity("Entity-2");
-				w.literal("Literal-3", "C");
-			w.endEntity();
-			w.startEntity("Entity-1");
-				w.literal("Literal-1", "A");
-			w.endEntity();
-		w.endRecord();
-		w.endChecking();
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.startStream();	
+			v.startRecord("1");
+				v.startEntity("Entity-1");
+					v.literal("Literal-2", "B");
+				v.endEntity();
+				v.startEntity("Entity-2");
+					v.literal("Literal-3", "C");
+				v.endEntity();
+				v.startEntity("Entity-1");
+					v.literal("Literal-1", "A");
+				v.endEntity();
+			v.endRecord();
+		v.endStream();
 	}	
 	
 	@Test
 	public void strictEntityKeyOrder() {
-		CheckWriter w = new CheckWriter();
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
+			w.startRecord("1");
+				w.startEntity("Entity-1");
+					w.literal("Literal-1", "A");
+				w.endEntity();
+				w.startEntity("Entity-1");
+					w.literal("Literal-2", "B");
+				w.endEntity();
+				w.startEntity("Entity-2");
+					w.literal("Literal-3", "C");
+				w.endEntity();
+			w.endRecord();
+		w.endStream();
 		
-		w.startRecord("1");
-			w.startEntity("Entity-1");
-				w.literal("Literal-1", "A");
-			w.endEntity();
-			w.startEntity("Entity-1");
-				w.literal("Literal-2", "B");
-			w.endEntity();
-			w.startEntity("Entity-2");
-				w.literal("Literal-3", "C");
-			w.endEntity();
-		w.endRecord();
-		
-		w.setStrictKeyOrder(true);
-		
-		w.startChecking();
-		w.startRecord("1");
-			w.startEntity("Entity-1");
-				w.literal("Literal-1", "A");
-			w.endEntity();
-			w.startEntity("Entity-1");
-				w.literal("Literal-2", "B");
-			w.endEntity();
-			w.startEntity("Entity-2");
-				w.literal("Literal-3", "C");
-			w.endEntity();
-		w.endRecord();
-		w.endChecking();
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), false, true);
+		v.startStream();	
+			v.startRecord("1");
+				v.startEntity("Entity-1");
+					v.literal("Literal-1", "A");
+				v.endEntity();
+				v.startEntity("Entity-1");
+					v.literal("Literal-2", "B");
+				v.endEntity();
+				v.startEntity("Entity-2");
+					v.literal("Literal-3", "C");
+				v.endEntity();
+			v.endRecord();
+		v.endStream();
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void invalidEntityKeyOrder() {
-		CheckWriter w = new CheckWriter();
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
+			w.startRecord("1");
+				w.startEntity("Entity-1");
+					w.literal("Literal-1", "A");
+				w.endEntity();
+				w.startEntity("Entity-1");
+					w.literal("Literal-2", "B");
+				w.endEntity();
+				w.startEntity("Entity-2");
+					w.literal("Literal-3", "C");
+				w.endEntity();
+			w.endRecord();
+		w.endStream();
 		
-		w.startRecord("1");
-			w.startEntity("Entity-1");
-				w.literal("Literal-1", "A");
-			w.endEntity();
-			w.startEntity("Entity-1");
-				w.literal("Literal-2", "B");
-			w.endEntity();
-			w.startEntity("Entity-2");
-				w.literal("Literal-3", "C");
-			w.endEntity();
-		w.endRecord();
-		
-		w.setStrictKeyOrder(true);
-		
-		w.startChecking();
-		w.startRecord("1");
-			w.startEntity("Entity-1");
-				w.literal("Literal-2", "B");
-			w.endEntity();
-			w.startEntity("Entity-2");
-				w.literal("Literal-3", "C");
-			w.endEntity();
-			w.startEntity("Entity-1");
-				w.literal("Literal-1", "A");
-			w.endEntity();
-		w.endRecord();
-		w.endChecking();
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), false, true);
+		v.startStream();	
+			v.startRecord("1");
+				v.startEntity("Entity-1");
+					v.literal("Literal-2", "B");
+				v.endEntity();
+				v.startEntity("Entity-2");
+					v.literal("Literal-3", "C");
+				v.endEntity();
+				v.startEntity("Entity-1");
+					v.literal("Literal-1", "A");
+				v.endEntity();
+			v.endRecord();
+		v.endStream();
 	}
 
 	@Test
 	public void changedLiteralValueOrder() {
-		CheckWriter w = new CheckWriter();
-		
-		w.startRecord("1");
-			w.literal("Name", "Franz");
-			w.literal("Name", "Gustav");
-		w.endRecord();
-		
-		w.startChecking();
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
 			w.startRecord("1");
-				w.literal("Name", "Gustav");
 				w.literal("Name", "Franz");
+				w.literal("Name", "Gustav");
 			w.endRecord();
-		w.endChecking();
+		w.endStream();
+		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.startStream();		
+			v.startRecord("1");
+				v.literal("Name", "Gustav");
+				v.literal("Name", "Franz");
+			v.endRecord();
+		v.endStream();
 	}
 
 	@Test
 	public void strictLiteralValueOrder() {
-		CheckWriter w = new CheckWriter();
-		
-		w.startRecord("1");
-			w.literal("Name", "Franz");
-			w.literal("Name", "Gustav");
-		w.endRecord();
-		
-		w.setStrictValueOrder(true);
-		
-		w.startChecking();
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
 			w.startRecord("1");
 				w.literal("Name", "Franz");
 				w.literal("Name", "Gustav");
 			w.endRecord();
-		w.endChecking();
+		w.endStream();
+		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), false, false, true);
+		v.startStream();		
+			v.startRecord("1");
+				v.literal("Name", "Franz");
+				v.literal("Name", "Gustav");
+			v.endRecord();
+		v.endStream();
 	}
 
 	@Test(expected=IllegalStateException.class)
 	public void invalidLiteralValueOrder() {
-		CheckWriter w = new CheckWriter();
-		
-		w.startRecord("1");
-			w.literal("Name", "Franz");
-			w.literal("Name", "Gustav");
-		w.endRecord();
-		
-		w.setStrictValueOrder(true);
-		
-		w.startChecking();
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
 			w.startRecord("1");
-				w.literal("Name", "Gustav");
 				w.literal("Name", "Franz");
+				w.literal("Name", "Gustav");
 			w.endRecord();
-		w.endChecking();
+		w.endStream();
+		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), false, false, true);
+		v.startStream();		
+			v.startRecord("1");
+				v.literal("Name", "Gustav");
+				v.literal("Name", "Franz");
+			v.endRecord();
+		v.endStream();
 	}
 
 	@Test
 	public void strictLiteralValueOrderRandomRecordOrder() {
-		CheckWriter w = new CheckWriter();
-		
-		w.startRecord(null);
-			w.literal("Name", "Franz");
-			w.literal("Name", "Gustav");
-		w.endRecord();
-		w.startRecord(null);
-			w.literal("Name", "Gustav");
-			w.literal("Name", "Franz");
-		w.endRecord();
-		
-		w.setStrictValueOrder(true);
-		
-		w.startChecking();
-			w.startRecord(null);
-				w.literal("Name", "Gustav");
-				w.literal("Name", "Franz");
-			w.endRecord();
+		final EventStreamWriter w = new EventStreamWriter();
+		w.startStream();
 			w.startRecord(null);
 				w.literal("Name", "Franz");
 				w.literal("Name", "Gustav");
 			w.endRecord();
-		w.endChecking();
+			w.startRecord(null);
+				w.literal("Name", "Gustav");
+				w.literal("Name", "Franz");
+			w.endRecord();
+		w.endStream();
+		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), false, false, true);
+		v.startStream();		
+			v.startRecord(null);
+				v.literal("Name", "Gustav");
+				v.literal("Name", "Franz");
+			v.endRecord();
+			v.startRecord(null);
+				v.literal("Name", "Franz");
+				v.literal("Name", "Gustav");
+			v.endRecord();
+		v.endStream();
 	}
 }

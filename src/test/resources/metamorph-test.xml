@@ -2,11 +2,11 @@
 <metamorph-test version="1.0">
 	
 	<test-case>
-		<input href="" type="" />
+		<input src="" type="" />
 		
-		<metamorph href="" />
+		<metamorph src="" />
 		
-		<output href="" />
+		<output src="" />
 	</test-case>
 	
 	<test-case>
@@ -18,7 +18,7 @@
 		</metamorph>
 		
 		<output xmlns="http://www.culturegraph.org/cgxml">
-			<records>
+			<cgxml><records>
 				<record>
 					<literal name="" value="" />
 					<literal name="" value="" />
@@ -26,7 +26,7 @@
 						<literal name="" />
 					</entity>
 				</record>
-			</records>
+			</records></cgxml>
 		</output>
 	</test-case>
 	

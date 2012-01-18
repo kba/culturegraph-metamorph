@@ -16,8 +16,6 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
@@ -36,9 +34,6 @@ public final class CGXmlReader implements Reader {
 		private static final String NAME_ATTR = "name";
 		private static final String VALUE_ATTR = "value";
 	
-		/**
-		 * 
-		 */
 		public CGXmlHandler() {
 			// Nothing to do
 		}
@@ -47,11 +42,11 @@ public final class CGXmlReader implements Reader {
 		public void startElement(final String uri, final String localName, 
 				final String qName, final Attributes attributes) {
 			if (RECORD_TAG.equals(localName)) {
-				receiver.startRecord(attributes.getValue("", ID_ATTR));
+				getReceiver().startRecord(attributes.getValue("", ID_ATTR));
 			} else if (ENTITY_TAG.equals(localName)) {
-				receiver.startEntity(attributes.getValue("", NAME_ATTR));
+				getReceiver().startEntity(attributes.getValue("", NAME_ATTR));
 			} else if (LITERAL_TAG.equals(localName)) {
-				receiver.literal(attributes.getValue("", NAME_ATTR), 
+				getReceiver().literal(attributes.getValue("", NAME_ATTR), 
 						attributes.getValue("", VALUE_ATTR));
 			}
 		}
@@ -60,24 +55,24 @@ public final class CGXmlReader implements Reader {
 		public void endElement(final String uri, final String localName, 
 				final String qName) {
 			if (RECORD_TAG.equals(localName)) {
-				receiver.endRecord();
+				getReceiver().endRecord();
 			} else if (ENTITY_TAG.equals(localName)) {
-				receiver.endEntity();
+				getReceiver().endEntity();
 			}
 		}
 		
 		@Override
-		public void error(SAXParseException e) {
+		public void error(final SAXParseException e) {
 			throw new RuntimeException(e);
 		}
 		
 		@Override
-		public void fatalError(SAXParseException e) {
+		public void fatalError(final SAXParseException e) {
 			throw new RuntimeException(e);			
 		}
 		
 		@Override
-		public void warning(SAXParseException e) {
+		public void warning(final SAXParseException e) {
 			throw new RuntimeException(e);			
 		}
 	}
@@ -86,16 +81,20 @@ public final class CGXmlReader implements Reader {
 	private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
 	private static final String SCHEMA_FILE = "cgxml.xsd";
 
-	protected StreamReceiver receiver;
+	private StreamReceiver receiver;
 
 	@Override
-	public final <R extends StreamReceiver> R  setReceiver(final R receiver) {
+	public <R extends StreamReceiver> R  setReceiver(final R receiver) {
 		this.receiver = receiver;
 		return receiver;
 	}
+	
+	public StreamReceiver getReceiver() {
+		return this.receiver;
+	}
 
 	@Override
-	public String getId(String record) {
+	public String getId(final String record) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -140,24 +139,16 @@ public final class CGXmlReader implements Reader {
 
 			final XMLReader xmlReader = saxParser.getXMLReader();
 
-			CGXmlHandler handler = new CGXmlHandler();
+			final CGXmlHandler handler = new CGXmlHandler();
 			
 			xmlReader.setErrorHandler(handler);
 			xmlReader.setContentHandler(handler);
 
 			xmlReader.parse(inputSource);
-		} catch (SAXNotRecognizedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 }
