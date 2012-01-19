@@ -16,12 +16,12 @@ public final class CheckWriterTest {
 	@Test
 	public void generalCheck() {
 		final EventStreamWriter w = new EventStreamWriter();		
-		w.startStream();
+		w.resetStream();
 			generalCheckRecord(w);
 		w.endStream();
 		
 		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
-		v.startStream();	
+		v.resetStream();	
 			generalCheckRecord(v);
 		v.endStream();
 	}
@@ -69,7 +69,7 @@ public final class CheckWriterTest {
 	@Test(expected=IllegalStateException.class)
 	public void missingLiteral() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord("01");
 				w.literal("Name", "von Beethoven");
 				w.literal("FirstName", "Ludwig");
@@ -77,7 +77,7 @@ public final class CheckWriterTest {
 		w.endStream();
 		
 		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
-		v.startStream();	
+		v.resetStream();	
 			v.startRecord("01");
 				v.literal("Name", "von Beethoven");
 			v.endRecord();		
@@ -87,7 +87,7 @@ public final class CheckWriterTest {
 	@Test(expected=IllegalStateException.class)
 	public void invalidRecordIdentifier() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord("1");
 				w.literal("LastName", "von Beethoven");
 				w.literal("FirstName", "Ludwig");
@@ -95,7 +95,7 @@ public final class CheckWriterTest {
 		w.endStream();
 		
 		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
-		v.startStream();	
+		v.resetStream();	
 			v.startRecord("0");
 				v.literal("LastName", "von Beethoven");
 				v.literal("FirstName", "Ludwig");
@@ -106,7 +106,7 @@ public final class CheckWriterTest {
 	@Test
 	public void changedRecordOrder() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord("1");
 				w.literal("Name", "Karl");
 			w.endRecord();
@@ -116,7 +116,7 @@ public final class CheckWriterTest {
 		w.endStream();
 		
 		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
-		v.startStream();	
+		v.resetStream();	
 			v.startRecord("2");
 				v.literal("Name", "Gustav");
 			v.endRecord();
@@ -129,7 +129,7 @@ public final class CheckWriterTest {
 	@Test
 	public void strictRecordOrder() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord("1");
 				w.literal("Name", "Heinz");
 			w.endRecord();
@@ -138,8 +138,9 @@ public final class CheckWriterTest {
 			w.endRecord();
 		w.endStream();
 		
-		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), true);
-		v.startStream();	
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.setStrictRecordOrder(true);
+		v.resetStream();	
 			v.startRecord("1");
 				v.literal("Name", "Heinz");
 			v.endRecord();
@@ -152,7 +153,7 @@ public final class CheckWriterTest {
 	@Test(expected=IllegalStateException.class)
 	public void invalidRecordOrderByIdentifier() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord("1");
 				w.literal("Name", "Heinz");
 			w.endRecord();
@@ -161,8 +162,9 @@ public final class CheckWriterTest {
 			w.endRecord();
 		w.endStream();
 		
-		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), true);
-		v.startStream();	
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.setStrictRecordOrder(true);
+		v.resetStream();	
 			v.startRecord("2");
 				v.literal("Name", "Karl");
 			v.endRecord();
@@ -175,7 +177,7 @@ public final class CheckWriterTest {
 	@Test(expected=IllegalStateException.class)
 	public void invalidRecordOrderByContent() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord(null);
 				w.literal("Name", "Karl");
 			w.endRecord();
@@ -184,8 +186,9 @@ public final class CheckWriterTest {
 			w.endRecord();
 		w.endStream();
 		
-		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), true);
-		v.startStream();	
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.setStrictRecordOrder(true);
+		v.resetStream();	
 			v.startRecord(null);
 				v.literal("Name", "Heinz");
 			v.endRecord();
@@ -198,7 +201,7 @@ public final class CheckWriterTest {
 	@Test
 	public void changedEntityKeyOrder() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord("1");
 				w.startEntity("Entity-1");
 					w.literal("Literal-1", "A");
@@ -213,7 +216,7 @@ public final class CheckWriterTest {
 		w.endStream();
 		
 		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
-		v.startStream();	
+		v.resetStream();	
 			v.startRecord("1");
 				v.startEntity("Entity-1");
 					v.literal("Literal-2", "B");
@@ -231,7 +234,7 @@ public final class CheckWriterTest {
 	@Test
 	public void strictEntityKeyOrder() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord("1");
 				w.startEntity("Entity-1");
 					w.literal("Literal-1", "A");
@@ -245,8 +248,9 @@ public final class CheckWriterTest {
 			w.endRecord();
 		w.endStream();
 		
-		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), false, true);
-		v.startStream();	
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.setStrictKeyOrder(true);
+		v.resetStream();	
 			v.startRecord("1");
 				v.startEntity("Entity-1");
 					v.literal("Literal-1", "A");
@@ -264,7 +268,7 @@ public final class CheckWriterTest {
 	@Test(expected=IllegalStateException.class)
 	public void invalidEntityKeyOrder() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord("1");
 				w.startEntity("Entity-1");
 					w.literal("Literal-1", "A");
@@ -278,8 +282,9 @@ public final class CheckWriterTest {
 			w.endRecord();
 		w.endStream();
 		
-		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), false, true);
-		v.startStream();	
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.setStrictKeyOrder(true);
+		v.resetStream();	
 			v.startRecord("1");
 				v.startEntity("Entity-1");
 					v.literal("Literal-2", "B");
@@ -297,7 +302,7 @@ public final class CheckWriterTest {
 	@Test
 	public void changedLiteralValueOrder() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord("1");
 				w.literal("Name", "Franz");
 				w.literal("Name", "Gustav");
@@ -305,7 +310,7 @@ public final class CheckWriterTest {
 		w.endStream();
 		
 		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
-		v.startStream();		
+		v.resetStream();		
 			v.startRecord("1");
 				v.literal("Name", "Gustav");
 				v.literal("Name", "Franz");
@@ -316,15 +321,16 @@ public final class CheckWriterTest {
 	@Test
 	public void strictLiteralValueOrder() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord("1");
 				w.literal("Name", "Franz");
 				w.literal("Name", "Gustav");
 			w.endRecord();
 		w.endStream();
 		
-		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), false, false, true);
-		v.startStream();		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.setStrictValueOrder(true);
+		v.resetStream();		
 			v.startRecord("1");
 				v.literal("Name", "Franz");
 				v.literal("Name", "Gustav");
@@ -335,15 +341,16 @@ public final class CheckWriterTest {
 	@Test(expected=IllegalStateException.class)
 	public void invalidLiteralValueOrder() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord("1");
 				w.literal("Name", "Franz");
 				w.literal("Name", "Gustav");
 			w.endRecord();
 		w.endStream();
 		
-		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), false, false, true);
-		v.startStream();		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.setStrictValueOrder(true);
+		v.resetStream();		
 			v.startRecord("1");
 				v.literal("Name", "Gustav");
 				v.literal("Name", "Franz");
@@ -354,7 +361,7 @@ public final class CheckWriterTest {
 	@Test
 	public void strictLiteralValueOrderRandomRecordOrder() {
 		final EventStreamWriter w = new EventStreamWriter();
-		w.startStream();
+		w.resetStream();
 			w.startRecord(null);
 				w.literal("Name", "Franz");
 				w.literal("Name", "Gustav");
@@ -365,8 +372,9 @@ public final class CheckWriterTest {
 			w.endRecord();
 		w.endStream();
 		
-		final EventStreamValidator v = new EventStreamValidator(w.getEventStream(), false, false, true);
-		v.startStream();		
+		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
+		v.setStrictValueOrder(true);
+		v.resetStream();		
 			v.startRecord(null);
 				v.literal("Name", "Gustav");
 				v.literal("Name", "Franz");

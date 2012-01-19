@@ -26,15 +26,11 @@ public final class WellFormednessChecker implements StreamReceiver {
 	private int nestingLevel;
 
 	public WellFormednessChecker() {
-		reset();
+		resetStream();
 	}
 	
-	public void reset() {
+	public void resetStream() {
 		nestingLevel = 0;
-	}
-	
-	public void startStream() {
-		reset();
 	}
 	
 	public void endStream() {

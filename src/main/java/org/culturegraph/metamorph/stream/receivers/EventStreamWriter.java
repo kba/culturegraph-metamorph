@@ -73,8 +73,8 @@ public final class EventStreamWriter implements StreamReceiver {
 		return Collections.unmodifiableList(eventStream);
 	}
 
-	public void startStream() {
-		wellFormednessChecker.startStream();
+	public void resetStream() {
+		wellFormednessChecker.resetStream();
 		eventStream.clear();
 	}
 	

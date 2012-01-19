@@ -3,9 +3,10 @@
  */
 package org.culturegraph.metamorph.stream.receivers;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-
+import java.util.Stack;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.receivers.EventStreamWriter.Event;
 
@@ -15,370 +16,342 @@ import org.culturegraph.metamorph.stream.receivers.EventStreamWriter.Event;
  */
 public final class EventStreamValidator implements StreamReceiver {
 
+	private static final String CANNOT_CHANGE_OPTIONS = "Cannot change options during validation";
+	private static final String VALIDATION_FAILED = "Validation failed. Please reset the validator";
+	
 	private static final String NO_RECORD_FOUND = "No record found";
 	private static final String NO_ENTITY_FOUND = "No entity found";
 	private static final String NO_LITERAL_FOUND = "No literal found";
 	private static final String UNCONSUMED_RECORDS_FOUND = "Unconsumed records found";
-
-	private enum State {
-		AVAILABLE, CONSUMED, ACTIVE_GROUP, SUSPENDED_GROUP
-	}
 	
-	private class EventState {
+	private static final class EventNode {
 		private final Event event;
-		private State state;
+		private final EventNode parent;
+		private final List<EventNode> children;
 		
-		public EventState(final Event event, final State state) {
+		private boolean consumed;
+		
+		public EventNode(final Event event, final EventNode parent) {
 			this.event = event;
-			this.state = state;
+			this.parent = parent;
+			// The null-event is used to indicate the stream-start:
+			if (this.event == null || 
+					this.event.getType() == Event.Type.START_RECORD ||
+					this.event.getType() == Event.Type.START_ENTITY) {
+				children = new LinkedList<EventNode>();
+			} else {
+				children = null;
+			}
+			
+			consumed = false;
 		}
-		
+
 		public Event getEvent() {
 			return event;
 		}
-		
-		public State getState() {
-			return state;
+
+		public EventNode getParent() {
+			return parent;
 		}
-		
-		public void setState(final State state) {
-			this.state = state;
+
+		public List<EventNode> getChildren() {
+			return children;
+		}
+
+		public boolean isConsumed() {
+			return consumed;
+		}
+
+		public void setConsumed(final boolean consumed) {
+			this.consumed = consumed;
 		}
 	}
 	
-	private final boolean strictRecordOrder;
-	private final boolean strictKeyOrder;
-	private final boolean strictValueOrder;
-	
-	private final List<EventState> eventStream = new ArrayList<EventState>();
+	private EventNode eventStream;
+	private Stack<List<EventNode>> stack = new Stack<List<EventNode>>();
+	private boolean validating;
+	private boolean validationFailed;
+
+	private boolean strictRecordOrder;
+	private boolean strictKeyOrder;
+	private boolean strictValueOrder;
 	
 	private final WellFormednessChecker wellFormednessChecker = 
 			new WellFormednessChecker();
 	
 	public EventStreamValidator(final List<Event> eventStream) {
-		this(eventStream, false);
+		this.eventStream = new EventNode(null, null);
+		foldEventStream(this.eventStream, eventStream.iterator());
+		
+		resetStream();
 	}
-	
-	public EventStreamValidator(final List<Event> eventStream, final boolean strictRecordOrder) {
-		this(eventStream, strictRecordOrder, false);
-	}
-	
-	public EventStreamValidator(final List<Event> eventStream, final boolean strictRecordOrder,
-			final boolean strictKeyOrder) {
-		this(eventStream, strictRecordOrder, strictKeyOrder, false);
-	}
-	
-	public EventStreamValidator(final List<Event> eventStream, final boolean strictRecordOrder, 
-			final boolean strictKeyOrder, final boolean strictValueOrder) {
-		this.strictRecordOrder = strictRecordOrder;
-		this.strictKeyOrder = strictKeyOrder;
-		this.strictValueOrder = strictValueOrder;
 
-		for (Event e: eventStream) {
-			this.eventStream.add(new EventState(e, State.AVAILABLE));
-		}
+	public boolean isStrictRecordOrder() {
+		return strictRecordOrder;
 	}
+
+	public void setStrictRecordOrder(final boolean strictRecordOrder) {
+		if (validating) {
+			throw new IllegalStateException(CANNOT_CHANGE_OPTIONS);
+		}
+		
+		this.strictRecordOrder = strictRecordOrder;
+	}
+
+	public boolean isStrictKeyOrder() {
+		return strictKeyOrder;
+	}
+
+	public void setStrictKeyOrder(final boolean strictKeyOrder) {
+		if (validating) {
+			throw new IllegalStateException(CANNOT_CHANGE_OPTIONS);
+		}
+		
+		this.strictKeyOrder = strictKeyOrder;
+	}
+
+	public boolean isStrictValueOrder() {
+		return strictValueOrder;
+	}
+
+	public void setStrictValueOrder(final boolean strictValueOrder) {
+		if (validating) {
+			throw new IllegalStateException(CANNOT_CHANGE_OPTIONS);
+		}
+		
+		this.strictValueOrder = strictValueOrder;
+	}	
 	
-	public void startStream() {
-		wellFormednessChecker.startStream();
+	public void resetStream() {
+		wellFormednessChecker.resetStream();
+		
+		validating = false;
+		validationFailed = false;
+		
+		stack.clear();
+		stack.push(new LinkedList<EventNode>());
+		stack.peek().add(eventStream);
 	}
 	
 	public void endStream() {
+		if (validationFailed) {
+			throw new IllegalStateException(VALIDATION_FAILED);
+		}
+
 		wellFormednessChecker.endStream();
 		
-		for (EventState es: eventStream) {
-			if (es.getState() != State.CONSUMED) {
-				throw new IllegalStateException(UNCONSUMED_RECORDS_FOUND);
-			}
+		validating = false;	
+		
+		stack.pop();
+		
+		if (isGroupConsumed(eventStream)) {
+			eventStream.setConsumed(true);
+		} else {
+			validationFailed = true;
+			throw new IllegalStateException(UNCONSUMED_RECORDS_FOUND);
 		}
 	}
 	
 	@Override
 	public void startRecord(final String identifier) {
+		if (validationFailed) {
+			throw new IllegalStateException(VALIDATION_FAILED);
+		}
+
 		wellFormednessChecker.startRecord(identifier);
 		
-		boolean recordFound = false;
-		for (EventState es: eventStream) {
-			final Event ev = es.getEvent();
-			if (ev.getType() == Event.Type.START_RECORD) {
-				if (es.getState() == State.AVAILABLE) {
-					if (compare(ev.getName(), identifier)) {
-						es.setState(State.ACTIVE_GROUP);
-						recordFound = true;
-					}
-					if (strictRecordOrder) {
+		validating = true;
+		
+		if (!openGroups(Event.Type.START_RECORD, identifier, strictRecordOrder, false)) {
+			validationFailed = true;
+			throw new IllegalStateException(NO_RECORD_FOUND);
+		}
+	}
+	
+	@Override
+	public void endRecord() {
+		if (validationFailed) {
+			throw new IllegalStateException(VALIDATION_FAILED);
+		}
+
+		wellFormednessChecker.endRecord();
+		
+		if (!closeGroups()) {
+			validationFailed = true;
+			throw new IllegalStateException(NO_RECORD_FOUND);
+		}
+		
+	}
+	
+	@Override
+	public void startEntity(final String name) {
+		if (validationFailed) {
+			throw new IllegalStateException(VALIDATION_FAILED);
+		}
+
+		wellFormednessChecker.startEntity(name);
+		
+		if (!openGroups(Event.Type.START_ENTITY, name, strictKeyOrder, strictValueOrder)) {
+			validationFailed = true;
+			throw new IllegalStateException(NO_ENTITY_FOUND);
+		}
+	}
+	
+	@Override
+	public void endEntity() {
+		if (validationFailed) {
+			throw new IllegalStateException(VALIDATION_FAILED);
+		}
+
+		wellFormednessChecker.endEntity();
+		
+		if (!closeGroups()) {
+			validationFailed = true;
+			throw new IllegalStateException(NO_ENTITY_FOUND);
+		}
+	}
+	
+	@Override
+	public void literal(final String name, final String value) {
+		if (validationFailed) {
+			throw new IllegalStateException(VALIDATION_FAILED);
+		}
+		
+		wellFormednessChecker.literal(name, value);
+		
+		final List<EventNode> stackFrame = stack.peek();
+		
+		final Iterator<EventNode> it = stackFrame.iterator();
+		while (it.hasNext()) {
+			final EventNode g = it.next();
+			if (!consumeLiteral(g, name, value)) {
+				resetGroup(g);
+				it.remove();
+			}
+		}
+		
+		if (stackFrame.size() == 0) {
+			validationFailed = true;
+			throw new IllegalStateException(NO_LITERAL_FOUND);
+		}
+	}
+	
+	private void foldEventStream(final EventNode parent, final Iterator<Event> eventStream) {
+		while(eventStream.hasNext()) {
+			final Event ev = eventStream.next();
+			if (ev.getType() == Event.Type.LITERAL) {
+				parent.getChildren().add(new EventNode(ev, parent));
+			} else if (ev.getType() == Event.Type.START_RECORD || 
+					ev.getType() == Event.Type.START_ENTITY) {
+				final EventNode newNode = new EventNode(ev, parent);
+				parent.getChildren().add(newNode);
+				foldEventStream(newNode, eventStream);
+			} else if (ev.getType() == Event.Type.END_RECORD ||
+				ev.getType() == Event.Type.END_ENTITY) {
+				return;
+			}
+		}
+	}
+	
+	private boolean openGroups(final Event.Type type, final String name, 
+			final boolean strictKeyOrder, final boolean strictValueOrder) {
+		final List<EventNode> stackFrame = stack.peek();
+		stack.push(new LinkedList<EventNode>());
+		
+		final Iterator<EventNode> it = stackFrame.iterator();
+		while (it.hasNext()) {
+			final EventNode g = it.next();
+			if (!consumeGroups(g, type, name, strictKeyOrder, strictValueOrder)) {
+				resetGroup(g);
+				it.remove();
+			}
+		}
+		
+		return stackFrame.size() != 0;		
+	}
+	
+	private boolean closeGroups() {
+		EventNode lastMatchParent = null;
+		final Iterator<EventNode> it = stack.pop().iterator();
+		while (it.hasNext()) {
+			final EventNode g = it.next();
+			if (g.getParent() != lastMatchParent && isGroupConsumed(g)) {
+				g.setConsumed(true);
+				lastMatchParent = g.getParent();
+			} else {
+				resetGroup(g);
+			}
+		}
+		
+		return lastMatchParent != null;		
+	}
+	
+	private boolean consumeGroups(final EventNode group, final Event.Type type, final String name, 
+			final boolean strictKeyOrder, final boolean strictValueOrder) {
+		boolean foundMatch = false;
+		for (EventNode c: group.getChildren()) {
+			if (!c.isConsumed()) {
+				final Event ev = c.getEvent();
+				if (compare(name, ev.getName())) {
+					if (ev.getType() == type) {
+						stack.peek().add(c);
+						foundMatch = true;
+					} else if (strictValueOrder) {
 						break;
 					}
 				}
+				if (strictKeyOrder) {
+					break;
+				}
 			}
 		}
-		if (!recordFound) {
-			throw new IllegalStateException(NO_RECORD_FOUND);
-		}
+		return foundMatch;
 	}
-
-	@Override
-	public void endRecord() {
-		wellFormednessChecker.endRecord();
-
-		EventState activeGroup = null;
+	
+	private boolean consumeLiteral(final EventNode group, final String name, final String value) {
+		boolean foundMatch = false;
+		for (EventNode c: group.getChildren()) {
+			if (!c.isConsumed()) {
+				final Event ev = c.getEvent();
+				if (compare(name, ev.getName())) {
+					if (ev.getType() == Event.Type.LITERAL && 
+							compare(value, ev.getValue())) {
+						c.setConsumed(true);
+						foundMatch = true;
+						break;
+					} else if (strictValueOrder) {
+						break;
+					}
+				} else if (strictKeyOrder) {
+					break;
+				}
+			}
+		}
+		return foundMatch;		
+	}
+	
+	
+	private boolean isGroupConsumed(final EventNode group) {
 		boolean consumed = true;
-		boolean recordFound = false;
-		for (EventState es: eventStream) {
-			if (activeGroup != null) {
-				switch(es.getEvent().getType()) {
-				case START_ENTITY:
-				case END_ENTITY:
-				case LITERAL:
-					consumed = consumed && (es.getState() == State.CONSUMED);
-					break;		
-				case END_RECORD:
-					if (!recordFound && consumed) {
-						activeGroup.setState(State.CONSUMED);
-						es.setState(State.CONSUMED);
-						recordFound = true;							
-					} else {
-						setAvailable(activeGroup);					
-					}
-					activeGroup = null;
-					break;
-				case START_RECORD:  // Do nothing
-				}
-			} else {
-				if (es.getState() == State.ACTIVE_GROUP) {
-					activeGroup = es;
-					consumed = true;
-				}
-			}
+		for (EventNode c: group.getChildren()) {
+			consumed = consumed && c.isConsumed();
 		}
-		
-		if (!recordFound) {
-			throw new IllegalStateException(NO_RECORD_FOUND);
-		}		
+		return consumed;		
 	}
 
-	@Override
-	public void startEntity(final String name) {
-		wellFormednessChecker.startEntity(name);
-
-		int level = 0;
-		EventState activeGroup = null;
-		boolean foundInGroup = false;
-		boolean strictFailed = false;
-		boolean foundAnywhere = false;
-		for (EventState es: eventStream) {
-			if (activeGroup != null) {
-				final Event ev = es.getEvent();
-				switch(ev.getType()) {
-				case LITERAL:
-					if (level == 0 && es.getState() == State.AVAILABLE && !foundInGroup) {
-						if (compare(ev.getName(), name)) {
-							strictFailed = strictFailed || strictValueOrder;
-						} else {
-							strictFailed = strictFailed || strictKeyOrder;
-						}
-					}
-					break;
-				case START_ENTITY:
-					if (level == 0 && es.getState() == State.AVAILABLE && !strictFailed) {
-						if(compare(ev.getName(), name)) {
-							es.setState(State.ACTIVE_GROUP);
-							foundInGroup = true;
-							foundAnywhere = true;
-						} else {
-							if (!foundInGroup) {
-								strictFailed = strictFailed || strictKeyOrder;
-							}
-						}
-					}
-					level += 1;
-					break;
-				case END_RECORD:
-				case END_ENTITY:
-					if (level > 0) {
-						level -= 1;
-					} else {
-						if (foundInGroup) {
-							activeGroup.setState(State.SUSPENDED_GROUP);
-						} else {
-							setAvailable(activeGroup);
-						}
-						activeGroup = null;
-					}	
-					break;
-				case START_RECORD:  // Do nothing
-				}	
-			} else {
-				if (es.getState() == State.ACTIVE_GROUP) {
-					activeGroup = es;
-					level = 0;
-					foundInGroup = false;
-					strictFailed = false;
-				}
+	private void resetGroup(final EventNode group) {
+		if (group.getChildren() != null) {
+			for (EventNode c: group.getChildren()) {
+				resetGroup(c);
+				c.setConsumed(false);
 			}
 		}
-		
-		if (!foundAnywhere) {
-			throw new IllegalStateException(NO_ENTITY_FOUND);
-		}		
 	}
-
-	@Override
-	public void endEntity() {
-		wellFormednessChecker.endEntity();
-
-		int level = 0;
-		EventState parentGroup = null;
-		EventState activeGroup = null;
-		boolean consumed = true;
-		boolean foundInGroup = false;
-		boolean strictFailed = false;
-		boolean foundAnywhere = false;
-		for (EventState es: eventStream) {
-			if (activeGroup != null) {
-				switch(es.getEvent().getType()) {
-				case START_ENTITY:
-					level += 1;
-					//$FALL-THROUGH$, fallsthrough
-				case LITERAL:
-					consumed = consumed && (es.getState() == State.CONSUMED);
-					break;
-				case END_RECORD:
-				case END_ENTITY:
-					if (level > 0) {
-						consumed = consumed && (es.getState() == State.CONSUMED);
-						level -= 1;
-					} else {
-						if (!foundInGroup && !strictFailed) {
-							if (consumed) {
-								activeGroup.setState(State.CONSUMED);
-								es.setState(State.CONSUMED);
-								foundInGroup = true;
-								foundAnywhere = true;
-							} else {
-								setAvailable(activeGroup);
-								strictFailed = strictFailed || strictValueOrder;
-							}
-						} else {
-							setAvailable(activeGroup);
-						}
-						parentGroup.setState(State.ACTIVE_GROUP);
-						activeGroup = null;
-					}	
-					break;
-				case START_RECORD:  // Do Nothing
-				}
-			} else {
-				if (es.getState() == State.ACTIVE_GROUP) {
-					activeGroup = es;
-					level = 0;
-					consumed = true;
-				} else if (es.getState() == State.SUSPENDED_GROUP) {
-					parentGroup = es;
-					foundInGroup = false;
-				}
-			}
-		}
-		
-		if (!foundAnywhere) {
-			throw new IllegalStateException(NO_ENTITY_FOUND);
-		}		
-	}
-
-	@Override
-	public void literal(final String name, final String value) {
-		wellFormednessChecker.literal(name, value);
-
-		int level = 0;
-		EventState activeGroup = null;
-		boolean foundInGroup = false;
-		boolean strictFailed = false;
-		boolean foundAnywhere = false;
-		for (EventState es: eventStream) {
-			final Event ev = es.getEvent();
-			if (activeGroup != null) {
-				switch(ev.getType()) {
-				case START_ENTITY:
-					if (level == 0 && es.getState() == State.AVAILABLE && !foundInGroup) {
-						if(compare(ev.getName(), name)) {
-							strictFailed = strictFailed || strictValueOrder;
-						} else {
-							strictFailed = strictFailed || strictKeyOrder;
-						}
-					}
-					level += 1;  
-					break;
-				case END_RECORD:
-				case END_ENTITY:
-					if (level > 0) {
-						level -= 1;
-					} else {
-						if (!foundInGroup || strictFailed) {
-							setAvailable(activeGroup);					
-						}
-						activeGroup = null;
-					}
-					break;
-				case LITERAL:					
-					if (level == 0 && es.getState() == State.AVAILABLE && !foundInGroup) {
-						if (compare(ev.getName(), name)) {
-							if (compare(ev.getValue(), value)) {
-								es.setState(State.CONSUMED);
-								foundInGroup = true;
-								foundAnywhere = true;
-							} else {
-								strictFailed = strictFailed || strictValueOrder;
-							}
-						} else {
-							strictFailed = strictFailed || strictKeyOrder;
-						}
-					}
-					break;
-				case START_RECORD:  // Do nothing
-				}
-			} else {
-				if (es.getState() == State.ACTIVE_GROUP) {
-					activeGroup = es;
-					level = 0;
-					foundInGroup = false;
-					strictFailed = false;
-				}
-			}
-		}
-		
-		if (!foundAnywhere) {
-			throw new IllegalStateException(NO_LITERAL_FOUND);
-		}		
-	}
-
+	
 	private boolean compare(final String str1, final String str2) {
 		if (str1 == null) {
 			return str2 == null;
 		}
 		return str1.equals(str2); 
 	}
-	
-	private void setAvailable(final EventState parent) {
-		int level = -1;	
-		for (EventState es: eventStream) {
-			if (es == parent || level >= 0) {
-				es.setState(State.AVAILABLE);
-				
-				switch(es.getEvent().getType()) {
-				case START_RECORD:
-				case START_ENTITY:
-					level += 1;
-					break;
-				case END_RECORD:
-				case END_ENTITY:
-					level -= 1;
-					break;
-				case LITERAL:
-					break;
-				default:
-					throw new NullPointerException("state must not be null");
-				}
-			}
-		}
-	}	
 }

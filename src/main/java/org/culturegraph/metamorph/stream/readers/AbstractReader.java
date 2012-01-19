@@ -2,7 +2,6 @@ package org.culturegraph.metamorph.stream.readers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 

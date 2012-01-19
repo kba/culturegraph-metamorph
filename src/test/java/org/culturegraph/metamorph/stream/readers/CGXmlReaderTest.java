@@ -25,13 +25,16 @@ public final class CGXmlReaderTest {
 				.getContextClassLoader().getResourceAsStream("cgxml_test.xml");
 		
 		reader.setReceiver(writer);
-		writer.startStream();
+		writer.resetStream();
 		reader.read(input);
 		writer.endStream();
 		
-		final EventStreamValidator validator = new EventStreamValidator(writer.getEventStream(), true, true, true);
+		final EventStreamValidator validator = new EventStreamValidator(writer.getEventStream());
+		validator.setStrictRecordOrder(true);
+		validator.setStrictKeyOrder(true);
+		validator.setStrictValueOrder(true);
 		
-		validator.startStream();
+		validator.resetStream();
 			validator.startRecord("1");
 				validator.literal("Name", "Thomas Mann");
 				validator.startEntity("Address");
