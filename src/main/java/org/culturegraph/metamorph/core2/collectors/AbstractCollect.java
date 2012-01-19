@@ -44,7 +44,6 @@ public abstract class AbstractCollect extends AbstractNamedValuePipe implements 
 		return oldEntity;
 	}
 
-
 	public final void setFlushWith(final String flushEntity) {
 		metamorph.addEntityEndListener(this, flushEntity);
 	}
@@ -62,10 +61,6 @@ public abstract class AbstractCollect extends AbstractNamedValuePipe implements 
 	public final void setReset(final boolean reset) {
 		this.reset = reset;
 	}
-
-
-
-
 
 	/**
 	 * @return the name
@@ -132,22 +127,6 @@ public abstract class AbstractCollect extends AbstractNamedValuePipe implements 
 		}
 	}
 
-	protected abstract void receive(final String name, final String value, final NamedValueSource source);
-
-	/**
-	 * @return
-	 */
-	protected abstract boolean isComplete();
-
-	/**
-	 * 
-	 */
-	protected abstract void clear();
-
-	/**
-	 * 
-	 */
-	protected abstract void emit();
 
 	@Override
 	public void addNamedValueSource(final NamedValueSource namedValueSource) {
@@ -162,6 +141,11 @@ public abstract class AbstractCollect extends AbstractNamedValuePipe implements 
 			emit();
 		}
 	}
+	
+	protected abstract void receive(final String name, final String value, final NamedValueSource source);
+	protected abstract boolean isComplete();
+	protected abstract void clear();
+	protected abstract void emit();
 
 	
 }
