@@ -25,6 +25,8 @@ public class ObjectFactory<O> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ObjectFactory.class);
 
+	private static final String SET = "set";
+
 	private final Map<String, Class<? extends O>> classes = new HashMap<String, Class<? extends O>>();
 	private final Map<Class<? extends O>, Map<String, Method>> classMethodMaps = new HashMap<Class<? extends O>, Map<String, Method>>();
 	private final Set<String> availableClasses = Collections.unmodifiableSet(classes.keySet()); 
@@ -37,8 +39,8 @@ public class ObjectFactory<O> {
 		final Map<String, Method> methodMap = new HashMap<String, Method>();
 		classMethodMaps.put(clazz, methodMap);
 		for (Method method : clazz.getMethods()) {
-			if(method.getParameterTypes().length==1 && method.getName().startsWith("set")){
-				final String methodName = method.getName().substring(3).toLowerCase();
+			if(method.getParameterTypes().length==1 && method.getName().startsWith(SET)){
+				final String methodName = method.getName().substring(SET.length()).toLowerCase();
 				methodMap.put(methodName, method);
 			}
 		}
@@ -56,42 +58,54 @@ public class ObjectFactory<O> {
 		try {
 			final Class<?>[] contructorArgTypes = new Class[contructorArgs.length];
 			for (int i = 0; i < contructorArgs.length; ++i) {
-				LOG.info(contructorArgs[i].getClass().getSimpleName());
 				contructorArgTypes[i] = contructorArgs[i].getClass();
 			}
 				
 			final Constructor<? extends O> constructor = clazz.getConstructor(contructorArgTypes);
 			final O instance = constructor.newInstance(contructorArgs);
-			for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-				final String methodName = attribute.getKey().toLowerCase();
-				final Method method = classMethodMaps.get(clazz).get(methodName);
-				if(null==method){
-					throw new MetamorphException("Cannot set '" + methodName + "' for class '" + name +"'. Not in " + classMethodMaps.get(clazz).keySet());
-				}
-				final Class<?> type = method.getParameterTypes()[0];
-				if(type == boolean.class){
-					method.invoke(instance, "true".equals(attribute.getValue()));
-				}else{
-					method.invoke(instance, attribute.getValue());
-				}
-				
-			
-				
-			}
+			applySetters(instance, classMethodMaps.get(clazz), attributes);
 			return instance;
 
 		} catch (InstantiationException e) {
-			throw new MetamorphException(clazz + INSTANTIATION_PROBLEM, e);
-		} catch (IllegalAccessException e) {
-			throw new MetamorphException(clazz + INSTANTIATION_PROBLEM, e);
-		} catch (IllegalArgumentException e) {
-			throw new MetamorphException(clazz + INSTANTIATION_PROBLEM, e);
-		} catch (InvocationTargetException e) {
 			throw new MetamorphException(clazz + INSTANTIATION_PROBLEM, e);
 		} catch (SecurityException e) {
 			throw new MetamorphException(clazz + INSTANTIATION_PROBLEM, e);
 		} catch (NoSuchMethodException e) {
 			throw new MetamorphException(clazz + INSTANTIATION_PROBLEM, e);
+		} catch (IllegalArgumentException e) {
+			throw new MetamorphException(clazz + INSTANTIATION_PROBLEM, e);
+		} catch (IllegalAccessException e) {
+			throw new MetamorphException(clazz + INSTANTIATION_PROBLEM, e);
+		} catch (InvocationTargetException e) {
+			throw new MetamorphException(clazz + INSTANTIATION_PROBLEM, e);
+		} 
+	}
+
+	private void applySetters(final O instance, final Map<String, Method> methodMap, final Map<String, String> attributes)   {
+		
+		for (Map.Entry<String, String> attribute : attributes.entrySet()) {
+			final String methodName = attribute.getKey().toLowerCase();
+			final Method method = methodMap.get(methodName);
+			if(null==method){
+				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName() +"'. Not in " + methodMap.keySet());
+			}
+			final Class<?> type = method.getParameterTypes()[0];
+			
+			try{
+			if(type == boolean.class){
+				method.invoke(instance, Boolean.valueOf(attribute.getValue()));
+			}else if(type == int.class){
+				method.invoke(instance, Integer.valueOf(attribute.getValue()));
+			}else{
+				method.invoke(instance, attribute.getValue());
+			}
+			}catch(IllegalArgumentException e){
+				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName(), e);
+			} catch (IllegalAccessException e) {
+				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName(), e);
+			} catch (InvocationTargetException e) {
+				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName(), e);
+			} 
 		}
 	}
 }

@@ -1,22 +1,16 @@
 package org.culturegraph.metamorph.core2.collectors;
 
 import org.culturegraph.metamorph.core2.Metamorph;
-import org.culturegraph.metamorph.core2.NamedValueReceiver;
 import org.culturegraph.metamorph.core2.NamedValueSource;
-import org.culturegraph.metamorph.core2.functions.Function;
-import org.culturegraph.metamorph.core2.functions.ValueProcessorImpl;
 
 /**
  * Implementation of the <code>&lt;group&gt;</code> tag.
  * 
  * @author Markus Michael Geipel
  */
-public final class Group extends AbstractCollect implements NamedValueSource{
+public final class Group extends AbstractCollect{
 
 
-	private final ValueProcessorImpl processor = new ValueProcessorImpl();
-	private NamedValueReceiver namedValueReceiver;
-	
 	public Group(final Metamorph metamorph) {
 		super(metamorph);
 	}
@@ -28,31 +22,15 @@ public final class Group extends AbstractCollect implements NamedValueSource{
 		return value;
 	}
 
-	
-	@Override
-	public void addFunction(final Function function) {
-		processor.addFunction(function);
-	}
 
 	@Override
-	public void setNamedValueReceiver(final NamedValueReceiver dataReceiver) {
-		this.namedValueReceiver = dataReceiver;
-		
-	}
-
-	@Override
-	protected void receive(final String recName, final String recValue) {
-			assert namedValueReceiver != null;
-			final String tempValue = processor.applyFunctions(recValue);
-			if (tempValue == null) {
-				return;
-			}
-			namedValueReceiver.receive(fallback(getName(), recName), fallback(getValue(), tempValue), getRecordCount(), getEntityCount());
+	protected void receive(final String recName, final String recValue, final NamedValueSource source) {
+		getNamedValueReceiver().receive(fallback(getName(), recName), fallback(getValue(), recValue), this, getRecordCount(), getEntityCount());
 	}
 
 	@Override
 	protected boolean isComplete() {
-		return false;
+		return false; //nothing
 	}
 
 	@Override
@@ -62,8 +40,6 @@ public final class Group extends AbstractCollect implements NamedValueSource{
 
 	@Override
 	protected void emit() {
-		// TODO Auto-generated method stub
-		
+		//nothing
 	}
-
 }

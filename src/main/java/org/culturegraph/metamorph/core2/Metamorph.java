@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamReceiver, StreamSender, NamedValueReceiver, SimpleMultiMap {
+public final class Metamorph implements StreamReceiver, StreamSender, NamedValueReceiver, SimpleMultiMap{
 
 	public static final String ELSE_KEYWORD = "_else";
 	public static final String RECORD_KEYWORD = "record";
@@ -49,6 +49,8 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 
 	private StreamReceiver outputStreamReceiver;
 	private MetamorphErrorHandler errorHandler = new DefaultErrorHandler();
+	
+	private final RootSource rootSource = new RootSource();
 
 	private int recordCount;
 	private int entityCount;
@@ -209,7 +211,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		final int entityCount = entityCountStack.getLast().intValue();
 		for (Data data : dataList) {
 			try {
-				data.receive(key, value, recordCount, entityCount);
+				data.receive(key, value, rootSource, recordCount, entityCount);
 			} catch (MetamorphException e) {
 				errorHandler.error(e);
 			}
@@ -239,7 +241,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 
 
 	@Override
-	public void receive(final String name, final String value, final int recordCount, final int entityCount) {
+	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount, final int entityCount) {
 		if (name == null || value == null) {
 			LOG.warn("Empty data received. This is not suposed to happen. Please file a bugreport");
 		} else {
@@ -302,4 +304,13 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		builder.append("Listened endEntity() events: " +  entityEndListeners.keySet() + "\n");
 		return builder.toString();
 	}
+	
+	private static final class RootSource implements NamedValueSource{
+		@Override
+		public <R extends NamedValueReceiver> R setNamedValueReceiver(final R dataReceiver) {
+			throw new UnsupportedOperationException();
+		}
+	}
+
+
 }

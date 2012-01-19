@@ -1,8 +1,11 @@
 package org.culturegraph.metamorph.core2;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,13 +17,16 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.culturegraph.metamorph.core2.collectors.Collect;
+import org.culturegraph.metamorph.core2.collectors.AbstractCollect;
 import org.culturegraph.metamorph.core2.collectors.CollectFactory;
+import org.culturegraph.metamorph.core2.collectors.NamedValueAggregator;
 import org.culturegraph.metamorph.core2.exceptions.MetamorphDefinitionException;
 import org.culturegraph.metamorph.core2.functions.Function;
 import org.culturegraph.metamorph.core2.functions.FunctionFactory;
-import org.culturegraph.metamorph.core2.functions.ValueProcessor;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
+import org.culturegraph.metamorph.stream.readers.PicaReader;
+import org.culturegraph.metamorph.stream.readers.Reader;
+import org.culturegraph.metamorph.stream.receivers.DefaultWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -38,7 +44,7 @@ import org.xml.sax.SAXException;
 public final class MetamorphBuilder2 {
 
 	public static enum MMTAG {
-		META, FUNCTIONS, RULES, MAPS, ENTITY,  MAP, ENTRY, DEF, DATA, POSTPROCESS
+		META, FUNCTIONS, RULES, MAPS, ENTITY, MAP, ENTRY,
 	}
 
 	public static enum ATTRITBUTE {
@@ -60,7 +66,8 @@ public final class MetamorphBuilder2 {
 	private static final ErrorHandler ERROR_HANDLER = new MetamorphDefinitionParserErrorHandler();
 	private static final int LOWEST_COMPATIBLE_VERSION = 1;
 	private static final int CURRENT_VERSION = 1;
-	private static final String TRUE = "true";
+	private static final String DATA = "data";
+	private static final String POSTPROCESS = "postprocess";
 
 	private final String morphDef;
 
@@ -114,7 +121,6 @@ public final class MetamorphBuilder2 {
 	private static DocumentBuilder getDocumentBuilder() {
 
 		try {
-
 			final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			final URL schemaUrl = Thread.currentThread().getContextClassLoader().getResource(SCHEMA_FILE);
 			if (schemaUrl == null) {
@@ -186,10 +192,12 @@ public final class MetamorphBuilder2 {
 				handleMeta(child, metamorph);
 				break;
 			case FUNCTIONS:
-				handleFunctions(child, functions);
+				handleFunctionDefinitions(child, functions);
 				break;
 			case RULES:
-				handleRules(child, metamorph, functions, collects);
+				for (Node ruleNode = child.getFirstChild(); ruleNode != null; ruleNode = ruleNode.getNextSibling()) {
+					handleRule(ruleNode, null, metamorph, functions, collects);
+				}
 				break;
 			case MAPS:
 				handleMaps(child, metamorph);
@@ -208,46 +216,38 @@ public final class MetamorphBuilder2 {
 	}
 
 	private static void handleMaps(final Node node, final Metamorph metamorph) {
-		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-			handleMap(child, metamorph);
+		for (Node mapNode = node.getFirstChild(); mapNode != null; mapNode = mapNode.getNextSibling()) {
+			final String mapName = getAttr(node, ATTRITBUTE.NAME);
+			final String mapDefault = getAttr(node, ATTRITBUTE.DEFAULT);
+			for (Node entryNode = mapNode.getFirstChild(); entryNode != null; entryNode = entryNode.getNextSibling()) {
+				final String entryName = getAttr(entryNode, ATTRITBUTE.NAME);
+				final String entryValue = getAttr(entryNode, ATTRITBUTE.VALUE);
+				metamorph.putValue(mapName, entryName, entryValue);
+			}
+			if (mapDefault != null) {
+				metamorph.putValue(mapName, SimpleMultiMap.DEFAULT_MAP_KEY, mapDefault);
+			}
 		}
 	}
 
-	private static void handleMap(final Node node, final Metamorph metamorph) {
-		final String mapName = getAttr(node, ATTRITBUTE.NAME);
-		final String mapDefault = getAttr(node, ATTRITBUTE.DEFAULT);
-		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-			final String entryName = getAttr(child, ATTRITBUTE.NAME);
-			final String entryValue = getAttr(child, ATTRITBUTE.VALUE);
-			metamorph.putValue(mapName, entryName, entryValue);
-		}
-		if (mapDefault != null) {
-			metamorph.putValue(mapName, SimpleMultiMap.DEFAULT_MAP_KEY, mapDefault);
-		}
-	}
-
-	private static void handleRules(final Node node, final Metamorph metamorph, final FunctionFactory functions,
-			final CollectFactory collects) {
-		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-			handleLiteralRule(child, null, metamorph, functions, collects);
-		}
-	}
-
-	private static void handleLiteralRule(final Node node, final Collect parent, final Metamorph metamorph,
+	private static void handleRule(final Node node, final AbstractCollect parent, final Metamorph metamorph,
 			final FunctionFactory functions, final CollectFactory collects) {
 
 		final String nodeName = node.getNodeName();
+		LOG.info("adding " + nodeName + " under " + node.getParentNode().getNodeName());
 		if (collects.getAvailableClasses().contains(nodeName)) {
+			final NamedValuePipe innerCollect = handleCollect(node, metamorph, functions, collects);
 
-			final Collect innerCollect = handleCollect(node, metamorph, functions, collects);
-			if (parent != null && innerCollect instanceof NamedValueSource) {
-				final NamedValueSource namedValueSource = (NamedValueSource) innerCollect;
-				parent.addNamedValueSource(namedValueSource);
-			}
-
-		} else if ("data".equals(nodeName)) {
-			final Data data = handleData((Element) node, metamorph, functions);
 			if (parent != null) {
+				parent.addNamedValueSource(innerCollect);
+			}
+			
+		} else if (DATA.equals(nodeName)) {
+			final NamedValueSource data = handleData(node, metamorph, functions);
+			if (parent == null) {
+				data.setNamedValueReceiver(metamorph);
+			} else {
+				data.setNamedValueReceiver(parent);
 				parent.addNamedValueSource(data);
 			}
 		} else {
@@ -255,67 +255,58 @@ public final class MetamorphBuilder2 {
 		}
 	}
 
-	private static Collect handleCollect(final Node node, final Metamorph metamorph, final FunctionFactory functions,
+	private static NamedValuePipe handleCollect(final Node node, final Metamorph metamorph, final FunctionFactory functions,
 			final CollectFactory collects) {
 
-		
-		final Map<String, String> attributes = attributesToMap(node);
-		
-	
-		final Collect collect = collects.newInstance(node.getNodeName(), attributes  , metamorph);
+		final AbstractCollect collect = collects.newInstance(node.getNodeName(), attributesToMap(node), metamorph);
 
-		final String flushWith = getAttr(node, ATTRITBUTE.FLUSH_WITH);
-		if (flushWith != null) {
-			metamorph.addEntityEndListener(collect, flushWith);
-		}
-
+		NamedValuePipe lastSource = collect;
 		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-			if ("postprocess".equals(child.getNodeName())) {
-				handlePostprocess(child, collect, metamorph, functions);
+			if (POSTPROCESS.equals(child.getNodeName())) {
+				lastSource = handlePostprocess(child, collect, metamorph, functions);
+			} else {
+				handleRule(child, collect, metamorph, functions, collects);
 			}
-			handleLiteralRule(child, collect, metamorph, functions, collects);
 		}
-		return collect;
+		return lastSource;
 	}
 
-	private static Data handleData(final Element dataNode, final Metamorph metamorph, final FunctionFactory functions) {
+	private static NamedValueSource handleData(final Node dataNode, final Metamorph metamorph, final FunctionFactory functions) {
 
 		final String source = getAttr(dataNode, ATTRITBUTE.SOURCE);
 		final Data data = new Data(source);
-		
+
 		data.setName(getAttr(dataNode, ATTRITBUTE.NAME));
 		data.setValue(getAttr(dataNode, ATTRITBUTE.VALUE));
 
-		for (Node childNode = dataNode.getFirstChild(); childNode != null; childNode = childNode.getNextSibling()) {
-			addFunctionToProcessor(functions, metamorph, childNode, data);
-		}
-
 		metamorph.registerData(data);
-		return data;
+		
+		return handlePostprocess(dataNode, data, metamorph, functions);
 	}
 
-	private static void addFunctionToProcessor(final FunctionFactory functions, final SimpleMultiMap multiMap,
-			final Node node, final ValueProcessor processor) {
-		final Function function = functions.newInstance(node.getNodeName(), attributesToMap(node));
-		function.setMultiMap(multiMap);
+	private static NamedValuePipe handlePostprocess(final Node postprocessNode, final NamedValuePipe processor,
+			final Metamorph metamorph, final FunctionFactory functions) {
 
-		// add key value entries...
-		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-			final String entryName = getAttr(child, ATTRITBUTE.NAME);
-			final String entryValue = getAttr(child, ATTRITBUTE.VALUE);
-			function.putValue(entryName, entryValue);
+		NamedValuePipe lastSource = processor;
+		for (Node functionNode = postprocessNode.getFirstChild(); functionNode != null; functionNode = functionNode
+				.getNextSibling()) {
+			final Function function = functions.newInstance(functionNode.getNodeName(), attributesToMap(functionNode));
+			function.setMultiMap(metamorph);
+
+			// add key value entries...
+			for (Node mapEntryNode = functionNode.getFirstChild(); mapEntryNode != null; mapEntryNode = mapEntryNode
+					.getNextSibling()) {
+				final String entryName = getAttr(mapEntryNode, ATTRITBUTE.NAME);
+				final String entryValue = getAttr(mapEntryNode, ATTRITBUTE.VALUE);
+				function.putValue(entryName, entryValue);
+			}
+			lastSource = lastSource.setNamedValueReceiver(function);
+
 		}
-		processor.addFunction(function);
+		return lastSource;
 	}
 
-	private static void handlePostprocess(final Node node, final ValueProcessor processor, final Metamorph metamorph,
-			final FunctionFactory functions) {
-		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-			addFunctionToProcessor(functions, metamorph, child, processor);
-		}
-	}
-
-	private static void handleFunctions(final Node node, final FunctionFactory functions) {
+	private static void handleFunctionDefinitions(final Node node, final FunctionFactory functions) {
 		for (Node childNode = node.getFirstChild(); childNode != null; childNode = childNode.getNextSibling()) {
 			final Class<?> clazz;
 			final String className = getAttr(childNode, ATTRITBUTE.CLASS);
@@ -339,8 +330,11 @@ public final class MetamorphBuilder2 {
 		}
 	}
 
-	public static void main(final String[] args) {
-		final Metamorph metamorph = MetamorphBuilder2.build("pnd2.pica");
-		System.out.println(metamorph);
+	public static void main(final String[] args) throws IOException {
+		final Reader reader = new PicaReader();
+		final Metamorph metamorph = reader.setReceiver(MetamorphBuilder2.build("pnd2.pica"));
+		LOG.info(metamorph.toString());
+		metamorph.setReceiver(new DefaultWriter(new BufferedWriter(new OutputStreamWriter(System.out, "UTF8"))));
+		reader.read(new FileReader("src/test/resources/PND_10entries.pica"));
 	}
 }

@@ -1,26 +1,24 @@
 package org.culturegraph.metamorph.core2.collectors;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import org.culturegraph.metamorph.core2.AbstractNamedValuePipe;
+import org.culturegraph.metamorph.core2.EntityEndListener;
 import org.culturegraph.metamorph.core2.Metamorph;
 import org.culturegraph.metamorph.core2.NamedValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Common basis for {@link CollectEntity} and {@link CollectLiteral}.
+ * Common basis for {@link Entity}, {@link Combine} etc.
  * 
  * @author Markus Michael Geipel
- * @status Experimental
+
  */
-public abstract class AbstractCollect implements Collect {
+public abstract class AbstractCollect extends AbstractNamedValuePipe implements  EntityEndListener, NamedValueAggregator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 
 	private int oldRecord;
 	private int oldEntity;
-	private int dataCount;
 	private boolean alreadyEmitted;
 	private boolean reset;
 	private boolean sameEntity;
@@ -28,9 +26,9 @@ public abstract class AbstractCollect implements Collect {
 	private String value;
 	private final Metamorph metamorph;
 
-	private final Set<NamedValueSource> namedValueSources = new HashSet<NamedValueSource>();
 
 	public AbstractCollect(final Metamorph metamorph) {
+		super();
 		this.metamorph = metamorph;
 	}
 	
@@ -46,7 +44,7 @@ public abstract class AbstractCollect implements Collect {
 		return oldEntity;
 	}
 
-	@Override
+
 	public final void setFlushWith(final String flushEntity) {
 		metamorph.addEntityEndListener(this, flushEntity);
 	}
@@ -55,50 +53,32 @@ public abstract class AbstractCollect implements Collect {
 	 * @param sameEntity
 	 *            the sameEntity to set
 	 */
-	@Override
+	
 	public final void setSameEntity(final boolean sameEntity) {
 		this.sameEntity = sameEntity;
 	}
 
-	@Override
+	
 	public final void setReset(final boolean reset) {
 		this.reset = reset;
 	}
 
-	/**
-	 * @return the dataCount
-	 */
-	protected final int getDataCount() {
-		return dataCount;
-	}
 
-	// /**
-	// * @return the transformer
-	// */
-	// public final StreamReceiver getStreamReceiver() {
-	// return streamReceiver;
-	// }
 
-	/**
-	 * @return
-	 */
-	protected final Set<NamedValueSource> getNamedValueSources() {
-		return namedValueSources;
-	}
+
 
 	/**
 	 * @return the name
 	 */
-	@Override
+	
 	public final String getName() {
 		return name;
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param name the name to set
 	 */
-	@Override
+	
 	public final void setName(final String name) {
 		this.name = name;
 	}
@@ -106,7 +86,6 @@ public abstract class AbstractCollect implements Collect {
 	/**
 	 * @return the value
 	 */
-	@Override
 	public final String getValue() {
 		return value;
 	}
@@ -115,18 +94,10 @@ public abstract class AbstractCollect implements Collect {
 	 * @param value
 	 *            the value to set
 	 */
-	@Override
 	public final void setValue(final String value) {
 		this.value = value;
 	}
 
-	// /**
-	// * @param streamReceiver the transformer to set
-	// */
-	// public final void setStreamReceiver(final StreamReceiver streamReceiver)
-	// {
-	// this.streamReceiver = streamReceiver;
-	// }
 
 	private void updateCounts(final int newRecord, final int newEntity) {
 		if (newRecord != oldRecord) {
@@ -144,12 +115,13 @@ public abstract class AbstractCollect implements Collect {
 	}
 
 	@Override
-	public final void receive(final String name, final String value, final int recordCount, final int entityCount) {
+	public final void receive(final String name, final String value, final NamedValueSource source, final int recordCount, final int entityCount) {
 		updateCounts(recordCount, entityCount);
 
-		receive(name, value);
+		receive(name, value, source);
 
 		if (isComplete()) {
+			LOG.trace("Emitting on collect completion");
 			emit();
 			alreadyEmitted = true;
 			if (reset) {
@@ -160,7 +132,7 @@ public abstract class AbstractCollect implements Collect {
 		}
 	}
 
-	protected abstract void receive(final String name, final String value);
+	protected abstract void receive(final String name, final String value, final NamedValueSource source);
 
 	/**
 	 * @return
@@ -178,29 +150,18 @@ public abstract class AbstractCollect implements Collect {
 	protected abstract void emit();
 
 	@Override
-	public final void addNamedValueSource(final NamedValueSource namedValueSource) {
-		++dataCount;
-		namedValueSource.setNamedValueReceiver(this);
-		namedValueSources.add(namedValueSource);
-		onAddData(namedValueSource);
-
+	public void addNamedValueSource(final NamedValueSource namedValueSource) {
+		// nothing
+		
 	}
 
 	@Override
 	public final void onEntityEnd(final String entityName, final int recordCount, final int entityCount) {
 		if (oldRecord == recordCount && !alreadyEmitted && (!sameEntity || oldEntity == entityCount)) {
+			LOG.trace("Emitting on entity end");
 			emit();
 		}
 	}
 
-	/**
-	 * @param data
-	 */
-	protected void onAddData(final NamedValueSource namedValueSource) {/*
-																		 * as
-																		 * default
-																		 * do
-																		 * nothing
-																		 */
-	}
+	
 }

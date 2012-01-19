@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.culturegraph.metamorph.core2.Metamorph;
-import org.culturegraph.metamorph.core2.functions.Function;
+import org.culturegraph.metamorph.core2.NamedValueSource;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.types.NamedValue;
 
@@ -13,46 +13,46 @@ import org.culturegraph.metamorph.types.NamedValue;
  * 
  * @author Markus Michael Geipel
  */
-public final class CollectEntity extends AbstractCollect {
+public final class Entity extends AbstractCollect {
 
 	private final Set<NamedValue> literals = new HashSet<NamedValue>();
+	private final Set<NamedValueSource> sources = new HashSet<NamedValueSource>();
+	private final Set<NamedValueSource> sourcesLeft = new HashSet<NamedValueSource>();
 
-
-
-	public CollectEntity(final Metamorph metamorph) {
+	public Entity(final Metamorph metamorph) {
 		super(metamorph);
 	}
-	
+
 	@Override
 	protected void emit() {
 		final StreamReceiver streamReceiver = getMetamorph().getStreamReceiver();
 		streamReceiver.startEntity(getName());
 		for (NamedValue literal : literals) {
-			if (literal.getName() != null && literal.getValue() != null) {
-				streamReceiver.literal(literal.getName(), literal.getValue());
-			}
+			streamReceiver.literal(literal.getName(), literal.getValue());
 		}
 		streamReceiver.endEntity();
 	}
 
 	@Override
-	protected void receive(final String name, final String value) {
+	protected void receive(final String name, final String value, final NamedValueSource source) {
 		literals.add(new NamedValue(name, value));
+		sourcesLeft.remove(source);
 	}
 
 	@Override
 	protected boolean isComplete() {
-		return literals.size() == getDataCount();
+		return sourcesLeft.isEmpty();
 	}
 
 	@Override
 	protected void clear() {
+		sourcesLeft.addAll(sources);
 		literals.clear();
 	}
 
 	@Override
-	public void addFunction(final Function function) {
-		throw new UnsupportedOperationException();
-		
+	public void addNamedValueSource(final NamedValueSource namedValueSource) {
+		sources.add(namedValueSource);
+		sourcesLeft.add(namedValueSource);
 	}
 }

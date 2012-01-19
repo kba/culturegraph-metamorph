@@ -3,24 +3,16 @@ package org.culturegraph.metamorph.core2.functions;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.culturegraph.metamorph.core2.AbstractNamedValuePipe;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 
 /**
  * @author Markus Michael Geipel
- * @status Experimental
  */
-public abstract class AbstractFunction implements Function {
+public abstract class AbstractFunction extends AbstractNamedValuePipe implements Function {
 
 	private SimpleMultiMap multiMapProvider;
 	private Map<String, String> localMap;
-	private ValueReceiver valueReceiver;
-
-
-
-	protected final ValueReceiver getValueReceiver() {
-		return valueReceiver;
-	}
-	
 
 	protected final String getValue(final String mapName, final String key) {
 		return multiMapProvider.getValue(mapName, key);
@@ -32,9 +24,7 @@ public abstract class AbstractFunction implements Function {
 		}
 		return null;
 	}
-	
-
-	
+		
 	@Override
 	public final void putValue(final String key, final String value) {
 		if(localMap==null){
@@ -42,14 +32,8 @@ public abstract class AbstractFunction implements Function {
 		}
 	}
 	
-
 	@Override
 	public final void setMultiMap(final SimpleMultiMap multiMapProvider) {
 		this.multiMapProvider = multiMapProvider;
-	}
-	
-	@Override
-	public final void setValueReceiver(final ValueReceiver valueReceiver) {
-		this.valueReceiver = valueReceiver;
 	}
 }
