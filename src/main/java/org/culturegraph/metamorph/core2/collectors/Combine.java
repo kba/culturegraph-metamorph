@@ -34,7 +34,7 @@ public final class Combine extends AbstractCollect{
 
 	@Override
 	protected boolean isComplete() {
-		return sources.isEmpty();
+		return sourcesLeft.isEmpty();
 	}
 
 	@Override

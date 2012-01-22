@@ -67,6 +67,7 @@ public final class MetamorphBuilder2 {
 	private static final int CURRENT_VERSION = 1;
 	private static final String DATA = "data";
 	private static final String POSTPROCESS = "postprocess";
+	private static final Object FLUSH_WITH = "flushWith";
 
 	private final String morphDef;
 
@@ -248,7 +249,9 @@ public final class MetamorphBuilder2 {
 	private static void handleCollect(final Node node, final Metamorph metamorph, final AbstractCollect parent, final FunctionFactory functions,
 			final CollectFactory collects) {
 
-		final AbstractCollect collect = collects.newInstance(node.getNodeName(), attributesToMap(node), metamorph);
+		final Map<String, String> attributes = attributesToMap(node);
+		final String flushWith = attributes.remove(FLUSH_WITH); // must be set after recursive calls to flush decendents before parent
+		final AbstractCollect collect = collects.newInstance(node.getNodeName(), attributes, metamorph);
 
 		NamedValuePipe lastFunction = collect;
 		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
@@ -264,6 +267,10 @@ public final class MetamorphBuilder2 {
 		}else{
 			parent.addNamedValueSource(collect);
 			lastFunction.setNamedValueReceiver(parent);
+		}
+		
+		if(null!=flushWith){
+			collect.setFlushWith(flushWith);
 		}
 	}
 

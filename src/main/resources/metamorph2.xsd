@@ -90,8 +90,8 @@
 		<complexType>
 			<sequence>
 				<choice minOccurs="1" maxOccurs="unbounded">
-					<element ref="tns:combine" minOccurs="0" maxOccurs="unbounded" />
-					<element ref="tns:data" minOccurs="0" maxOccurs="unbounded" />
+					<group ref="tns:literal-rule" minOccurs="0" maxOccurs="unbounded" />
+
 				</choice>
 				<element ref="tns:postprocess" minOccurs="0" maxOccurs="1" />
 			</sequence>
@@ -104,12 +104,11 @@
 		<complexType>
 			<sequence>
 				<choice minOccurs="1" maxOccurs="unbounded">
-					<element ref="tns:combine" minOccurs="0" maxOccurs="unbounded" />
-					<element ref="tns:data" minOccurs="0" maxOccurs="unbounded" />
+					<group ref="tns:literal-rule" minOccurs="0" maxOccurs="unbounded" />
 				</choice>
 				<element ref="tns:postprocess" minOccurs="0" maxOccurs="1" />
 			</sequence>
-			<attribute name="name" type="string" use="optional" />
+			<attribute name="name" type="string" use="required" />
 			<attribute name="value" type="string" use="optional" />
 
 			<attribute name="reset" type="boolean" use="optional"
@@ -119,13 +118,29 @@
 			<attribute name="flushWith" type="string" use="optional" />
 		</complexType>
 	</element>
+	
+		<element name="concat">
+		<complexType>
+			<sequence>
+				<choice minOccurs="1" maxOccurs="unbounded">
+					<group ref="tns:literal-rule" minOccurs="0" maxOccurs="unbounded" />
+				</choice>
+				<element ref="tns:postprocess" minOccurs="0" maxOccurs="1" />
+			</sequence>
+			<attribute name="name" type="string" use="required" />
+			<attribute name="delimiter" type="string" use="required" />
+			<attribute name="prefix" type="string" use="optional" />
+			<attribute name="postfix" type="string" use="optional" />
+			
+			<attribute name="flushWith" type="string" use="optional" default="record"/>
+		</complexType>
+	</element>
 
 	<element name="choose">
 		<complexType>
 			<sequence>
 				<choice minOccurs="1" maxOccurs="unbounded">
-					<element ref="tns:combine" minOccurs="0" maxOccurs="unbounded" />
-					<element ref="tns:data" minOccurs="0" maxOccurs="unbounded" />
+					<group ref="tns:literal-rule" minOccurs="0" maxOccurs="unbounded" />
 				</choice>
 				<element ref="tns:postprocess" minOccurs="0" maxOccurs="1" />
 			</sequence>
@@ -139,7 +154,7 @@
 	<element name="entity">
 		<complexType>
 			<sequence>
-				<element ref="tns:data" minOccurs="1" maxOccurs="unbounded" />
+				<group ref="tns:literal-rule" minOccurs="0" maxOccurs="unbounded" />
 			</sequence>
 			<attribute name="name" type="string" use="required" />
 			<attribute name="reset" type="boolean" use="optional"
@@ -237,6 +252,7 @@
 			<element ref="tns:data" />
 			<element ref="tns:choose" />
 			<element ref="tns:combine" />
+			<element ref="tns:concat" />
 		</choice>
 	</group>
 
@@ -253,6 +269,7 @@
 			<element ref="tns:equals" />
 			<element ref="tns:htmlanchor" />
 			<element ref="tns:trim" />
+			<element ref="tns:split"/>
 			<element ref="tns:normalize-utf8" />
 			<any namespace="##other" processContents="lax"/>
 
@@ -317,6 +334,12 @@
 			<attribute name="prefix" type="string" use="required" />
 			<attribute name="postfix" type="string" use="optional" />
 			<attribute name="title" type="string" use="optional" />
+		</complexType>
+	</element>
+	
+	<element name="split">
+		<complexType>
+			<attribute name="delimiter" type="string" use="required" />
 		</complexType>
 	</element>
 

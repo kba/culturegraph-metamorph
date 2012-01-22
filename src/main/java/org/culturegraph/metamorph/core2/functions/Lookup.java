@@ -13,8 +13,7 @@ public final class Lookup extends AbstractLookup {
 
 	public void setDefault(final String defaultValue) {
 		this.defaultValue = defaultValue;
-	}
-	
+	}	
 
 	@Override
 	public String process(final String key) {

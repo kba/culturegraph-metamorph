@@ -30,6 +30,7 @@ public abstract class AbstractFunction extends AbstractNamedValuePipe implements
 		if(localMap==null){
 			localMap = new HashMap<String, String>();
 		}
+		localMap.put(key, value);
 	}
 	
 	@Override

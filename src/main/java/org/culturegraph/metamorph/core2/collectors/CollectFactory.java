@@ -9,5 +9,6 @@ public final class CollectFactory extends ObjectFactory<AbstractCollect> {
 		registerClass("choose", Choose.class);
 		registerClass("group", Group.class);
 		registerClass("entity", Entity.class);
+		registerClass("concat", Concat.class);
 	}
 }
