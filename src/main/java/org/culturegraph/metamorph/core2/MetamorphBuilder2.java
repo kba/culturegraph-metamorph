@@ -19,7 +19,6 @@ import javax.xml.validation.SchemaFactory;
 
 import org.culturegraph.metamorph.core2.collectors.AbstractCollect;
 import org.culturegraph.metamorph.core2.collectors.CollectFactory;
-import org.culturegraph.metamorph.core2.collectors.NamedValueAggregator;
 import org.culturegraph.metamorph.core2.exceptions.MetamorphDefinitionException;
 import org.culturegraph.metamorph.core2.functions.Function;
 import org.culturegraph.metamorph.core2.functions.FunctionFactory;
@@ -236,42 +235,39 @@ public final class MetamorphBuilder2 {
 		final String nodeName = node.getNodeName();
 		LOG.info("adding " + nodeName + " under " + node.getParentNode().getNodeName());
 		if (collects.getAvailableClasses().contains(nodeName)) {
-			final NamedValuePipe innerCollect = handleCollect(node, metamorph, functions, collects);
-
-			if (parent != null) {
-				parent.addNamedValueSource(innerCollect);
-			}
+			handleCollect(node, metamorph, parent, functions, collects);
 			
 		} else if (DATA.equals(nodeName)) {
-			final NamedValueSource data = handleData(node, metamorph, functions);
-			if (parent == null) {
-				data.setNamedValueReceiver(metamorph);
-			} else {
-				data.setNamedValueReceiver(parent);
-				parent.addNamedValueSource(data);
-			}
+			handleData(node, parent, metamorph, functions);
+
 		} else {
 			illegalChild(node, node.getParentNode());
 		}
 	}
 
-	private static NamedValuePipe handleCollect(final Node node, final Metamorph metamorph, final FunctionFactory functions,
+	private static void handleCollect(final Node node, final Metamorph metamorph, final AbstractCollect parent, final FunctionFactory functions,
 			final CollectFactory collects) {
 
 		final AbstractCollect collect = collects.newInstance(node.getNodeName(), attributesToMap(node), metamorph);
 
-		NamedValuePipe lastSource = collect;
+		NamedValuePipe lastFunction = collect;
 		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
 			if (POSTPROCESS.equals(child.getNodeName())) {
-				lastSource = handlePostprocess(child, collect, metamorph, functions);
+				lastFunction = handlePostprocess(child, collect, metamorph, functions);
 			} else {
 				handleRule(child, collect, metamorph, functions, collects);
 			}
 		}
-		return lastSource;
+
+		if (parent == null) {
+			lastFunction.setNamedValueReceiver(metamorph);
+		}else{
+			parent.addNamedValueSource(collect);
+			lastFunction.setNamedValueReceiver(parent);
+		}
 	}
 
-	private static NamedValueSource handleData(final Node dataNode, final Metamorph metamorph, final FunctionFactory functions) {
+	private static void handleData(final Node dataNode, final AbstractCollect parent, final Metamorph metamorph, final FunctionFactory functions) {
 
 		final String source = getAttr(dataNode, ATTRITBUTE.SOURCE);
 		final Data data = new Data(source);
@@ -281,7 +277,16 @@ public final class MetamorphBuilder2 {
 
 		metamorph.registerData(data);
 		
-		return handlePostprocess(dataNode, data, metamorph, functions);
+		final NamedValuePipe lastFunction = handlePostprocess(dataNode, data, metamorph, functions);
+		
+		if (parent == null) {
+			lastFunction.setNamedValueReceiver(metamorph);
+		} else {
+			lastFunction.setNamedValueReceiver(parent);
+			parent.addNamedValueSource(data);
+		}
+		
+		
 	}
 
 	private static NamedValuePipe handlePostprocess(final Node postprocessNode, final NamedValuePipe processor,
@@ -316,7 +321,6 @@ public final class MetamorphBuilder2 {
 				throw new MetamorphDefinitionException("Class '" + className + "' not found.", e);
 			}
 			if (Function.class.isAssignableFrom(clazz)) {
-				LOG.info("def " + getAttr(childNode, ATTRITBUTE.NAME) + "=" + clazz.getName());
 				functions.registerClass(getAttr(childNode, ATTRITBUTE.NAME), (Class<Function>) clazz);
 			} else {
 				throw new MetamorphDefinitionException(className + " does not implement interface 'Function'");
