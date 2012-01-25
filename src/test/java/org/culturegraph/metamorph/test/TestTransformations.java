@@ -13,7 +13,7 @@ import org.culturegraph.metamorph.test.MetamorphTestRunner.TestDefinitions;
  */
 
 @RunWith(MetamorphTestRunner.class)
-@TestDefinitions("metamorph-test-1.xml")
+@TestDefinitions("test/metamorph-test-1.xml")
 public final class TestTransformations { 
 	// This class serves only as a bonding
 	// point for metamorph tests

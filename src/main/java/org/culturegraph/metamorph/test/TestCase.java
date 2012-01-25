@@ -31,6 +31,8 @@ public final class TestCase {
 	
 	private static final String METAMORPH_NS = 
 			"http://www.culturegraph.org/metamorph";
+	private static final String METAMORPH_TEST_NS = 
+			"http://www.culturegraph.org/metamorph-test";
 	
 	private static final String NAME_ATTR = "name";
 	private static final String IGNORE_ATTR = "ignore";
@@ -103,7 +105,7 @@ public final class TestCase {
 	private Metamorph getMetamorph() {
 		Metamorph metamorph = null;
 		
-		NodeList nodes = config.getElementsByTagName(METAMORPH_TAG);
+		NodeList nodes = config.getElementsByTagNameNS(METAMORPH_TEST_NS, METAMORPH_TAG);
 		if (nodes.getLength() != 0) {
 			final Element el = (Element) nodes.item(0);
 			metamorph = MetamorphBuilder.build(el.getAttribute(SRC_ATTR));
