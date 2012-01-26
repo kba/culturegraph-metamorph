@@ -19,9 +19,9 @@ public final class EventStreamValidator implements StreamReceiver {
 	private static final String CANNOT_CHANGE_OPTIONS = "Cannot change options during validation";
 	private static final String VALIDATION_FAILED = "Validation failed. Please reset the validator";
 	
-	private static final String NO_RECORD_FOUND = "No record found";
-	private static final String NO_ENTITY_FOUND = "No entity found";
-	private static final String NO_LITERAL_FOUND = "No literal found";
+	private static final String NO_RECORD_FOUND = "No record found: ";
+	private static final String NO_ENTITY_FOUND = "No entity found: ";
+	private static final String NO_LITERAL_FOUND = "No literal found: ";
 	private static final String UNCONSUMED_RECORDS_FOUND = "Unconsumed records found";
 	
 	private static final class EventNode {
@@ -164,7 +164,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		
 		if (!openGroups(Event.Type.START_RECORD, identifier, strictRecordOrder, false)) {
 			validationFailed = true;
-			throw new IllegalStateException(NO_RECORD_FOUND);
+			throw new IllegalStateException(NO_RECORD_FOUND + identifier);
 		}
 	}
 	
@@ -178,7 +178,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		
 		if (!closeGroups()) {
 			validationFailed = true;
-			throw new IllegalStateException(NO_RECORD_FOUND);
+			throw new IllegalStateException(NO_RECORD_FOUND + "No record matched the sequence of stream events");
 		}
 		
 	}
@@ -193,7 +193,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		
 		if (!openGroups(Event.Type.START_ENTITY, name, strictKeyOrder, strictValueOrder)) {
 			validationFailed = true;
-			throw new IllegalStateException(NO_ENTITY_FOUND);
+			throw new IllegalStateException(NO_ENTITY_FOUND + name);
 		}
 	}
 	
@@ -207,7 +207,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		
 		if (!closeGroups()) {
 			validationFailed = true;
-			throw new IllegalStateException(NO_ENTITY_FOUND);
+			throw new IllegalStateException(NO_ENTITY_FOUND + "No entity matched the sequence of stream events");
 		}
 	}
 	
@@ -232,7 +232,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		
 		if (stackFrame.size() == 0) {
 			validationFailed = true;
-			throw new IllegalStateException(NO_LITERAL_FOUND);
+			throw new IllegalStateException(NO_LITERAL_FOUND + name + "=" + value);
 		}
 	}
 	
