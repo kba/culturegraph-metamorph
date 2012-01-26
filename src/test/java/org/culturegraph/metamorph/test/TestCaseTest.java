@@ -1,0 +1,57 @@
+package org.culturegraph.metamorph.test;
+
+import java.io.IOException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+
+public final class TestCaseTest {
+
+	private static final String TEST_CASE_TAG = "test-case";
+	private static final String INPUT_TAG = "input";
+	private static final String METAMORPH_TAG = "metamorph";
+	private static final String RESULT_TAG = "result";
+	
+	private static final String NAME_ATTR = "name";
+	private static final String TYPE_ATTR = "type";
+	private static final String SRC_ATTR = "src";
+	
+	private Document doc;
+	
+	@Before
+	public void createDOMBuilder() throws ParserConfigurationException {
+		final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        doc = docBuilder.newDocument();
+	}
+	
+	@Test(expected=TestConfigurationException.class)
+	public void testNonEmptyInputWithSrc() throws IOException {
+		final Element config = doc.createElement(TEST_CASE_TAG);
+		config.setAttribute(NAME_ATTR, "test");
+		
+		Element el = doc.createElement(INPUT_TAG);
+		el.setAttribute(TYPE_ATTR, "application/x-cgentity");
+		el.setAttribute(SRC_ATTR, "test/simple-input.cge");
+		el.appendChild(doc.createTextNode("This data should not be here"));
+		config.appendChild(el);
+		
+		el = doc.createElement(METAMORPH_TAG);
+		el.setAttribute(SRC_ATTR, "test/simple-transformation");
+		config.appendChild(el);
+		
+		el = doc.createElement(RESULT_TAG);
+		el.setAttribute(SRC_ATTR, "simple-result.xml");
+		config.appendChild(el);
+		
+		final TestCase tc = new TestCase(config);
+		tc.run();
+	}
+}

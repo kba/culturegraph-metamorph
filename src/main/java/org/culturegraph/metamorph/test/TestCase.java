@@ -28,6 +28,8 @@ public final class TestCase {
 	
 	private static final String NO_DATA_FOUND = 
 			"Please specify either element content or a src attribute";
+	private static final String CONTENT_MUST_BE_EMTPY = 
+			"Element content must be empty when src attribute is used.";
 	
 	private static final String METAMORPH_NS = 
 			"http://www.culturegraph.org/metamorph";
@@ -128,6 +130,9 @@ public final class TestCase {
 		final String inputType = input.getAttribute(TYPE_ATTR);
 		if (input.hasAttribute(SRC_ATTR)) {
 			final String src = input.getAttribute(SRC_ATTR);
+			if (input.getFirstChild() != null) {
+				throw new TestConfigurationException(CONTENT_MUST_BE_EMTPY);
+			}
 			try {
 				reader = ResourceUtil.getReader(src);
 			} catch (FileNotFoundException e) {
@@ -151,17 +156,20 @@ public final class TestCase {
 	
 	private java.io.Reader getExpectedResult() {
 		final java.io.Reader reader;
-		final Element output = (Element) config.getElementsByTagName(RESULT_TAG).item(0);
-		if (output.hasAttribute(SRC_ATTR)) {
-			final String src = output.getAttribute(SRC_ATTR);
+		final Element result = (Element) config.getElementsByTagName(RESULT_TAG).item(0);
+		if (result.hasAttribute(SRC_ATTR)) {
+			final String src = result.getAttribute(SRC_ATTR);
+			if (result.getFirstChild() != null) {
+				throw new TestConfigurationException(CONTENT_MUST_BE_EMTPY);
+			}
 			try {
 				reader = ResourceUtil.getReader(src);
 			} catch (FileNotFoundException e) {
 				throw new TestConfigurationException("Could not find expected result: " + src, e);
 			}
 		} else {
-			if (output.getFirstChild() != null) {
-				reader = new StringReader(XMLUtil.nodeToString(output.getFirstChild()));
+			if (result.getFirstChild() != null) {
+				reader = new StringReader(XMLUtil.nodeToString(result.getFirstChild()));
 			} else {
 				throw new TestConfigurationException(NO_DATA_FOUND);
 			}
