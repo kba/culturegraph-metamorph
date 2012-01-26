@@ -51,10 +51,11 @@ public final class EventStreamWriter implements StreamReceiver {
 		public String toString() {
 			String str = type.toString();
 			if (name != null) {
-				str += ": " + name;
+				str += "(" + name;
 				if (value != null) {
 					str += "=" + value;
 				}
+				str += ")";
 			}
 			return str;
 		}

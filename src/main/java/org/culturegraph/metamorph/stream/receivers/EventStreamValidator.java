@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Stack;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.receivers.EventStreamWriter.Event;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Christoph Böhme <c.boehme@dnb.de>
@@ -23,6 +25,8 @@ public final class EventStreamValidator implements StreamReceiver {
 	private static final String NO_ENTITY_FOUND = "No entity found: ";
 	private static final String NO_LITERAL_FOUND = "No literal found: ";
 	private static final String UNCONSUMED_RECORDS_FOUND = "Unconsumed records found";
+	
+	private static final Logger LOG = LoggerFactory.getLogger(EventStreamValidator.class);
 	
 	private static final class EventNode {
 		private final Event event;
@@ -64,6 +68,30 @@ public final class EventStreamValidator implements StreamReceiver {
 
 		public void setConsumed(final boolean consumed) {
 			this.consumed = consumed;
+		}
+		
+		@Override
+		public String toString() {
+			final StringBuilder builder = new StringBuilder();
+			if (event == null) {
+				builder.append("START_STREAM");
+			} else {
+				builder.append(event.toString());
+			}
+			if (consumed) {
+				builder.append("<CONSUMED>");
+			}
+			if (event == null || event.getType() != Event.Type.LITERAL) {
+				builder.append("[ ");
+				String sep = "";
+				for(EventNode e: children) {
+					builder.append(sep);
+					sep =", ";
+					builder.append(e.toString());
+				}
+				builder.append(" ]");
+			}
+			return builder.toString();
 		}
 	}
 	
@@ -148,6 +176,7 @@ public final class EventStreamValidator implements StreamReceiver {
 			eventStream.setConsumed(true);
 		} else {
 			validationFailed = true;
+			logEventStream();
 			throw new IllegalStateException(UNCONSUMED_RECORDS_FOUND);
 		}
 	}
@@ -164,6 +193,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		
 		if (!openGroups(Event.Type.START_RECORD, identifier, strictRecordOrder, false)) {
 			validationFailed = true;
+			logEventStream();
 			throw new IllegalStateException(NO_RECORD_FOUND + identifier);
 		}
 	}
@@ -178,6 +208,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		
 		if (!closeGroups()) {
 			validationFailed = true;
+			logEventStream();
 			throw new IllegalStateException(NO_RECORD_FOUND + "No record matched the sequence of stream events");
 		}
 		
@@ -193,6 +224,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		
 		if (!openGroups(Event.Type.START_ENTITY, name, strictKeyOrder, strictValueOrder)) {
 			validationFailed = true;
+			logEventStream();
 			throw new IllegalStateException(NO_ENTITY_FOUND + name);
 		}
 	}
@@ -232,6 +264,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		
 		if (stackFrame.size() == 0) {
 			validationFailed = true;
+			logEventStream();
 			throw new IllegalStateException(NO_LITERAL_FOUND + name + "=" + value);
 		}
 	}
@@ -353,5 +386,11 @@ public final class EventStreamValidator implements StreamReceiver {
 			return str2 == null;
 		}
 		return str1.equals(str2); 
+	}
+	
+	private void logEventStream() {
+		if (LOG.isInfoEnabled()) {
+			LOG.info("Event Stream: " + eventStream.toString());
+		}
 	}
 }
