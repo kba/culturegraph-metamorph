@@ -13,6 +13,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * @author Christoph Böhme <c.boehme@dnb.de>
@@ -28,6 +29,10 @@ public final class XMLUtil {
 	}
 	
 	public static String nodeToString(final Node node) {
+		return nodeToString(node, false);
+	}
+	
+	public static String nodeToString(final Node node, final boolean omitXMLDecl) {
 		final StringWriter writer = new StringWriter();
 		Transformer transformer;
 		try {
@@ -35,7 +40,13 @@ public final class XMLUtil {
 		} catch (TransformerException e) {
 			throw new RuntimeException(UNEXPECTED_TRANSFORMATION_ERROR, e);
 		}
-		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+		
+		if (omitXMLDecl) {
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		} else {
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");			
+		}
+		
 		try {
 			transformer.transform(new DOMSource(node), new StreamResult(writer));
 		} catch (TransformerException e) {
@@ -45,4 +56,13 @@ public final class XMLUtil {
 		return writer.toString();
 	}
 
+	public static String nodeListToString(final NodeList nodes) {
+		final StringBuilder builder = new StringBuilder();
+		
+		for (int i=0; i < nodes.getLength(); ++i) {
+			builder.append(nodeToString(nodes.item(i), i != 0));
+		}
+		
+		return builder.toString();
+	}
 }

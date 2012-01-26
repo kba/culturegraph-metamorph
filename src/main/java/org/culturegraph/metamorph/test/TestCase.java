@@ -139,9 +139,9 @@ public final class TestCase {
 				throw new TestConfigurationException("Could not find input file: " + src, e);
 			}
 		} else {
-			if (input.getFirstChild() != null) {
+			if (input.hasChildNodes()) {
 				if (MimeTypeUtil.isXmlMimeType(inputType)) {
-					reader = new StringReader(XMLUtil.nodeToString(input.getFirstChild()));
+					reader = new StringReader(XMLUtil.nodeListToString(input.getChildNodes()));
 				} else {
 					reader = new StringReader(input.getTextContent());
 				}
@@ -168,8 +168,8 @@ public final class TestCase {
 				throw new TestConfigurationException("Could not find expected result: " + src, e);
 			}
 		} else {
-			if (result.getFirstChild() != null) {
-				reader = new StringReader(XMLUtil.nodeToString(result.getFirstChild()));
+			if (result.hasChildNodes()) {
+				reader = new StringReader(XMLUtil.nodeListToString(result.getChildNodes()));
 			} else {
 				throw new TestConfigurationException(NO_DATA_FOUND);
 			}
