@@ -239,6 +239,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		
 		if (!closeGroups()) {
 			validationFailed = true;
+			logEventStream();
 			throw new IllegalStateException(NO_ENTITY_FOUND + "No entity matched the sequence of stream events");
 		}
 	}
