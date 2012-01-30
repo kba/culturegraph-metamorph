@@ -49,15 +49,18 @@ public final class EventStreamWriter implements StreamReceiver {
 
 		@Override
 		public String toString() {
-			String str = type.toString();
+			final StringBuilder builder = new StringBuilder();
+			builder.append(type);
 			if (name != null) {
-				str += "(" + name;
+				builder.append("(" );
+				builder.append(name);
 				if (value != null) {
-					str += "=" + value;
+					builder.append("=");
+					builder.append(value);
 				}
-				str += ")";
+				builder.append(")");
 			}
-			return str;
+			return builder.toString();
 		}
 	}
 	
@@ -66,9 +69,7 @@ public final class EventStreamWriter implements StreamReceiver {
 	private final WellFormednessChecker wellFormednessChecker = 
 			new WellFormednessChecker();
 	
-	public EventStreamWriter() {
-		// Nothing to do
-	}
+
 	
 	public List<Event> getEventStream() {
 		return Collections.unmodifiableList(eventStream);

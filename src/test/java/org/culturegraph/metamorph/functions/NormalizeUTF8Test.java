@@ -3,7 +3,7 @@
  */
 package org.culturegraph.metamorph.functions;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public final class NormalizeUTF8Test {
 	
 	@Test
 	public void testProcess() {
-		NormalizeUTF8 normalize = new NormalizeUTF8();
+		final NormalizeUTF8 normalize = new NormalizeUTF8();
 		
 		assertEquals(OUTPUT_STR, normalize.process(INPUT_STR));
 	}

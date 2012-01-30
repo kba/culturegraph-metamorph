@@ -95,8 +95,8 @@ public final class EventStreamValidator implements StreamReceiver {
 		}
 	}
 	
-	private EventNode eventStream;
-	private Stack<List<EventNode>> stack = new Stack<List<EventNode>>();
+	private final EventNode eventStream;
+	private final Stack<List<EventNode>> stack = new Stack<List<EventNode>>();
 	private boolean validating;
 	private boolean validationFailed;
 
@@ -254,16 +254,16 @@ public final class EventStreamValidator implements StreamReceiver {
 		
 		final List<EventNode> stackFrame = stack.peek();
 		
-		final Iterator<EventNode> it = stackFrame.iterator();
-		while (it.hasNext()) {
-			final EventNode g = it.next();
-			if (!consumeLiteral(g, name, value)) {
-				resetGroup(g);
-				it.remove();
+		final Iterator<EventNode> iter = stackFrame.iterator();
+		while (iter.hasNext()) {
+			final EventNode eventNode = iter.next();
+			if (!consumeLiteral(eventNode, name, value)) {
+				resetGroup(eventNode);
+				iter.remove();
 			}
 		}
 		
-		if (stackFrame.size() == 0) {
+		if (stackFrame.isEmpty()) {
 			validationFailed = true;
 			logEventStream();
 			throw new IllegalStateException(NO_LITERAL_FOUND + name + "=" + value);
@@ -272,16 +272,16 @@ public final class EventStreamValidator implements StreamReceiver {
 	
 	private void foldEventStream(final EventNode parent, final Iterator<Event> eventStream) {
 		while(eventStream.hasNext()) {
-			final Event ev = eventStream.next();
-			if (ev.getType() == Event.Type.LITERAL) {
-				parent.getChildren().add(new EventNode(ev, parent));
-			} else if (ev.getType() == Event.Type.START_RECORD || 
-					ev.getType() == Event.Type.START_ENTITY) {
-				final EventNode newNode = new EventNode(ev, parent);
+			final Event event = eventStream.next();
+			if (event.getType() == Event.Type.LITERAL) {
+				parent.getChildren().add(new EventNode(event, parent));
+			} else if (event.getType() == Event.Type.START_RECORD || 
+					event.getType() == Event.Type.START_ENTITY) {
+				final EventNode newNode = new EventNode(event, parent);
 				parent.getChildren().add(newNode);
 				foldEventStream(newNode, eventStream);
-			} else if (ev.getType() == Event.Type.END_RECORD ||
-				ev.getType() == Event.Type.END_ENTITY) {
+			} else if (event.getType() == Event.Type.END_RECORD ||
+				event.getType() == Event.Type.END_ENTITY) {
 				return;
 			}
 		}
@@ -292,28 +292,28 @@ public final class EventStreamValidator implements StreamReceiver {
 		final List<EventNode> stackFrame = stack.peek();
 		stack.push(new LinkedList<EventNode>());
 		
-		final Iterator<EventNode> it = stackFrame.iterator();
-		while (it.hasNext()) {
-			final EventNode g = it.next();
-			if (!consumeGroups(g, type, name, strictKeyOrder, strictValueOrder)) {
-				resetGroup(g);
-				it.remove();
+		final Iterator<EventNode> iter = stackFrame.iterator();
+		while (iter.hasNext()) {
+			final EventNode eventNode = iter.next();
+			if (!consumeGroups(eventNode, type, name, strictKeyOrder, strictValueOrder)) {
+				resetGroup(eventNode);
+				iter.remove();
 			}
 		}
 		
-		return stackFrame.size() != 0;		
+		return !stackFrame.isEmpty();		
 	}
 	
 	private boolean closeGroups() {
 		EventNode lastMatchParent = null;
-		final Iterator<EventNode> it = stack.pop().iterator();
-		while (it.hasNext()) {
-			final EventNode g = it.next();
-			if (g.getParent() != lastMatchParent && isGroupConsumed(g)) {
-				g.setConsumed(true);
-				lastMatchParent = g.getParent();
+		final Iterator<EventNode> iter = stack.pop().iterator();
+		while (iter.hasNext()) {
+			final EventNode eventNode = iter.next();
+			if (eventNode.getParent() != lastMatchParent && isGroupConsumed(eventNode)) {
+				eventNode.setConsumed(true);
+				lastMatchParent = eventNode.getParent();
 			} else {
-				resetGroup(g);
+				resetGroup(eventNode);
 			}
 		}
 		
@@ -325,9 +325,9 @@ public final class EventStreamValidator implements StreamReceiver {
 		boolean foundMatch = false;
 		for (EventNode c: group.getChildren()) {
 			if (!c.isConsumed()) {
-				final Event ev = c.getEvent();
-				if (compare(name, ev.getName())) {
-					if (ev.getType() == type) {
+				final Event event = c.getEvent();
+				if (compare(name, event.getName())) {
+					if (event.getType() == type) {
 						stack.peek().add(c);
 						foundMatch = true;
 					} else if (strictValueOrder) {
@@ -344,13 +344,13 @@ public final class EventStreamValidator implements StreamReceiver {
 	
 	private boolean consumeLiteral(final EventNode group, final String name, final String value) {
 		boolean foundMatch = false;
-		for (EventNode c: group.getChildren()) {
-			if (!c.isConsumed()) {
-				final Event ev = c.getEvent();
-				if (compare(name, ev.getName())) {
-					if (ev.getType() == Event.Type.LITERAL && 
-							compare(value, ev.getValue())) {
-						c.setConsumed(true);
+		for (EventNode eventNode: group.getChildren()) {
+			if (!eventNode.isConsumed()) {
+				final Event event = eventNode.getEvent();
+				if (compare(name, event.getName())) {
+					if (event.getType() == Event.Type.LITERAL && 
+							compare(value, event.getValue())) {
+						eventNode.setConsumed(true);
 						foundMatch = true;
 						break;
 					} else if (strictValueOrder) {

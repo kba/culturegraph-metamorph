@@ -37,21 +37,21 @@ public final class TestCaseTest {
 		final Element config = doc.createElement(TEST_CASE_TAG);
 		config.setAttribute(NAME_ATTR, "test");
 		
-		Element el = doc.createElement(INPUT_TAG);
-		el.setAttribute(TYPE_ATTR, "application/x-cgentity");
-		el.setAttribute(SRC_ATTR, "test/simple-input.cge");
-		el.appendChild(doc.createTextNode("This data should not be here"));
-		config.appendChild(el);
+		Element element = doc.createElement(INPUT_TAG);
+		element.setAttribute(TYPE_ATTR, "application/x-cgentity");
+		element.setAttribute(SRC_ATTR, "test/simple-input.cge");
+		element.appendChild(doc.createTextNode("This data should not be here"));
+		config.appendChild(element);
 		
-		el = doc.createElement(METAMORPH_TAG);
-		el.setAttribute(SRC_ATTR, "test/simple-transformation");
-		config.appendChild(el);
+		element = doc.createElement(METAMORPH_TAG);
+		element.setAttribute(SRC_ATTR, "test/simple-transformation");
+		config.appendChild(element);
 		
-		el = doc.createElement(RESULT_TAG);
-		el.setAttribute(SRC_ATTR, "simple-result.xml");
-		config.appendChild(el);
+		element = doc.createElement(RESULT_TAG);
+		element.setAttribute(SRC_ATTR, "simple-result.xml");
+		config.appendChild(element);
 		
-		final TestCase tc = new TestCase(config);
-		tc.run();
+		final TestCase testCase = new TestCase(config);
+		testCase.run();
 	}
 }
