@@ -69,10 +69,10 @@ public final class TestCase {
 	public void run() throws IOException {
 		
 		final EventStreamWriter resultStream = new EventStreamWriter();
-		if (metamorph != null) {
-			reader.setReceiver(metamorph).setReceiver(resultStream);
-		} else {
+		if (metamorph == null) {
 			reader.setReceiver(resultStream);
+		} else {
+			reader.setReceiver(metamorph).setReceiver(resultStream);
 		}
 		
 		resultStream.resetStream();

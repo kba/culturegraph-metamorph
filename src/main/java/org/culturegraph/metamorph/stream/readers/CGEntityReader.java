@@ -14,7 +14,7 @@ public final class CGEntityReader extends AbstractReader {
 	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(String.valueOf(CGEntity.SUB_DELIMITER),
 			Pattern.LITERAL);
 	
-	private static Logger LOG = LoggerFactory.getLogger(CGEntityReader.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CGEntityReader.class);
 
 	@Override
 	public String getId(final String record) {

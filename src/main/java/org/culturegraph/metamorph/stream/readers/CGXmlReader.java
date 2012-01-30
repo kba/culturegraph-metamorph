@@ -34,9 +34,7 @@ public final class CGXmlReader implements Reader {
 		private static final String NAME_ATTR = "name";
 		private static final String VALUE_ATTR = "value";
 	
-		public CGXmlHandler() {
-			// Nothing to do
-		}
+
 
 		@Override
 		public void startElement(final String uri, final String localName, 
@@ -62,18 +60,18 @@ public final class CGXmlReader implements Reader {
 		}
 		
 		@Override
-		public void error(final SAXParseException e) {
-			throw new RuntimeException(e);
+		public void error(final SAXParseException exc) {
+			throw new RuntimeException(exc);
 		}
 		
 		@Override
-		public void fatalError(final SAXParseException e) {
-			throw new RuntimeException(e);			
+		public void fatalError(final SAXParseException exc) {
+			throw new RuntimeException(exc);			
 		}
 		
 		@Override
-		public void warning(final SAXParseException e) {
-			throw new RuntimeException(e);			
+		public void warning(final SAXParseException exc) {
+			throw new RuntimeException(exc);			
 		}
 	}
 	

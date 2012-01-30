@@ -15,11 +15,11 @@
 
 	<rules>
 
-		<!-- <data name="BAUER_FORENAME" source="028A.a"> -->
-		<!-- <lookup default="false"> -->
-		<!-- <entry name="Bauer" value="true" /> -->
-		<!-- </lookup> -->
-		<!-- </data> -->
+	<data name="BAUER_FORENAME" source="028A.a">
+		<lookup default="false">
+			<entry name="Bauer" value="true" />
+		</lookup>
+	</data>
 
 		<!-- <entity name="gnd:variantNameForThePerson" -->
 		<!-- flushWith="028A"> -->

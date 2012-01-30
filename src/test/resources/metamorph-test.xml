@@ -97,6 +97,7 @@
 				</records>
 			</cgxml>
 		</result>
+		
 	</test-case>
 	
 	<test-case name="Multiple partially defined entities">

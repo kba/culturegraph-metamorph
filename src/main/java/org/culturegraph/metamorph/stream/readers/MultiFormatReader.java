@@ -78,7 +78,6 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 				metamorph.setReceiver(streamReceiver);
 			}
 		} 
-
 	}
 
 	@Override
