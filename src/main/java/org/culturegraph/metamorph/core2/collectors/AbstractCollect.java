@@ -4,8 +4,6 @@ import org.culturegraph.metamorph.core2.AbstractNamedValuePipe;
 import org.culturegraph.metamorph.core2.EntityEndListener;
 import org.culturegraph.metamorph.core2.Metamorph;
 import org.culturegraph.metamorph.core2.NamedValueSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Common basis for {@link Entity}, {@link Combine} etc.
@@ -15,12 +13,12 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractCollect extends AbstractNamedValuePipe implements  EntityEndListener, NamedValueAggregator {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
+	//private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 
 	private int oldRecord;
 	private int oldEntity;
 	private boolean alreadyEmitted;
-	private boolean reset;
+	private boolean resetAfterEmit;
 	private boolean sameEntity;
 	private String name;
 	private String value;
@@ -59,7 +57,7 @@ public abstract class AbstractCollect extends AbstractNamedValuePipe implements 
 
 	
 	public final void setReset(final boolean reset) {
-		this.reset = reset;
+		this.resetAfterEmit = reset;
 	}
 
 	/**
@@ -94,19 +92,25 @@ public abstract class AbstractCollect extends AbstractNamedValuePipe implements 
 	}
 
 
-	private void updateCounts(final int newRecord, final int newEntity) {
-		if (newRecord != oldRecord) {
+	private void updateCounts(final int currentRecord, final int currentEntity) {
+		if (!isSameRecord(currentRecord)) {
 			clear();
 			alreadyEmitted = false;
-			oldRecord = newRecord;
-			LOG.trace("reset as records differ");
+			oldRecord = currentRecord;
 		}
-		if (sameEntity && oldEntity != newEntity) {
+		if (resetNeedFor(currentEntity)) {
 			clear();
 			alreadyEmitted = false;
-			oldEntity = newEntity;
-			LOG.trace("reset as entities differ");
+			oldEntity = currentEntity;
 		}
+	}
+
+	private boolean resetNeedFor(final int currentEntity) {
+		return sameEntity && oldEntity != currentEntity;
+	}
+
+	private boolean isSameRecord(final int currentRecord) {
+		return currentRecord == oldRecord;
 	}
 
 	@Override
@@ -116,11 +120,9 @@ public abstract class AbstractCollect extends AbstractNamedValuePipe implements 
 		receive(name, value, source);
 
 		if (isComplete()) {
-			LOG.trace("Emitting on collect completion");
 			emit();
 			alreadyEmitted = true;
-			if (reset) {
-				LOG.trace("reset because of emit");
+			if (resetAfterEmit) {
 				clear();
 				alreadyEmitted = false;
 			}
@@ -136,12 +138,15 @@ public abstract class AbstractCollect extends AbstractNamedValuePipe implements 
 
 	@Override
 	public final void onEntityEnd(final String entityName, final int recordCount, final int entityCount) {
-		if (oldRecord == recordCount && !alreadyEmitted && (!sameEntity || oldEntity == entityCount)) {
-			LOG.trace("Emitting on entity end");
+		if (!alreadyEmitted  && isSameRecord(recordCount) && sameEntityConstraintSatisfied(entityCount)) {
 			emit();
 		}
 	}
 	
+	private boolean sameEntityConstraintSatisfied(final int entityCount) {
+		return !sameEntity || oldEntity == entityCount;
+	}
+
 	protected abstract void receive(final String name, final String value, final NamedValueSource source);
 	protected abstract boolean isComplete();
 	protected abstract void clear();

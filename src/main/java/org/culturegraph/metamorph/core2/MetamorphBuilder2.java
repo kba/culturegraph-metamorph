@@ -1,11 +1,8 @@
 package org.culturegraph.metamorph.core2;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,9 +20,6 @@ import org.culturegraph.metamorph.core2.exceptions.MetamorphDefinitionException;
 import org.culturegraph.metamorph.core2.functions.Function;
 import org.culturegraph.metamorph.core2.functions.FunctionFactory;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
-import org.culturegraph.metamorph.stream.readers.PicaReader;
-import org.culturegraph.metamorph.stream.readers.Reader;
-import org.culturegraph.metamorph.stream.receivers.DefaultWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -48,7 +42,7 @@ public final class MetamorphBuilder2 {
 
 	public static enum ATTRITBUTE {
 		VERSION("version"), SOURCE("source"), OCCURENCE("occurence"), MODE("mode"), VALUE("value"), NAME("name"), CLASS(
-				"class"), DEFAULT("default"), RESET("reset"), SAME_ENTITY("sameEntity"), FLUSH_WITH("flushWith");
+				"class"), DEFAULT("default");
 		private final String string;
 
 		private ATTRITBUTE(final String string) {
@@ -67,7 +61,7 @@ public final class MetamorphBuilder2 {
 	private static final int CURRENT_VERSION = 1;
 	private static final String DATA = "data";
 	private static final String POSTPROCESS = "postprocess";
-	private static final Object FLUSH_WITH = "flushWith";
+	private static final String FLUSH_WITH = "flushWith";
 
 	private final String morphDef;
 
@@ -318,6 +312,7 @@ public final class MetamorphBuilder2 {
 		return lastSource;
 	}
 
+	@SuppressWarnings("unchecked") // protected by 'if (Function.class.isAssignableFrom(clazz))'
 	private static void handleFunctionDefinitions(final Node node, final FunctionFactory functions) {
 		for (Node childNode = node.getFirstChild(); childNode != null; childNode = childNode.getNextSibling()) {
 			final Class<?> clazz;
@@ -341,11 +336,11 @@ public final class MetamorphBuilder2 {
 		}
 	}
 
-	public static void main(final String[] args) throws IOException {
-		final Reader reader = new PicaReader();
-		final Metamorph metamorph = reader.setReceiver(MetamorphBuilder2.build("pnd2.pica"));
-		LOG.info(metamorph.toString());
-		metamorph.setReceiver(new DefaultWriter(new BufferedWriter(new OutputStreamWriter(System.out, "UTF8"))));
-		reader.read(new FileReader("src/test/resources/PND_10entries.pica"));
-	}
+//	public static void main(final String[] args) throws IOException {
+//		final Reader reader = new PicaReader();
+//		final Metamorph metamorph = reader.setReceiver(MetamorphBuilder2.build("pnd2.pica"));
+//		LOG.info(metamorph.toString());
+//		metamorph.setReceiver(new DefaultWriter(new BufferedWriter(new OutputStreamWriter(System.out, "UTF8"))));
+//		reader.read(new FileReader("src/test/resources/PND_10entries.pica"));
+//	}
 }

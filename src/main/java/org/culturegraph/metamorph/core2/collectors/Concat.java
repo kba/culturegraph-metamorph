@@ -1,13 +1,7 @@
 package org.culturegraph.metamorph.core2.collectors;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.culturegraph.metamorph.core2.Metamorph;
 import org.culturegraph.metamorph.core2.NamedValueSource;
-import org.culturegraph.metamorph.util.StringUtil;
 
 /**
  * Corresponds to the <code>&lt;collect-literal&gt;</code> tag.
