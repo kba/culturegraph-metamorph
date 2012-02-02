@@ -12,8 +12,8 @@ import org.culturegraph.metamorph.core.exceptions.IllegalMorphStateException;
 import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.culturegraph.metamorph.multimap.MultiMap;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
+import org.culturegraph.metamorph.stream.StreamPipe;
 import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.culturegraph.metamorph.stream.StreamSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamReceiver, StreamSender, NamedValueReceiver, SimpleMultiMap{
+public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMultiMap{
 
 	public static final String ELSE_KEYWORD = "_else";
 	public static final String RECORD_KEYWORD = "record";

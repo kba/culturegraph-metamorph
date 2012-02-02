@@ -5,13 +5,15 @@
 	<test-case name="All inline test: Namespaced Metamorph">
 		<input type="application/x-cgentity">id-1&#x001e;-data&#x001f;Hallo Welt!&#x001e;</input>
 
-		<mm:metamorph version="2">
-			<mm:rules>
-				<mm:data name="output" source="data" />
-			</mm:rules>
-		</mm:metamorph>
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="2">
+				<mm:rules>
+					<mm:data name="output" source="data" />
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
 
-		<result>
+		<result type="text/x-cg+xml">
 			<cgxml xmlns="http://www.culturegraph.org/cgxml" version="1.0">
 				<records>
 					<record id="id-1">
@@ -25,13 +27,16 @@
 	<test-case name="All inline test: Inline Metamorph">
 		<input type="application/x-cgentity">id-1&#x001e;-data&#x001f;Hallo Welt!&#x001e;</input>
 
-		<metamorph xmlns="http://www.culturegraph.org/metamorph"  version="2">
-			<rules>
-				<data name="output" source="data" />
-			</rules>
-		</metamorph>
+		<transformation type="text/x-metamorph+xml">
+			<metamorph xmlns="http://www.culturegraph.org/metamorph"
+				version="2">
+				<rules>
+					<data name="output" source="data" />
+				</rules>
+			</metamorph>
+		</transformation>
 
-		<result>
+		<result type="text/x-cg+xml">
 			<cgxml version="1.0" xmlns="http://www.culturegraph.org/cgxml">
 				<records>
 					<record id="id-1">
@@ -45,9 +50,9 @@
 	<test-case name="Referenced Metamorph">
 		<input type="application/x-cgentity">id-1&#x001e;-data&#x001f;Hallo Welt!&#x001e;</input>
 
-		<metamorph src="test/simple-transformation.xml" />
+		<transformation type="text/x-metamorph+xml" src="test/simple-transformation.xml" />
 
-		<result>
+		<result type="text/x-cg+xml">
 			<cgxml xmlns="http://www.culturegraph.org/cgxml" version="1.0">
 				<records>
 					<record id="id-1">
@@ -61,7 +66,7 @@
 	<test-case name="Ignored test" ignore="true">
 		<input type="application/x-cgentity">Glibberish</input>
 
-		<result>
+		<result type="text/x-cg+xml">
 			<cgxml xmlns="http://www.culturegraph.org/cgxml" version="1.0">
 				<records>
 					<record>

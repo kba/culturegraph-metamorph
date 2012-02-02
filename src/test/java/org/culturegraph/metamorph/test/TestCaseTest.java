@@ -16,7 +16,7 @@ public final class TestCaseTest {
 
 	private static final String TEST_CASE_TAG = "test-case";
 	private static final String INPUT_TAG = "input";
-	private static final String METAMORPH_TAG = "metamorph";
+	private static final String TRANSFORMATION_TAG = "transformation";
 	private static final String RESULT_TAG = "result";
 	
 	private static final String NAME_ATTR = "name";
@@ -32,7 +32,7 @@ public final class TestCaseTest {
         doc = docBuilder.newDocument();
 	}
 	
-	@Test(expected=TestConfigurationException.class)
+	@Test
 	public void testNonEmptyInputWithSrc() throws IOException {
 		final Element config = doc.createElement(TEST_CASE_TAG);
 		config.setAttribute(NAME_ATTR, "test");
@@ -43,12 +43,12 @@ public final class TestCaseTest {
 		element.appendChild(doc.createTextNode("This data should not be here"));
 		config.appendChild(element);
 		
-		element = doc.createElement(METAMORPH_TAG);
-		element.setAttribute(SRC_ATTR, "test/simple-transformation");
+		element = doc.createElement(TRANSFORMATION_TAG);
+		element.setAttribute(SRC_ATTR, "test/simple-transformation.xml");
 		config.appendChild(element);
 		
 		element = doc.createElement(RESULT_TAG);
-		element.setAttribute(SRC_ATTR, "simple-result.xml");
+		element.setAttribute(SRC_ATTR, "test/simple-result.xml");
 		config.appendChild(element);
 		
 		final TestCase testCase = new TestCase(config);

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
  * @author Markus Michael Geipel
  *
  */
-public final class LogPipe implements StreamReceiver, StreamSender {
+public final class LogPipe implements StreamPipe {
 	private static final Logger LOG = LoggerFactory.getLogger(LogPipe.class);
 
 	private StreamReceiver receiver;

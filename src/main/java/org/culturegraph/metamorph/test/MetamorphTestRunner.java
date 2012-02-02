@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.culturegraph.metamorph.stream.receivers.ValidationException;
+import org.culturegraph.metamorph.stream.receivers.WellformednessException;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
@@ -70,6 +72,12 @@ public final class MetamorphTestRunner extends Suite {
 				notifier.fireTestStarted(describeChild(child));
 				try {
 					child.run();
+				} catch (WellformednessException e) {
+					notifier.fireTestFailure(new Failure(describeChild(child), 
+							new AssertionError(e)));
+				} catch (ValidationException e) {
+					notifier.fireTestFailure(new Failure(describeChild(child), 
+							new AssertionError(e)));
 				} catch (Throwable e) {
 					notifier.fireTestFailure(new Failure(describeChild(child), e));
 				} finally {
@@ -77,7 +85,6 @@ public final class MetamorphTestRunner extends Suite {
 				}
 			}
 		}
-		
 		
 	}
 	

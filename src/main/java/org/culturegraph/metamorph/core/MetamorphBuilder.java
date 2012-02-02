@@ -3,6 +3,8 @@ package org.culturegraph.metamorph.core;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +28,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -93,17 +96,24 @@ public final class MetamorphBuilder {
 //		}
 //	}
 
-	public static Metamorph build(final InputStream inputStream) {
-		if (inputStream == null) {
-			throw new IllegalArgumentException("'inputStream' must not be null");
+	public static Metamorph build(final Reader reader) {
+		if (reader == null) {
+			throw new IllegalArgumentException("'reader' must not be null");
 		}
 		try {
-			return build(getDocumentBuilder().parse(inputStream));
+			return build(getDocumentBuilder().parse(new InputSource(reader)));
 		} catch (SAXException e) {
 			throw new MetamorphDefinitionException(e);
 		} catch (IOException e) {
 			throw new MetamorphDefinitionException(e);
 		}
+	}
+
+	public static Metamorph build(final InputStream inputStream) {
+		if (inputStream == null) {
+			throw new IllegalArgumentException("'inputStream' must not be null");
+		}
+		return build(new InputStreamReader(inputStream));
 	}
 
 	private static DocumentBuilder getDocumentBuilder() {

@@ -3,13 +3,12 @@
  */
 package org.culturegraph.metamorph.test;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
+import org.culturegraph.metamorph.stream.StreamPipe;
 import org.culturegraph.metamorph.stream.readers.CGXmlReader;
 import org.culturegraph.metamorph.stream.readers.Reader;
 import org.culturegraph.metamorph.stream.receivers.EventStreamValidator;
@@ -28,18 +27,11 @@ public final class TestCase {
 	
 	private static final String NO_DATA_FOUND = 
 			"Please specify either element content or a src attribute";
-	private static final String CONTENT_MUST_BE_EMTPY = 
-			"Element content must be empty when src attribute is used.";
-	
-	private static final String METAMORPH_NS = 
-			"http://www.culturegraph.org/metamorph";
-	private static final String METAMORPH_TEST_NS = 
-			"http://www.culturegraph.org/metamorph-test";
 	
 	private static final String NAME_ATTR = "name";
 	private static final String IGNORE_ATTR = "ignore";
 	private static final String RESULT_TAG = "result";
-	private static final String METAMORPH_TAG = "metamorph";
+	private static final String TRANSFORMATION_TAG = "transformation";
 	private static final String INPUT_TAG = "input";
 	private static final String SRC_ATTR = "src";
 	private static final String TYPE_ATTR = "type";
@@ -50,12 +42,12 @@ public final class TestCase {
 	private final Element config;
 	
 	private final Reader reader;
-	private final Metamorph metamorph;
+	private final StreamPipe transformation;
 		
 	public TestCase(final Element config) {
 		this.config = config;
 		reader = getReader();
-		metamorph = getMetamorph();
+		transformation = getTransformation();
 	}
 
 	public String getName() {
@@ -69,10 +61,10 @@ public final class TestCase {
 	public void run() throws IOException {
 		
 		final EventStreamWriter resultStream = new EventStreamWriter();
-		if (metamorph == null) {
+		if (transformation == null) {
 			reader.setReceiver(resultStream);
 		} else {
-			reader.setReceiver(metamorph).setReceiver(resultStream);
+			reader.setReceiver(transformation).setReceiver(resultStream);
 		}
 		
 		resultStream.resetStream();
@@ -96,7 +88,6 @@ public final class TestCase {
 		resultReader.read(getExpectedResult());
 		validator.endStream();	
 	}
-
 	
 	private Reader getReader() {		
 		final Element input = (Element) config.getElementsByTagName(INPUT_TAG).item(0);
@@ -104,79 +95,58 @@ public final class TestCase {
 		return MimeTypeUtil.getReaderForMimeType(mimeType);
 	}
 	
-	private Metamorph getMetamorph() {
-		Metamorph metamorph = null;
-		
-		NodeList nodes = config.getElementsByTagNameNS(METAMORPH_TEST_NS, METAMORPH_TAG);
-		if (nodes.getLength() != 0) {
-			final Element element = (Element) nodes.item(0);
-			metamorph = MetamorphBuilder.build(element.getAttribute(SRC_ATTR));
+	private StreamPipe getTransformation() {
+		final NodeList nodes = config.getElementsByTagName(TRANSFORMATION_TAG);
+		if (nodes.getLength() == 0) {
+			return null;			
 		}
+		final Element transformation = (Element) nodes.item(0);
 		
-		nodes = config.getElementsByTagNameNS(METAMORPH_NS, METAMORPH_TAG);
-		if (nodes.getLength() != 0) {
-			final Element morphDef = (Element) nodes.item(0);
-			final String string = XMLUtil.nodeToString(morphDef);
-			metamorph = MetamorphBuilder.build(new ByteArrayInputStream(string.getBytes()));
-			//TODO: more elegance please
+		final java.io.Reader ioReader;
+		if (transformation.hasAttribute(SRC_ATTR)) {
+			ioReader = getDataFromSource(transformation.getAttribute(SRC_ATTR));
+		} else {
+			ioReader = getDataEmbedded(transformation);
 		}
-		
-		return metamorph;
+
+		return MetamorphBuilder.build(ioReader);
 	}
 	
 	private java.io.Reader getInputData() {
-		final java.io.Reader reader;
-		
 		final Element input = (Element) config.getElementsByTagName(INPUT_TAG).item(0);
-		final String inputType = input.getAttribute(TYPE_ATTR);
+		
 		if (input.hasAttribute(SRC_ATTR)) {
-			final String src = input.getAttribute(SRC_ATTR);
-			if (input.getFirstChild() != null) {
-				throw new TestConfigurationException(CONTENT_MUST_BE_EMTPY);
-			}
-			try {
-				reader = ResourceUtil.getReader(src);
-			} catch (FileNotFoundException e) {
-				throw new TestConfigurationException("Could not find input file: " + src, e);
-			}
-		} else {
-			if (input.hasChildNodes()) {
-				if (MimeTypeUtil.isXmlMimeType(inputType)) {
-					reader = new StringReader(XMLUtil.nodeListToString(input.getChildNodes()));
-				} else {
-					reader = new StringReader(input.getTextContent());
-				}
-			} else {
-				throw new TestConfigurationException(NO_DATA_FOUND);
-			}
+			return getDataFromSource(input.getAttribute(SRC_ATTR));
 		}
-		
-		return reader;
-		
+		return getDataEmbedded(input);
 	}
 	
 	private java.io.Reader getExpectedResult() {
-		final java.io.Reader reader;
 		final Element result = (Element) config.getElementsByTagName(RESULT_TAG).item(0);
 		if (result.hasAttribute(SRC_ATTR)) {
-			final String src = result.getAttribute(SRC_ATTR);
-			if (result.getFirstChild() != null) {
-				throw new TestConfigurationException(CONTENT_MUST_BE_EMTPY);
+			return getDataFromSource(result.getAttribute(SRC_ATTR));
+		}		
+		return getDataEmbedded(result);
+	}
+	
+	private java.io.Reader getDataFromSource(final String src) {
+		try {
+			return ResourceUtil.getReader(src);
+		} catch (FileNotFoundException e) {
+			throw new TestConfigurationException("Could not find input file: " + src, e);
+		}		
+	}
+	
+	private java.io.Reader getDataEmbedded(final Element input) {
+		final String inputType = input.getAttribute(TYPE_ATTR);
+		if (input.hasChildNodes()) {
+			if (MimeTypeUtil.isXmlMimeType(inputType)) {
+				return new StringReader(XMLUtil.nodeListToString(input.getChildNodes()));
 			}
-			try {
-				reader = ResourceUtil.getReader(src);
-			} catch (FileNotFoundException e) {
-				throw new TestConfigurationException("Could not find expected result: " + src, e);
-			}
-		} else {
-			if (result.hasChildNodes()) {
-				reader = new StringReader(XMLUtil.nodeListToString(result.getChildNodes()));
-			} else {
-				throw new TestConfigurationException(NO_DATA_FOUND);
-			}
+			return new StringReader(input.getTextContent());
 		}
-		
-		return reader;
+			
+		throw new TestConfigurationException(NO_DATA_FOUND);
 	}
 	
 }

@@ -30,14 +30,8 @@
 			<sequence>
 				<element ref="tns:documentation" minOccurs="0" />
 				<element ref="tns:input"/>
-				<choice minOccurs="0">
-					<element ref="metamorph:metamorph"/>
-					<element ref="tns:metamorph"/>
-				</choice>
-				<choice>
-					<element ref="cgxml:cgxml"/>
-					<element ref="tns:result"/>
-				</choice>
+				<element ref="tns:transformation" minOccurs="0" />
+				<element ref="tns:result"/>
 			</sequence>
 			<attribute name="name" type="string" use="required" />
 			<attribute name="ignore" type="boolean" use="optional" default="false" />
@@ -54,9 +48,13 @@
 		</complexType>
 	</element>
 
-	<element name="metamorph">
+	<element name="transformation">
 		<complexType>
-			<attribute name="src" type="string" use="required" />		
+			<sequence>
+				<element minOccurs="0" ref="metamorph:metamorph" />
+			</sequence>
+			<attribute name="src" type="string" use="optional" />		
+			<attribute name="type" type="string" use="required" fixed="text/x-metamorph+xml" />
 		</complexType>
 	</element>
 
@@ -66,6 +64,7 @@
 				<element minOccurs="0" ref="cgxml:cgxml" />
 			</sequence>
 			<attribute name="src" type="string" use="optional"/>
+			<attribute name="type" type="string" use="required" fixed="text/x-cg+xml" />
 			<attribute name="strict-record-order" type="boolean" use="optional" default="true" />
 			<attribute name="strict-key-order" type="boolean" use="optional" default="true" />
 			<attribute name="strict-value-order" type="boolean" use="optional" default="true" />
