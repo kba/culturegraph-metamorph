@@ -4,7 +4,6 @@
 package org.culturegraph.metamorph.core;
 
 import org.culturegraph.metamorph.test.MetamorphTestRunner;
-import org.culturegraph.metamorph.test.MetamorphTestRunner.TestDefinitions;
 import org.junit.runner.RunWith;
 
 /**
