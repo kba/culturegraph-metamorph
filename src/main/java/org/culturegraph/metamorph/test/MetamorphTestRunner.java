@@ -86,7 +86,7 @@ public final class MetamorphTestRunner extends Suite {
 	public MetamorphTestRunner(final Class<?> clazz) throws InitializationError {
 		super(clazz, Collections.<Runner>emptyList());
 		for (String testDef: getTestDefinitions(clazz)) {
-			runners.add(new TestCaseRunner(clazz, TestCaseLoader.load(testDef)));
+			runners.add(new TestCaseRunner(clazz, TestCaseLoader.load(clazz.getResourceAsStream(testDef))));
 		}
 	}
 
@@ -95,14 +95,11 @@ public final class MetamorphTestRunner extends Suite {
 		return runners;
 	}
 	
-	private String[] getTestDefinitions(final Class<?> clazz) 
-			throws InitializationError {
+	private String[] getTestDefinitions(final Class<?> clazz){
 		final TestDefinitions testDefs = 
 				clazz.getAnnotation(TestDefinitions.class);
 		if (testDefs == null) {
-			throw new InitializationError(String.format(
-					"Class '%s' must have a TestDefinitions annotation", 
-					clazz.getName()));
+			return new String[]{clazz.getSimpleName() + ".xml"};
 		}
 		return testDefs.value();
 	}
