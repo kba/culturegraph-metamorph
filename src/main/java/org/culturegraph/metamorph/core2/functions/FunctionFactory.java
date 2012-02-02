@@ -31,6 +31,7 @@ public final class FunctionFactory extends ObjectFactory<Function>{
 		registerClass("normalize-utf8", NormalizeUTF8.class);
 		registerClass("urlencode", URLEncode.class);
 		registerClass("split", Split.class);
+		registerClass("occurence", Occurence.class);
 	}
 
 }

@@ -173,20 +173,9 @@
 				<group ref="tns:function" minOccurs="0" maxOccurs="unbounded" />
 			</sequence>
 			<attribute name="source" type="string" use="required" />
-
-			<attribute name="as" type="tns:asAttribute" use="optional"
-				default="value" />
-
 			<attribute name="name" type="string" use="optional" />
 			<attribute name="value" type="string" use="optional" />
-
-			<attribute name="occurence" use="optional">
-				<simpleType>
-					<restriction base="int">
-						<minInclusive value="0" />
-					</restriction>
-				</simpleType>
-			</attribute>
+			
 		</complexType>
 	</element>
 
@@ -235,14 +224,9 @@
 	</simpleType>
 
 
-
-
-
-
 	<group name="entity-rule">
 		<choice>
 			<element ref="tns:entity" />
-
 		</choice>
 	</group>
 
@@ -271,12 +255,24 @@
 			<element ref="tns:trim" />
 			<element ref="tns:split"/>
 			<element ref="tns:normalize-utf8" />
+			<element ref="tns:occurence"/>
 			<any namespace="##other" processContents="lax"/>
 
 		</choice>
 	</group>
 
-
+	<element name="occurence">
+		<complexType>
+			<attribute name="only" use="required">
+				<simpleType>
+					<restriction base="int">
+						<minInclusive value="0" />
+					</restriction>
+				</simpleType>
+			</attribute>
+			<attribute name="format" type="string" use="optional" />
+		</complexType>
+	</element>
 
 	<element name="regexp">
 		<complexType>
@@ -384,7 +380,4 @@
 			</attribute>
 		</complexType>
 	</element>
-
-
-
 </schema>
