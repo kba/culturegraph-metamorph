@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.stream.readers;
 
-import org.culturegraph.metamorph.core.MetamorphException;
+import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.culturegraph.metamorph.util.ReflectionUtil;
 
 

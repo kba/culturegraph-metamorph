@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.culturegraph.metamorph.core2.exceptions.MetamorphException;
+import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
