@@ -3,6 +3,7 @@
  */
 package org.culturegraph.metamorph.test;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
@@ -18,7 +19,6 @@ import org.culturegraph.metamorph.util.ResourceUtil;
 import org.culturegraph.metamorph.util.XMLUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 /**
  * @author Christoph Böhme <c.boehme@dnb.de>
@@ -109,15 +109,16 @@ public final class TestCase {
 		
 		NodeList nodes = config.getElementsByTagNameNS(METAMORPH_TEST_NS, METAMORPH_TAG);
 		if (nodes.getLength() != 0) {
-			final Element el = (Element) nodes.item(0);
-			metamorph = MetamorphBuilder.build(el.getAttribute(SRC_ATTR));
+			final Element element = (Element) nodes.item(0);
+			metamorph = MetamorphBuilder.build(element.getAttribute(SRC_ATTR));
 		}
 		
 		nodes = config.getElementsByTagNameNS(METAMORPH_NS, METAMORPH_TAG);
 		if (nodes.getLength() != 0) {
 			final Element morphDef = (Element) nodes.item(0);
-			metamorph = MetamorphBuilder.build(new InputSource(
-					new StringReader(XMLUtil.nodeToString(morphDef))));
+			final String string = XMLUtil.nodeToString(morphDef);
+			metamorph = MetamorphBuilder.build(new ByteArrayInputStream(string.getBytes()));
+			//TODO: more elegance please
 		}
 		
 		return metamorph;
