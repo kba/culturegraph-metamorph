@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.core;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -20,8 +20,7 @@ import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
 import org.culturegraph.metamorph.core.functions.Function;
 import org.culturegraph.metamorph.core.functions.FunctionFactory;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.culturegraph.metamorph.util.ResourceUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -54,7 +53,7 @@ public final class MetamorphBuilder {
 		}
 	}
 
-	private static final Logger LOG = LoggerFactory.getLogger(MetamorphBuilder.class);
+//	private static final Logger LOG = LoggerFactory.getLogger(MetamorphBuilder.class);
 	private static final String SCHEMA_FILE = "metamorph.xsd";
 	private static final ErrorHandler ERROR_HANDLER = new MetamorphDefinitionParserErrorHandler();
 	private static final int LOWEST_COMPATIBLE_VERSION = 2;
@@ -74,30 +73,25 @@ public final class MetamorphBuilder {
 	}
 
 	public static Metamorph build(final String morphDef) {
-		if (morphDef == null) {
-			throw new IllegalArgumentException("'morphDef' must not be null");
+		try {
+			return build(ResourceUtil.getStream(morphDef));
+		}catch (FileNotFoundException e) {
+			throw new MetamorphDefinitionException(e);
 		}
-		final String morphDefPath = morphDef + ".xml";
-		final InputStream inputStream = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream(morphDefPath);
-		if (inputStream == null) {
-			return build(new File(morphDefPath));
-		}
-		return build(inputStream);
 	}
 
-	public static Metamorph build(final File file) {
-		if (file == null) {
-			throw new IllegalArgumentException("'file' must not be null");
-		}
-		try {
-			return build(getDocumentBuilder().parse(file));
-		} catch (SAXException e) {
-			throw new MetamorphDefinitionException(e);
-		} catch (IOException e) {
-			throw new MetamorphDefinitionException(e);
-		}
-	}
+//	public static Metamorph build(final File file) {
+//		if (file == null) {
+//			throw new IllegalArgumentException("'file' must not be null");
+//		}
+//		try {
+//			return build(getDocumentBuilder().parse(file));
+//		} catch (SAXException e) {
+//			throw new MetamorphDefinitionException(e);
+//		} catch (IOException e) {
+//			throw new MetamorphDefinitionException(e);
+//		}
+//	}
 
 	public static Metamorph build(final InputStream inputStream) {
 		if (inputStream == null) {
@@ -143,7 +137,7 @@ public final class MetamorphBuilder {
 	}
 
 	private static MMTAG tagOf(final Node child) {
-		return MMTAG.valueOf(child.getNodeName().toUpperCase());
+		return MMTAG.valueOf(child.getLocalName().toUpperCase());
 	}
 
 	private static String getAttr(final Node node, final ATTRITBUTE attr) {
@@ -162,7 +156,7 @@ public final class MetamorphBuilder {
 
 		for (int i = 0; i < attrNode.getLength(); ++i) {
 			final Node itemNode = attrNode.item(i);
-			attributes.put(itemNode.getNodeName(), itemNode.getNodeValue());
+			attributes.put(itemNode.getLocalName(), itemNode.getNodeValue());
 		}
 		return attributes;
 	}
@@ -205,8 +199,8 @@ public final class MetamorphBuilder {
 	}
 
 	private static void illegalChild(final Node child, final Node root) {
-		throw new MetamorphDefinitionException("Schema mismatch: illegal tag " + child.getNodeName() + " in node "
-				+ root.getNodeName());
+		throw new MetamorphDefinitionException("Schema mismatch: illegal tag " + child.getLocalName() + " in node "
+				+ root.getLocalName());
 	}
 
 	private static void handleMaps(final Node node, final Metamorph metamorph) {
@@ -227,8 +221,8 @@ public final class MetamorphBuilder {
 	private static void handleRule(final Node node, final AbstractCollect parent, final Metamorph metamorph,
 			final FunctionFactory functions, final CollectFactory collects) {
 
-		final String nodeName = node.getNodeName();
-		LOG.info("adding " + nodeName + " under " + node.getParentNode().getNodeName());
+		final String nodeName = node.getLocalName();
+		//LOG.info("adding " + nodeName + " under " + node.getParentNode().getLocalName());
 		if (collects.getAvailableClasses().contains(nodeName)) {
 			handleCollect(node, metamorph, parent, functions, collects);
 			
@@ -245,11 +239,11 @@ public final class MetamorphBuilder {
 
 		final Map<String, String> attributes = attributesToMap(node);
 		final String flushWith = attributes.remove(FLUSH_WITH); // must be set after recursive calls to flush decendents before parent
-		final AbstractCollect collect = collects.newInstance(node.getNodeName(), attributes, metamorph);
+		final AbstractCollect collect = collects.newInstance(node.getLocalName(), attributes, metamorph);
 
 		NamedValuePipe lastFunction = collect;
 		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
-			if (POSTPROCESS.equals(child.getNodeName())) {
+			if (POSTPROCESS.equals(child.getLocalName())) {
 				lastFunction = handlePostprocess(child, collect, metamorph, functions);
 			} else {
 				handleRule(child, collect, metamorph, functions, collects);
@@ -296,7 +290,7 @@ public final class MetamorphBuilder {
 		NamedValuePipe lastSource = processor;
 		for (Node functionNode = postprocessNode.getFirstChild(); functionNode != null; functionNode = functionNode
 				.getNextSibling()) {
-			final Function function = functions.newInstance(functionNode.getNodeName(), attributesToMap(functionNode));
+			final Function function = functions.newInstance(functionNode.getLocalName(), attributesToMap(functionNode));
 			function.setMultiMap(metamorph);
 
 			// add key value entries...
@@ -332,7 +326,7 @@ public final class MetamorphBuilder {
 
 	private static void handleMeta(final Node node, final Metamorph metamorph) {
 		for (Node childNode = node.getFirstChild(); childNode != null; childNode = childNode.getNextSibling()) {
-			metamorph.putValue(Metamorph.METADATA, childNode.getNodeName(), childNode.getTextContent());
+			metamorph.putValue(Metamorph.METADATA, childNode.getLocalName(), childNode.getTextContent());
 		}
 	}
 
