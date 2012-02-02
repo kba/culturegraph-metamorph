@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.core2.functions;
 
-import org.culturegraph.metamorph.core.Metamorph;
+import org.culturegraph.metamorph.core2.Metamorph;
 import org.culturegraph.metamorph.util.ObjectFactory;
 
 /**

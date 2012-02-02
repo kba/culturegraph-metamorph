@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.culturegraph.metamorph.core.MetamorphException;
+import org.culturegraph.metamorph.core2.exceptions.MetamorphException;
 import org.culturegraph.metamorph.stream.readers.Reader;
 
 /**

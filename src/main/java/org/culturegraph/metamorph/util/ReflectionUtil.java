@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.util;
 
-import org.culturegraph.metamorph.core.MetamorphException;
+import org.culturegraph.metamorph.core2.exceptions.MetamorphException;
 
 public final class ReflectionUtil {
 	private static final String INSTANTIATION_ERROR = " could not be instantiated";

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.culturegraph.metamorph.core.MetamorphException;
+import org.culturegraph.metamorph.core2.exceptions.MetamorphException;
 import org.culturegraph.metamorph.util.StringUtil;
 
 
