@@ -71,9 +71,9 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	}
 
 	protected void registerData(final Data data) {
-		final String path = data.getSource();
-		assert data != null && path != null;
 
+		final String path = data.getSource();
+		
 		if (ELSE_KEYWORD.equals(path)) {
 			elseSource.add(data);
 		} else {
