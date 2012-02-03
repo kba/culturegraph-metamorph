@@ -9,7 +9,7 @@
 	<groupId>org.culturegraph</groupId>
 	<artifactId>metamorph</artifactId>
 
-	<version>0.4-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
 
 	<name>Metamorph, Transformation Language for Metadata</name>
 
