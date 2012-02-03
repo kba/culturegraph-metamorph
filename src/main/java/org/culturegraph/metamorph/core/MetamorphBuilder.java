@@ -244,7 +244,6 @@ public final class MetamorphBuilder {
 			final FunctionFactory functions, final CollectFactory collects) {
 
 		final String nodeName = node.getLocalName();
-		//LOG.info("adding " + nodeName + " under " + node.getParentNode().getLocalName());
 		if (collects.getAvailableClasses().contains(nodeName)) {
 			handleCollect(node, metamorph, parent, functions, collects);
 			
