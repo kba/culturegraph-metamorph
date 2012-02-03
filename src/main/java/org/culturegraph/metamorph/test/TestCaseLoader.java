@@ -76,10 +76,10 @@ public final class TestCaseLoader {
 			final Document doc = builder.parse(inputStream);
 			
 			final List<TestCase> testCases = new ArrayList<TestCase>();
-			final NodeList tcNodes = doc.getElementsByTagName(TEST_CASE_TAG);
-			for(int i=0; i < tcNodes.getLength(); ++i) {
-				final Element tc = (Element) tcNodes.item(i);
-				testCases.add(new TestCase(tc));
+			final NodeList testCaseNodes = doc.getElementsByTagName(TEST_CASE_TAG);
+			for(int i=0; i < testCaseNodes.getLength(); ++i) {
+				final Element testCaseElement = (Element) testCaseNodes.item(i);
+				testCases.add(new TestCase(testCaseElement));
 			}
 			
 			return testCases;

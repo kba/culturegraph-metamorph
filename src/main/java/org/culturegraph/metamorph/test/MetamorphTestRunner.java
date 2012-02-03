@@ -78,14 +78,13 @@ public final class MetamorphTestRunner extends Suite {
 				} catch (ValidationException e) {
 					notifier.fireTestFailure(new Failure(describeChild(child), 
 							new AssertionError(e)));
-				} catch (Throwable e) {
+				} catch (Exception e) {
 					notifier.fireTestFailure(new Failure(describeChild(child), e));
 				} finally {
 					notifier.fireTestFinished(describeChild(child));
 				}
 			}
 		}
-		
 	}
 	
 	private final List<Runner> runners = new ArrayList<Runner>();

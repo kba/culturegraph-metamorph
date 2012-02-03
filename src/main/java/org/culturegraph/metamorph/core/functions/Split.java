@@ -12,8 +12,8 @@ public final class Split extends AbstractFunction{
 	private Pattern delimiterPattern;
 	
 	@Override
-	public final void receive(final String name, final String value, final NamedValueSource source, final int recordCount, final int entityCount) {
-		String[] parts = delimiterPattern.split(value);
+	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount, final int entityCount) {
+		final String[] parts = delimiterPattern.split(value);
 		for (String part : parts) {
 			getNamedValueReceiver().receive(name, part, source, recordCount, entityCount);
 		}

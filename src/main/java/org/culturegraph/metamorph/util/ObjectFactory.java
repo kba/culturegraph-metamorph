@@ -87,7 +87,7 @@ public class ObjectFactory<O> {
 			final String methodName = attribute.getKey().toLowerCase();
 			final Method method = methodMap.get(methodName);
 			if(null==method){
-				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName() +"'. Not in " + methodMap.keySet());
+				setMethodError(methodName, instance.getClass().getSimpleName());
 			}
 			final Class<?> type = method.getParameterTypes()[0];
 			
@@ -100,12 +100,17 @@ public class ObjectFactory<O> {
 				method.invoke(instance, attribute.getValue());
 			}
 			}catch(IllegalArgumentException e){
-				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName(), e);
+				setMethodError(methodName, instance.getClass().getSimpleName());
 			} catch (IllegalAccessException e) {
-				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName(), e);
+				setMethodError(methodName, instance.getClass().getSimpleName());
 			} catch (InvocationTargetException e) {
-				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName(), e);
+				setMethodError(methodName, instance.getClass().getSimpleName());
 			} 
 		}
+	}
+
+	private void setMethodError(final String methodName, final String simpleName) {
+		throw new MetamorphException("Cannot set '" + methodName + "' for class '" + simpleName);
+		
 	}
 }

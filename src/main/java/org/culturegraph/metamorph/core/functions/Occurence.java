@@ -26,16 +26,20 @@ public final class Occurence extends AbstractStatefulFunction {
 	public String process(final String value) {
 		++count;
 		if(count==only){
-			if(format==null){
-				return value;
-			}
-			variables.put("value", value);
-			variables.put("count", String.valueOf(count));
-			return StringUtil.format(format, variables);
+			return processMatch(value);
 		}
 		return null;
 	}
 	
+	private String processMatch(final String value) {
+		if(format==null){
+			return value;
+		}
+		variables.put("value", value);
+		variables.put("count", String.valueOf(count));
+		return StringUtil.format(format, variables);
+	}
+
 	public void setFormat(final String format) {
 		this.format = format;
 	}
