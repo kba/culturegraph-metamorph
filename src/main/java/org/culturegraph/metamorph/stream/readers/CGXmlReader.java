@@ -80,7 +80,7 @@ public final class CGXmlReader implements Reader {
 	
 	private static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 	private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
-	private static final String SCHEMA_FILE = "cgxml.xsd";
+	private static final String SCHEMA_FILE = "schema/cgxml.xsd";
 
 	private StreamReceiver receiver;
 

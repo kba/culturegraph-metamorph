@@ -35,7 +35,7 @@ public final class TestCaseLoader {
 	 */
 	private static final String FILE_NOT_FOUND = "Could not find test case file: ";
 
-	private static final String SCHEMA_FILE = "metamorph-test.xsd";
+	private static final String SCHEMA_FILE = "schema/metamorph-test.xsd";
 	
 	private static final String TEST_CASE_TAG = "test-case";
 	
@@ -60,6 +60,7 @@ public final class TestCaseLoader {
 	}
 	
 	public static List<TestCase> load(final InputStream inputStream) {
+		
 		try {
 			final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			final URL schemaUrl = Thread.currentThread().getContextClassLoader().getResource(SCHEMA_FILE);

@@ -69,7 +69,7 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 		if (morphDefinition==null && streamReceiver != null) {
 			currentReader.setReceiver(streamReceiver);
 		}else if (morphDefinition != null) {
-			final String morphDefinitionFinal = morphDefinition + '.' + format;
+			final String morphDefinitionFinal = morphDefinition + '.' + format + ".xml";
 			final Metamorph metamorph = MetamorphBuilder.build(morphDefinitionFinal);
 			metamorphs.put(format, metamorph);
 			metamorph.setErrorHandler(this);

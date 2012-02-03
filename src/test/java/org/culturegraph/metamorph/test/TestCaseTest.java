@@ -7,11 +7,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
+@Ignore
 public final class TestCaseTest {
 
 	private static final String TEST_CASE_TAG = "test-case";

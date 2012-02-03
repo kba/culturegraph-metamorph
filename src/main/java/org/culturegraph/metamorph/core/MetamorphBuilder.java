@@ -63,7 +63,7 @@ public final class MetamorphBuilder {
 	}
 
 //	private static final Logger LOG = LoggerFactory.getLogger(MetamorphBuilder.class);
-	private static final String SCHEMA_FILE = "metamorph.xsd";
+	private static final String SCHEMA_FILE = "schema/metamorph.xsd";
 	private static final ErrorHandler ERROR_HANDLER = new MetamorphDefinitionParserErrorHandler();
 	private static final int LOWEST_COMPATIBLE_VERSION = 2;
 	private static final int CURRENT_VERSION = 2;

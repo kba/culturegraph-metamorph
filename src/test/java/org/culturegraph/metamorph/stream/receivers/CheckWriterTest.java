@@ -4,6 +4,7 @@
 package org.culturegraph.metamorph.stream.receivers;
 
 import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -11,6 +12,7 @@ import org.junit.Test;
  * @author Christoph Böhme <c.boehme@dnb.de>
  *
  */
+@Ignore
 public final class CheckWriterTest {
 
 	@Test

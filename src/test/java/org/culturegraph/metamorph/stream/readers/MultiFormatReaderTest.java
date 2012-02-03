@@ -39,7 +39,7 @@ public final class MultiFormatReaderTest {
 	
 	@Test
 	public void testMorph(){	
-		final MultiFormatReader formatReader = new MultiFormatReader("ingest");
+		final MultiFormatReader formatReader = new MultiFormatReader("morph/test");
 		formatReader.setFormat(PICA);
 		Assert.assertNotNull(formatReader.getMetamorph());
 	}

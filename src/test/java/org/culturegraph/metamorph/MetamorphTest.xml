@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph-test version="1.0"
+	xmlns="http://www.culturegraph.org/metamorph-test" xmlns:mm="http://www.culturegraph.org/metamorph"
+	xmlns:cgxml="http://www.culturegraph.org/cgxml">
+
+
+	<test-case name="one">
+
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="2">
+				<mm:rules>
+				
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+
+	</test-case>
+</metamorph-test>

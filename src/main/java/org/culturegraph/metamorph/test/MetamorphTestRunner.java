@@ -3,6 +3,7 @@
  */
 package org.culturegraph.metamorph.test;
 
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -92,7 +93,11 @@ public final class MetamorphTestRunner extends Suite {
 	public MetamorphTestRunner(final Class<?> clazz) throws InitializationError {
 		super(clazz, Collections.<Runner>emptyList());
 		for (String testDef: getTestDefinitions(clazz)) {
-			runners.add(new TestCaseRunner(clazz, TestCaseLoader.load(clazz.getResourceAsStream(testDef))));
+			final InputStream inputStream = clazz.getResourceAsStream(testDef);
+			if(null==inputStream){
+				throw new IllegalArgumentException("'" + testDef + "' does not exist!");
+			}
+			runners.add(new TestCaseRunner(clazz, TestCaseLoader.load(inputStream)));
 		}
 	}
 
