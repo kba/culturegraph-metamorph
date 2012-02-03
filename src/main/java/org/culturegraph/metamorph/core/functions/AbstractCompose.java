@@ -2,8 +2,9 @@ package org.culturegraph.metamorph.core.functions;
 
 
 /**
+ * Baseclass for {@link Function}s which compose results based on prefix and postfix.
+ * 
  * @author Markus Michael Geipel
- * @status Experimental
  */
 abstract class AbstractCompose extends AbstractSimpleStatelessFunction {
 

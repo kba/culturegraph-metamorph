@@ -5,7 +5,7 @@
     This configuration file was written by the eclipse-cs plugin configuration editor
 -->
 <!--
-    Checkstyle-Configuration: Culturegraph
+    Checkstyle-Configuration: Metamorph
     Description: none
 -->
 <module name="Checker">
@@ -106,6 +106,7 @@
     <module name="MethodLength"/>
     <module name="CyclomaticComplexity"/>
     <module name="Regexp"/>
+    <module name="JavadocType"/>
   </module>
   <module name="StrictDuplicateCode"/>
 </module>

@@ -1,8 +1,11 @@
 package org.culturegraph.metamorph.core.exceptions;
 
+import org.culturegraph.metamorph.core.Metamorph;
+
 /**
+ * Thrown if an error occurs during the processing in {@link Metamorph}
+ * 
  * @author Markus Michael Geipel
- * @status Experimental
  */
 public class MetamorphException extends RuntimeException {
 

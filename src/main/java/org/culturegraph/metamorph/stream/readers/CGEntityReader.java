@@ -7,6 +7,12 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Reads Strings CGEnitiy format
+ * 
+ * @author Markus Michael Geipel
+ *
+ */
 public final class CGEntityReader extends AbstractReader {
 
 	private static final Pattern FIELD_PATTERN = Pattern.compile(String.valueOf(CGEntity.FIELD_DELIMITER),

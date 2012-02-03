@@ -15,6 +15,12 @@ import org.culturegraph.metamorph.stream.receivers.CGEntityWriter;
 import org.culturegraph.metamorph.stream.receivers.DefaultWriter;
 import org.junit.Test;
 
+/**
+ * Tests correctness of {@link CGEntityReader} and {@link CGEntityWriter}.
+ * 
+ * @author Markus Michael Geipel
+ *
+ */
 public final class CGEntityTest {
 	
 	

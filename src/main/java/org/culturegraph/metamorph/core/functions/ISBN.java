@@ -145,6 +145,10 @@ public final class ISBN extends AbstractSimpleStatelessFunction {
 		this.verifyCheckDigit = "true".equals(verifyCheckDigit);
 	}
 	
+	/**
+	 * Thrown if the ISBN length does not correspond to specification
+	 *
+	 */
 	public static final class InvalidISBNLengthException extends MetamorphException{
 		private static final long serialVersionUID = 921922231931724504L;
 		
@@ -153,6 +157,10 @@ public final class ISBN extends AbstractSimpleStatelessFunction {
 		} 
 	}
 	
+	/**
+	 * Thrown if the ISBN check digit is wrong
+	 *
+	 */
 	public static final class InvalidISBNCheckDigitException extends MetamorphException{
 		private static final long serialVersionUID = 921922231931724504L;
 		public InvalidISBNCheckDigitException(final String isbn) {

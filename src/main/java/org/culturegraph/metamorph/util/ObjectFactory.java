@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
  * New classes can be registered during runtime.
  * 
  * @author Markus Michael Geipel
+ * @param <O> the type of objects created
  *
  */
 public class ObjectFactory<O> {

@@ -2,6 +2,12 @@ package org.culturegraph.metamorph.core;
 
 import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 
+/**
+ * Default error handler used by {@link Metamorph}. Just repackages exceptions as {@link MetamorphException}s.
+ * 
+ * @author Markus Michael Geipel
+ *
+ */
 public final class DefaultErrorHandler implements MetamorphErrorHandler {
 		@Override
 		public void error(final Exception exception) {

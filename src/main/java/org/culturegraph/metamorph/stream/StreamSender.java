@@ -2,6 +2,13 @@ package org.culturegraph.metamorph.stream;
 
 
 
+/**
+ * 
+ * Interface for classes sending data as event streams to {@link StreamReceiver}s
+ * @author Markus Michael Geipel
+ * @see StreamReceiver
+ *
+ */
 public interface StreamSender {
 
 	/**

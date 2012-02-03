@@ -10,6 +10,7 @@ import org.culturegraph.metamorph.util.StringUtil;
 
 
 /**
+ * Performs regexp matching
  * @author Markus Michael Geipel
  */
 public final class Regexp extends AbstractSimpleStatelessFunction {
@@ -66,6 +67,10 @@ public final class Regexp extends AbstractSimpleStatelessFunction {
 		this.format = format;
 	}
 	
+	/**
+	 * Thrown if no match was found
+	 *
+	 */
 	public static final class PatternNotFoundException extends MetamorphException{
 		private static final long serialVersionUID = 4113458605196557204L;
 		public PatternNotFoundException(final Pattern pattern, final String input) {

@@ -1,5 +1,13 @@
 package org.culturegraph.metamorph.core.exceptions;
 
+import org.culturegraph.metamorph.core.MetamorphBuilder;
+
+/**
+ * Thrown by {@link MetamorphBuilder} if the definition is syntactically incorrect or components for dynamic loading are not found.
+ * 
+ * @author Markus Michael Geipel
+ *
+ */
 public final class MetamorphDefinitionException extends RuntimeException {
 
 	private static final long serialVersionUID = -3130648074493084946L;

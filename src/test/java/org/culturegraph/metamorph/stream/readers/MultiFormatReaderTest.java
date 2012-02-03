@@ -3,6 +3,11 @@ package org.culturegraph.metamorph.stream.readers;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Tests {@link MultiFormatReader}
+ * @author Markus Michael Geipel
+ *
+ */
 public final class MultiFormatReaderTest {
 	
 	private static final String PICA = "pica";

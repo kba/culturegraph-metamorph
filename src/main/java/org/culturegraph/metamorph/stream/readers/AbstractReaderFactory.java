@@ -5,6 +5,12 @@ import org.culturegraph.metamorph.util.ReflectionUtil;
 
 
 
+/**
+ * Base class for {@link ReaderFactory}s.
+ * 
+ * @author Markus Michael Geipel
+ *
+ */
 public abstract class AbstractReaderFactory implements ReaderFactory {
 	
 	public static final String IMPLEMENTATION_NAME = "org.culturegraph.metamorph.readerregistry";

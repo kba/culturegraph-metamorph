@@ -2,6 +2,12 @@ package org.culturegraph.metamorph.core.functions;
 
 import org.culturegraph.metamorph.core.NamedValueSource;
 
+/**
+ * Baseclass for fuctions returning only one or zero results and do not maintain a state.
+ * 
+ * @author Markus Michael Geipel
+ *
+ */
 public abstract class AbstractSimpleStatelessFunction extends AbstractFunction{
 	
 	@Override

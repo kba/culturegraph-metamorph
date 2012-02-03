@@ -26,6 +26,9 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public final class CGXmlReader implements Reader {
 		
+	/**
+	 * TODO comment!
+	 */
 	private final class CGXmlHandler extends DefaultHandler {
 		private static final String RECORD_TAG = "record";
 		private static final String ENTITY_TAG = "entity";

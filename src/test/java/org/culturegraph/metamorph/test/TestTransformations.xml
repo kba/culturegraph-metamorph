@@ -12,7 +12,7 @@
 				</mm:rules>
 			</mm:metamorph>
 		</transformation>
-
+		
 		<result type="text/x-cg+xml">
 			<cgxml xmlns="http://www.culturegraph.org/cgxml" version="1.0">
 				<records>

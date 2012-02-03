@@ -38,10 +38,16 @@ import org.xml.sax.SAXException;
  */
 public final class MetamorphBuilder {
 
+	/**
+	 * XML tags
+	 */
 	public static enum MMTAG {
 		META, FUNCTIONS, RULES, MAPS, ENTITY, MAP, ENTRY,
 	}
 
+	/**
+	 * XML attributes
+	 */
 	public static enum ATTRITBUTE {
 		VERSION("version"), SOURCE("source"), OCCURENCE("occurence"), MODE("mode"), VALUE("value"), NAME("name"), CLASS(
 				"class"), DEFAULT("default");
