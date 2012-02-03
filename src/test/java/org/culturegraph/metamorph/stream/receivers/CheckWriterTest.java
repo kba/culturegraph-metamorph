@@ -15,18 +15,18 @@ public final class CheckWriterTest {
 
 	@Test
 	public void generalCheck() {
-		final EventStreamWriter w = new EventStreamWriter();		
-		w.resetStream();
-			generalCheckRecord(w);
-		w.endStream();
+		final EventStreamWriter eventStreamWriter = new EventStreamWriter();		
+		eventStreamWriter.resetStream();
+			generalCheckRecord(eventStreamWriter);
+		eventStreamWriter.endStream();
 		
-		final EventStreamValidator v = new EventStreamValidator(w.getEventStream());
-		v.resetStream();	
-			generalCheckRecord(v);
-		v.endStream();
+		final EventStreamValidator eventStreamValidator = new EventStreamValidator(eventStreamWriter.getEventStream());
+		eventStreamValidator.resetStream();	
+			generalCheckRecord(eventStreamValidator);
+		eventStreamValidator.endStream();
 	}
 	
-	private void generalCheckRecord(StreamReceiver r) {
+	private void generalCheckRecord(final StreamReceiver r) {
 		r.startRecord("01");
 			r.literal("Name", "Karl");
 			r.startEntity("Address");

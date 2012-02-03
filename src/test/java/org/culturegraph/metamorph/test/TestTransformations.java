@@ -3,7 +3,6 @@
  */
 package org.culturegraph.metamorph.test;
 
-import org.culturegraph.metamorph.test.MetamorphTestRunner.TestDefinitions;
 import org.junit.runner.RunWith;
 
 /**
