@@ -50,7 +50,7 @@ public final class MetamorphBuilder {
 	 */
 	public static enum ATTRITBUTE {
 		VERSION("version"), SOURCE("source"), OCCURENCE("occurence"), MODE("mode"), VALUE("value"), NAME("name"), CLASS(
-				"class"), DEFAULT("default");
+				"class"), DEFAULT("default"), ENTITY_MARKER("entityMarker");
 		private final String string;
 
 		private ATTRITBUTE(final String string) {
@@ -62,7 +62,7 @@ public final class MetamorphBuilder {
 		}
 	}
 
-//	private static final Logger LOG = LoggerFactory.getLogger(MetamorphBuilder.class);
+	//private static final Logger LOG = LoggerFactory.getLogger(MetamorphBuilder.class);
 	private static final String SCHEMA_FILE = "schema/metamorph.xsd";
 	private static final ErrorHandler ERROR_HANDLER = new MetamorphDefinitionParserErrorHandler();
 	private static final int LOWEST_COMPATIBLE_VERSION = 2;
@@ -184,8 +184,14 @@ public final class MetamorphBuilder {
 			throw new MetamorphDefinitionException("Version " + version
 					+ " of definition file not supported by metamorph version " + CURRENT_VERSION);
 		}
+		
+		final Metamorph metamorph = new Metamorph();		
+		final String entityMarker = root.getAttribute(ATTRITBUTE.ENTITY_MARKER.getString());
+		if(null!=entityMarker && !entityMarker.isEmpty()){
+			metamorph.setEntityMarker(entityMarker.charAt(0));
+		}
 
-		final Metamorph metamorph = new Metamorph();
+		
 		final FunctionFactory functions = new FunctionFactory();
 		final CollectFactory collects = new CollectFactory();
 
@@ -221,8 +227,8 @@ public final class MetamorphBuilder {
 
 	private static void handleMaps(final Node node, final Metamorph metamorph) {
 		for (Node mapNode = node.getFirstChild(); mapNode != null; mapNode = mapNode.getNextSibling()) {
-			final String mapName = getAttr(node, ATTRITBUTE.NAME);
-			final String mapDefault = getAttr(node, ATTRITBUTE.DEFAULT);
+			final String mapName = getAttr(mapNode, ATTRITBUTE.NAME);
+			final String mapDefault = getAttr(mapNode, ATTRITBUTE.DEFAULT);
 			for (Node entryNode = mapNode.getFirstChild(); entryNode != null; entryNode = entryNode.getNextSibling()) {
 				final String entryName = getAttr(entryNode, ATTRITBUTE.NAME);
 				final String entryValue = getAttr(entryNode, ATTRITBUTE.VALUE);

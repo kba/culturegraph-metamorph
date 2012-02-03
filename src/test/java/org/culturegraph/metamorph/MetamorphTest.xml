@@ -4,20 +4,25 @@
 	xmlns:cgxml="http://www.culturegraph.org/cgxml">
 
 
-	<test-case name="one">
 
+
+	<test-case name="Custom Entity Marker">
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
-
+					<cgxml:record id="1">
+						<cgxml:entity name="entity">
+							<cgxml:literal name="data" value="Aloha" />
+						</cgxml:entity>
+					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="2">
+			<mm:metamorph version="2" entityMarker="X">
 				<mm:rules>
-				
+					<mm:data source="entityXdata" name="data" />
 				</mm:rules>
 			</mm:metamorph>
 		</transformation>
@@ -25,10 +30,11 @@
 		<result type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
-
+					<cgxml:record id="1">
+						<cgxml:literal name="data" value="Aloha" />
+					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>
 		</result>
-
 	</test-case>
 </metamorph-test>

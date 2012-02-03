@@ -55,6 +55,7 @@ public class ObjectFactory<O> {
 		if (!classes.containsKey(name)) {
 			throw new IllegalArgumentException("class '" + name + "' not found");
 		}
+		
 		final Class<? extends O> clazz = classes.get(name);
 		try {
 			final Class<?>[] contructorArgTypes = new Class[contructorArgs.length];
@@ -111,7 +112,7 @@ public class ObjectFactory<O> {
 	}
 
 	private void setMethodError(final String methodName, final String simpleName) {
-		throw new MetamorphException("Cannot set '" + methodName + "' for class '" + simpleName);
+		throw new MetamorphException("Cannot set '" + methodName + "' for class '" + simpleName + "'");
 		
 	}
 }
