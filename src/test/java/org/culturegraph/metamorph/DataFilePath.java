@@ -14,7 +14,6 @@ public final class DataFilePath {
 	public static final String TITLE_MARC = DATA_PREFIX + "TITLE_10entries.marc21";
 	
 	public static final String SYTAX_ERROR_MM = MORPH_PREFIX + "error.xml";
-	public static final String PND_PICA_MM =  MORPH_PREFIX + "pnd_pica.xml";
 	public static final String TITLE_MAB_MM =  MORPH_PREFIX + "title_mab.xml";
 	
 	
