@@ -184,7 +184,6 @@
 	<rule ref="rulesets/naming.xml/VariableNamingConventions" />
 	<rule ref="rulesets/optimizations.xml/AddEmptyString" />
 	<rule ref="rulesets/optimizations.xml/AvoidArrayLoops" />
-	<rule ref="rulesets/optimizations.xml/AvoidInstantiatingObjectsInLoops" />
 	<rule ref="rulesets/optimizations.xml/LocalVariableCouldBeFinal" />
 	<rule ref="rulesets/optimizations.xml/MethodArgumentCouldBeFinal" />
 	<rule ref="rulesets/optimizations.xml/SimplifyStartsWith" />
