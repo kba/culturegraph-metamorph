@@ -3,14 +3,14 @@
 	xmlns="http://www.culturegraph.org/metamorph-test" xmlns:mm="http://www.culturegraph.org/metamorph"
 	xmlns:cgxml="http://www.culturegraph.org/cgxml">
 
-	<test-case name="Group Test">
+	<test-case name="concat simple">
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
 					<cgxml:record id="1">
-						<cgxml:literal name="data1" value="skjdfh" />
-						<cgxml:literal name="data2" value="slkdjf" />
-						<cgxml:literal name="data3" value="A" />
+						<cgxml:literal name="data1" value="a" />
+						<cgxml:literal name="data1" value="b" />
+						<cgxml:literal name="data2" value="c" />
 					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>
@@ -19,11 +19,11 @@
 		<transformation type="text/x-metamorph+xml">
 			<mm:metamorph version="2">
 				<mm:rules>
-				<mm:group name="group" value="constant">
-					<mm:data source="data1"/>
-					<mm:data source="data2"/>
-				</mm:group>
-				<mm:data source="data3"/>
+					<mm:concat delimiter=", " name="concat" prefix="{"
+						postfix="}">
+						<mm:data source="data1" />
+						<mm:data source="data2" />
+					</mm:concat>
 				</mm:rules>
 			</mm:metamorph>
 		</transformation>
@@ -32,13 +32,13 @@
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
 					<cgxml:record id="1">
-						<cgxml:literal name="group" value="constant" />
-						<cgxml:literal name="group" value="constant" />
-						<cgxml:literal name="data3" value="A" />
+						<cgxml:literal name="concat" value="{a, b, c}" />
 					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>
 		</result>
 	</test-case>
+
+	
 
 </metamorph-test>

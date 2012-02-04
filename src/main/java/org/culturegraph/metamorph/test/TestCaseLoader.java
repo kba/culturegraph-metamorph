@@ -43,6 +43,8 @@ public final class TestCaseLoader {
 		// No instances allowed
 	}
 	
+	
+	//TODO seems to be unused
 	public static List<TestCase> load(final String testDef) {
 		try {
 			return load(ResourceUtil.getStream(testDef));
@@ -51,6 +53,7 @@ public final class TestCaseLoader {
 		}
 	}
 	
+	//TODO seems to be unused
 	public static List<TestCase> load(final File testDefFile) {
 		try {
 			return load(ResourceUtil.getStream(testDefFile));

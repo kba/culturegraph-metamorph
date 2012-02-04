@@ -52,21 +52,19 @@ final class Data  extends AbstractNamedValuePipe{
 		this.value = value;
 	}
 
-	/**
-	 * @return the defaultName
-	 */
-	
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @return the defaultValue
-	 */
-
-	public String getValue() {
-		return value;
-	}
-
-
+//	/**
+//	 * @return the defaultName
+//	 */
+//	
+//	public String getName() {
+//		return name;
+//	}
+//
+//	/**
+//	 * @return the defaultValue
+//	 */
+//
+//	public String getValue() {
+//		return value;
+//	}
 }

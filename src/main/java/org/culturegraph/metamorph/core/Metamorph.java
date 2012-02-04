@@ -168,9 +168,9 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 
 	@Override
 	public void literal(final String name, final String value) {
-		if (entityCountStack.isEmpty()) {
-			throw new IllegalMorphStateException("Cannot receive literals outside of records");
-		}
+//		if (entityCountStack.isEmpty()) {
+//			throw new IllegalMorphStateException("Cannot receive literals outside of records");
+//		}
 
 		final String path = entityPath.toString() + name;
 		dispatch(path, value, elseSource);
