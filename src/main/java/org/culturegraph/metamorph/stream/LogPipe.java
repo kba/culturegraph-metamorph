@@ -23,7 +23,8 @@ public final class LogPipe implements StreamPipe {
 
 	@Override
 	public void startRecord(final String identifier) {
-		LOG.info("start record " + identifier);
+	
+		LOG.debug("start record " + identifier);
 		if (null != receiver) {
 			receiver.startRecord(identifier);
 		}
@@ -32,7 +33,7 @@ public final class LogPipe implements StreamPipe {
 	@Override
 	public void endRecord() {
 
-		LOG.info("end record");
+		LOG.debug("end record");
 		if (null != receiver) {
 			receiver.endRecord();
 		}
@@ -41,7 +42,7 @@ public final class LogPipe implements StreamPipe {
 	@Override
 	public void startEntity(final String name) {
 
-		LOG.info("start entity " + name);
+		LOG.debug("start entity " + name);
 		if (null != receiver) {
 			receiver.startEntity(name);
 		}
@@ -49,7 +50,7 @@ public final class LogPipe implements StreamPipe {
 
 	@Override
 	public void endEntity() {
-		LOG.info("end entity");
+		LOG.debug("end entity");
 		if (null != receiver) {
 			receiver.endEntity();
 		}
@@ -58,7 +59,7 @@ public final class LogPipe implements StreamPipe {
 
 	@Override
 	public void literal(final String name, final String value) {
-		LOG.info("literal: " + name + "=" + value);
+		LOG.debug("literal: " + name + "=" + value);
 		if (null != receiver) {
 			receiver.literal(name, value);
 		}

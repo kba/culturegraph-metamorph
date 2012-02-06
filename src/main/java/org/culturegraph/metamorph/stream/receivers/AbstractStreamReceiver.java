@@ -7,11 +7,7 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
  * 
  * @author Markus Michael Geipel
  */
-public class DefaultStreamReceiver implements StreamReceiver {
-
-	@Override
-	public void startRecord(final String identifier){/* do nothing */}
-
+public abstract class AbstractStreamReceiver implements StreamReceiver {
 	@Override
 	public void endRecord(){/* do nothing */}
 
@@ -20,8 +16,4 @@ public class DefaultStreamReceiver implements StreamReceiver {
 
 	@Override
 	public void endEntity(){/* do nothing */}
-
-	@Override
-	public void literal(final String  name, final String  value) {/* do nothing */}
-
 }

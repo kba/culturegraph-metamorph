@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author Markus Michael Geipel
  *
  */
-public final class UtilTest {
+public final class StringUtilTest {
 	
 	@Test
 	public void testFormat() {

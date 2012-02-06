@@ -15,9 +15,10 @@
 			</cgxml>
 		</input>
 		
-		<metamorph src="metamorph-test-duplicates" />
+		<transformation type="text/x-metamorph+xml" src="metamorph-test-duplicates" />
+
 		
-		<result>
+		<result type="text/x-cg+xml">
 			<cgxml version="1.0" xmlns="http://www.culturegraph.org/cgxml">
 				<records>
 					<record id="1">
@@ -45,9 +46,9 @@
 			</cgxml>
 		</input>
 		
-		<metamorph src="metamorph-test-duplicates" />
+		<transformation src="metamorph-test-duplicates" type="text/x-metamorph+xml"/>
 		
-		<result>
+		<result type="text/x-cg+xml">
 			<cgxml version="1.0" xmlns="http://www.culturegraph.org/cgxml">
 				<records>
 					<record id="1">
@@ -77,9 +78,9 @@
 			</cgxml>
 		</input>
 		
-		<metamorph src="metamorph-test-duplicates" />
+		<transformation src="metamorph-test-duplicates" type="text/x-metamorph+xml"/>
 		
-		<result>
+		<result type="text/x-cg+xml">
 			<cgxml version="1.0" xmlns="http://www.culturegraph.org/cgxml">
 				<records>
 					<record id="1">
@@ -116,9 +117,9 @@
 			</cgxml>
 		</input>
 				
-		<metamorph src="metamorph-test-duplicates" />
+		<transformation src="metamorph-test-duplicates" type="text/x-metamorph+xml"/>
 		
-		<result>
+		<result type="text/x-cg+xml">
 			<cgxml version="1.0" xmlns="http://www.culturegraph.org/cgxml">
 				<records>
 					<record id="1">
@@ -152,9 +153,9 @@
 			</cgxml>
 		</input>
 			
-		<metamorph src="metamorph-test-duplicates" />
+		<transformation src="metamorph-test-duplicates" type="text/x-metamorph+xml"/>
 		
-		<result>
+		<result type="text/x-cg+xml">
 			<cgxml version="1.0" xmlns="http://www.culturegraph.org/cgxml">
 				<records>
 					<record id="1">
@@ -189,9 +190,9 @@
 			</cgxml>
 		</input>
 			
-		<metamorph src="metamorph-test-duplicates" />
+		<transformation src="metamorph-test-duplicates" type="text/x-metamorph+xml"/>
 		
-		<result>
+		<result type="text/x-cg+xml">
 			<cgxml version="1.0" xmlns="http://www.culturegraph.org/cgxml">
 				<records>
 					<record id="1">
