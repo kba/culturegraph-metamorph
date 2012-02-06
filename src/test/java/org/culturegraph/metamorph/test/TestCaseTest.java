@@ -7,12 +7,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-@Ignore
+/**
+ * Tests whether the test case class works.
+ * 
+ * @author Christoph Böhme <c.boehme@dnb.de>
+ *
+ */
 public final class TestCaseTest {
 
 	private static final String TEST_CASE_TAG = "test-case";
@@ -34,14 +38,13 @@ public final class TestCaseTest {
 	}
 	
 	@Test
-	public void testNonEmptyInputWithSrc() throws IOException {
+	public void testTestCase() throws IOException {
 		final Element config = doc.createElement(TEST_CASE_TAG);
 		config.setAttribute(NAME_ATTR, "test");
 		
 		Element element = doc.createElement(INPUT_TAG);
 		element.setAttribute(TYPE_ATTR, "application/x-cgentity");
 		element.setAttribute(SRC_ATTR, "test/simple-input.cge");
-		element.appendChild(doc.createTextNode("This data should not be here"));
 		config.appendChild(element);
 		
 		element = doc.createElement(TRANSFORMATION_TAG);
