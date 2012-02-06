@@ -50,7 +50,7 @@
 	<test-case name="Referenced Metamorph">
 		<input type="application/x-cgentity">id-1&#x001e;-data&#x001f;Hallo Welt!&#x001e;</input>
 
-		<transformation type="text/x-metamorph+xml" src="test/simple-transformation.xml" />
+		<transformation type="text/x-metamorph+xml" src="test/FrameworkTest-transformation.xml" />
 
 		<result type="text/x-cg+xml">
 			<cgxml xmlns="http://www.culturegraph.org/cgxml" version="1.0">
