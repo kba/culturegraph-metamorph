@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.culturegraph.metamorph.core.MetamorphException;
+import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
  * New classes can be registered during runtime.
  * 
  * @author Markus Michael Geipel
+ * @param <O> the type of objects created
  *
  */
 public class ObjectFactory<O> {
@@ -54,6 +55,7 @@ public class ObjectFactory<O> {
 		if (!classes.containsKey(name)) {
 			throw new IllegalArgumentException("class '" + name + "' not found");
 		}
+		
 		final Class<? extends O> clazz = classes.get(name);
 		try {
 			final Class<?>[] contructorArgTypes = new Class[contructorArgs.length];
@@ -87,7 +89,7 @@ public class ObjectFactory<O> {
 			final String methodName = attribute.getKey().toLowerCase();
 			final Method method = methodMap.get(methodName);
 			if(null==method){
-				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName() +"'. Not in " + methodMap.keySet());
+				setMethodError(methodName, instance.getClass().getSimpleName());
 			}
 			final Class<?> type = method.getParameterTypes()[0];
 			
@@ -100,12 +102,17 @@ public class ObjectFactory<O> {
 				method.invoke(instance, attribute.getValue());
 			}
 			}catch(IllegalArgumentException e){
-				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName(), e);
+				setMethodError(methodName, instance.getClass().getSimpleName());
 			} catch (IllegalAccessException e) {
-				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName(), e);
+				setMethodError(methodName, instance.getClass().getSimpleName());
 			} catch (InvocationTargetException e) {
-				throw new MetamorphException("Cannot set '" + methodName + "' for class '" + instance.getClass().getSimpleName(), e);
+				setMethodError(methodName, instance.getClass().getSimpleName());
 			} 
 		}
+	}
+
+	private void setMethodError(final String methodName, final String simpleName) {
+		throw new MetamorphException("Cannot set '" + methodName + "' for class '" + simpleName + "'");
+		
 	}
 }

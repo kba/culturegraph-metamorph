@@ -35,7 +35,7 @@ public final class TestCaseLoader {
 	 */
 	private static final String FILE_NOT_FOUND = "Could not find test case file: ";
 
-	private static final String SCHEMA_FILE = "metamorph-test.xsd";
+	private static final String SCHEMA_FILE = "schema/metamorph-test.xsd";
 	
 	private static final String TEST_CASE_TAG = "test-case";
 	
@@ -43,6 +43,8 @@ public final class TestCaseLoader {
 		// No instances allowed
 	}
 	
+	
+	//TODO seems to be unused
 	public static List<TestCase> load(final String testDef) {
 		try {
 			return load(ResourceUtil.getStream(testDef));
@@ -51,6 +53,7 @@ public final class TestCaseLoader {
 		}
 	}
 	
+	//TODO seems to be unused
 	public static List<TestCase> load(final File testDefFile) {
 		try {
 			return load(ResourceUtil.getStream(testDefFile));
@@ -60,6 +63,7 @@ public final class TestCaseLoader {
 	}
 	
 	public static List<TestCase> load(final InputStream inputStream) {
+		
 		try {
 			final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			final URL schemaUrl = Thread.currentThread().getContextClassLoader().getResource(SCHEMA_FILE);
@@ -76,10 +80,10 @@ public final class TestCaseLoader {
 			final Document doc = builder.parse(inputStream);
 			
 			final List<TestCase> testCases = new ArrayList<TestCase>();
-			final NodeList tcNodes = doc.getElementsByTagName(TEST_CASE_TAG);
-			for(int i=0; i < tcNodes.getLength(); ++i) {
-				final Element tc = (Element) tcNodes.item(i);
-				testCases.add(new TestCase(tc));
+			final NodeList testCaseNodes = doc.getElementsByTagName(TEST_CASE_TAG);
+			for(int i=0; i < testCaseNodes.getLength(); ++i) {
+				final Element testCaseElement = (Element) testCaseNodes.item(i);
+				testCases.add(new TestCase(testCaseElement));
 			}
 			
 			return testCases;

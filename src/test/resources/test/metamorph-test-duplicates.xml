@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<metamorph xmlns="http://www.culturegraph.org/metamorph"
+	entityMarker="." version="1">
+
+	<meta>
+		<name></name>
+	</meta>
+
+	<rules>
+
+
+
+		<entity name="name" flushWith="name" sameEntity="true" reset="true">
+
+			<combine name="full" value="${p1} (${p2})" flushWith="name">
+				<data name="p1" source="name.default">
+					<regexp match="^(.+?)(?: / (.+?))?$" format="${1}" />
+				</data>
+				<data name="p2" source="name.default">
+					<regexp match="^(.+?) / (.+?)$" format="${2}" />
+				</data>
+			</combine>
+
+
+			
+			<data name="part1" source="name.default">
+				<regexp match="^(.+?)(?: / (.+?))?$" format="${1}" />
+			</data>
+			<data name="part2" source="name.default">
+				<regexp match="^(.+?) / (.+?)$" format="${2}" />
+			</data>
+		</entity>
+
+	</rules>
+
+</metamorph>

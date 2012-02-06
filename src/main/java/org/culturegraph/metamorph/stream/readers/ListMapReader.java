@@ -7,6 +7,12 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.stream.StreamSender;
 import org.culturegraph.metamorph.types.ListMap;
 
+/**
+ * Reads a {@link ListMap} and sends it to a {@link StreamReceiver}
+ * 
+ * @author Markus Michael Geipel
+ *
+ */
 public final class ListMapReader implements StreamSender {
 	private StreamReceiver streamReceiver;
 

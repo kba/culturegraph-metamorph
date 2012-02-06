@@ -1,34 +1,35 @@
 package org.culturegraph.metamorph.core;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
-import org.culturegraph.metamorph.core.Data.Mode;
-import org.culturegraph.metamorph.functions.Function;
-import org.culturegraph.metamorph.functions.FunctionFactory;
+import org.culturegraph.metamorph.core.collectors.AbstractCollect;
+import org.culturegraph.metamorph.core.collectors.CollectFactory;
+import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
+import org.culturegraph.metamorph.core.functions.Function;
+import org.culturegraph.metamorph.core.functions.FunctionFactory;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
-import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.culturegraph.metamorph.stream.StreamSender;
-import org.culturegraph.metamorph.util.ReflectionUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
+import org.culturegraph.metamorph.util.ResourceUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 
 /**
  * Builds a {@link Metamorph} from an xml description
@@ -37,16 +38,42 @@ import org.xml.sax.XMLReader;
  */
 public final class MetamorphBuilder {
 
-	private static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-	private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
-	private static final String SCHEMA_FILE = "metamorph.xsd";
-	private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
-	private static final String NOT_FOUND_ERROR = "Definition file not found";
+	/**
+	 * XML tags
+	 */
+	public static enum MMTAG {
+		META, FUNCTIONS, RULES, MAPS, ENTITY, MAP, ENTRY,
+	}
+
+	/**
+	 * XML attributes
+	 */
+	public static enum ATTRITBUTE {
+		VERSION("version"), SOURCE("source"), OCCURENCE("occurence"), MODE("mode"), VALUE("value"), NAME("name"), CLASS(
+				"class"), DEFAULT("default"), ENTITY_MARKER("entityMarker");
+		private final String string;
+
+		private ATTRITBUTE(final String string) {
+			this.string = string;
+		}
+
+		public String getString() {
+			return string;
+		}
+	}
+
+	//private static final Logger LOG = LoggerFactory.getLogger(MetamorphBuilder.class);
+	private static final String SCHEMA_FILE = "schema/metamorph.xsd";
+	private static final ErrorHandler ERROR_HANDLER = new MetamorphDefinitionParserErrorHandler();
+	private static final int LOWEST_COMPATIBLE_VERSION = 1;
+	private static final int CURRENT_VERSION = 1;
+	private static final String DATA = "data";
+	private static final String POSTPROCESS = "postprocess";
+	private static final String FLUSH_WITH = "flushWith";
 
 	private final String morphDef;
 
 	public MetamorphBuilder(final String morphDef) {
-		// TODO caching the definition would be cool!
 		this.morphDef = morphDef;
 	}
 
@@ -54,356 +81,273 @@ public final class MetamorphBuilder {
 		return build(morphDef);
 	}
 
-	public static void wire(final StreamSender sender, final Metamorph metamorph, final StreamReceiver receiver) {
-		sender.setReceiver(metamorph);
-		metamorph.setReceiver(receiver);
-	}
-
-	public static Metamorph build(final File file) {
-		try {
-			return build(new InputSource(new FileInputStream(file)));
-		} catch (FileNotFoundException e) {
-			throw new MetamorphDefinitionException(NOT_FOUND_ERROR, e);
-		}
-	}
-
 	public static Metamorph build(final String morphDef) {
-		final String morphDefPath = morphDef + ".xml";
-		final InputStream inputStream = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream(morphDefPath);
-		if (inputStream == null) {
-			return build(new File(morphDefPath));
+		try {
+			return build(ResourceUtil.getStream(morphDef));
+		}catch (FileNotFoundException e) {
+			throw new MetamorphDefinitionException(e);
 		}
-		return build(inputStream);
+	}
+
+//	public static Metamorph build(final File file) {
+//		if (file == null) {
+//			throw new IllegalArgumentException("'file' must not be null");
+//		}
+//		try {
+//			return build(getDocumentBuilder().parse(file));
+//		} catch (SAXException e) {
+//			throw new MetamorphDefinitionException(e);
+//		} catch (IOException e) {
+//			throw new MetamorphDefinitionException(e);
+//		}
+//	}
+
+	public static Metamorph build(final Reader reader) {
+		if (reader == null) {
+			throw new IllegalArgumentException("'reader' must not be null");
+		}
+		try {
+			return build(getDocumentBuilder().parse(new InputSource(reader)));
+		} catch (SAXException e) {
+			throw new MetamorphDefinitionException(e);
+		} catch (IOException e) {
+			throw new MetamorphDefinitionException(e);
+		}
 	}
 
 	public static Metamorph build(final InputStream inputStream) {
 		if (inputStream == null) {
 			throw new IllegalArgumentException("'inputStream' must not be null");
 		}
-		return build(new InputSource(inputStream));
+		return build(new InputStreamReader(inputStream));
 	}
 
-	public static Metamorph build(final InputSource inputSource) {
-		if (inputSource == null) {
-			throw new IllegalArgumentException("'inputSource' must not be null");
-		}
-		final Metamorph metamorph = new Metamorph();
-		final MetamorphDefinitionHandler transformationContentHandler = new MetamorphDefinitionHandler(metamorph);
+	private static DocumentBuilder getDocumentBuilder() {
 
 		try {
-			// XMLReader erzeugen
-			final SAXParserFactory factory = SAXParserFactory.newInstance();
-			factory.setNamespaceAware(true);
-			factory.setValidating(true);
-
-			final SAXParser saxParser = factory.newSAXParser();
-			saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
-
+			final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			final URL schemaUrl = Thread.currentThread().getContextClassLoader().getResource(SCHEMA_FILE);
-			saxParser.setProperty(JAXP_SCHEMA_SOURCE, schemaUrl.toString());
+			if (schemaUrl == null) {
+				throw new MetamorphDefinitionException(SCHEMA_FILE + " not found!");
+			}
 
-			final XMLReader xmlReader = saxParser.getXMLReader();
-			final MetamorphDefinitionParserErrorHandler handler = new MetamorphDefinitionParserErrorHandler();
-			xmlReader.setErrorHandler(handler);
+			final Schema schema = schemaFactory.newSchema(schemaUrl);
+			final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 
-			xmlReader.setContentHandler(transformationContentHandler);
+			builderFactory.setIgnoringElementContentWhitespace(true);
+			builderFactory.setIgnoringComments(true);
+			builderFactory.setNamespaceAware(true);
+			builderFactory.setCoalescing(true);
+			builderFactory.setSchema(schema);
 
-			// Parsen wird gestartet
-			xmlReader.parse(inputSource);
+			final DocumentBuilder builder = builderFactory.newDocumentBuilder();
+			builder.setErrorHandler(ERROR_HANDLER);
+
+			return builder;
+
 		} catch (ParserConfigurationException e) {
-			throw new MetamorphDefinitionException(e);
-		} catch (IOException e) {
 			throw new MetamorphDefinitionException(e);
 		} catch (SAXException e) {
 			throw new MetamorphDefinitionException(e);
+		}
+	}
+
+	private static MMTAG tagOf(final Node child) {
+		return MMTAG.valueOf(child.getLocalName().toUpperCase());
+	}
+
+	private static String getAttr(final Node node, final ATTRITBUTE attr) {
+		final Node attribute = node.getAttributes().getNamedItem(attr.getString());
+
+		if (attribute != null) {
+			return attribute.getNodeValue();
+		}
+
+		return null;
+	}
+
+	private static Map<String, String> attributesToMap(final Node node) {
+		final Map<String, String> attributes = new HashMap<String, String>();
+		final NamedNodeMap attrNode = node.getAttributes();
+
+		for (int i = 0; i < attrNode.getLength(); ++i) {
+			final Node itemNode = attrNode.item(i);
+			attributes.put(itemNode.getLocalName(), itemNode.getNodeValue());
+		}
+		return attributes;
+	}
+
+	private static Metamorph build(final Document doc) {
+		final Element root = doc.getDocumentElement();
+		final int version = Integer.parseInt(root.getAttribute(ATTRITBUTE.VERSION.getString()));
+		if (version < LOWEST_COMPATIBLE_VERSION || version > CURRENT_VERSION) {
+			throw new MetamorphDefinitionException("Version " + version
+					+ " of definition file not supported by metamorph version " + CURRENT_VERSION);
+		}
+		
+		final Metamorph metamorph = new Metamorph();		
+		final String entityMarker = root.getAttribute(ATTRITBUTE.ENTITY_MARKER.getString());
+		if(null!=entityMarker && !entityMarker.isEmpty()){
+			metamorph.setEntityMarker(entityMarker.charAt(0));
+		}
+
+		
+		final FunctionFactory functions = new FunctionFactory();
+		final CollectFactory collects = new CollectFactory();
+
+		for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
+
+			switch (tagOf(child)) {
+			case META:
+				handleMeta(child, metamorph);
+				break;
+			case FUNCTIONS:
+				handleFunctionDefinitions(child, functions);
+				break;
+			case RULES:
+				for (Node ruleNode = child.getFirstChild(); ruleNode != null; ruleNode = ruleNode.getNextSibling()) {
+					handleRule(ruleNode, null, metamorph, functions, collects);
+				}
+				break;
+			case MAPS:
+				handleMaps(child, metamorph);
+				break;
+			default:
+				illegalChild(child, root);
+			}
 		}
 
 		return metamorph;
 	}
 
-	private static final class MetamorphDefinitionHandler implements ContentHandler {
+	private static void illegalChild(final Node child, final Node root) {
+		throw new MetamorphDefinitionException("Schema mismatch: illegal tag " + child.getLocalName() + " in node "
+				+ root.getLocalName());
+	}
 
-		private static final String GROUP_TAG = "group";
-		private static final String DATA_TAG = "data";
-		private static final String COLLECT_LITERAL_TAG = "collect-literal";
-		private static final String COLLECT_ENTITY_TAG = "collect-entity";
-		private static final String CHOOSE_LITERAL_TAG = "choose-literal";
-		private static final String FUNCTION_TAG = "function";
-		private static final String MAP_TAG = "map";
-		private static final String ENTRY_TAG = "entry";
-		private static final String NAME_ATTR = "name";
-		private static final String VALUE_ATTR = "value";
-		private static final String SOURCE_ATTR = "source";
-		private static final String AS_ATTR = "as";
-		private static final String TRUE = "true";
-		// private static final String FALSE = "false";
-		private static final String RESET_ATTR = "reset";
-		private static final String SAME_ENTITY_ATTR = "sameEntity";
-		private static final String FORCE_ON_END_ATTR = "forceOnEnd";
-		private static final String DEFAULT_ATTR = "default";
-
-		private static final Logger LOG = LoggerFactory.getLogger(MetamorphDefinitionHandler.class);
-		private static final Object METAMORPH_TAG = "metamorph";
-		private static final String MARKER_ATTR = "entityMarker";
-		private static final String OCCURENCE_ATTR = "occurence";
-		private static final String CLASS_ATTR = "class";
-
-		private String emitGroupName;
-		private String emitGroupValue;
-
-		private final Metamorph metamorph;
-
-		private final FunctionFactory functionFactory = new FunctionFactory();
-
-		private Data data;
-		private Collect collect;
-		private Map<String, String> map;
-
-		public MetamorphDefinitionHandler(final Metamorph metamorph) {
-			this.metamorph = metamorph;
+	private static void handleMaps(final Node node, final Metamorph metamorph) {
+		for (Node mapNode = node.getFirstChild(); mapNode != null; mapNode = mapNode.getNextSibling()) {
+			final String mapName = getAttr(mapNode, ATTRITBUTE.NAME);
+			final String mapDefault = getAttr(mapNode, ATTRITBUTE.DEFAULT);
+			for (Node entryNode = mapNode.getFirstChild(); entryNode != null; entryNode = entryNode.getNextSibling()) {
+				final String entryName = getAttr(entryNode, ATTRITBUTE.NAME);
+				final String entryValue = getAttr(entryNode, ATTRITBUTE.VALUE);
+				metamorph.putValue(mapName, entryName, entryValue);
+			}
+			if (mapDefault != null) {
+				metamorph.putValue(mapName, SimpleMultiMap.DEFAULT_MAP_KEY, mapDefault);
+			}
 		}
+	}
 
-	
-		@SuppressWarnings("unchecked") // problem obviated by check isAssignableFrom(clazz)
-		@Override
-		public void startElement(final String uri, final String localName, final String qName, final Attributes atts)
-				throws SAXException {
-			if (DATA_TAG.equals(localName)) {
-				registerDataSource(atts.getValue(SOURCE_ATTR), atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR),
-						atts.getValue(AS_ATTR), atts.getValue(OCCURENCE_ATTR));
-			} else if (GROUP_TAG.equals(localName)) {
-				emitGroupName = atts.getValue(NAME_ATTR);
-				emitGroupValue = atts.getValue(VALUE_ATTR);
+	private static void handleRule(final Node node, final AbstractCollect parent, final Metamorph metamorph,
+			final FunctionFactory functions, final CollectFactory collects) {
 
-			} else if(FUNCTION_TAG.equals(localName)){
-				final Class<?> clazz;
-				final String className = atts.getValue(CLASS_ATTR);
-				try {
-					clazz = ReflectionUtil.getClassLoader().loadClass(className);
-				} catch (ClassNotFoundException e) {
-					throw new MetamorphDefinitionException("Class '" + className + "' not found.", e);
-				}
-				if(Function.class.isAssignableFrom(clazz)){
-					functionFactory.registerFunction(atts.getValue(NAME_ATTR), (Class<? extends Function>) clazz);
-				}else{
-					throw new MetamorphDefinitionException(className + " does not implement interface 'Function'");					
-				}
-			}else if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName) || CHOOSE_LITERAL_TAG.equals(localName)) {
+		final String nodeName = node.getLocalName();
+		if (collects.getAvailableClasses().contains(nodeName)) {
+			handleCollect(node, metamorph, parent, functions, collects);
 			
-				registerCollector(localName, atts);
-				
-			} else if (MAP_TAG.equals(localName)) {
-				createMap(atts.getValue(NAME_ATTR), atts.getValue(DEFAULT_ATTR));
+		} else if (DATA.equals(nodeName)) {
+			handleData(node, parent, metamorph, functions);
 
-			} else if (functionFactory.getAvailableFunctions().contains(localName)) {
-				registerFunction(localName, attributesToMap(atts));
-			} else if (ENTRY_TAG.equals(localName)) {
-				map.put(atts.getValue(NAME_ATTR), atts.getValue(VALUE_ATTR));
-
-			} else if (METAMORPH_TAG.equals(localName)) {
-				initMetamorph(atts.getValue(MARKER_ATTR));
-			}
+		} else {
+			illegalChild(node, node.getParentNode());
 		}
+	}
 
-		private void initMetamorph(final String marker) {
-			if (null != marker) {
-				metamorph.setEntityMarker(marker.charAt(0));
-			}
-		}
+	private static void handleCollect(final Node node, final Metamorph metamorph, final AbstractCollect parent, final FunctionFactory functions,
+			final CollectFactory collects) {
 
-		private void registerCollector(final String tag, final Attributes atts) {
-			final boolean reset = atts.getValue(RESET_ATTR) != null && TRUE.equals(atts.getValue(RESET_ATTR));
-			
-			final boolean sameEntity = atts.getValue(SAME_ENTITY_ATTR) != null
-					&& TRUE.equals(atts.getValue(SAME_ENTITY_ATTR));
+		final Map<String, String> attributes = attributesToMap(node);
+		final String flushWith = attributes.remove(FLUSH_WITH); // must be set after recursive calls to flush decendents before parent
+		final AbstractCollect collect = collects.newInstance(node.getLocalName(), attributes, metamorph);
 
-			if (COLLECT_ENTITY_TAG.equals(tag)) {
-				collect = new CollectEntity(metamorph);
-			} else if (COLLECT_LITERAL_TAG.equals(tag)) {
-				collect = new CollectLiteral(metamorph);
-				
-			} else if (CHOOSE_LITERAL_TAG.equals(tag)) {
-				collect = new ChooseLiteral(metamorph);
-			}
-
-			if (emitGroupName == null) {
-				collect.setName(atts.getValue(NAME_ATTR));
+		NamedValuePipe lastFunction = collect;
+		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
+			if (POSTPROCESS.equals(child.getLocalName())) {
+				lastFunction = handlePostprocess(child, collect, metamorph, functions);
 			} else {
-				collect.setName(emitGroupName);
-			}
-
-			if (emitGroupValue == null) {
-				collect.setValue(atts.getValue(VALUE_ATTR));
-			} else {
-				collect.setValue(emitGroupValue);
-			}
-			
-			collect.setReset(reset);
-			collect.setSameEntity(sameEntity);
-
-			if (atts.getValue(FORCE_ON_END_ATTR) != null) {
-				metamorph.addEntityEndListener(collect, atts.getValue(FORCE_ON_END_ATTR));
+				handleRule(child, collect, metamorph, functions, collects);
 			}
 		}
 
-		@Override
-		public void endElement(final String uri, final String localName, final String qName) throws SAXException {
-			if (DATA_TAG.equals(localName)) {
-				data = null;
-			} else if (COLLECT_ENTITY_TAG.equals(localName) || COLLECT_LITERAL_TAG.equals(localName) || CHOOSE_LITERAL_TAG.equals(localName)) {
-				collect = null;
-			} else if (GROUP_TAG.equals(localName)) {
-				emitGroupName = null;
-				emitGroupValue = null;
-			} else if (MAP_TAG.equals(localName)) {
-				map = null;
-			}
+		if (parent == null) {
+			lastFunction.setNamedValueReceiver(metamorph);
+		}else{
+			parent.addNamedValueSource(collect);
+			lastFunction.setNamedValueReceiver(parent);
 		}
+		
+		if(null!=flushWith){
+			collect.setFlushWith(flushWith);
+		}
+	}
 
-		/**
-		 * @param name
-		 * @param attributes
-		 */
-		private void registerFunction(final String name, final Map<String, String> attributes) {
+	private static void handleData(final Node dataNode, final AbstractCollect parent, final Metamorph metamorph, final FunctionFactory functions) {
 
-			final Function function = functionFactory.newFunction(name, attributes);
+		final String source = getAttr(dataNode, ATTRITBUTE.SOURCE);
+		final Data data = new Data(source);
+
+		data.setName(getAttr(dataNode, ATTRITBUTE.NAME));
+		data.setValue(getAttr(dataNode, ATTRITBUTE.VALUE));
+
+		metamorph.registerData(data);
+		
+		final NamedValuePipe lastFunction = handlePostprocess(dataNode, data, metamorph, functions);
+		
+		if (parent == null) {
+			lastFunction.setNamedValueReceiver(metamorph);
+		} else {
+			lastFunction.setNamedValueReceiver(parent);
+			parent.addNamedValueSource(data);
+		}
+		
+		
+	}
+
+	private static NamedValuePipe handlePostprocess(final Node postprocessNode, final NamedValuePipe processor,
+			final Metamorph metamorph, final FunctionFactory functions) {
+
+		NamedValuePipe lastSource = processor;
+		for (Node functionNode = postprocessNode.getFirstChild(); functionNode != null; functionNode = functionNode
+				.getNextSibling()) {
+			final Function function = functions.newInstance(functionNode.getLocalName(), attributesToMap(functionNode));
 			function.setMultiMap(metamorph);
 
-			if (collect instanceof ValueProcessor && data == null) {
-				((ValueProcessor) collect).addFunction(function);
-			} else if (data != null) {
-				data.addFunction(function);
+			// add key value entries...
+			for (Node mapEntryNode = functionNode.getFirstChild(); mapEntryNode != null; mapEntryNode = mapEntryNode
+					.getNextSibling()) {
+				final String entryName = getAttr(mapEntryNode, ATTRITBUTE.NAME);
+				final String entryValue = getAttr(mapEntryNode, ATTRITBUTE.VALUE);
+				function.putValue(entryName, entryValue);
 			}
+			lastSource = lastSource.setNamedValueReceiver(function);
 
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("\tfunction " + function.getClass().getSimpleName());
-			}
 		}
+		return lastSource;
+	}
 
-		/**
-		 * @param atts
-		 * @return
-		 */
-		private Map<String, String> attributesToMap(final Attributes atts) {
-			final Map<String, String> attributes = new HashMap<String, String>();
-			for (int i = 0; i < atts.getLength(); ++i) {
-				attributes.put(atts.getLocalName(i), atts.getValue(i));
+	@SuppressWarnings("unchecked") // protected by 'if (Function.class.isAssignableFrom(clazz))'
+	private static void handleFunctionDefinitions(final Node node, final FunctionFactory functions) {
+		for (Node childNode = node.getFirstChild(); childNode != null; childNode = childNode.getNextSibling()) {
+			final Class<?> clazz;
+			final String className = getAttr(childNode, ATTRITBUTE.CLASS);
+			try {
+				clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+			} catch (ClassNotFoundException e) {
+				throw new MetamorphDefinitionException("Class '" + className + "' not found.", e);
 			}
-			return attributes;
-		}
-
-		/**
-		 * @param mapName
-		 *            of map
-		 */
-		private void createMap(final String mapName, final String defaultValue) {
-			map = new HashMap<String, String>();
-			if (defaultValue != null) {
-				map.put(SimpleMultiMap.DEFAULT_MAP_KEY, defaultValue);
-			}
-			metamorph.putMap(mapName, map);
-
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("new map: " + mapName);
-			}
-		}
-
-		/**
-		 * @param occurence
-		 * @param defaultName
-		 */
-		private void registerDataSource(final String source, final String name, final String value, final String mode,
-				final String occurence) {
-
-			data = new Data(source);
-
-			if (occurence != null) {
-				data.setOccurence(Integer.parseInt(occurence));
-			}
-
-			if (emitGroupName == null) {
-				data.setName(name);
+			if (Function.class.isAssignableFrom(clazz)) {
+				functions.registerClass(getAttr(childNode, ATTRITBUTE.NAME), (Class<Function>) clazz);
 			} else {
-				data.setName(emitGroupName);
-			}
-
-			if (emitGroupValue == null) {
-				data.setValue(value);
-			} else {
-				data.setValue(emitGroupValue);
-			}
-
-			if (collect == null) {
-				data.setNamedValueReceiver(metamorph);
-			} else {
-				collect.addNamedValueSource(data);
-			}
-			
-			final Data.Mode dataMode = Data.Mode.valueOf(mode.toUpperCase(Locale.US));
-			if(dataMode==null){
-				data.setMode(Mode.VALUE);
-			}else{
-				data.setMode(dataMode);
-			}
-
-			if(dataMode==Mode.COUNT){
-				metamorph.addEntityEndListener(data, Metamorph.RECORD_KEYWORD);
-			}
-			
-			metamorph.registerData(data);
-
-			if (LOG.isDebugEnabled()) {
-				String receiver = "";
-				if (data.getDataReceiver() instanceof Collect) {
-					final Collect collect = (Collect) data.getDataReceiver();
-					receiver = "-> " + collect.getClass().getSimpleName() + " " + collect.getName();
-				}
-				LOG.debug(source + " -> (" + data.getName() + ", " + data.getValue() + ") " + receiver);
+				throw new MetamorphDefinitionException(className + " does not implement interface 'Function'");
 			}
 		}
+	}
 
-		@Override
-		public void endPrefixMapping(final String prefix) throws SAXException {
-			// do nothing
-		}
-
-		@Override
-		public void startDocument() throws SAXException {/* do nothing */
-		}
-
-		@Override
-		public void endDocument() throws SAXException {/* do nothing */
-		}
-
-		@Override
-		public void startPrefixMapping(final String prefix, final String uri) throws SAXException {
-			// do nothing
-		}
-
-		@Override
-		public void setDocumentLocator(final Locator locator) {
-			// do nothing
-		}
-
-		@Override
-		public void skippedEntity(final String name) throws SAXException {
-			// do nothing
-		}
-
-		@Override
-		public void characters(final char[] cha, final int start, final int length) throws SAXException {
-			// do nothing
-		}
-
-		@Override
-		public void ignorableWhitespace(final char[] cha, final int start, final int length) throws SAXException {
-			// do nothing
-		}
-
-		@Override
-		public void processingInstruction(final String target, final String data) throws SAXException {
-			// do nothing
+	private static void handleMeta(final Node node, final Metamorph metamorph) {
+		for (Node childNode = node.getFirstChild(); childNode != null; childNode = childNode.getNextSibling()) {
+			metamorph.putValue(Metamorph.METADATA, childNode.getLocalName(), childNode.getTextContent());
 		}
 	}
 }

@@ -51,7 +51,7 @@ public final class MultimapMapsUtil{
 			line = bufferedReader.readLine();
 		}
 		bufferedReader.close();
-		LOG.info(file.getName() + " loaded into map.");
+		LOG.debug(file.getName() + " loaded into map.");
 	}
 
 	private static void addRecord(final String line, final SimpleMultiMap multiMap) {

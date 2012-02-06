@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.culturegraph.metamorph.core.exceptions.IllegalMorphStateException;
+import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.culturegraph.metamorph.multimap.MultiMap;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
+import org.culturegraph.metamorph.stream.StreamPipe;
 import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.culturegraph.metamorph.stream.StreamSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamReceiver, StreamSender, NamedValueReceiver, SimpleMultiMap {
+public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMultiMap{
 
 	public static final String ELSE_KEYWORD = "_else";
 	public static final String RECORD_KEYWORD = "record";
@@ -32,6 +34,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 	private static final char DEFAULT_ENTITY_MARKER = '.';
+	private static final char NEWLINE = '\n';
 	
 	
 
@@ -47,6 +50,8 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 
 	private StreamReceiver outputStreamReceiver;
 	private MetamorphErrorHandler errorHandler = new DefaultErrorHandler();
+	
+	//private final RootSource rootSource = new RootSource();
 
 	private int recordCount;
 	private int entityCount;
@@ -66,9 +71,9 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 	}
 
 	protected void registerData(final Data data) {
-		final String path = data.getSource();
-		assert data != null && path != null;
 
+		final String path = data.getSource();
+		
 		if (ELSE_KEYWORD.equals(path)) {
 			elseSource.add(data);
 		} else {
@@ -207,7 +212,8 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		final int entityCount = entityCountStack.getLast().intValue();
 		for (Data data : dataList) {
 			try {
-				data.receive(key, value, recordCount, entityCount);
+				//data.receive(key, value, rootSource, recordCount, entityCount);
+				data.receive(key, value, null, recordCount, entityCount);
 			} catch (MetamorphException e) {
 				errorHandler.error(e);
 			}
@@ -237,7 +243,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 
 
 	@Override
-	public void receive(final String name, final String value, final int recordCount, final int entityCount) {
+	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount, final int entityCount) {
 		if (name == null || value == null) {
 			LOG.warn("Empty data received. This is not suposed to happen. Please file a bugreport");
 		} else {
@@ -257,7 +263,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		entityMap.put(from, toParam);
 	}
 
-	protected void addEntityEndListener(final EntityEndListener entityEndListener, final String entityName) {
+	public void addEntityEndListener(final EntityEndListener entityEndListener, final String entityName) {
 		assert entityEndListener != null && entityName != null;
 
 		List<EntityEndListener> matchingListeners = entityEndListeners.get(entityName);
@@ -295,9 +301,18 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("Ddata: " + multiMap + "\n");
-		builder.append("Used data sources: " + dataSources.keySet() + "\n");
-		builder.append("Listened endEntity() events: " +  entityEndListeners.keySet() + "\n");
+		builder.append("Data: " + multiMap + NEWLINE);
+		builder.append("Used data sources: " + dataSources.keySet() + NEWLINE);
+		builder.append("Listened endEntity() events: " +  entityEndListeners.keySet() + NEWLINE);
 		return builder.toString();
 	}
+	
+//	private static final class RootSource implements NamedValueSource{
+//		@Override
+//		public <R extends NamedValueReceiver> R setNamedValueReceiver(final R dataReceiver) {
+//			throw new UnsupportedOperationException();
+//		}
+//	}
+
+
 }

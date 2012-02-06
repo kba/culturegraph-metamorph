@@ -35,14 +35,14 @@ public final class WellFormednessChecker implements StreamReceiver {
 	
 	public void endStream() {
 		if (nestingLevel > 0) {
-			throw new IllegalStateException(IN_RECORD);
+			throw new WellformednessException(IN_RECORD);
 		}
 	}
 	
 	@Override
 	public void startRecord(final String identifier) {
 		if (nestingLevel > 0) {
-			throw new IllegalStateException(IN_RECORD);
+			throw new WellformednessException(IN_RECORD);
 		}
 		nestingLevel += 1;
 	}
@@ -50,9 +50,9 @@ public final class WellFormednessChecker implements StreamReceiver {
 	@Override
 	public void endRecord() {
 		if (nestingLevel < 1) { 
-			throw new IllegalStateException(NOT_IN_RECORD);
+			throw new WellformednessException(NOT_IN_RECORD);
 		} else if (nestingLevel > 1) {
-			throw new IllegalStateException(IN_ENTITY);			
+			throw new WellformednessException(IN_ENTITY);			
 		}
 		nestingLevel -= 1;
 	}
@@ -60,10 +60,10 @@ public final class WellFormednessChecker implements StreamReceiver {
 	@Override
 	public void startEntity(final String name) {
 		if (name == null) {
-			throw new IllegalArgumentException(NAME_MUST_NOT_BE_NULL);
+			throw new WellformednessException(NAME_MUST_NOT_BE_NULL);
 		}
 		if (nestingLevel < 1) {
-			throw new IllegalStateException(NOT_IN_RECORD);
+			throw new WellformednessException(NOT_IN_RECORD);
 		}
 		nestingLevel += 1;
 	}
@@ -71,7 +71,7 @@ public final class WellFormednessChecker implements StreamReceiver {
 	@Override
 	public void endEntity() {
 		if (nestingLevel < 2) {
-			throw new IllegalStateException(NOT_IN_ENTITY);
+			throw new WellformednessException(NOT_IN_ENTITY);
 		}
 		nestingLevel -= 1;
 	}
@@ -79,10 +79,10 @@ public final class WellFormednessChecker implements StreamReceiver {
 	@Override
 	public void literal(final String name, final String value) {
 		if (name == null) {
-			throw new IllegalArgumentException(NAME_MUST_NOT_BE_NULL);
+			throw new WellformednessException(NAME_MUST_NOT_BE_NULL);
 		}
 		if (nestingLevel < 1) {
-			throw new IllegalStateException(NOT_IN_RECORD);
+			throw new WellformednessException(NOT_IN_RECORD);
 		}
 	}
 

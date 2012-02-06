@@ -7,7 +7,7 @@ package org.culturegraph.metamorph.test;
  * @author Christoph Böhme <c.boehme@dnb.de>
  *
  */
-public class TestConfigurationException extends RuntimeException {
+public final class TestConfigurationException extends RuntimeException {
 
 	private static final long serialVersionUID = -4980848442374614262L;
 	

@@ -163,7 +163,7 @@ public final class EventStreamValidator implements StreamReceiver {
 	
 	public void endStream() {
 		if (validationFailed) {
-			throw new IllegalStateException(VALIDATION_FAILED);
+			throw new ValidationException(VALIDATION_FAILED);
 		}
 
 		wellFormednessChecker.endStream();
@@ -177,14 +177,14 @@ public final class EventStreamValidator implements StreamReceiver {
 		} else {
 			validationFailed = true;
 			logEventStream();
-			throw new IllegalStateException(UNCONSUMED_RECORDS_FOUND);
+			throw new ValidationException(UNCONSUMED_RECORDS_FOUND);
 		}
 	}
 	
 	@Override
 	public void startRecord(final String identifier) {
 		if (validationFailed) {
-			throw new IllegalStateException(VALIDATION_FAILED);
+			throw new ValidationException(VALIDATION_FAILED);
 		}
 
 		wellFormednessChecker.startRecord(identifier);
@@ -194,14 +194,14 @@ public final class EventStreamValidator implements StreamReceiver {
 		if (!openGroups(Event.Type.START_RECORD, identifier, strictRecordOrder, false)) {
 			validationFailed = true;
 			logEventStream();
-			throw new IllegalStateException(NO_RECORD_FOUND + identifier);
+			throw new ValidationException(NO_RECORD_FOUND + identifier);
 		}
 	}
 	
 	@Override
 	public void endRecord() {
 		if (validationFailed) {
-			throw new IllegalStateException(VALIDATION_FAILED);
+			throw new ValidationException(VALIDATION_FAILED);
 		}
 
 		wellFormednessChecker.endRecord();
@@ -209,7 +209,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		if (!closeGroups()) {
 			validationFailed = true;
 			logEventStream();
-			throw new IllegalStateException(NO_RECORD_FOUND + "No record matched the sequence of stream events");
+			throw new ValidationException(NO_RECORD_FOUND + "No record matched the sequence of stream events");
 		}
 		
 	}
@@ -217,7 +217,7 @@ public final class EventStreamValidator implements StreamReceiver {
 	@Override
 	public void startEntity(final String name) {
 		if (validationFailed) {
-			throw new IllegalStateException(VALIDATION_FAILED);
+			throw new ValidationException(VALIDATION_FAILED);
 		}
 
 		wellFormednessChecker.startEntity(name);
@@ -225,14 +225,14 @@ public final class EventStreamValidator implements StreamReceiver {
 		if (!openGroups(Event.Type.START_ENTITY, name, strictKeyOrder, strictValueOrder)) {
 			validationFailed = true;
 			logEventStream();
-			throw new IllegalStateException(NO_ENTITY_FOUND + name);
+			throw new ValidationException(NO_ENTITY_FOUND + name);
 		}
 	}
 	
 	@Override
 	public void endEntity() {
 		if (validationFailed) {
-			throw new IllegalStateException(VALIDATION_FAILED);
+			throw new ValidationException(VALIDATION_FAILED);
 		}
 
 		wellFormednessChecker.endEntity();
@@ -240,14 +240,14 @@ public final class EventStreamValidator implements StreamReceiver {
 		if (!closeGroups()) {
 			validationFailed = true;
 			logEventStream();
-			throw new IllegalStateException(NO_ENTITY_FOUND + "No entity matched the sequence of stream events");
+			throw new ValidationException(NO_ENTITY_FOUND + "No entity matched the sequence of stream events");
 		}
 	}
 	
 	@Override
 	public void literal(final String name, final String value) {
 		if (validationFailed) {
-			throw new IllegalStateException(VALIDATION_FAILED);
+			throw new ValidationException(VALIDATION_FAILED);
 		}
 		
 		wellFormednessChecker.literal(name, value);
@@ -266,7 +266,7 @@ public final class EventStreamValidator implements StreamReceiver {
 		if (stackFrame.isEmpty()) {
 			validationFailed = true;
 			logEventStream();
-			throw new IllegalStateException(NO_LITERAL_FOUND + name + "=" + value);
+			throw new ValidationException(NO_LITERAL_FOUND + name + "=" + value);
 		}
 	}
 	

@@ -2,6 +2,12 @@ package org.culturegraph.metamorph.util;
 
 import java.util.Map;
 
+/**
+ * Basic formating utils
+ * 
+ * @author Markus Michael Geipel
+ *
+ */
 public final class StringUtil {
 
 	private StringUtil() {

@@ -21,8 +21,9 @@ import org.w3c.dom.NodeList;
  */
 public final class XMLUtil {
 	
-	private static final String UNEXPECTED_TRANSFORMATION_ERROR =
-			"This should not have happened";
+	private static final String APPLICATION_XML_MIME_TYPE = "application/xml";
+	private static final String TEXT_XML_MIME_TYPE = "text/xml";
+	private static final String XML_BASE_MIME_TYPE = "+xml";
 	
 	private XMLUtil() {
 		// No instances allowed
@@ -38,7 +39,7 @@ public final class XMLUtil {
 		try {
 			transformer = TransformerFactory.newInstance().newTransformer();
 		} catch (TransformerException e) {
-			throw new RuntimeException(UNEXPECTED_TRANSFORMATION_ERROR, e);
+			throw new ShouldNeverHappenException(e);
 		}
 		
 		if (omitXMLDecl) {
@@ -50,7 +51,7 @@ public final class XMLUtil {
 		try {
 			transformer.transform(new DOMSource(node), new StreamResult(writer));
 		} catch (TransformerException e) {
-			throw new RuntimeException(UNEXPECTED_TRANSFORMATION_ERROR, e);
+			throw new ShouldNeverHappenException(e);
 		}
 		
 		return writer.toString();
@@ -64,5 +65,14 @@ public final class XMLUtil {
 		}
 		
 		return builder.toString();
+	}
+	
+	public static boolean isXmlMimeType(final String mimeType) {
+		if (mimeType == null) {
+			return false;
+		}
+		return APPLICATION_XML_MIME_TYPE.equals(mimeType) || 
+				TEXT_XML_MIME_TYPE.equals(mimeType) || 
+				mimeType.endsWith(XML_BASE_MIME_TYPE);
 	}
 }

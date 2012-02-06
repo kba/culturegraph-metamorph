@@ -18,23 +18,23 @@ public final class Tee implements StreamReceiver, StreamSender {
 	
 	@Override
 	public <R extends StreamReceiver> R setReceiver(final R streamReceiver) {
-		if(!receivers.contains(streamReceiver)){ // inefficient for large lists. Maybe use a HashMap...
-			addStreamReceiver(streamReceiver);
+		if(!receivers.contains(streamReceiver)){ // inefficient for large lists. Maybe use a HashSet...
+			addReceiver(streamReceiver);
 		}
 		return streamReceiver;
 	}
 	
 	
-	public void setStreamReceivers(final StreamReceiver receiver1, final StreamReceiver receiver2) {
+	public void setReceivers(final StreamReceiver receiver1, final StreamReceiver receiver2) {
 		setReceiver(receiver1);
 		setReceiver(receiver2);
 	}
 	
-	public void addStreamReceiver(final StreamReceiver receiver){
+	public void addReceiver(final StreamReceiver receiver){
 		receivers.add(receiver);
 	}
 	
-	public void removeStreamReceiver(final StreamReceiver receiver){
+	public void removeReceiver(final StreamReceiver receiver){
 		receivers.remove(receiver);
 	}
 
@@ -46,7 +46,6 @@ public final class Tee implements StreamReceiver, StreamSender {
 		for (StreamReceiver receiver : receivers) {
 			receiver.startRecord(identifier);
 		}
-
 	}
 
 	/* (non-Javadoc)
@@ -88,7 +87,4 @@ public final class Tee implements StreamReceiver, StreamSender {
 			receiver.literal(name, value);
 		}
 	}
-
-
-
 }

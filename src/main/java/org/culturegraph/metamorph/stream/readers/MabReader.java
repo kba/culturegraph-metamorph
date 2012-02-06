@@ -9,7 +9,6 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
  * {@link StreamReceiver}.
  * 
  * @author "Markus Michael Geipel"
- * @status Productive
  * @see StreamReceiver
  */
 public final class MabReader extends AbstractReader {

@@ -1,9 +1,16 @@
 package org.culturegraph.metamorph.core;
 
+import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+/**
+ * Handles parse exceptions by repackaging them as {@link MetamorphDefinitionException}s.
+ * 
+ * @author Markus Michael Geipel
+ *
+ */
 class MetamorphDefinitionParserErrorHandler implements ErrorHandler {
 	private static final String PARSE_ERROR = "Error parsing metamorph definition: ";
 	

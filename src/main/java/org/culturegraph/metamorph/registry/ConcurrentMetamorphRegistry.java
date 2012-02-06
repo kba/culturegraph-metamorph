@@ -18,8 +18,6 @@ public final class ConcurrentMetamorphRegistry implements ReadOnlyRegistry<Metam
 	
 	private final Map<String, ThreadLocal<Metamorph>> threadLocalMorphMap = new HashMap<String, ThreadLocal<Metamorph>>();
 
-	
-
 	public ConcurrentMetamorphRegistry(final Map<String, String> morphMap) {
 		for (final Entry<String, String> entry : morphMap.entrySet()) {
 			final ThreadLocal<Metamorph> threadLocal = new ThreadLocal<Metamorph>() {
