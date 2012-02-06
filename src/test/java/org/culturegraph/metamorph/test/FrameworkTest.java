@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(TestSuite.class)
 //@TestDefinitions("test/metamorph-test-1.xml")
-public final class TransformationsTest { 
+public final class FrameworkTest { 
 	// This class serves only as a bonding
 	// point for metamorph tests
 }
