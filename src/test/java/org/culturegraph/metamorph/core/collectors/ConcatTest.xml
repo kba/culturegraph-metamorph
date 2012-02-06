@@ -17,7 +17,7 @@
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="2">
+			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:concat delimiter=", " name="concat" prefix="{"
 						postfix="}">

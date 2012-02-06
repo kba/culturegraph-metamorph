@@ -65,8 +65,8 @@ public final class MetamorphBuilder {
 	//private static final Logger LOG = LoggerFactory.getLogger(MetamorphBuilder.class);
 	private static final String SCHEMA_FILE = "schema/metamorph.xsd";
 	private static final ErrorHandler ERROR_HANDLER = new MetamorphDefinitionParserErrorHandler();
-	private static final int LOWEST_COMPATIBLE_VERSION = 2;
-	private static final int CURRENT_VERSION = 2;
+	private static final int LOWEST_COMPATIBLE_VERSION = 1;
+	private static final int CURRENT_VERSION = 1;
 	private static final String DATA = "data";
 	private static final String POSTPROCESS = "postprocess";
 	private static final String FLUSH_WITH = "flushWith";
@@ -350,12 +350,4 @@ public final class MetamorphBuilder {
 			metamorph.putValue(Metamorph.METADATA, childNode.getLocalName(), childNode.getTextContent());
 		}
 	}
-
-//	public static void main(final String[] args) throws IOException {
-//		final Reader reader = new PicaReader();
-//		final Metamorph metamorph = reader.setReceiver(MetamorphBuilder2.build("pnd2.pica"));
-//		LOG.info(metamorph.toString());
-//		metamorph.setReceiver(new DefaultWriter(new BufferedWriter(new OutputStreamWriter(System.out, "UTF8"))));
-//		reader.read(new FileReader("src/test/resources/PND_10entries.pica"));
-//	}
 }

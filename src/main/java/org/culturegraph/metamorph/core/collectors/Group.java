@@ -2,6 +2,7 @@ package org.culturegraph.metamorph.core.collectors;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
+import org.culturegraph.metamorph.util.StringUtil;
 
 /**
  * Implementation of the <code>&lt;group&gt;</code> tag.
@@ -15,17 +16,9 @@ public final class Group extends AbstractCollect{
 		super(metamorph);
 	}
 	
-	private static String fallback(final String value, final String fallbackValue) {
-		if (value == null) {
-			return fallbackValue;
-		}
-		return value;
-	}
-
-
 	@Override
 	protected void receive(final String recName, final String recValue, final NamedValueSource source) {
-		getNamedValueReceiver().receive(fallback(getName(), recName), fallback(getValue(), recValue), this, getRecordCount(), getEntityCount());
+		getNamedValueReceiver().receive(StringUtil.fallback(getName(), recName), StringUtil.fallback(getValue(), recValue), this, getRecordCount(), getEntityCount());
 	}
 
 	@Override

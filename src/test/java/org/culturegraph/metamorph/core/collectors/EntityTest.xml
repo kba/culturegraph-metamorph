@@ -20,7 +20,7 @@
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="2">
+			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:entity name="entity">
 						<mm:data source="data1" name="l1" />

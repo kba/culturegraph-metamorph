@@ -51,7 +51,7 @@
     <module name="IllegalCatch"/>
     <module name="IllegalThrows"/>
     <module name="IllegalToken">
-      <property name="tokens" value="POST_INC,POST_DEC,LITERAL_SWITCH"/>
+      <property name="tokens" value="POST_INC,POST_DEC"/>
     </module>
     <module name="IllegalTokenText"/>
     <module name="IllegalType">

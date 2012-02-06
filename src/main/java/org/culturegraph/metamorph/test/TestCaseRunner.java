@@ -65,7 +65,7 @@ final class TestCaseRunner extends ParentRunner<TestCase> {
 			} catch (ValidationException e) {
 				notifier.fireTestFailure(new Failure(describeChild(child), 
 						new AssertionError(e)));
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				notifier.fireTestFailure(new Failure(describeChild(child), e));
 			} finally {
 				notifier.fireTestFinished(describeChild(child));

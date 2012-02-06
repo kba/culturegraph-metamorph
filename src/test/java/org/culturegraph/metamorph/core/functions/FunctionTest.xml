@@ -18,7 +18,7 @@
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="2">
+			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:data source="data">
 						<mm:trim />
@@ -56,7 +56,7 @@
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="2" xmlns:my="http://www.culturegraph.org/my">
+			<mm:metamorph version="1" xmlns:my="http://www.culturegraph.org/my">
 				<mm:functions>
 					<mm:def name="hula"
 						class="org.culturegraph.metamorph.core.functions.Compose" />
@@ -95,7 +95,7 @@
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="2">
+			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:data source="1">
 						<mm:lookup>
@@ -139,7 +139,7 @@
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="2">
+			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:data source="1">
 						<mm:lookup in="map1" />

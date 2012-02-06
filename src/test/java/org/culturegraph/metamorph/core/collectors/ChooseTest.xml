@@ -23,7 +23,7 @@
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="2">
+			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:choose>
 						<mm:data source="data1" />
@@ -72,7 +72,7 @@
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="2">
+			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:choose flushWith="entity">
 						<mm:data source="entity.data1" />

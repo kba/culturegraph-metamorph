@@ -13,6 +13,9 @@ public final class EventStreamWriter implements StreamReceiver {
 
 
 	public static final class Event {
+		/**
+		 * Event types
+		 */
 		public enum Type {
 			START_RECORD, END_RECORD, START_ENTITY, END_ENTITY, LITERAL
 		}

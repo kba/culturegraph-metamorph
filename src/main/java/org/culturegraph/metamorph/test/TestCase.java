@@ -9,11 +9,12 @@ import java.io.StringReader;
 
 import org.culturegraph.metamorph.core.MetamorphBuilder;
 import org.culturegraph.metamorph.stream.StreamPipe;
+import org.culturegraph.metamorph.stream.readers.AbstractReaderFactory;
 import org.culturegraph.metamorph.stream.readers.CGXmlReader;
 import org.culturegraph.metamorph.stream.readers.Reader;
+import org.culturegraph.metamorph.stream.readers.ReaderFactory;
 import org.culturegraph.metamorph.stream.receivers.EventStreamValidator;
 import org.culturegraph.metamorph.stream.receivers.EventStreamWriter;
-import org.culturegraph.metamorph.util.MimeTypeUtil;
 import org.culturegraph.metamorph.util.ResourceUtil;
 import org.culturegraph.metamorph.util.XMLUtil;
 import org.w3c.dom.Element;
@@ -38,6 +39,8 @@ public final class TestCase {
 	private static final String STRICT_RECORD_ORDER_ATTR = "strict-record-order";
 	private static final String STRICT_KEY_ORDER_ATTR = "strict-key-order";
 	private static final String STRICT_VALUE_ORDER_ATTR = "strict-value-order";
+	
+	private static final ReaderFactory READER_FACTORY = AbstractReaderFactory.newInstance();
 
 	private final Element config;
 	
@@ -92,7 +95,7 @@ public final class TestCase {
 	private Reader getReader() {		
 		final Element input = (Element) config.getElementsByTagName(INPUT_TAG).item(0);
 		final String mimeType = input.getAttribute(TYPE_ATTR);
-		return MimeTypeUtil.getReaderForMimeType(mimeType);
+		return READER_FACTORY.newReader(mimeType);
 	}
 	
 	private StreamPipe getTransformation() {
@@ -140,7 +143,7 @@ public final class TestCase {
 	private java.io.Reader getDataEmbedded(final Element input) {
 		final String inputType = input.getAttribute(TYPE_ATTR);
 		if (input.hasChildNodes()) {
-			if (MimeTypeUtil.isXmlMimeType(inputType)) {
+			if (XMLUtil.isXmlMimeType(inputType)) {
 				return new StringReader(XMLUtil.nodeListToString(input.getChildNodes()));
 			}
 			return new StringReader(input.getTextContent());
@@ -148,5 +151,7 @@ public final class TestCase {
 			
 		throw new TestConfigurationException(NO_DATA_FOUND);
 	}
+	
+	
 	
 }

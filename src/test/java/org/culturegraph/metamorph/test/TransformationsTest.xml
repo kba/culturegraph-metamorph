@@ -6,7 +6,7 @@
 		<input type="application/x-cgentity">id-1&#x001e;-data&#x001f;Hallo Welt!&#x001e;</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="2">
+			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:data name="output" source="data" />
 				</mm:rules>
@@ -29,7 +29,7 @@
 
 		<transformation type="text/x-metamorph+xml">
 			<metamorph xmlns="http://www.culturegraph.org/metamorph"
-				version="2">
+				version="1">
 				<rules>
 					<data name="output" source="data" />
 				</rules>

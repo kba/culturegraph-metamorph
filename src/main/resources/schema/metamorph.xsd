@@ -20,7 +20,7 @@
 				</simpleType>
 			</attribute>
 
-			<attribute name="version" use="required" fixed="2">
+			<attribute name="version" use="required" fixed="1">
 				<simpleType>
 					<restriction base="int">
 						<minInclusive value="1"></minInclusive>
