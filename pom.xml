@@ -105,7 +105,7 @@
 						<artifactId>maven-checkstyle-plugin</artifactId>
 						<version>2.6</version>
 						<configuration>
-							<configLocation>${basedir}/developers/checkstyle_rules.xml</configLocation>
+							<configLocation>${basedir}/quality_assurance/checkstyle_rules.xml</configLocation>
 						</configuration>
 						<executions>
 							<execution>
@@ -163,7 +163,7 @@
 							<linkXRef>true</linkXRef>
 
 							<rulesets>
-								<ruleset>${basedir}/developers/pmd_rules.xml</ruleset>
+								<ruleset>${basedir}/quality_assurance/pmd_rules.xml</ruleset>
 							</rulesets>
 						</configuration>
 
