@@ -8,9 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
- * 
  * @author Markus Michael Geipel
+ *
+ * @param <K> key
+ * @param <V> value
  */
 public class ListMap<K,V> implements Map<K, List<V>>, Record{
 
