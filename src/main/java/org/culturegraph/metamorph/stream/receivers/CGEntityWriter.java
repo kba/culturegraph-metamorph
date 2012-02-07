@@ -4,7 +4,15 @@ import java.io.PrintWriter;
 
 import org.culturegraph.metamorph.stream.CGEntity;
 import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.culturegraph.metamorph.stream.readers.CGEntityReader;
 
+/**
+ * Writes an event stream in CGEntity format
+ * 
+ * @author Markus Michael Geipel
+ * @see CGEntityReader
+ *
+ */
 public final class CGEntityWriter implements StreamReceiver {
 
 	private PrintWriter out;
