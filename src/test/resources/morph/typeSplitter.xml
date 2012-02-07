@@ -3,7 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1">
 
 	<rules>
-		<data source="003@.0" name="cg:sourceRecordId" />
 		<data source="002@.0">
 			<substring end="2"/>
 		</data>

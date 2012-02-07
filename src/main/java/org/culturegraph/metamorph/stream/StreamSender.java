@@ -12,8 +12,7 @@ package org.culturegraph.metamorph.stream;
 public interface StreamSender {
 
 	/**
-	 * Sets the {@link StreamReceiver} which is used to process events during
-	 * the parsing.
+	 * Sets the downstream {@link StreamReceiver}.
 	 * @param streamReceiver
 	 * @return the parameter streamReceiver
 	 */

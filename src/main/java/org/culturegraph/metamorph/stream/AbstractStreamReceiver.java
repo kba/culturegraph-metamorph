@@ -1,6 +1,5 @@
-package org.culturegraph.metamorph.stream.receivers;
+package org.culturegraph.metamorph.stream;
 
-import org.culturegraph.metamorph.stream.StreamReceiver;
 
 /**
  * Empty implementation of {@link StreamReceiver}.

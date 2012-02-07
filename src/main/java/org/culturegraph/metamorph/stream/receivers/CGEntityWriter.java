@@ -18,16 +18,15 @@ public final class CGEntityWriter implements StreamReceiver {
 	private PrintWriter out;
 
 	public CGEntityWriter(final java.io.Writer writer) {
-		out = new PrintWriter(writer);
-
+		setPrintWriter(writer);
 	}
 	
 	public CGEntityWriter() {
 		//nothing
 	}
 	
-	public void setPrintWriter(final PrintWriter out) {
-		this.out = out;
+	public void setPrintWriter(final java.io.Writer writer) {
+		this.out = new PrintWriter(writer);
 	}
 	
 	@Override

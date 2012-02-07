@@ -52,6 +52,9 @@ public final class SingleValueWriter implements StreamReceiver, Collector<String
 		this.setValue(value);
 	}
 
+	/**
+	 * @return collected value, if nothing collected return ""
+	 */
 	public String getValue() {
 		return value;
 	}

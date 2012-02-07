@@ -22,7 +22,7 @@ public final class TeeTest {
 	
 	
 	@Test
-	public void testReadWriteRead() throws IOException {
+	public void testCorrectTeeFunction() throws IOException {
 		final Reader picaReader = new PicaReader();
 		
 		final StringWriter refereceStringWriter = new StringWriter();
@@ -47,6 +47,5 @@ public final class TeeTest {
 		
 		Assert.assertEquals(refereceStringWriter.toString(), finalStringWriter1.toString());
 		Assert.assertEquals(refereceStringWriter.toString(), finalStringWriter2.toString());
-	
 	}
 }

@@ -1,5 +1,7 @@
 package org.culturegraph.metamorph.stream.receivers;
 
+import org.culturegraph.metamorph.stream.AbstractStreamReceiver;
+
 /**
  * Counts the number of records and fields read. Used mainly for test cases and
  * debugging.
@@ -47,5 +49,8 @@ public final class CountingWriter extends AbstractStreamReceiver {
 		return numLiterals;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "couted " + numRecords + " records, " + numEntities + " entities, " + numLiterals + " literals.";
+	}
 }
