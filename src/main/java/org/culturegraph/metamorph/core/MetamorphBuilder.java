@@ -1,20 +1,10 @@
 package org.culturegraph.metamorph.core;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.culturegraph.metamorph.core.collectors.Collect;
 import org.culturegraph.metamorph.core.collectors.CollectFactory;
@@ -27,9 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * Builds a {@link Metamorph} from an xml description
@@ -64,7 +52,6 @@ public final class MetamorphBuilder {
 
 	//private static final Logger LOG = LoggerFactory.getLogger(MetamorphBuilder.class);
 	private static final String SCHEMA_FILE = "schema/metamorph.xsd";
-	private static final ErrorHandler ERROR_HANDLER = new MetamorphDefinitionParserErrorHandler();
 	private static final int LOWEST_COMPATIBLE_VERSION = 1;
 	private static final int CURRENT_VERSION = 1;
 	private static final String DATA = "data";
@@ -96,62 +83,25 @@ public final class MetamorphBuilder {
 		}
 	}
 
-
-	public static Metamorph build(final Reader reader) {
-		if (reader == null) {
-			throw new IllegalArgumentException("'reader' must not be null");
-		}
-		try {
-			return new MetamorphBuilder().build(getDocumentBuilder().parse(new InputSource(reader)));
-		} catch (SAXException e) {
-			throw new MetamorphDefinitionException(e);
-		} catch (IOException e) {
-			throw new MetamorphDefinitionException(e);
-		}
-	}
-
 	public static Metamorph build(final InputStream inputStream) {
 		if (inputStream == null) {
 			throw new IllegalArgumentException("'inputStream' must not be null");
 		}
-		return build(new InputStreamReader(inputStream));
+		return new MetamorphBuilder().build(DomLoader.parse(SCHEMA_FILE, new InputSource(inputStream)));
 	}
-
-	private static DocumentBuilder getDocumentBuilder() {
-
-		try {
-			final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			final URL schemaUrl = Thread.currentThread().getContextClassLoader().getResource(SCHEMA_FILE);
-			if (schemaUrl == null) {
-				throw new MetamorphDefinitionException(SCHEMA_FILE + " not found!");
-			}
-
-			final Schema schema = schemaFactory.newSchema(schemaUrl);
-			final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-
-			builderFactory.setIgnoringElementContentWhitespace(true);
-			builderFactory.setIgnoringComments(true);
-			builderFactory.setNamespaceAware(true);
-			builderFactory.setCoalescing(true);
-			builderFactory.setSchema(schema);
-
-			final DocumentBuilder builder = builderFactory.newDocumentBuilder();
-			builder.setErrorHandler(ERROR_HANDLER);
-
-			return builder;
-
-		} catch (ParserConfigurationException e) {
-			throw new MetamorphDefinitionException(e);
-		} catch (SAXException e) {
-			throw new MetamorphDefinitionException(e);
+	
+	public static Metamorph build(final Reader reader) {
+		if (reader == null) {
+			throw new IllegalArgumentException("'reader' must not be null");
 		}
+		return new MetamorphBuilder().build(DomLoader.parse(SCHEMA_FILE, new InputSource(reader)));
 	}
 
-	private static MMTAG tagOf(final Node child) {
+	private MMTAG tagOf(final Node child) {
 		return MMTAG.valueOf(child.getLocalName().toUpperCase());
 	}
 
-	private static String getAttr(final Node node, final ATTRITBUTE attr) {
+	private String getAttr(final Node node, final ATTRITBUTE attr) {
 		final Node attribute = node.getAttributes().getNamedItem(attr.getString());
 
 		if (attribute != null) {
@@ -161,7 +111,7 @@ public final class MetamorphBuilder {
 		return null;
 	}
 
-	private static Map<String, String> attributesToMap(final Node node) {
+	private Map<String, String> attributesToMap(final Node node) {
 		final Map<String, String> attributes = new HashMap<String, String>();
 		final NamedNodeMap attrNode = node.getAttributes();
 
@@ -177,20 +127,18 @@ public final class MetamorphBuilder {
 		
 		final int version = Integer.parseInt(getAttr(root, ATTRITBUTE.VERSION));
 		checkVersionCompatibility(version);
-		
 	
 		functions = new FunctionFactory();
 		collects = new CollectFactory();	
 		metamorph = new Metamorph();	
 		
 		setEntityMarker(getAttr(root, ATTRITBUTE.ENTITY_MARKER));
-
 		
 		for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
 
 			switch (tagOf(child)) {
 			case META:
-				handleMeta(child, metamorph);
+				handleMeta(child);
 				break;
 			case FUNCTIONS:
 				handleFunctionDefinitions(child);
@@ -201,7 +149,7 @@ public final class MetamorphBuilder {
 				}
 				break;
 			case MAPS:
-				handleMaps(child, metamorph);
+				handleMaps(child);
 				break;
 			default:
 				illegalChild(child, root);
@@ -224,12 +172,12 @@ public final class MetamorphBuilder {
 		}
 	}
 
-	private static void illegalChild(final Node child, final Node root) {
+	private void illegalChild(final Node child, final Node root) {
 		throw new MetamorphDefinitionException("Schema mismatch: illegal tag " + child.getLocalName() + " in node "
 				+ root.getLocalName());
 	}
 
-	private static void handleMaps(final Node node, final Metamorph metamorph) {
+	private void handleMaps(final Node node) {
 		for (Node mapNode = node.getFirstChild(); mapNode != null; mapNode = mapNode.getNextSibling()) {
 			final String mapName = getAttr(mapNode, ATTRITBUTE.NAME);
 			final String mapDefault = getAttr(mapNode, ATTRITBUTE.DEFAULT);
@@ -346,7 +294,7 @@ public final class MetamorphBuilder {
 		}
 	}
 
-	private static void handleMeta(final Node node, final Metamorph metamorph) {
+	private void handleMeta(final Node node) {
 		for (Node childNode = node.getFirstChild(); childNode != null; childNode = childNode.getNextSibling()) {
 			metamorph.putValue(Metamorph.METADATA, childNode.getLocalName(), childNode.getTextContent());
 		}

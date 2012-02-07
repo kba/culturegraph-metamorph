@@ -22,7 +22,7 @@ public final class MultimapUtilTest {
 	@Test
 	public void testFormat() throws IOException {
 		final SimpleMultiMap multiMap = new MultiMap();
-		MultimapMapsUtil.load(multiMap, "src/test/resources/data/multimapTestData1.txt", "src/test/resources/data/multimapTestData2.txt");
+		MultimapMapsLoader.load(multiMap, "src/test/resources/data/multimapTestData1.txt", "src/test/resources/data/multimapTestData2.txt");
 		
 		Assert.assertEquals("A", multiMap.getValue(MAP1, "a"));
 		Assert.assertEquals("B", multiMap.getValue(MAP1, "b"));

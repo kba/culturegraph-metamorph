@@ -17,10 +17,10 @@ import org.slf4j.LoggerFactory;
  * @author Markus Michael Geipel
  * 
  */
-public final class MultimapMapsUtil{
-	private static final Logger LOG = LoggerFactory.getLogger(MultimapMapsUtil.class);
+public final class MultimapMapsLoader{
+	private static final Logger LOG = LoggerFactory.getLogger(MultimapMapsLoader.class);
 
-	private MultimapMapsUtil() {
+	private MultimapMapsLoader() {
 		// no instances
 	}
 	
