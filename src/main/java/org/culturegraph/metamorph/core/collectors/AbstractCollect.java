@@ -1,7 +1,6 @@
 package org.culturegraph.metamorph.core.collectors;
 
 import org.culturegraph.metamorph.core.AbstractNamedValuePipe;
-import org.culturegraph.metamorph.core.EntityEndListener;
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
 
@@ -11,7 +10,7 @@ import org.culturegraph.metamorph.core.NamedValueSource;
  * @author Markus Michael Geipel
 
  */
-public abstract class AbstractCollect extends AbstractNamedValuePipe implements  EntityEndListener, NamedValueAggregator {
+public abstract class AbstractCollect extends AbstractNamedValuePipe implements Collect {
 
 	//private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 
@@ -42,43 +41,51 @@ public abstract class AbstractCollect extends AbstractNamedValuePipe implements 
 		return oldEntity;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.culturegraph.metamorph.core.collectors.Collect#setFlushWith(java.lang.String)
+	 */
+	@Override
 	public final void setFlushWith(final String flushEntity) {
 		metamorph.addEntityEndListener(this, flushEntity);
 	}
 
-	/**
-	 * @param sameEntity
-	 *            the sameEntity to set
+	/* (non-Javadoc)
+	 * @see org.culturegraph.metamorph.core.collectors.Collect#setSameEntity(boolean)
 	 */
 	
+	@Override
 	public final void setSameEntity(final boolean sameEntity) {
 		this.sameEntity = sameEntity;
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see org.culturegraph.metamorph.core.collectors.Collect#setReset(boolean)
+	 */
+	@Override
 	public final void setReset(final boolean reset) {
 		this.resetAfterEmit = reset;
 	}
 
-	/**
-	 * @return the name
+	/* (non-Javadoc)
+	 * @see org.culturegraph.metamorph.core.collectors.Collect#getName()
 	 */
 	
+	@Override
 	public final String getName() {
 		return name;
 	}
 
-	/**
-	 * @param name the name to set
+	/* (non-Javadoc)
+	 * @see org.culturegraph.metamorph.core.collectors.Collect#setName(java.lang.String)
 	 */
 	
+	@Override
 	public final void setName(final String name) {
 		this.name = name;
 	}
 
-	/**
-	 * @return the value
-	 */
+
 	public final String getValue() {
 		return value;
 	}
@@ -130,6 +137,10 @@ public abstract class AbstractCollect extends AbstractNamedValuePipe implements 
 	}
 
 
+
+	/* (non-Javadoc)
+	 * @see org.culturegraph.metamorph.core.collectors.Collect#addNamedValueSource(org.culturegraph.metamorph.core.NamedValueSource)
+	 */
 	@Override
 	public void addNamedValueSource(final NamedValueSource namedValueSource) {
 		// nothing

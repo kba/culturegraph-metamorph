@@ -10,7 +10,7 @@ import org.culturegraph.metamorph.util.ObjectFactory;
  * @author Markus Michael Geipel
  *
  */
-public final class CollectFactory extends ObjectFactory<AbstractCollect> {
+public final class CollectFactory extends ObjectFactory<Collect> {
 	public CollectFactory() {
 		super();
 		registerClass("combine", Combine.class);

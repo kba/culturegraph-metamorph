@@ -1,5 +1,10 @@
 package org.culturegraph.metamorph.core;
 
+/**
+ * Base class for {@link NamedValuePipe}s
+ * @author Markus Michael Geipel
+ *
+ */
 public abstract class AbstractNamedValuePipe implements NamedValuePipe{
 	private NamedValueReceiver namedValueReceiver;
 

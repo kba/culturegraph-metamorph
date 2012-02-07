@@ -16,7 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.culturegraph.metamorph.core.collectors.AbstractCollect;
+import org.culturegraph.metamorph.core.collectors.Collect;
 import org.culturegraph.metamorph.core.collectors.CollectFactory;
 import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
 import org.culturegraph.metamorph.core.functions.Function;
@@ -71,15 +71,22 @@ public final class MetamorphBuilder {
 	private static final String POSTPROCESS = "postprocess";
 	private static final String FLUSH_WITH = "flushWith";
 
-	private final String morphDef;
+//	private final String morphDef;
+	private FunctionFactory functions;
+	private CollectFactory collects;
+	private Metamorph metamorph;
 
-	public MetamorphBuilder(final String morphDef) {
-		this.morphDef = morphDef;
+//	public MetamorphBuilder(final String morphDef) {
+//		this.morphDef = morphDef;
+//	}
+	
+	private MetamorphBuilder() {
+		// nothing to do
 	}
 
-	public Metamorph build() {
-		return build(morphDef);
-	}
+//	public Metamorph build() {
+//		return build(morphDef);
+//	}
 
 	public static Metamorph build(final String morphDef) {
 		try {
@@ -89,25 +96,13 @@ public final class MetamorphBuilder {
 		}
 	}
 
-//	public static Metamorph build(final File file) {
-//		if (file == null) {
-//			throw new IllegalArgumentException("'file' must not be null");
-//		}
-//		try {
-//			return build(getDocumentBuilder().parse(file));
-//		} catch (SAXException e) {
-//			throw new MetamorphDefinitionException(e);
-//		} catch (IOException e) {
-//			throw new MetamorphDefinitionException(e);
-//		}
-//	}
 
 	public static Metamorph build(final Reader reader) {
 		if (reader == null) {
 			throw new IllegalArgumentException("'reader' must not be null");
 		}
 		try {
-			return build(getDocumentBuilder().parse(new InputSource(reader)));
+			return new MetamorphBuilder().build(getDocumentBuilder().parse(new InputSource(reader)));
 		} catch (SAXException e) {
 			throw new MetamorphDefinitionException(e);
 		} catch (IOException e) {
@@ -177,24 +172,20 @@ public final class MetamorphBuilder {
 		return attributes;
 	}
 
-	private static Metamorph build(final Document doc) {
+	private Metamorph build(final Document doc) {
 		final Element root = doc.getDocumentElement();
-		final int version = Integer.parseInt(root.getAttribute(ATTRITBUTE.VERSION.getString()));
-		if (version < LOWEST_COMPATIBLE_VERSION || version > CURRENT_VERSION) {
-			throw new MetamorphDefinitionException("Version " + version
-					+ " of definition file not supported by metamorph version " + CURRENT_VERSION);
-		}
 		
-		final Metamorph metamorph = new Metamorph();		
-		final String entityMarker = root.getAttribute(ATTRITBUTE.ENTITY_MARKER.getString());
-		if(null!=entityMarker && !entityMarker.isEmpty()){
-			metamorph.setEntityMarker(entityMarker.charAt(0));
-		}
+		final int version = Integer.parseInt(getAttr(root, ATTRITBUTE.VERSION));
+		checkVersionCompatibility(version);
+		
+	
+		functions = new FunctionFactory();
+		collects = new CollectFactory();	
+		metamorph = new Metamorph();	
+		
+		setEntityMarker(getAttr(root, ATTRITBUTE.ENTITY_MARKER));
 
 		
-		final FunctionFactory functions = new FunctionFactory();
-		final CollectFactory collects = new CollectFactory();
-
 		for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
 
 			switch (tagOf(child)) {
@@ -202,11 +193,11 @@ public final class MetamorphBuilder {
 				handleMeta(child, metamorph);
 				break;
 			case FUNCTIONS:
-				handleFunctionDefinitions(child, functions);
+				handleFunctionDefinitions(child);
 				break;
 			case RULES:
 				for (Node ruleNode = child.getFirstChild(); ruleNode != null; ruleNode = ruleNode.getNextSibling()) {
-					handleRule(ruleNode, null, metamorph, functions, collects);
+					handleRule(ruleNode, null);
 				}
 				break;
 			case MAPS:
@@ -218,6 +209,19 @@ public final class MetamorphBuilder {
 		}
 
 		return metamorph;
+	}
+
+	private void setEntityMarker(final String entityMarker) {
+		if(null!=entityMarker && !entityMarker.isEmpty()){
+			metamorph.setEntityMarker(entityMarker.charAt(0));
+		}
+	}
+
+	private void checkVersionCompatibility(final int version) {
+		if (version < LOWEST_COMPATIBLE_VERSION || version > CURRENT_VERSION) {
+			throw new MetamorphDefinitionException("Version " + version
+					+ " of definition file not supported by metamorph version " + CURRENT_VERSION);
+		}
 	}
 
 	private static void illegalChild(final Node child, final Node root) {
@@ -240,34 +244,32 @@ public final class MetamorphBuilder {
 		}
 	}
 
-	private static void handleRule(final Node node, final AbstractCollect parent, final Metamorph metamorph,
-			final FunctionFactory functions, final CollectFactory collects) {
+	private void handleRule(final Node node, final Collect parent) {
 
 		final String nodeName = node.getLocalName();
 		if (collects.getAvailableClasses().contains(nodeName)) {
-			handleCollect(node, metamorph, parent, functions, collects);
+			handleCollect(node, parent);
 			
 		} else if (DATA.equals(nodeName)) {
-			handleData(node, parent, metamorph, functions);
+			handleData(node, parent);
 
 		} else {
 			illegalChild(node, node.getParentNode());
 		}
 	}
 
-	private static void handleCollect(final Node node, final Metamorph metamorph, final AbstractCollect parent, final FunctionFactory functions,
-			final CollectFactory collects) {
+	private void handleCollect(final Node node,  final Collect parent) {
 
 		final Map<String, String> attributes = attributesToMap(node);
 		final String flushWith = attributes.remove(FLUSH_WITH); // must be set after recursive calls to flush decendents before parent
-		final AbstractCollect collect = collects.newInstance(node.getLocalName(), attributes, metamorph);
+		final Collect collect = collects.newInstance(node.getLocalName(), attributes, metamorph);
 
 		NamedValuePipe lastFunction = collect;
 		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
 			if (POSTPROCESS.equals(child.getLocalName())) {
-				lastFunction = handlePostprocess(child, collect, metamorph, functions);
+				lastFunction = handlePostprocess(child, collect);
 			} else {
-				handleRule(child, collect, metamorph, functions, collects);
+				handleRule(child, collect);
 			}
 		}
 
@@ -283,7 +285,7 @@ public final class MetamorphBuilder {
 		}
 	}
 
-	private static void handleData(final Node dataNode, final AbstractCollect parent, final Metamorph metamorph, final FunctionFactory functions) {
+	private void handleData(final Node dataNode, final Collect parent) {
 
 		final String source = getAttr(dataNode, ATTRITBUTE.SOURCE);
 		final Data data = new Data(source);
@@ -293,7 +295,7 @@ public final class MetamorphBuilder {
 
 		metamorph.registerData(data);
 		
-		final NamedValuePipe lastFunction = handlePostprocess(dataNode, data, metamorph, functions);
+		final NamedValuePipe lastFunction = handlePostprocess(dataNode, data);
 		
 		if (parent == null) {
 			lastFunction.setNamedValueReceiver(metamorph);
@@ -305,8 +307,7 @@ public final class MetamorphBuilder {
 		
 	}
 
-	private static NamedValuePipe handlePostprocess(final Node postprocessNode, final NamedValuePipe processor,
-			final Metamorph metamorph, final FunctionFactory functions) {
+	private NamedValuePipe handlePostprocess(final Node postprocessNode, final NamedValuePipe processor) {
 
 		NamedValuePipe lastSource = processor;
 		for (Node functionNode = postprocessNode.getFirstChild(); functionNode != null; functionNode = functionNode
@@ -328,7 +329,7 @@ public final class MetamorphBuilder {
 	}
 
 	@SuppressWarnings("unchecked") // protected by 'if (Function.class.isAssignableFrom(clazz))'
-	private static void handleFunctionDefinitions(final Node node, final FunctionFactory functions) {
+	private void handleFunctionDefinitions(final Node node) {
 		for (Node childNode = node.getFirstChild(); childNode != null; childNode = childNode.getNextSibling()) {
 			final Class<?> clazz;
 			final String className = getAttr(childNode, ATTRITBUTE.CLASS);
