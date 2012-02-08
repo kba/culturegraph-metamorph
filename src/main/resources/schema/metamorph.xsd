@@ -256,6 +256,8 @@
 			<element ref="tns:split"/>
 			<element ref="tns:normalize-utf8" />
 			<element ref="tns:occurence"/>
+			<element ref="tns:constant"/>
+			<element ref="tns:count"/>
 			<any namespace="##other" processContents="lax"/>
 
 		</choice>
@@ -265,12 +267,13 @@
 		<complexType>
 			<attribute name="only" use="required">
 				<simpleType>
-					<restriction base="int">
-						<minInclusive value="0" />
+					<restriction base="string">
+						<whiteSpace value="collapse"></whiteSpace>
+						<pattern value="(lessThen |moreThen )?\d+"></pattern>
 					</restriction>
 				</simpleType>
 			</attribute>
-			<attribute name="format" type="string" use="optional" />
+<!-- 			<attribute name="format" type="string" use="optional" /> -->
 		</complexType>
 	</element>
 
@@ -351,10 +354,21 @@
 		<complexType>
 		</complexType>
 	</element>
+	
+	<element name="count">
+		<complexType>
+		</complexType>
+	</element>
 
 	<element name="equals">
 		<complexType>
 			<attribute name="string" type="string" use="required" />
+		</complexType>
+	</element>
+	
+		<element name="constant">
+		<complexType>
+			<attribute name="value" type="string" use="required" />
 		</complexType>
 	</element>
 

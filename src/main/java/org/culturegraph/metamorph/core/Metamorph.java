@@ -21,10 +21,10 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMultiMap {
+public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMultiMap, EntityEndIndicator {
 
 	public static final String ELSE_KEYWORD = "_else";
-	public static final String RECORD_KEYWORD = "record";
+	//public static final String RECORD_KEYWORD = "record";
 	public static final char FEEDBACK_CHAR = '@';
 	public static final String METADATA = "__meta";
 
@@ -239,6 +239,10 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	@Override
 	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount,
 			final int entityCount) {
+		if(null==name){
+			throw new IllegalArgumentException("encountered literal with name='null'. This indicates a bug in the functions.");
+		}
+		
 		if (name.length() != 0 && name.charAt(0) == FEEDBACK_CHAR) {
 			dispatch(name, value, null);
 		} else {
@@ -255,9 +259,8 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 		entityMap.put(from, toParam);
 	}
 
+	@Override
 	public void addEntityEndListener(final EntityEndListener entityEndListener, final String entityName) {
-		assert entityEndListener != null && entityName != null;
-
 		List<EntityEndListener> matchingListeners = entityEndListeners.get(entityName);
 		if (matchingListeners == null) {
 			matchingListeners = new LinkedList<EntityEndListener>();
@@ -290,23 +293,4 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	public String putValue(final String mapName, final String key, final String value) {
 		return multiMap.putValue(mapName, key, value);
 	}
-
-	// @Override
-	// public String toString() {
-	// final StringBuilder builder = new StringBuilder();
-	// builder.append("Data: " + multiMap + NEWLINE);
-	// builder.append("Used data sources: " + dataSources.keySet() + NEWLINE);
-	// builder.append("Listened endEntity() events: " +
-	// entityEndListeners.keySet() + NEWLINE);
-	// return builder.toString();
-	// }
-
-	// private static final class RootSource implements NamedValueSource{
-	// @Override
-	// public <R extends NamedValueReceiver> R setNamedValueReceiver(final R
-	// dataReceiver) {
-	// throw new UnsupportedOperationException();
-	// }
-	// }
-
 }

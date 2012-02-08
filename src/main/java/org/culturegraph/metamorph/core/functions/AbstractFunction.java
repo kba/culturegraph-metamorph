@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.culturegraph.metamorph.core.AbstractNamedValuePipe;
+import org.culturegraph.metamorph.core.EntityEndIndicator;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 
 /**
@@ -36,5 +37,10 @@ public abstract class AbstractFunction extends AbstractNamedValuePipe implements
 	@Override
 	public final void setMultiMap(final SimpleMultiMap multiMapProvider) {
 		this.multiMap = multiMapProvider;
+	}
+	
+	@Override
+	public void setEntityEndIndicator(final EntityEndIndicator indicator) {
+		// nothing by default		
 	}
 }

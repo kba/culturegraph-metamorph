@@ -10,6 +10,8 @@ public abstract class AbstractStatefulFunction extends AbstractFunction {
 
 	private int recordCount;
 	private int entityCount;
+	private NamedValueSource source;
+	private String lastName;
 	
 	
 	protected final int getRecordCount() {
@@ -18,6 +20,14 @@ public abstract class AbstractStatefulFunction extends AbstractFunction {
 
 	protected final int getEntityCount() {
 		return entityCount;
+	}
+	
+	protected final NamedValueSource getNamedValueSource(){
+		return source;
+	}
+	
+	protected final String getLastName() {
+		return lastName;
 	}
 	
 	@Override
@@ -30,12 +40,14 @@ public abstract class AbstractStatefulFunction extends AbstractFunction {
 			reset();
 		}
 		this.entityCount = entityCount;
-		
+		this.source = source;
+		this.lastName = name;
 		
 		final String processedValue = process(value);
 		if(processedValue==null){
 			return;
 		}
+
 		getNamedValueReceiver().receive(name, processedValue , source, recordCount, entityCount);
 	}
 	

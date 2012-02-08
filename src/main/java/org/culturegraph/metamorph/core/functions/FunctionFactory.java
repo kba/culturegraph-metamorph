@@ -32,6 +32,8 @@ public final class FunctionFactory extends ObjectFactory<Function>{
 		registerClass("urlencode", URLEncode.class);
 		registerClass("split", Split.class);
 		registerClass("occurence", Occurence.class);
+		registerClass("constant", Constant.class);
+		registerClass("count", Count.class);
 	}
 
 }

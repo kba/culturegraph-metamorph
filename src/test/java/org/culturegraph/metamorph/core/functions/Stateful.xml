@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph-test version="1.0"
+	xmlns="http://www.culturegraph.org/metamorph-test" xmlns:mm="http://www.culturegraph.org/metamorph"
+	xmlns:cgxml="http://www.culturegraph.org/cgxml">
+
+	<test-case name="occurence">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="data" value="1" />
+						<cgxml:literal name="data" value="2" />
+						<cgxml:literal name="data" value="3" />
+					</cgxml:record>
+					<cgxml:record id="2">
+						<cgxml:literal name="data" value="1" />
+						<cgxml:literal name="data" value="2" />
+						<cgxml:literal name="data" value="3" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="1">
+				<mm:rules>
+					<mm:data source="data" name="l2">
+						<mm:occurence only="lessThen 2" />
+					</mm:data>
+					<mm:data source="data" name="2">
+						<mm:occurence only="2" />
+					</mm:data>
+					<mm:data source="data" name="g2">
+						<mm:occurence only="moreThen 2" />
+					</mm:data>
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="l2" value="1" />
+						<cgxml:literal name="2" value="2" />
+						<cgxml:literal name="g2" value="3" />
+					</cgxml:record>
+					<cgxml:record id="2">
+						<cgxml:literal name="l2" value="1" />
+						<cgxml:literal name="2" value="2" />
+						<cgxml:literal name="g2" value="3" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
+
+	<test-case name="count">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="data" value="1" />
+						<cgxml:literal name="data" value="2" />
+						<cgxml:literal name="data" value="3" />
+					</cgxml:record>
+					<cgxml:record id="2">
+						<cgxml:literal name="data" value="1" />
+						<cgxml:literal name="data" value="2" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="1">
+				<mm:rules>
+					<mm:data source="data" name="count">
+						<mm:count />
+					</mm:data>
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="count" value="3" />
+					</cgxml:record>
+					<cgxml:record id="2">
+						<cgxml:literal name="count" value="2" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
+
+	<test-case name="count nested">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="data" value="1" />
+						<cgxml:literal name="data" value="2" />
+						<cgxml:literal name="data" value="3" />
+					</cgxml:record>
+					<cgxml:record id="2">
+						<cgxml:literal name="data" value="1" />
+						<cgxml:literal name="data" value="2" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="1">
+				<mm:rules>
+					<mm:combine name="count" value="${count}" flushWith="record">
+						<mm:data source="data" name="count">
+							<mm:count />
+						</mm:data>
+						<mm:data source="fantasy" />
+					</mm:combine>
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="count" value="3" />
+					</cgxml:record>
+					<cgxml:record id="2">
+						<cgxml:literal name="count" value="2" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
+
+</metamorph-test>

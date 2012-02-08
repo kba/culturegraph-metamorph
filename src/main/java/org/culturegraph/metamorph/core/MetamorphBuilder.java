@@ -262,6 +262,7 @@ public final class MetamorphBuilder {
 				.getNextSibling()) {
 			final Function function = functions.newInstance(functionNode.getLocalName(), attributesToMap(functionNode));
 			function.setMultiMap(metamorph);
+			function.setEntityEndIndicator(metamorph);
 
 			// add key value entries...
 			for (Node mapEntryNode = functionNode.getFirstChild(); mapEntryNode != null; mapEntryNode = mapEntryNode
