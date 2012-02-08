@@ -15,4 +15,8 @@ public abstract class AbstractStreamReceiver implements StreamReceiver {
 
 	@Override
 	public void endEntity(){/* do nothing */}
+	
+	@Override
+	public void startRecord(final String identifier) {/* do nothing */}
+
 }
