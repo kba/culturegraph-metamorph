@@ -6,6 +6,8 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.culturegraph.metamorph.core.collectors.Collect;
 import org.culturegraph.metamorph.core.collectors.CollectFactory;
 import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
@@ -30,7 +32,7 @@ public final class MetamorphBuilder {
 	 * XML tags
 	 */
 	public static enum MMTAG {
-		META, FUNCTIONS, RULES, MAPS, ENTITY, MAP, ENTRY,
+		META, FUNCTIONS, RULES, MAPS, ENTITY, MAP, ENTRY, TEXT
 	}
 
 	/**
@@ -50,7 +52,8 @@ public final class MetamorphBuilder {
 		}
 	}
 
-	//private static final Logger LOG = LoggerFactory.getLogger(MetamorphBuilder.class);
+	// private static final Logger LOG =
+	// LoggerFactory.getLogger(MetamorphBuilder.class);
 	private static final String SCHEMA_FILE = "schema/metamorph.xsd";
 	private static final int LOWEST_COMPATIBLE_VERSION = 1;
 	private static final int CURRENT_VERSION = 1;
@@ -58,27 +61,27 @@ public final class MetamorphBuilder {
 	private static final String POSTPROCESS = "postprocess";
 	private static final String FLUSH_WITH = "flushWith";
 
-//	private final String morphDef;
+	// private final String morphDef;
 	private FunctionFactory functions;
 	private CollectFactory collects;
 	private Metamorph metamorph;
 
-//	public MetamorphBuilder(final String morphDef) {
-//		this.morphDef = morphDef;
-//	}
-	
+	// public MetamorphBuilder(final String morphDef) {
+	// this.morphDef = morphDef;
+	// }
+
 	private MetamorphBuilder() {
 		// nothing to do
 	}
 
-//	public Metamorph build() {
-//		return build(morphDef);
-//	}
+	// public Metamorph build() {
+	// return build(morphDef);
+	// }
 
 	public static Metamorph build(final String morphDef) {
 		try {
 			return build(ResourceUtil.getStream(morphDef));
-		}catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e) {
 			throw new MetamorphDefinitionException(e);
 		}
 	}
@@ -89,7 +92,7 @@ public final class MetamorphBuilder {
 		}
 		return new MetamorphBuilder().build(DomLoader.parse(SCHEMA_FILE, new InputSource(inputStream)));
 	}
-	
+
 	public static Metamorph build(final Reader reader) {
 		if (reader == null) {
 			throw new IllegalArgumentException("'reader' must not be null");
@@ -98,6 +101,9 @@ public final class MetamorphBuilder {
 	}
 
 	private MMTAG tagOf(final Node child) {
+		if (child.getNodeType() == Node.TEXT_NODE) {
+			wrongXMLLib();
+		}
 		return MMTAG.valueOf(child.getLocalName().toUpperCase());
 	}
 
@@ -124,16 +130,16 @@ public final class MetamorphBuilder {
 
 	private Metamorph build(final Document doc) {
 		final Element root = doc.getDocumentElement();
-		
+
 		final int version = Integer.parseInt(getAttr(root, ATTRITBUTE.VERSION));
 		checkVersionCompatibility(version);
-	
+
 		functions = new FunctionFactory();
-		collects = new CollectFactory();	
-		metamorph = new Metamorph();	
-		
+		collects = new CollectFactory();
+		metamorph = new Metamorph();
+
 		setEntityMarker(getAttr(root, ATTRITBUTE.ENTITY_MARKER));
-		
+
 		for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
 
 			switch (tagOf(child)) {
@@ -160,7 +166,7 @@ public final class MetamorphBuilder {
 	}
 
 	private void setEntityMarker(final String entityMarker) {
-		if(null!=entityMarker && !entityMarker.isEmpty()){
+		if (null != entityMarker && !entityMarker.isEmpty()) {
 			metamorph.setEntityMarker(entityMarker.charAt(0));
 		}
 	}
@@ -173,8 +179,16 @@ public final class MetamorphBuilder {
 	}
 
 	private void illegalChild(final Node child, final Node root) {
+		if (child.getNodeType() == Node.TEXT_NODE) {
+			wrongXMLLib();
+		}
 		throw new MetamorphDefinitionException("Schema mismatch: illegal tag " + child.getLocalName() + " in node "
 				+ root.getLocalName());
+	}
+
+	private void wrongXMLLib() {
+		throw new IllegalStateException("Your XML library is handling 'setIgnoringElementContentWhitespace(true)' correctly. " +
+				"DocumentBuilderFactory implementation: " + DomLoader.getDocumentBuilderFactoryImplName());
 	}
 
 	private void handleMaps(final Node node) {
@@ -197,7 +211,7 @@ public final class MetamorphBuilder {
 		final String nodeName = node.getLocalName();
 		if (collects.getAvailableClasses().contains(nodeName)) {
 			handleCollect(node, parent);
-			
+
 		} else if (DATA.equals(nodeName)) {
 			handleData(node, parent);
 
@@ -206,10 +220,13 @@ public final class MetamorphBuilder {
 		}
 	}
 
-	private void handleCollect(final Node node,  final Collect parent) {
+	private void handleCollect(final Node node, final Collect parent) {
 
 		final Map<String, String> attributes = attributesToMap(node);
-		final String flushWith = attributes.remove(FLUSH_WITH); // must be set after recursive calls to flush decendents before parent
+
+		// must be set after recursive calls to flush decendents before parent
+		final String flushWith = attributes.remove(FLUSH_WITH);
+		
 		final Collect collect = collects.newInstance(node.getLocalName(), attributes, metamorph);
 
 		NamedValuePipe lastFunction = collect;
@@ -223,12 +240,12 @@ public final class MetamorphBuilder {
 
 		if (parent == null) {
 			lastFunction.setNamedValueReceiver(metamorph);
-		}else{
+		} else {
 			parent.addNamedValueSource(collect);
 			lastFunction.setNamedValueReceiver(parent);
 		}
-		
-		if(null!=flushWith){
+
+		if (null != flushWith) {
 			collect.setFlushWith(flushWith);
 		}
 	}
@@ -242,17 +259,16 @@ public final class MetamorphBuilder {
 		data.setValue(getAttr(dataNode, ATTRITBUTE.VALUE));
 
 		metamorph.registerData(data);
-		
+
 		final NamedValuePipe lastFunction = handlePostprocess(dataNode, data);
-		
+
 		if (parent == null) {
 			lastFunction.setNamedValueReceiver(metamorph);
 		} else {
 			lastFunction.setNamedValueReceiver(parent);
 			parent.addNamedValueSource(data);
 		}
-		
-		
+
 	}
 
 	private NamedValuePipe handlePostprocess(final Node postprocessNode, final NamedValuePipe processor) {
@@ -277,7 +293,8 @@ public final class MetamorphBuilder {
 		return lastSource;
 	}
 
-	@SuppressWarnings("unchecked") // protected by 'if (Function.class.isAssignableFrom(clazz))'
+	@SuppressWarnings("unchecked")
+	// protected by 'if (Function.class.isAssignableFrom(clazz))'
 	private void handleFunctionDefinitions(final Node node) {
 		for (Node childNode = node.getFirstChild(); childNode != null; childNode = childNode.getNextSibling()) {
 			final Class<?> clazz;

@@ -33,12 +33,19 @@ final class DomLoader {
 	
 	public static Document parse(final String schemaFile, final InputSource inputSource){
 		try {
-			return getDocumentBuilder(schemaFile).parse(inputSource);
+			final Document document = getDocumentBuilder(schemaFile).parse(inputSource);
+
+			document.normalizeDocument();
+			return document;
 		} catch (SAXException e) {
 			throw new MetamorphDefinitionException(e);
 		} catch (IOException e) {
 			throw new MetamorphDefinitionException(e);
 		}
+	}
+	
+	public static String getDocumentBuilderFactoryImplName(){
+		return DocumentBuilderFactory.newInstance().getClass().getName();
 	}
 	
 	private static DocumentBuilder getDocumentBuilder(final String schemaFile) {
@@ -53,11 +60,11 @@ final class DomLoader {
 			final Schema schema = schemaFactory.newSchema(schemaUrl);
 			final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 
+			builderFactory.setSchema(schema);
 			builderFactory.setIgnoringElementContentWhitespace(true);
 			builderFactory.setIgnoringComments(true);
 			builderFactory.setNamespaceAware(true);
 			builderFactory.setCoalescing(true);
-			builderFactory.setSchema(schema);
 
 			final DocumentBuilder builder = builderFactory.newDocumentBuilder();
 			builder.setErrorHandler(ERROR_HANDLER);
