@@ -14,8 +14,6 @@ import org.culturegraph.metamorph.multimap.MultiMap;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metamorph.stream.StreamPipe;
 import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Transforms a data stream send via the {@link StreamReceiver} interface. Use
@@ -23,35 +21,33 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMultiMap{
+public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMultiMap {
 
 	public static final String ELSE_KEYWORD = "_else";
 	public static final String RECORD_KEYWORD = "record";
 	public static final char FEEDBACK_CHAR = '@';
 	public static final String METADATA = "__meta";
-	
-	private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
+
+	//private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 	private static final char DEFAULT_ENTITY_MARKER = '.';
-	private static final char NEWLINE = '\n';
-	
-	
+	//private static final char NEWLINE = '\n';
 
 	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
 	private final List<Data> elseSource = new ArrayList<Data>();
 	private final Map<String, List<EntityEndListener>> entityEndListeners = new HashMap<String, List<EntityEndListener>>();
 	private final Map<String, String> entityMap = new HashMap<String, String>();
 	private final SimpleMultiMap multiMap = new MultiMap();
-	
+
 	private final Deque<String> entityStack = new LinkedList<String>();
 	private final StringBuilder entityPath = new StringBuilder();
 	private final Deque<Integer> entityCountStack = new LinkedList<Integer>();
 
 	private StreamReceiver outputStreamReceiver;
 	private MetamorphErrorHandler errorHandler = new DefaultErrorHandler();
-	
-	//private final RootSource rootSource = new RootSource();
+
+	// private final RootSource rootSource = new RootSource();
 
 	private int recordCount;
 	private int entityCount;
@@ -73,7 +69,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	protected void registerData(final Data data) {
 
 		final String path = data.getSource();
-		
+
 		if (ELSE_KEYWORD.equals(path)) {
 			elseSource.add(data);
 		} else {
@@ -97,7 +93,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 		entityCount = 0;
 		++recordCount;
 		recordCount %= Integer.MAX_VALUE;
-		
+
 		entityCountStack.add(Integer.valueOf(entityCount));
 
 		final String identifierFinal;
@@ -114,7 +110,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	public void endRecord() {
 
 		notifyEntityEndListeners(RECORD_KEYWORD);
-		
+
 		outputStreamReceiver.endRecord();
 		entityCountStack.removeLast();
 		if (!entityCountStack.isEmpty()) {
@@ -168,9 +164,10 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 
 	@Override
 	public void literal(final String name, final String value) {
-//		if (entityCountStack.isEmpty()) {
-//			throw new IllegalMorphStateException("Cannot receive literals outside of records");
-//		}
+		// if (entityCountStack.isEmpty()) {
+		// throw new
+		// IllegalMorphStateException("Cannot receive literals outside of records");
+		// }
 
 		final String path = entityPath.toString() + name;
 		dispatch(path, value, elseSource);
@@ -212,7 +209,6 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 		final int entityCount = entityCountStack.getLast().intValue();
 		for (Data data : dataList) {
 			try {
-				//data.receive(key, value, rootSource, recordCount, entityCount);
 				data.receive(key, value, null, recordCount, entityCount);
 			} catch (MetamorphException e) {
 				errorHandler.error(e);
@@ -225,7 +221,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	 *            the outputHandler to set
 	 */
 	@Override
-	public <R extends StreamReceiver> R  setReceiver(final R streamReceiver) {
+	public <R extends StreamReceiver> R setReceiver(final R streamReceiver) {
 		if (streamReceiver == null) {
 			throw new IllegalArgumentException("'streamReceiver' must not be null");
 		}
@@ -240,19 +236,15 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 		return outputStreamReceiver;
 	}
 
-
-
 	@Override
-	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount, final int entityCount) {
-		if (name == null || value == null) {
-			LOG.warn("Empty data received. This is not suposed to happen. Please file a bugreport");
+	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount,
+			final int entityCount) {
+		if (name.length() != 0 && name.charAt(0) == FEEDBACK_CHAR) {
+			dispatch(name, value, null);
 		} else {
-			if (name.length() != 0 && name.charAt(0) == FEEDBACK_CHAR) {
-				dispatch(name, value, null);
-			} else {
-				outputStreamReceiver.literal(name, value);
-			}
+			outputStreamReceiver.literal(name, value);
 		}
+
 	}
 
 	/**
@@ -273,11 +265,12 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 		}
 		matchingListeners.add(entityEndListener);
 	}
-	
-	protected void addRecordEndListener(final EntityEndListener entityEndListener) {
-		addEntityEndListener(entityEndListener, RECORD_KEYWORD);
-	}
-	
+
+	// protected void addRecordEndListener(final EntityEndListener
+	// entityEndListener) {
+	// addEntityEndListener(entityEndListener, RECORD_KEYWORD);
+	// }
+
 	@Override
 	public Map<String, String> getMap(final String mapName) {
 		return multiMap.getMap(mapName);
@@ -289,7 +282,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	}
 
 	@Override
-	public Map<String, String> putMap(final String mapName, final  Map<String, String> map) {
+	public Map<String, String> putMap(final String mapName, final Map<String, String> map) {
 		return multiMap.putMap(mapName, map);
 	}
 
@@ -297,22 +290,23 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	public String putValue(final String mapName, final String key, final String value) {
 		return multiMap.putValue(mapName, key, value);
 	}
-	
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("Data: " + multiMap + NEWLINE);
-		builder.append("Used data sources: " + dataSources.keySet() + NEWLINE);
-		builder.append("Listened endEntity() events: " +  entityEndListeners.keySet() + NEWLINE);
-		return builder.toString();
-	}
-	
-//	private static final class RootSource implements NamedValueSource{
-//		@Override
-//		public <R extends NamedValueReceiver> R setNamedValueReceiver(final R dataReceiver) {
-//			throw new UnsupportedOperationException();
-//		}
-//	}
 
+	// @Override
+	// public String toString() {
+	// final StringBuilder builder = new StringBuilder();
+	// builder.append("Data: " + multiMap + NEWLINE);
+	// builder.append("Used data sources: " + dataSources.keySet() + NEWLINE);
+	// builder.append("Listened endEntity() events: " +
+	// entityEndListeners.keySet() + NEWLINE);
+	// return builder.toString();
+	// }
+
+	// private static final class RootSource implements NamedValueSource{
+	// @Override
+	// public <R extends NamedValueReceiver> R setNamedValueReceiver(final R
+	// dataReceiver) {
+	// throw new UnsupportedOperationException();
+	// }
+	// }
 
 }

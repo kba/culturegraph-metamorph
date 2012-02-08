@@ -1,5 +1,7 @@
 package org.culturegraph.metamorph.core;
 
+import org.culturegraph.metamorph.util.StringUtil;
+
 
 /**
  * Implementation of the <code>&lt;data&gt;</code> tag.
@@ -21,16 +23,9 @@ final class Data  extends AbstractNamedValuePipe{
 		return source;
 	}
 
-	private static String fallback(final String value, final String fallbackValue) {
-		if (value == null) {
-			return fallbackValue;
-		}
-		return value;
-	}
-
 	@Override
 	public void receive(final String recName, final String recValue, final NamedValueSource source, final int recordCount, final int entityCount) {
-		getNamedValueReceiver().receive(fallback(name, recName), fallback(value, recValue),this, recordCount, entityCount);
+		getNamedValueReceiver().receive(StringUtil.fallback(name, recName), StringUtil.fallback(value, recValue),this, recordCount, entityCount);
 	}
 
 

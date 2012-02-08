@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph;
+package org.culturegraph.metamorph.core;
 
 import org.culturegraph.metamorph.test.TestSuite;
 import org.junit.runner.RunWith;
