@@ -23,8 +23,8 @@
 			<attribute name="version" use="required" fixed="1">
 				<simpleType>
 					<restriction base="int">
-						<minInclusive value="1"></minInclusive>
-						<whiteSpace value="collapse"></whiteSpace>
+						<minInclusive value="1"/>
+						<whiteSpace value="collapse"/>
 					</restriction>
 				</simpleType>
 			</attribute>

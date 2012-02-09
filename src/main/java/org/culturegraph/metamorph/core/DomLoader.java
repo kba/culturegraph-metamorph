@@ -12,6 +12,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -33,9 +34,11 @@ final class DomLoader {
 	
 	public static Document parse(final String schemaFile, final InputSource inputSource){
 		try {
-			final Document document = getDocumentBuilder(schemaFile).parse(inputSource);
-
-			document.normalizeDocument();
+			final DocumentBuilder documentBuilder = getDocumentBuilder(schemaFile);
+			final Document document = documentBuilder.parse(inputSource);
+			
+			removeEmptyTextNodes(document.getDocumentElement());
+			
 			return document;
 		} catch (SAXException e) {
 			throw new MetamorphDefinitionException(e);
@@ -44,6 +47,20 @@ final class DomLoader {
 		}
 	}
 	
+	private static void removeEmptyTextNodes(final Node node) {
+		Node child = node.getFirstChild();
+		while (child != null) {
+			if (child.getNodeType() == Node.TEXT_NODE) {
+				final Node old = child;
+				child = child.getNextSibling();
+				node.removeChild(old);
+			}else{
+				removeEmptyTextNodes(child);
+				child = child.getNextSibling();
+			}
+		}
+	}
+
 	public static String getDocumentBuilderFactoryImplName(){
 		return DocumentBuilderFactory.newInstance().getClass().getName();
 	}
@@ -51,12 +68,13 @@ final class DomLoader {
 	private static DocumentBuilder getDocumentBuilder(final String schemaFile) {
 
 		try {
-			final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			
 			final URL schemaUrl = Thread.currentThread().getContextClassLoader().getResource(schemaFile);
 			if (schemaUrl == null) {
 				throw new MetamorphDefinitionException("'" + schemaFile + "' not found!");
 			}
-
+			
+			final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			final Schema schema = schemaFactory.newSchema(schemaUrl);
 			final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 
@@ -67,6 +85,7 @@ final class DomLoader {
 			builderFactory.setCoalescing(true);
 
 			final DocumentBuilder builder = builderFactory.newDocumentBuilder();
+		
 			builder.setErrorHandler(ERROR_HANDLER);
 
 			return builder;

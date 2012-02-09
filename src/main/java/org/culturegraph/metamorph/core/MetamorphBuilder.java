@@ -6,8 +6,6 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.culturegraph.metamorph.core.collectors.Collect;
 import org.culturegraph.metamorph.core.collectors.CollectFactory;
 import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
