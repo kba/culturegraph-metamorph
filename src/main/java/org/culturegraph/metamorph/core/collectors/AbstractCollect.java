@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.core.collectors;
 
-import org.culturegraph.metamorph.core.AbstractNamedValuePipe;
+import org.culturegraph.metamorph.core.AbstractNamedValuePipeHead;
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
 
@@ -10,7 +10,7 @@ import org.culturegraph.metamorph.core.NamedValueSource;
  * @author Markus Michael Geipel
 
  */
-public abstract class AbstractCollect extends AbstractNamedValuePipe implements Collect {
+public abstract class AbstractCollect extends AbstractNamedValuePipeHead implements Collect {
 
 	//private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 

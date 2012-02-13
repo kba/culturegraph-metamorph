@@ -49,5 +49,48 @@
 			</cgxml:cgxml>
 		</result>
 	</test-case>
+	
+	<test-case name="Entity Test with flush">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="data1" value="a" />
+					</cgxml:record>
+					<cgxml:record id="2">
+						<cgxml:literal name="data2" value="c" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="1">
+				<mm:rules>
+					<mm:entity name="entity" flushWith="record">
+						<mm:data source="data1" name="l1" />
+						<mm:data source="data2" name="l2" />
+					</mm:entity>
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:entity name="entity">
+							<cgxml:literal name="l1" value="a" />
+						</cgxml:entity>
+					</cgxml:record>
+					<cgxml:record id="2">
+						<cgxml:entity name="entity">
+							<cgxml:literal name="l2" value="c" />
+						</cgxml:entity>
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
 
 </metamorph-test>

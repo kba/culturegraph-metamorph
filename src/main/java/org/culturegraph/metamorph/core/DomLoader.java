@@ -83,6 +83,7 @@ final class DomLoader {
 			builderFactory.setIgnoringComments(true);
 			builderFactory.setNamespaceAware(true);
 			builderFactory.setCoalescing(true);
+			builderFactory.setXIncludeAware(true);
 
 			final DocumentBuilder builder = builderFactory.newDocumentBuilder();
 		

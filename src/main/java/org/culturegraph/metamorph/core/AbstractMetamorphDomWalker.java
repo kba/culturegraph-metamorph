@@ -6,7 +6,9 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.culturegraph.metamorph.core.collectors.CollectFactory;
 import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
+import org.culturegraph.metamorph.core.functions.FunctionFactory;
 import org.culturegraph.metamorph.util.ResourceUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,7 +35,7 @@ public abstract class AbstractMetamorphDomWalker {
 	 */
 	public static enum ATTRITBUTE {
 		VERSION("version"), SOURCE("source"), OCCURENCE("occurence"), MODE("mode"), VALUE("value"), NAME("name"), CLASS(
-				"class"), DEFAULT("default"), ENTITY_MARKER("entityMarker");
+				"class"), DEFAULT("default"), ENTITY_MARKER("entityMarker"), FLUSH_WITH("flushWith");
 
 		private final String string;
 
@@ -46,11 +48,23 @@ public abstract class AbstractMetamorphDomWalker {
 		}
 	}
 
+	private static final String DATA = "data";
+	private static final String POSTPROCESS = "postprocess";
 	private static final String SCHEMA_FILE = "schema/metamorph.xsd";
 	private static final int LOWEST_COMPATIBLE_VERSION = 1;
 	private static final int CURRENT_VERSION = 1;
 
-	
+	private FunctionFactory functionFactory;
+	private CollectFactory collectFactory;
+
+	protected final FunctionFactory getFunctionFactory() {
+		return functionFactory;
+	}
+
+	protected final CollectFactory getCollectFactory() {
+		return collectFactory;
+	}
+
 	public final void walk(final String morphDef) {
 		try {
 			walk(ResourceUtil.getStream(morphDef));
@@ -59,7 +73,7 @@ public abstract class AbstractMetamorphDomWalker {
 		}
 	}
 
-	public final void walk (final InputStream inputStream) {
+	public final void walk(final InputStream inputStream) {
 		if (inputStream == null) {
 			throw new IllegalArgumentException("'inputStream' must not be null");
 		}
@@ -97,6 +111,8 @@ public abstract class AbstractMetamorphDomWalker {
 	}
 
 	protected final void walk(final Document doc) {
+		functionFactory = new FunctionFactory();
+		collectFactory = new CollectFactory();
 
 		init();
 
@@ -132,8 +148,9 @@ public abstract class AbstractMetamorphDomWalker {
 	}
 
 	protected abstract void init();
+
 	protected abstract void finish();
-	
+
 	protected abstract void setEntityMarker(final String entityMarker);
 
 	protected abstract void handleMap(final Node mapNode);
@@ -141,8 +158,44 @@ public abstract class AbstractMetamorphDomWalker {
 	protected abstract void handleMetaEntry(final String name, final String value);
 
 	protected abstract void handleFunctionDefinition(final Node functionDefNode);
-	
-	protected abstract  void handleRule(Node ruleNode);
+
+	protected abstract void exitData(Node node);
+
+	protected abstract void enterData(Node node);
+
+	protected abstract void exitCollect(Node node);
+
+	protected abstract void enterCollect(Node node);
+
+	protected abstract void handleFunction(Node functionNode);
+
+	private void handleRule(final Node node) {
+		final String nodeName = node.getLocalName();
+		if (getCollectFactory().getAvailableClasses().contains(nodeName)) {
+			enterCollect(node);
+			for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
+				if (POSTPROCESS.equals(child.getLocalName())) {
+					handlePostprocess(child);
+				} else {
+					handleRule(child);
+				}
+			}
+			exitCollect(node);
+		} else if (DATA.equals(nodeName)) {
+			enterData(node);
+			handlePostprocess(node);
+			exitData(node);
+		} else {
+			illegalChild(node);
+		}
+	}
+
+	private void handlePostprocess(final Node node) {
+		for (Node functionNode = node.getFirstChild(); functionNode != null; functionNode = functionNode
+				.getNextSibling()) {
+			handleFunction(functionNode);
+		}
+	}
 
 	private void handleMaps(final Node node) {
 		for (Node mapNode = node.getFirstChild(); mapNode != null; mapNode = mapNode.getNextSibling()) {
@@ -155,7 +208,6 @@ public abstract class AbstractMetamorphDomWalker {
 			handleRule(ruleNode);
 		}
 	}
-	
 
 	private void checkVersionCompatibility(final int version) {
 		if (version < LOWEST_COMPATIBLE_VERSION || version > CURRENT_VERSION) {

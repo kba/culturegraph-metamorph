@@ -3,14 +3,14 @@ package org.culturegraph.metamorph.core.functions;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.culturegraph.metamorph.core.AbstractNamedValuePipe;
+import org.culturegraph.metamorph.core.AbstractNamedValuePipeHead;
 import org.culturegraph.metamorph.core.EntityEndIndicator;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 
 /**
  * @author Markus Michael Geipel
  */
-public abstract class AbstractFunction extends AbstractNamedValuePipe implements Function {
+public abstract class AbstractFunction extends AbstractNamedValuePipeHead implements Function {
 
 	private SimpleMultiMap multiMap;
 	private Map<String, String> localMap;

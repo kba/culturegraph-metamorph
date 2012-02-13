@@ -8,7 +8,7 @@ import org.culturegraph.metamorph.util.StringUtil;
  * 
  * @author Markus Michael Geipel
  */
-final class Data  extends AbstractNamedValuePipe{
+final class Data  extends AbstractNamedValuePipeHead{
 
 	private String name;
 	private String value;

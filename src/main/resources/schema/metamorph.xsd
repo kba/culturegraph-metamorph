@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns:tns="http://www.culturegraph.org/metamorph"
-	targetNamespace="http://www.culturegraph.org/metamorph" xmlns="http://www.w3.org/2001/XMLSchema">
+	targetNamespace="http://www.culturegraph.org/metamorph" 
+	xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+
+	<import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+	<import namespace="http://www.w3.org/2001/XInclude" schemaLocation="XInclude.xsd"/>
 
 	<!-- <include schemaLocation="" /> -->
-
 	<element name="metamorph">
 		<complexType>
 			<sequence minOccurs="1" maxOccurs="1">
 				<element ref="tns:meta" maxOccurs="1" minOccurs="0" />
 				<element ref="tns:functions" maxOccurs="1" minOccurs="0" />
 				<element ref="tns:rules" maxOccurs="1" minOccurs="0" />
-				<element ref="tns:maps" maxOccurs="1" minOccurs="0" />
+				<element ref="tns:maps" maxOccurs="unbounded" minOccurs="0" />
 			</sequence>
 			<attribute name="entityMarker">
 				<simpleType>
 					<restriction base="string">
-						<length value="1"></length>
+						<length value="1"/>
 					</restriction>
 				</simpleType>
 			</attribute>
@@ -48,6 +52,7 @@
 		<complexType>
 			<choice minOccurs="0" maxOccurs="unbounded">
 				<element ref="tns:def" />
+				<element ref="xi:include"/>
 			</choice>
 		</complexType>
 	</element>
@@ -57,6 +62,7 @@
 			<choice minOccurs="0" maxOccurs="unbounded">
 				<group ref="tns:literal-rule" />
 				<group ref="tns:entity-rule" />
+				<element ref="xi:include"/>
 			</choice>
 		</complexType>
 	</element>
@@ -65,6 +71,7 @@
 		<complexType>
 			<choice minOccurs="0" maxOccurs="unbounded">
 				<element ref="tns:map" />
+				<element ref="xi:include"/>
 			</choice>
 		</complexType>
 	</element>
@@ -175,7 +182,6 @@
 			<attribute name="source" type="string" use="required" />
 			<attribute name="name" type="string" use="optional" />
 			<attribute name="value" type="string" use="optional" />
-			
 		</complexType>
 	</element>
 
@@ -198,6 +204,7 @@
 			</sequence>
 			<attribute name="name" type="string" use="required" />
 			<attribute name="default" type="string" use="optional" />
+			<attribute ref="xml:base"/>
 		</complexType>
 	</element>
 

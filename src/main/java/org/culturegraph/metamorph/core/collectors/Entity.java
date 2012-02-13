@@ -1,6 +1,8 @@
 package org.culturegraph.metamorph.core.collectors;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.culturegraph.metamorph.core.Metamorph;
@@ -15,7 +17,7 @@ import org.culturegraph.metamorph.types.NamedValue;
  */
 public final class Entity extends AbstractCollect {
 
-	private final Set<NamedValue> literals = new HashSet<NamedValue>();
+	private final List<NamedValue> literals = new ArrayList<NamedValue>();
 	private final Set<NamedValueSource> sources = new HashSet<NamedValueSource>();
 	private final Set<NamedValueSource> sourcesLeft = new HashSet<NamedValueSource>();
 

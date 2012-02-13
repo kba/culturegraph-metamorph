@@ -2,7 +2,7 @@ package org.culturegraph.metamorph.core.collectors;
 
 import org.culturegraph.metamorph.core.EntityEndListener;
 import org.culturegraph.metamorph.core.Metamorph;
-import org.culturegraph.metamorph.core.NamedValuePipe;
+import org.culturegraph.metamorph.core.NamedValuePipeHead;
 import org.culturegraph.metamorph.core.NamedValueSource;
 
 /**
@@ -11,7 +11,7 @@ import org.culturegraph.metamorph.core.NamedValueSource;
  * @author Markus Michael Geipel
  *
  */
-public interface Collect extends EntityEndListener, NamedValuePipe{
+public interface Collect extends EntityEndListener, NamedValuePipeHead{
 
 	void setFlushWith(String flushEntity);
 	void setSameEntity(boolean sameEntity);
