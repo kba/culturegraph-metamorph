@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph xmlns="http://www.culturegraph.org/metamorph"
+	version="1" entityMarker=".">
+
+	<rules>
+		<choose name="outer">
+			<choose name="@inner">
+				<data source="Source21" />
+				<data source="Source31" />
+				<postprocess>
+					<isbn to="isbn10" />
+				</postprocess>
+			</choose>
+			<data source="Source4">
+				<isbn to="isbn13" />
+				<isbn to="isbn10" />
+			</data>
+			<data source="Source5" name="Hawaii">
+				<isbn to="isbn13" />
+				<lookup>
+					<entry name="slkdf" value="sdf" />
+					<entry name="sdf" value="s" />
+				</lookup>
+			</data>
+		</choose>
+	</rules>
+
+</metamorph>

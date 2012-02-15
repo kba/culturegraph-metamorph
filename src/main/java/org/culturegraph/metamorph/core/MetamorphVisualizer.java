@@ -4,11 +4,13 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import org.culturegraph.metamorph.types.ListMap;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.dom.Node;
 
 /**
@@ -19,35 +21,93 @@ import org.w3c.dom.Node;
  */
 public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 
+	private static final String RECURSION_INDICATOR = "@";
 	private final Map<String, String> meta = new HashMap<String, String>();
 	private final PrintWriter writer;
 	private int count;
 	private final Deque<String> idStack = new LinkedList<String>();
-	private final ListMap<String, String> sourceIdMap = new ListMap<String, String>();
+
+	// private final ListMap<String, String> sourceIdMap = new ListMap<String,
+	// String>();
+	private final Set<String> sources = new HashSet<String>();
+
 	private final StringBuilder edgeBuffer = new StringBuilder();
-	private String currentId;
-	private String currentTarget;
+	private final Deque<String> lastProcessorStack = new LinkedList<String>();
 
 	public MetamorphVisualizer(final Writer writer) {
 		super();
 		this.writer = new PrintWriter(writer);
 	}
 
+	private static String buildRecord(final String identifier, final String name, final String color,
+			final Map<String, String> attributes) {
+		final StringBuilder builder = new StringBuilder();
+		builder.append("\"" + identifier + "\" [label = <<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">");
+		if (name != null) {
+			builder.append("<TR><TD COLSPAN=\"2\" BGCOLOR=\"" + color + "\"><B>" + name + "</B></TD></TR>");
+		}
+
+		for (Entry<String, String> entry : attributes.entrySet()) {
+			builder.append("<TR><TD>" + entry.getKey() + "</TD><TD>'" + StringEscapeUtils.escapeHtml(entry.getValue())
+					+ "'</TD></TR>");
+		}
+		builder.append("</TABLE>>];");
+		return builder.toString();
+	}
+
+	private static String buildMap(final String identifier, final String name, final Map<String, String> attributes) {
+		final StringBuilder builder = new StringBuilder();
+		builder.append("\"" + identifier
+				+ "\" [color=\"grey\" label = <<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">");
+		if (name != null) {
+			builder.append("<TR><TD COLSPAN=\"2\"><B>" + name + "</B></TD></TR>");
+		}
+
+		for (Entry<String, String> entry : attributes.entrySet()) {
+			builder.append("<TR><TD>" + entry.getKey() + "</TD><TD>'" + StringEscapeUtils.escapeHtml(entry.getValue())
+					+ "'</TD></TR>");
+		}
+		builder.append("</TABLE>>];");
+		return builder.toString();
+	}
+
+	private void addEdge(final String fromId, final String toId) {
+		edgeBuffer.append("\"" + fromId + "\" -> \"" + toId + "\" \n");
+	}
+
+	private void addEdge(final String fromId, final String toId, final String label) {
+		if (label == null) {
+			addEdge(fromId, toId);
+		} else {
+			edgeBuffer.append("\"" + fromId + "\" -> \"" + toId + "\" [ label = \"" + label + "\" ] \n");
+		}
+	}
+
+	private void addIncludeEdge(final String fromId, final String toId) {
+		edgeBuffer.append("\"" + fromId + "\" -> \"" + toId + "\" [color = \"grey\" dir=\"none\"]\n");
+	}
+
 	@Override
 	protected void init() {
-
 		writer.println("digraph g {\n" + "graph [ rankdir = \"LR\" ];\n"
-				+ "node [ fontsize = \"11\"  shape = \"record\"];\n" + "edge [ ];\n");
+				+ "node [ fontsize = \"11\"  shape = \"plaintext\"];\n" + "edge [ fontsize = \"11\" ];\n");
 	}
 
 	@Override
 	protected void finish() {
-		
-		
-		for (String source : sourceIdMap.keySet()) {
-			writer.println("\"" + source + "\" [label=\"" + source + "\" shape=\"ellipse\"];");
+
+		for (String source : sources) {
+			final String color;
+			if (source.startsWith(RECURSION_INDICATOR)) {
+				color = "lemonchiffon";
+			} else {
+				color = "skyblue";
+			}
+
+			writer.println("\"" + source + "\" [label=\"" + source + "\" shape=\"ellipse\"  fillcolor=\"" + color
+					+ "\" style=\"filled\"];");
 		}
-		
+
 		writer.append(edgeBuffer.toString());
 		writer.println("}");
 		writer.flush();
@@ -61,19 +121,23 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 	@Override
 	protected void handleMap(final Node mapNode) {
 		final String mapName = getAttr(mapNode, ATTRITBUTE.NAME);
+		final Map<String, String> map = getMap(mapNode);
+		writer.println(buildMap(mapName, mapName, map));
+	}
+	
+	private Map<String, String> getMap(final Node mapNode){
+		final Map<String, String> map = new HashMap<String, String>();
 		final String mapDefault = getAttr(mapNode, ATTRITBUTE.DEFAULT);
-		
-		final StringBuilder builder = new StringBuilder();
-		builder.append("{"	+ mapName + "}");
-		builder.append("|{_default| "+mapDefault+"}");
-		
+		if (mapDefault != null) {
+			map.put("_default", mapDefault);
+		}
+
 		for (Node entryNode = mapNode.getFirstChild(); entryNode != null; entryNode = entryNode.getNextSibling()) {
 			final String entryName = getAttr(entryNode, ATTRITBUTE.NAME);
 			final String entryValue = getAttr(entryNode, ATTRITBUTE.VALUE);
-			builder.append("|{"+entryName+"| "+entryValue+"}");
+			map.put(entryName, entryValue);
 		}
-		
-		writer.println("\"" + mapName + "\" [label = \""+builder+"\"];");
+		return map;
 	}
 
 	@Override
@@ -90,109 +154,132 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 		return String.valueOf(++count);
 	}
 
+	// private String enterEntity(final Node node){
+	//
+	// }
+	//
+	// private void exitEntity(final Node node){
+	//
+	// }
+
+	private String newOutNode() {
+		final String identifier = getNewId();
+		writer.println("\"" + identifier
+				+ "\" [shape=\"circle\"  fillcolor=\"palegreen\" style=\"filled\" label=\"\"];");
+		return identifier;
+	}
+
 	@Override
 	protected void enterData(final Node node) {
-		final String identifier = "D" + getNewId();
-		currentId = identifier;
-		
-		
-		final String name = getAttr(node, ATTRITBUTE.NAME);
-		final String source = getAttr(node, ATTRITBUTE.SOURCE);
-		
-		if(name==null){
-			currentId = source;
-			
-			
-		}else{
-			idStack.push(identifier);
-			
-			final StringBuilder builder = new StringBuilder();
-			final Map<String, String> attributes = attributesToMap(node);
-			attributes.remove(ATTRITBUTE.SOURCE.getString());
-			
-			for (Entry<String, String> entry  : attributes.entrySet()) {
-				builder.append("{" + entry.getKey() + "|" +entry.getValue()+ "}|");
-			}
-			builder.delete(builder.length()-1, builder.length());
-			writer.println("\"" + identifier + "\" [label = \""+builder+"\"];");
-			
-			edgeBuffer.append("\"" + source + "\" -> \"" + identifier + "\" \n");
-			
-			if(name.startsWith("@")){
-				//edgeBuffer.append("\"" + identifier + "\" -> \"" + name + "\" \n");
-				currentTarget = name;
-			}else{
-				currentTarget = null;
-			}
-		}
-		
+		//final String identifier = getNewId();
 
+	//	final String name = getAttr(node, ATTRITBUTE.NAME);
+		final String source = getAttr(node, ATTRITBUTE.SOURCE);
+
+		lastProcessorStack.push(source);
+
+		// if (name == null) {
+		// lastProcessorStack.push(source);
+		// } else {
+		// idStack.push(identifier);
+		// lastProcessorStack.push(identifier);
+		//
+		// final Map<String, String> attributes = attributesToMap(node);
+		// attributes.remove(ATTRITBUTE.SOURCE.getString());
+		// writer.println(buildRecord(identifier, null, "lightgray",
+		// attributes));
+		//
+		// addEdge(source, identifier);
+		// }
 	}
 
 	@Override
 	protected void exitData(final Node node) {
 		final String name = getAttr(node, ATTRITBUTE.NAME);
-		final String childId;
-		if(name==null){
-			childId = getAttr(node, ATTRITBUTE.SOURCE);
-			sourceIdMap.put(childId, idStack.peek());
-		}else{
-			childId = idStack.pop();
-			sourceIdMap.put(getAttr(node, ATTRITBUTE.SOURCE), childId);
-		}
-		
-		
-		
-		if (!idStack.isEmpty()) {
-			final String parentId = idStack.peek();
-			edgeBuffer.append("\"" + childId + "\" -> \"" + parentId + "\" \n");
-		}else if(currentTarget != null){
-			edgeBuffer.append("\"" + currentId + "\" -> \"" + currentTarget + "\" \n");
+		final String lastProcessor = lastProcessorStack.pop();
+
+		sources.add(getAttr(node, ATTRITBUTE.SOURCE));
+		// if (name == null) {
+		//
+		// // sourceIdMap.put(getAttr(node, ATTRITBUTE.SOURCE),
+		// // idStack.peek());
+		// } else {
+		// idStack.pop();
+		// // sourceIdMap.put(getAttr(node, ATTRITBUTE.SOURCE), idStack.pop());
+		//
+		// }
+
+		if (idStack.isEmpty()) {
+			if (name != null && name.startsWith(RECURSION_INDICATOR)) {
+				addEdge(lastProcessor, name);
+				sources.add(name);
+			} else {
+				addEdge(lastProcessor, newOutNode(), name);
+			}
+		} else {
+			addEdge(lastProcessor, idStack.peek(), name);
 		}
 	}
 
 	@Override
 	protected void enterCollect(final Node node) {
-		final String identifier = "C" + getNewId();
+		final String identifier = getNewId();
+		lastProcessorStack.push(identifier);
 		idStack.push(identifier);
-		
-		String name = getAttr(node, ATTRITBUTE.NAME);
-		if(name==null){
-			name="";
-		}			
-		
-		final StringBuilder builder = new StringBuilder();
+
 		final Map<String, String> attributes = attributesToMap(node);
 		attributes.remove(ATTRITBUTE.SOURCE.getString());
-		
-		builder.append("{" + node.getLocalName() + "}");
-		for (Entry<String, String> entry  : attributes.entrySet()) {
-			builder.append("|{" + entry.getKey() + "|" +entry.getValue().replaceAll("\\{","\\\\{").replaceAll("\\}","\\\\}")+ "}");
-		}
-		
-		writer.println("\"" + identifier + "\" [label = \"" +builder +"\"];");
-		
-		if(name.startsWith("@")){
-			edgeBuffer.append("\"" + identifier + "\" -> \"" + name + "\" \n");
-		}
+		attributes.remove(ATTRITBUTE.NAME.getString());
+		writer.println(buildRecord(identifier, node.getLocalName(), "lightgray", attributes));
+
+		// final String name = getAttr(node, ATTRITBUTE.NAME);
+		// if (name!=null && name.startsWith(RECURSION_INDICATOR)) {
+		// currentOut = name;
+		// } else {
+		// currentOut = newOutNode();
+		// }
 	}
 
 	@Override
 	protected void exitCollect(final Node node) {
-		final String childId = idStack.pop();
-		if (!idStack.isEmpty()) {
-			final String parentId = idStack.peek();
-			writer.println("\"" + childId + "\" -> \"" + parentId + "\"");
+		idStack.pop();
+
+		final String name = getAttr(node, ATTRITBUTE.NAME);
+		final String lastProcessor = lastProcessorStack.pop();
+
+		if (idStack.isEmpty()) {
+			if (name != null && name.startsWith(RECURSION_INDICATOR)) {
+				addEdge(lastProcessor, name);
+				sources.add(name);
+			} else {
+				addEdge(lastProcessor, newOutNode(), name);
+			}
+		} else {
+			addEdge(lastProcessor, idStack.peek(), name);
 		}
 	}
 
 	@Override
 	protected void handleFunction(final Node functionNode) {
-		final String identifier = "F" + getNewId();
+		final String identifier = getNewId();
+		final Map<String, String> attributes = attributesToMap(functionNode);
+		final String inAttr = attributes.remove("in");
+		if (inAttr != null) {
+			addIncludeEdge(inAttr, identifier);
+		}
+		writer.println(buildRecord(identifier, functionNode.getLocalName(), "white", attributes));
 		
-		writer.println("\"" + identifier + "\" [label = \""+ functionNode.getLocalName() +"\"];");
+
 		
-		edgeBuffer.append("\"" + currentId + "\" -> \"" + identifier + "\" \n");
-		currentId = identifier;
+		if(functionNode.hasChildNodes()){
+			final Map<String, String> map = getMap(functionNode);
+			final String mapId = identifier + "M";
+			addIncludeEdge(mapId, identifier);
+			writer.println(buildMap(mapId, null, map));
+		}
+	
+
+		addEdge(lastProcessorStack.pop(), identifier);
+		lastProcessorStack.push(identifier);
 	}
 }
