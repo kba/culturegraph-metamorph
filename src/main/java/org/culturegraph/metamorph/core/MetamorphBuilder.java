@@ -10,6 +10,8 @@ import org.culturegraph.metamorph.core.collectors.Collect;
 import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
 import org.culturegraph.metamorph.core.functions.Function;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 /**
@@ -19,6 +21,8 @@ import org.w3c.dom.Node;
  */
 public final class MetamorphBuilder extends AbstractMetamorphDomWalker{
 
+	private static final Logger LOG = LoggerFactory.getLogger(MetamorphBuilder.class);
+	
 	// private final String morphDef;
 	private Metamorph metamorph;
 	private Deque<Collect> collectStack;
@@ -150,7 +154,7 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker{
 		if (collectStack.isEmpty()) {
 			collect.endPipe(metamorph);
 		} else {
-			final Collect parent = collectStack.pop();
+			final Collect parent = collectStack.peek();
 			parent.addNamedValueSource(collect);
 			collect.endPipe(parent);
 		}
