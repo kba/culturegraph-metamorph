@@ -260,6 +260,8 @@
 			<element ref="tns:blacklist" />
 			<element ref="tns:isbn" />
 			<element ref="tns:equals" />
+			<element ref="tns:not-equals" />
+			<element ref="tns:case" />
 			<element ref="tns:htmlanchor" />
 			<element ref="tns:trim" />
 			<element ref="tns:split" />
@@ -372,6 +374,26 @@
 	<element name="equals">
 		<complexType>
 			<attribute name="string" type="string" use="required" />
+		</complexType>
+	</element>
+	
+	<element name="not-equals">
+		<complexType>
+			<attribute name="string" type="string" use="required" />
+		</complexType>
+	</element>
+	
+		<element name="case">
+		<complexType>
+			<attribute name="to" use="required">
+				<simpleType>
+					<restriction base="string">
+						<enumeration value="upper"/>
+						<enumeration value="lower"/>
+					</restriction>
+				</simpleType>
+			</attribute>
+			<attribute name="language" type="string" use="optional" />
 		</complexType>
 	</element>
 	

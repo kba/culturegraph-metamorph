@@ -26,6 +26,8 @@ public final class FunctionFactory extends ObjectFactory<Function>{
 		registerClass("replace", Replace.class);
 		registerClass("isbn", ISBN.class);
 		registerClass("equals", Equals.class);
+		registerClass("not-equals", NotEquals.class);
+		registerClass("case", Case.class);
 		registerClass("htmlanchor", HtmlAnchor.class);
 		registerClass("trim", Trim.class);
 		registerClass("normalize-utf8", NormalizeUTF8.class);

@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph xmlns="http://www.culturegraph.org/metamorph"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" entityMarker="." version="1">
+	<meta>
+		<name>Umsetzung der Titeldaten</name>
+	</meta>
+	<rules>
+		<data source="002@.0" name="dcterms:format">
+			<substring start="0" end="1" />
+			<lookup in="Physikalische Form" />
+		</data>
+
+		<data source="002@.0" name="rdf:type">
+			<substring start="1" end="2" />
+			<lookup in="Bibliografische Erscheinungsform" />
+		</data>
+
+		<choose name="@isbd:P1018_TAIL">
+			<data source="011@.b">
+				<compose prefix="-" />
+			</data>
+			<data source="002@.0">
+				<regexp match="^.[bd]" />
+				<constant value="-" />
+			</data>
+		</choose>
+		<combine name="isbd:P1018" value="${publicationDate}${tail}"
+			flushWith="record">
+
+			<data source="011@.a" name="publicationDate" />
+			<data source="@isbd:P1018_TAIL" name="tail" />
+		</combine>
+
+		<group name="bibo:issn">
+			<data source="005I.0" />
+			<data source="005A.0" />
+		</group>
+
+		<data source="004K.0" name="bibo:gtin14" />
+		<data source="004U.0" name="owl:sameAs" />
+		<data source="004P.0" name="owl:sameAs">
+			<compose prefix="doi:" />
+		</data>
+		<data source="004R.0" name="owl:sameAs">
+			<compose prefix="hdl:" />
+		</data>
+		<data source="007C.0" name="bibo:coden" />
+		<!-- Die EKI soll auf die Repräsentation im Dienst culturegraph.org verweisen. 
+			Derzeit ist die Synthax dort noch nicht abschließend geklärt, daher ist die 
+			aktuelle Umsetzung ausdrücklich als Platzhalter zu verstehen. <data source="007G.0" 
+			name="owl:sameAs" > <compose prefix="http://www.culturegraph.org/EKI/" /></data> -->
+
+		<group name="dcterms:identifier">
+			<data source="003@.0">
+				<compose prefix="(DE-101)" />
+			</data>
+			<data source="007Ha.0">
+				<compose prefix="(DE-602)" />
+			</data>
+
+			<data source="007Hd.0">
+				<compose prefix="(DE-605)" />
+			</data>
+
+			<data source="007He.0">
+				<compose prefix="(DE-603)" />
+			</data>
+			<data source="007Hf.0">
+				<compose prefix="(DE-576)" />
+			</data>
+			<data source="007Hg.0">
+				<compose prefix="(DE-604)" />
+			</data>
+
+			<data source="007Hh.0">
+				<compose prefix="(DE-601)" />
+			</data>
+
+			<data source="006Z.0">
+				<compose prefix="(DE-600)" />
+			</data>
+
+			<data source="007Ib.0">
+				<compose prefix="(Uk)" />
+			</data>
+
+			<data source="007Ic.0">
+				<compose prefix="(ItFic)" />
+			</data>
+			<data source="007Ig.0">
+				<compose prefix="(FrPBN)" />
+			</data>
+			<data source="007Il.0">
+				<compose prefix="(DLC)" />
+			</data>
+
+			<data source="007Io.0">
+				<compose prefix="(OColc)" />
+			</data>
+
+		</group>
+
+		<data source="022A.01.a" name="dcterms:alternative" />
+
+		<combine name="dcterms:alternative" value="${einheitstitel}${sprachbez}"
+			flushWith="022A">
+			<data source="022A.a" name="einheitstitel">
+				<replace pattern="@" with="" />
+			</data>
+			<data source="022A.r" name="sprachbez">
+				<compose prefix=" &lt;" postfix="&gt;" />
+			</data>
+		</combine>
+
+
+		<data source="026C.a" name="bibo:shortTitle" />
+
+		<combine name="dcterms:title"
+			value="${bandbezeichnung}${titelDesBandes}${zusatzBandtitel}"
+			flushWith="021B">
+			<data source="021B.l" name="bandbezeichnung" />
+			<data source="021B.a" name="titelDesBandes">
+				<replace pattern="@" with="" />
+				<compose prefix=", " />
+			</data>
+			<data source="021B.d" name="zusatzBandtitel">
+				<compose prefix=" : " />
+			</data>
+		</combine>
+
+
+		<combine name="dcterms:title"
+			value="${hst}${zusatzZumHst}${reihenBezeichnung}${titelUnterreihe}${zusatzUnterreihe}${text}"
+			flushWith="record">
+			<data source="021A.a" name="hst">
+				<replace pattern="@" with="" />
+			</data>
+			<data source="021A.d" name="zusatzZumHst">
+				<replace pattern="@" with="" />
+				<compose prefix=" : " />
+			</data>
+			<data source="021C.l" name="reihenBezeichnung">
+				<replace pattern="@" with="" />
+				<compose prefix=" / " />
+			</data>
+			<data source="021C.a" name="titelUnterreihe">
+				<replace pattern="@" with="" />
+				<compose prefix=", " />
+			</data>
+			<data source="021C.d" name="zusatzUnterreihe">
+				<compose prefix=" : " />
+			</data>
+			<data source="021C.r" name="text">
+				<replace pattern="@" with="" />
+				<compose prefix=" / " />
+			</data>
+		</combine>
+	
+		<combine name="rdf:type" value="${format}">
+			<data source="002@.0">
+				<substring start="1" end="2" />
+				<equals string="l" />
+			</data>
+			<data source="017A.a" name="format">
+				<lookup in="zeitschr." />
+			</data>
+		</combine>
+
+		<!--  <concat name="dcterms:language" delimiter=", ">
+			<data source="010@.a" />
+		</concat>
+-->
+		<combine name="dcterms:language"
+			value="${languageUri}" flushWith="record">
+			<data source="010@.a" name="languageUri">
+				<compose prefix="http://id.loc.gov/vocabulary/iso639-2/"/>
+			</data>		
+		</combine>
+
+		<data source="004A.0" name="@cleanIsbn">
+			<isbn to="clean" />
+		</data>
+
+		<combine name="bibo:isbn10" value="${value}">
+			<data source="@cleanIsbn" name="value" />
+			<data source="@cleanIsbn">
+				<regexp match="^\d{10,10}$" />
+			</data>
+		</combine>
+
+		<combine name="bibo:isbn13" value="${value}">
+			<data source="@cleanIsbn" name="value" />
+			<data source="@cleanIsbn">
+				<regexp match="\d{13,13}" />
+			</data>
+		</combine>
+
+
+<!-- ListElements -->
+	<!-- Verfasser -->
+		<!-- creator -->		
+		<data source="028A.9" name="@creator_refA">
+			<compose prefix="http://d-nb.info/gnd/" />
+		</data>
+		<combine name="@creatorLiteralA" value="${surname}${forename}${prefix}${qualifier}"
+			flushWith="028A" reset="true">
+			<data source="028A.a" name="surname" />
+			<data source="028A.d" name="forename">
+				<compose prefix=", " />
+			</data>
+			<data source="028A.c" name="prefix">
+				<compose prefix=" /" />
+			</data>
+			<data source="028A.l" name="qualifier">
+				<compose prefix=" &lt;" postfix="&gt;" />
+			</data>
+		</combine>
+		<combine name="@creatorPersonalNameA" value="${personalname}${qualifier}"
+			flushWith="028A" reset="true">
+			<data source="028A.5" name="personalname">
+				<replace pattern="@" with="" />
+			</data>
+			<data source="028A.l" name="qualifier">
+				<compose prefix=" &lt;" postfix="&gt;" />
+			</data>
+		</combine>
+		
+		<data source="028B.9" name="@creator_refB">
+			<compose prefix="http://d-nb.info/gnd/" />
+		</data>
+		<combine name="@creatorLiteralB" value="${surname}${forename}${prefix}${qualifier}"
+			flushWith="028B" reset="true">
+			<data source="028B.a" name="surname" />
+			<data source="028B.d" name="forename">
+				<compose prefix=", " />
+			</data>
+			<data source="028B.c" name="prefix">
+				<compose prefix=" /" />
+			</data>
+			<data source="028B.l" name="qualifier">
+				<compose prefix=" &lt;" postfix="&gt;" />
+			</data>
+		</combine>
+		
+		<combine name="@creatorPersonalNameB" value="${personalname}${qualifier}"
+			flushWith="028B" reset="true">
+			<data source="028B.5" name="personalname">
+				<replace pattern="@" with="" />
+			</data>
+			<data source="028B.l" name="qualifier">
+				<compose prefix=" &lt;" postfix="&gt;" />
+			</data>
+		</combine>
+	<!-- contributor -->
+		<data name="@contributor_ref" source="028C.9" >
+			<compose prefix="http://d-nb.info/gnd/" />
+		</data>
+		<combine name="@contributorLiteral" value="${surname}${forename}${prefix}${qualifier}"
+			flushWith="028C" reset="true">
+			<data source="028C.a" name="surname" />
+			<data source="028C.d" name="forename">
+				<compose prefix=", " />
+			</data>
+			<data source="028C.c" name="prefix">
+				<compose prefix=" /" />
+			</data>
+			<data source="028C.l" name="qualifier">
+				<compose prefix=" &lt;" postfix="&gt;" />
+			</data>
+		</combine>
+		<combine name="@contributorPersonalName" value="${personalname}${qualifier}"
+			flushWith="028C" reset="true">
+			<data source="028C.5" name="personalName" />
+			<data source="028C.l" name="qualifier">
+				<compose prefix=" &lt;" postfix="&gt;" />
+			</data>
+		</combine>		
+		
+		<choose name="@dcterms_creator" flushWith="028A">
+			<data source="@creator_refA" />
+			<data source="@creatorPersonalNameA" />
+			<data source="@creatorLiteralA" />
+		</choose>
+		<choose name="@dcterms_creator" flushWith="028B">
+			<data source="@creator_refB" />
+			<data source="@creatorPersonalNameB" />
+			<data source="@creatorLiteralB" />
+		</choose>
+		
+		<choose name="@dcterms_contributor" flushWith="028C">
+			<data source="@contributor_ref" />
+			<data source="@contributorPersonalName"  />
+			<data source="@contributorLiteral"  />
+		</choose>	
+<!-- ENDE: Verfasser -->
+<!-- Körperschaften -->	
+		<data source="029A.9" name="@corporatebodyCreatorRef">
+			<compose prefix="http://d-nb.info/gnd/" />
+		</data>
+		<combine name="@corporatebodyCreatorLiteral"
+			value="${name}${qualifierMainCorporatebody}${division}${qualifierDivision}"
+			flushWith="029A" reset="true">
+			<data source="029A.a" name="name">
+				<replace pattern="@" with="" />
+			</data>
+			<data source="029A.c" name="qualifierMainCorporatebody">
+				<compose prefix=" &lt;" postfix="&gt;" />
+			</data>
+			<data source="029A.b" name="division">
+				<replace pattern="@" with="" />
+				<compose prefix=" / " />
+			</data>
+			<data source="029A.x" name="qualifierDivision">
+				<compose prefix=" &lt;" postfix="&gt;" />
+			</data>
+		</combine>
+		<choose name="@dcterms_creator" flushWith="029A">
+			<data source="@corporatebodyCreatorRef" />
+			<data source="@corporatebodyCreatorLiteral"  />
+		</choose>
+		
+		<data source="029F.9" name="@corporatebodyContributorRef">
+			<compose prefix="http://d-nb.info/gnd/" />
+		</data>
+		<combine name="@corporatebodyContributorLiteral"
+			value="${name}${qualifierMainCorporatebody}${division}${qualifierDivision}"
+			flushWith="029F" reset="true">
+			<data source="029F.a" name="name" />
+			<data source="029F.c" name="qualifierMainCorporatebody">
+				<compose prefix=" &lt;" postfix="&gt;" />
+			</data>
+			<data source="029F.b" name="division">
+				<compose prefix=" / " />
+			</data>
+			<data source="029F.x" name="qualifierDivision">
+				<compose prefix=" &lt;" postfix="&gt;" />
+			</data>
+		</combine>
+		
+		<data name="dcterms:creator" source="@dcterms_creator" />
+		<data name="dcterms:contributor" source="@dcterms_contributor" />
+		<choose name="@dcterms_contributor" flushWith="029F">
+			<data source="@corporatebodyContributorRef" />
+			<data source="@corporatebodyContributorLiteral"  />
+		</choose>
+		<!-- ENDE: Körperschaften -->
+	<!-- Aufbau der Listen -->		
+		<entity name="bibo:authorList" flushWith="record">
+			<data name="rdf:li" source="@dcterms_creator">
+				<occurence only="1" />
+			</data>
+			<data name="rdf:li" source="@dcterms_creator">
+				<occurence only="2" />
+			</data>
+			<data name="rdf:li" source="@dcterms_creator">
+				<occurence only="3" />
+			</data>
+			<data name="rdf:li" source="@dcterms_creator">
+				<occurence only="4" />
+			</data>
+			<data name="rdf:li" source="@dcterms_creator">
+				<occurence only="5" />
+			</data>
+			<data name="rdf:li" source="@dcterms_creator">
+				<occurence only="6" />
+			</data>
+			<data name="rdf:li" source="@dcterms_creator">
+				<occurence only="7" />
+			</data>
+			<data name="rdf:li" source="@dcterms_creator">
+				<occurence only="8" />
+			</data>
+			<data name="rdf:li" source="@dcterms_creator">
+				<occurence only="9" />
+			</data>
+			<data name="rdf:li" source="@dcterms_creator">
+				<occurence only="10" />
+			</data>
+		</entity>	
+		<entity name="bibo:contributorList" flushWith="record">
+			<data name="rdf:li" source="@dcterms_contributor">
+				<occurence only="1" />
+			</data>
+			<data name="rdf:li" source="@dcterms_contributor">
+				<occurence only="2" />
+			</data>
+			<data name="rdf:li" source="@dcterms_contributor">
+				<occurence only="3" />
+			</data>
+			<data name="rdf:li" source="@dcterms_contributor">
+				<occurence only="4" />
+			</data>
+			<data name="rdf:li" source="@dcterms_contributor">
+				<occurence only="5" />
+			</data>
+			<data name="rdf:li" source="@dcterms_contributor">
+				<occurence only="6" />
+			</data>
+			<data name="rdf:li" source="@dcterms_contributor">
+				<occurence only="7" />
+			</data>
+			<data name="rdf:li" source="@dcterms_contributor">
+				<occurence only="8" />
+			</data>
+			<data name="rdf:li" source="@dcterms_contributor">
+				<occurence only="9" />
+			</data>
+			<data name="rdf:li" source="@dcterms_contributor">
+				<occurence only="10" />
+			</data>
+		</entity>
+	<!--ENDE: Aufbau der Listen -->
+<!-- ENDE: ListElements -->	
+
+
+		<data source="021A.f" name="isbd:p1005">
+			<replace pattern="@" with="" />
+		</data>
+
+		<data source="021A.9" name="dcterms:isPartOf">
+			<compose prefix="http://d-nb.info/" />
+		</data>
+
+		<combine name="dcterms:extent" value="${value}">
+			<data source="034D.a" name="value" />
+			<data source="002@.0">
+				<regexp match="^[^O].*" />
+			</data>
+		</combine>
+
+		<data source="009Q.u" name="bibo:uri" />
+
+		<data source="036F.a" name="dcterms:isPartOf" />
+
+		<data source="036F.9" name="dcterms:isPartOf">
+			<compose prefix="http://d-nb.info/" />
+		</data>
+
+		<data source="036D.9" name="dcterms:isPartOf">
+			<compose prefix="http://d-nb.info/" />
+		</data>
+
+		<data source="036D.a" name="dcterms:isPartOf" />
+
+		<data source="036G.a" name="dcterms:isPartOf">
+			<replace pattern="@" with="" />
+		</data>
+
+		<data source="037C.a" name="dcterms:description" />
+		<data source="046C.a" name="dcterms:alternative">
+			<replace pattern="@" with="" />
+		</data>
+		<data source="039B.9" name="dcterms:isPartOf">
+			<compose prefix="http://d-nb.info/" />
+		</data>
+		<data source="039C.9" name="dcterms:hasPart">
+			<compose prefix="http://d-nb.info/" />
+		</data>
+		<data source="039D.9" name="dcterms:isFormatOf">
+			<compose prefix="http://d-nb.info/" />
+		</data>
+
+		<data source="039E.9" name="@ChronLinkValue1" />
+		<data source="039E.b" name="@ChronLinkValue2" />
+		<combine name="dcterms:isReplacedBy" value="${value}">
+			<data source="@ChronLinkValue1" name="value">
+				<compose prefix="http://d-nb.info/" />
+			</data>
+			<data source="@ChronLinkValue2">
+				<regexp match="^[sz]$" />
+			</data>
+		</combine>
+
+		<data source="039E.9" name="@ChronLinkValue3" />
+		<data source="039E.b" name="@ChronLinkValue4" />
+		<combine name="dcterms:replaces" value="${value}">
+			<data source="@ChronLinkValue3" name="value">
+				<compose prefix="http://d-nb.info/" />
+			</data>
+			<data source="@ChronLinkValue4">
+				<regexp match="^[fz]$" />
+			</data>
+		</combine>
+
+		<data source="045F.a" name="dcterms:subject">
+			<compose prefix="(DDC)" />
+		</data>
+		<data source="045G.a" name="dcterms:subject">
+			<compose prefix="(DDC)" />
+		</data>
+		<data source="045H.a" name="dcterms:subject">
+			<compose prefix="(DDC)" />
+		</data>
+		<data source="045I.a" name="dcterms:subject">
+			<compose prefix="(DDC)" />
+		</data>
+		<data source="045J.a" name="dcterms:subject">
+			<compose prefix="(DDC)" />
+		</data>
+		<data source="045E.e" name="dcterms:subject">
+			<compose prefix="http://d-nb.info/ddc-sg/" />
+		</data>
+		<data source="045E.f" name="dcterms:subject">
+			<compose prefix="http://d-nb.info/ddc-sg/" />
+		</data>
+		<data source="045U.e" name="dcterms:subject">
+			<compose prefix="http://d-nb.info/ddc-sg/" />
+		</data>
+		<data source="033A.n" name="dc:publisher">
+			<replace pattern="@" with="" />
+		</data>
+		<data source="033A.p" name="isbd:p1016">
+			<replace pattern="@" with="" />
+		</data>
+	</rules>
+	<maps>
+
+		<map name="Physikalische Form">
+			<entry name="A" value="Druckschrift (einschl. Kartenreihen)" />
+			<entry name="B"
+				value="Audiovisuelles Material nach RAK-NBM $3a, 1-3, 4b (ohne Compact Discs)" />
+			<entry name="C" value="Blindenschriftträger" />
+			<entry name="E" value="Mikroform" />
+			<entry name="K" value="Kartenmaterial (ohne Kartenreihen)" />
+			<entry name="O" value="Elektronische Ressource im Fernzugriff" />
+			<entry name="S"
+				value="Elektronische Ressource auf Datenträger (einschließlich Compact Discs)" />
+			<entry name="Z" value="Medienkombination" />
+		</map>
+
+		<map name="Bibliografische Erscheinungsform">
+			<entry name="a" value="http://purl.org/ontology/bibo/Document" />
+			<entry name="b" value="http://purl.org/ontology/bibo/Periodical" />
+			<entry name="c" value="http://purl.org/ontology/bibo/Collection" />
+			<entry name="d" value="http://purl.org/ontology/bibo/Series" />
+			<entry name="E" value="http://purl.org/ontology/bibo/Collection" />
+			<entry name="f" value="http://purl.org/ontology/bibo/Document" />
+			<entry name="F" value="http://purl.org/ontology/bibo/Document" />
+			<entry name="l" value="http://purl.org/ontology/bibo/Periodical" />
+		</map>
+
+
+
+		<map name="namespaces">
+			<entry name="" value="http://d-nb.info/" />
+			<entry name="rdf" value="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+			<entry name="rdfs" value="http://www.w3.org/2000/01/rdf-schema#" />
+			<entry name="owl" value="http://www.w3.org/2002/07/owl#" />
+			<entry name="dcterms" value="http://purl.org/dc/terms/" />
+			<entry name="dc" value="http://purl.org/dc/elements/1.1/" />
+			<entry name="isbd" value="http://iflastandards.info/ns/isbd/elements/" />
+			<entry name="bibo" value="http://purl.org/ontology/bibo/" />
+		</map>
+		
+		<map name="listelements">
+			<entry name="bibo:authorList" value="" />
+			<entry name="bibo:contributorList" value="" />
+		</map>
+
+		<map name="zeitschr.">
+			<entry name="lf" value="bibo:Issue" />
+			<entry name="at" value="bibo:Article" />
+		</map>
+	</maps>
+</metamorph>
