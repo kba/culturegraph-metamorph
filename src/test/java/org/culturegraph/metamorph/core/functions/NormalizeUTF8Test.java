@@ -19,8 +19,6 @@ public final class NormalizeUTF8Test {
 	@Test
 	public void testProcess() {
 		final NormalizeUTF8 normalize = new NormalizeUTF8();
-		
-		assertEquals(OUTPUT_STR, normalize.process(INPUT_STR));
+		assertEquals("Normalization incorrect", OUTPUT_STR, normalize.process(INPUT_STR));
 	}
-
 }

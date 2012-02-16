@@ -1,14 +1,14 @@
 package org.culturegraph.metamorph.core.collectors;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
 import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.culturegraph.metamorph.types.NamedValue;
+import org.culturegraph.metamorph.types.ListMap;
 
 /**
  * Corresponds to the <code>&lt;collect-entity&gt;</code> tag.
@@ -17,7 +17,9 @@ import org.culturegraph.metamorph.types.NamedValue;
  */
 public final class Entity extends AbstractCollect {
 
-	private final List<NamedValue> literals = new ArrayList<NamedValue>();
+	private final ListMap<String, String> literalListMap = new ListMap<String, String>();
+	
+	//private final List<NamedValue> literals = new ArrayList<NamedValue>();
 	private final Set<NamedValueSource> sources = new HashSet<NamedValueSource>();
 	private final Set<NamedValueSource> sourcesLeft = new HashSet<NamedValueSource>();
 
@@ -29,15 +31,24 @@ public final class Entity extends AbstractCollect {
 	protected void emit() {
 		final StreamReceiver streamReceiver = getMetamorph().getStreamReceiver();
 		streamReceiver.startEntity(getName());
-		for (NamedValue literal : literals) {
-			streamReceiver.literal(literal.getName(), literal.getValue());
+		
+		for(Entry<String, List<String>> entry:literalListMap.entrySet()){
+			final String name = entry.getKey();
+			for (String value : entry.getValue()) {
+				streamReceiver.literal(name, value);
+			}
 		}
+//		
+//		for (NamedValue literal : literals) {
+//			streamReceiver.literal(literal.getName(), literal.getValue());
+//		}
 		streamReceiver.endEntity();
 	}
 
 	@Override
 	protected void receive(final String name, final String value, final NamedValueSource source) {
-		literals.add(new NamedValue(name, value));
+		literalListMap.put(name, value);
+		//literals.add(new NamedValue(name, value));
 		sourcesLeft.remove(source);
 	}
 
@@ -49,7 +60,8 @@ public final class Entity extends AbstractCollect {
 	@Override
 	protected void clear() {
 		sourcesLeft.addAll(sources);
-		literals.clear();
+		//literals.clear();
+		literalListMap.clear();
 	}
 
 	@Override

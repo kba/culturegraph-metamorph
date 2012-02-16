@@ -89,10 +89,10 @@
 			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:data source="data" name="data1">
-						<mm:equals string="Aloha"/>
+						<mm:equals string="Aloha" />
 					</mm:data>
 					<mm:data source="data" name="data2">
-						<mm:not-equals string="Aloha"/>
+						<mm:not-equals string="Aloha" />
 					</mm:data>
 				</mm:rules>
 			</mm:metamorph>
@@ -104,6 +104,46 @@
 					<cgxml:record id="1">
 						<cgxml:literal name="data1" value="Aloha" />
 						<cgxml:literal name="data2" value="Hawaii" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
+
+	<test-case name="buffer">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+
+						<cgxml:literal name="d2" value="Hawaii" />
+						<cgxml:literal name="d2" value="Oahu" />
+						<cgxml:literal name="d1" value="Aloha" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="1">
+				<mm:rules>
+					<mm:combine name="greeting" value="${greet} ${island}"
+						reset="false">
+						<mm:data source="d1" name="greet" />
+						<mm:data source="d2" name="island">
+							<mm:buffer />
+						</mm:data>
+					</mm:combine>
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="greeting" value="Aloha Hawaii" />
+						<cgxml:literal name="greeting" value="Aloha Oahu" />
 					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>

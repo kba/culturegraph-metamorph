@@ -14,7 +14,7 @@
 			<sequence minOccurs="1" maxOccurs="1">
 				<element ref="tns:meta" maxOccurs="1" minOccurs="0" />
 				<element ref="tns:functions" maxOccurs="1" minOccurs="0" />
-				<element ref="tns:rules" maxOccurs="1" minOccurs="0" />
+				<element ref="tns:rules" maxOccurs="unbounded" minOccurs="0" />
 				<element ref="tns:maps" maxOccurs="unbounded" minOccurs="0" />
 			</sequence>
 			<attribute name="entityMarker">
@@ -269,6 +269,7 @@
 			<element ref="tns:occurence" />
 			<element ref="tns:constant" />
 			<element ref="tns:count" />
+			<element ref="tns:buffer" />
 			<any namespace="##other" processContents="lax" />
 
 		</choice>
@@ -376,27 +377,34 @@
 			<attribute name="string" type="string" use="required" />
 		</complexType>
 	</element>
-	
+
 	<element name="not-equals">
 		<complexType>
 			<attribute name="string" type="string" use="required" />
 		</complexType>
 	</element>
-	
-		<element name="case">
+
+	<element name="buffer">
+		<complexType>
+			<attribute name="flushWith" type="string" use="optional"
+				default="record" />
+		</complexType>
+	</element>
+
+	<element name="case">
 		<complexType>
 			<attribute name="to" use="required">
 				<simpleType>
 					<restriction base="string">
-						<enumeration value="upper"/>
-						<enumeration value="lower"/>
+						<enumeration value="upper" />
+						<enumeration value="lower" />
 					</restriction>
 				</simpleType>
 			</attribute>
 			<attribute name="language" type="string" use="optional" />
 		</complexType>
 	</element>
-	
+
 	<element name="constant">
 		<complexType>
 			<attribute name="value" type="string" use="required" />

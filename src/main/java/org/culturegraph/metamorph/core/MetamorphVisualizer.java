@@ -22,6 +22,7 @@ import org.w3c.dom.Node;
 public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 
 	private static final String RECURSION_INDICATOR = "@";
+	private static final String CHOOSE = "choose";
 	private final Map<String, String> meta = new HashMap<String, String>();
 	private final PrintWriter writer;
 	private int count;
@@ -30,10 +31,10 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 	// private final ListMap<String, String> sourceIdMap = new ListMap<String,
 	// String>();
 	private final Set<String> sources = new HashSet<String>();
-
 	private final StringBuilder edgeBuffer = new StringBuilder();
 	private final Deque<String> lastProcessorStack = new LinkedList<String>();
-
+	private final Deque<Integer> childCountStack = new LinkedList<Integer>();
+	
 	public MetamorphVisualizer(final Writer writer) {
 		super();
 		this.writer = new PrintWriter(writer);
@@ -89,6 +90,7 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 
 	@Override
 	protected void init() {
+		childCountStack.push(Integer.valueOf(0));
 		writer.println("digraph g {\n" + "graph [ rankdir = \"LR\" ];\n"
 				+ "node [ fontsize = \"11\"  shape = \"plaintext\"];\n" + "edge [ fontsize = \"11\" ];\n");
 	}
@@ -172,7 +174,7 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 	@Override
 	protected void enterData(final Node node) {
 		//final String identifier = getNewId();
-
+		childCountStack.push(Integer.valueOf(1+childCountStack.pop().intValue()));
 	//	final String name = getAttr(node, ATTRITBUTE.NAME);
 		final String source = getAttr(node, ATTRITBUTE.SOURCE);
 
@@ -195,7 +197,10 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 
 	@Override
 	protected void exitData(final Node node) {
-		final String name = getAttr(node, ATTRITBUTE.NAME);
+		String name = getAttr(node, ATTRITBUTE.NAME);
+		if(name==null){
+			name = "";
+		}
 		final String lastProcessor = lastProcessorStack.pop();
 
 		sources.add(getAttr(node, ATTRITBUTE.SOURCE));
@@ -210,19 +215,25 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 		// }
 
 		if (idStack.isEmpty()) {
-			if (name != null && name.startsWith(RECURSION_INDICATOR)) {
+			if (name.startsWith(RECURSION_INDICATOR)) {
 				addEdge(lastProcessor, name);
 				sources.add(name);
 			} else {
 				addEdge(lastProcessor, newOutNode(), name);
 			}
 		} else {
-			addEdge(lastProcessor, idStack.peek(), name);
+			if(node.getParentNode().getLocalName().equals(CHOOSE)){
+				addEdge(lastProcessor, idStack.peek(), name + "("+ childCountStack.peek() +")");
+			}else{
+				addEdge(lastProcessor, idStack.peek(), name);
+			}
 		}
 	}
 
 	@Override
 	protected void enterCollect(final Node node) {
+		childCountStack.push(Integer.valueOf(1+childCountStack.pop().intValue()));
+		childCountStack.push(Integer.valueOf(0));
 		final String identifier = getNewId();
 		lastProcessorStack.push(identifier);
 		idStack.push(identifier);
@@ -244,19 +255,27 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 	protected void exitCollect(final Node node) {
 		idStack.pop();
 
-		final String name = getAttr(node, ATTRITBUTE.NAME);
+		String name = getAttr(node, ATTRITBUTE.NAME);
+		if(name==null){
+			name = "";
+		}
 		final String lastProcessor = lastProcessorStack.pop();
 
 		if (idStack.isEmpty()) {
-			if (name != null && name.startsWith(RECURSION_INDICATOR)) {
+			if (name.startsWith(RECURSION_INDICATOR)) {
 				addEdge(lastProcessor, name);
 				sources.add(name);
 			} else {
 				addEdge(lastProcessor, newOutNode(), name);
 			}
 		} else {
-			addEdge(lastProcessor, idStack.peek(), name);
+			if(node.getParentNode().getLocalName().equals(CHOOSE)){
+				addEdge(lastProcessor, idStack.peek(), name + "("+ childCountStack.peek() +")");
+			}else{
+				addEdge(lastProcessor, idStack.peek(), name);
+			}
 		}
+		childCountStack.pop();
 	}
 
 	@Override

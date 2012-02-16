@@ -36,6 +36,7 @@ public final class FunctionFactory extends ObjectFactory<Function>{
 		registerClass("occurence", Occurence.class);
 		registerClass("constant", Constant.class);
 		registerClass("count", Count.class);
+		registerClass("buffer", Buffer.class);
 	}
 
 }

@@ -8,7 +8,8 @@
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
 					<cgxml:record id="1">
-						<cgxml:literal name="data1" value="a" />
+						<cgxml:literal name="data1" value="a1" />
+						<cgxml:literal name="data1" value="a2" />
 						<cgxml:literal name="data2" value="b" />
 					</cgxml:record>
 					<cgxml:record id="2">
@@ -35,7 +36,8 @@
 				<cgxml:records>
 					<cgxml:record id="1">
 						<cgxml:entity name="entity">
-							<cgxml:literal name="l1" value="a" />
+							<cgxml:literal name="l1" value="a1" />
+							<cgxml:literal name="l1" value="a2" />
 							<cgxml:literal name="l2" value="b" />
 						</cgxml:entity>
 					</cgxml:record>
