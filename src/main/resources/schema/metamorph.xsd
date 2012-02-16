@@ -14,8 +14,13 @@
 			<sequence minOccurs="1" maxOccurs="1">
 				<element ref="tns:meta" maxOccurs="1" minOccurs="0" />
 				<element ref="tns:functions" maxOccurs="1" minOccurs="0" />
-				<element ref="tns:rules" maxOccurs="unbounded" minOccurs="0" />
-				<element ref="tns:maps" maxOccurs="unbounded" minOccurs="0" />
+
+				<choice maxOccurs="unbounded" minOccurs="0">
+					<element ref="tns:rules" maxOccurs="1" minOccurs="0" />
+					<element ref="tns:maps" maxOccurs="1" minOccurs="0" />
+					<element ref="xi:include" maxOccurs="1" minOccurs="0" />
+				</choice>
+
 			</sequence>
 			<attribute name="entityMarker">
 				<simpleType>
@@ -33,7 +38,7 @@
 					</restriction>
 				</simpleType>
 			</attribute>
-
+			<attribute ref="xml:base" />
 		</complexType>
 	</element>
 

@@ -3,6 +3,8 @@ package org.culturegraph.metamorph.core.collectors;
 import org.culturegraph.metamorph.core.AbstractNamedValuePipeHead;
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Common basis for {@link Entity}, {@link Combine} etc.
@@ -12,11 +14,10 @@ import org.culturegraph.metamorph.core.NamedValueSource;
  */
 public abstract class AbstractCollect extends AbstractNamedValuePipeHead implements Collect {
 
-	//private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 
 	private int oldRecord;
 	private int oldEntity;
-	private boolean alreadyEmitted;
 	private boolean resetAfterEmit;
 	private boolean sameEntity;
 	private String name;
@@ -42,45 +43,32 @@ public abstract class AbstractCollect extends AbstractNamedValuePipeHead impleme
 		return oldEntity;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.culturegraph.metamorph.core.collectors.Collect#setFlushWith(java.lang.String)
-	 */
 	@Override
 	public final void setFlushWith(final String flushEntity) {
 		waitForFlush = true;
 		metamorph.addEntityEndListener(this, flushEntity);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.culturegraph.metamorph.core.collectors.Collect#setSameEntity(boolean)
-	 */
+
 	
 	@Override
 	public final void setSameEntity(final boolean sameEntity) {
 		this.sameEntity = sameEntity;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see org.culturegraph.metamorph.core.collectors.Collect#setReset(boolean)
-	 */
+
 	@Override
 	public final void setReset(final boolean reset) {
 		this.resetAfterEmit = reset;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.culturegraph.metamorph.core.collectors.Collect#getName()
-	 */
+
 	
 	@Override
 	public final String getName() {
 		return name;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.culturegraph.metamorph.core.collectors.Collect#setName(java.lang.String)
-	 */
 	
 	@Override
 	public final void setName(final String name) {
@@ -104,12 +92,10 @@ public abstract class AbstractCollect extends AbstractNamedValuePipeHead impleme
 	private void updateCounts(final int currentRecord, final int currentEntity) {
 		if (!isSameRecord(currentRecord)) {
 			clear();
-			alreadyEmitted = false;
 			oldRecord = currentRecord;
 		}
 		if (resetNeedFor(currentEntity)) {
 			clear();
-			alreadyEmitted = false;
 			oldEntity = currentEntity;
 		}
 	}
@@ -128,21 +114,15 @@ public abstract class AbstractCollect extends AbstractNamedValuePipeHead impleme
 
 		receive(name, value, source);
 
-		if (isComplete()) {
+		if (!waitForFlush && isComplete()) {
 			emit();
-			alreadyEmitted = true;
 			if (resetAfterEmit) {
 				clear();
-				alreadyEmitted = false;
 			}
 		}
 	}
 
 
-
-	/* (non-Javadoc)
-	 * @see org.culturegraph.metamorph.core.collectors.Collect#addNamedValueSource(org.culturegraph.metamorph.core.NamedValueSource)
-	 */
 	@Override
 	public void addNamedValueSource(final NamedValueSource namedValueSource) {
 		// nothing
@@ -151,8 +131,11 @@ public abstract class AbstractCollect extends AbstractNamedValuePipeHead impleme
 
 	@Override
 	public final void onEntityEnd(final String entityName, final int recordCount, final int entityCount) {
-		if (!alreadyEmitted  && isSameRecord(recordCount) && sameEntityConstraintSatisfied(entityCount)) {
+		if (isSameRecord(recordCount) && sameEntityConstraintSatisfied(entityCount)) {
 			emit();
+			if (resetAfterEmit) {
+				clear();
+			}
 		}
 	}
 	
