@@ -31,7 +31,7 @@
 			</mm:metamorph>
 		</transformation>
 
-		<result type="text/x-cg+xml">
+		<result type="text/x-cg+xml" strict-key-order="true">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
 					<cgxml:record id="1">

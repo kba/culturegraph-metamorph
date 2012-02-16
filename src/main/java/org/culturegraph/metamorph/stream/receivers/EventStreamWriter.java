@@ -54,6 +54,7 @@ public final class EventStreamWriter implements StreamReceiver {
 		public String toString() {
 			final StringBuilder builder = new StringBuilder();
 			builder.append(type);
+			
 			if (name != null) {
 				builder.append("(" );
 				builder.append(name);

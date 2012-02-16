@@ -22,6 +22,7 @@ public abstract class AbstractCollect extends AbstractNamedValuePipeHead impleme
 	private String name;
 	private String value;
 	private final Metamorph metamorph;
+	private boolean waitForFlush;
 
 
 	public AbstractCollect(final Metamorph metamorph) {
@@ -46,6 +47,7 @@ public abstract class AbstractCollect extends AbstractNamedValuePipeHead impleme
 	 */
 	@Override
 	public final void setFlushWith(final String flushEntity) {
+		waitForFlush = true;
 		metamorph.addEntityEndListener(this, flushEntity);
 	}
 
