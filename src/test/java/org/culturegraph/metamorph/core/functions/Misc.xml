@@ -115,7 +115,6 @@
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
 					<cgxml:record id="1">
-
 						<cgxml:literal name="d2" value="Hawaii" />
 						<cgxml:literal name="d2" value="Oahu" />
 						<cgxml:literal name="d1" value="Aloha" />
