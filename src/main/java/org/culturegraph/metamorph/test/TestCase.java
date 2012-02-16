@@ -77,12 +77,13 @@ public final class TestCase {
 		final EventStreamValidator validator = 
 				new EventStreamValidator(resultStream.getEventStream());
 		
+		final Element result = (Element) config.getElementsByTagName(RESULT_TAG).item(0);
 		validator.setStrictRecordOrder(Boolean.parseBoolean(
-				config.getAttribute(STRICT_RECORD_ORDER_ATTR)));
+				result.getAttribute(STRICT_RECORD_ORDER_ATTR)));
 		validator.setStrictKeyOrder(Boolean.parseBoolean(
-				config.getAttribute(STRICT_KEY_ORDER_ATTR)));
+				result.getAttribute(STRICT_KEY_ORDER_ATTR)));
 		validator.setStrictValueOrder(Boolean.parseBoolean(
-				config.getAttribute(STRICT_VALUE_ORDER_ATTR)));
+				result.getAttribute(STRICT_VALUE_ORDER_ATTR)));
 		
 		final CGXmlReader resultReader = new CGXmlReader();
 		resultReader.setReceiver(validator);
