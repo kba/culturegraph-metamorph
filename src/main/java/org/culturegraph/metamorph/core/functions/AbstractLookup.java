@@ -21,7 +21,7 @@ abstract class AbstractLookup extends AbstractSimpleStatelessFunction {
 	}
 
 
-	protected final void setMapName(final String mapName) {
+	protected final void setMap(final String mapName) {
 		this.mapName = mapName;
 	}
 }

@@ -15,8 +15,4 @@ public final class BlackList extends AbstractLookup {
 		}
 		return null;
 	}
-
-	public void setList(final String mapName) {
-		setMapName(mapName);
-	}
 }

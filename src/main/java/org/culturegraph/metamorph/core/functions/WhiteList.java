@@ -17,8 +17,4 @@ public final class WhiteList extends AbstractLookup {
 		}
 		return null;
 	}
-
-	public void setList(final String mapName) {
-		setMapName(mapName);
-	}
 }

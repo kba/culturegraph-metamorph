@@ -26,6 +26,6 @@ public final class Lookup extends AbstractLookup {
 	}
 
 	public void setIn(final String mapName) {
-		setMapName(mapName);
+		setMap(mapName);
 	}
 }
