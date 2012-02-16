@@ -3,7 +3,7 @@
 	xmlns="http://www.culturegraph.org/metamorph-test" xmlns:mm="http://www.culturegraph.org/metamorph"
 	xmlns:cgxml="http://www.culturegraph.org/cgxml">
 
-	<test-case name="Entity Test Simple">
+	<test-case name="entity simple">
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
@@ -43,16 +43,16 @@
 					</cgxml:record>
 					<cgxml:record id="2">
 						<cgxml:entity name="entity">
-							<cgxml:literal name="l2" value="c" />
 							<cgxml:literal name="l1" value="d" />
+							<cgxml:literal name="l2" value="c" />
 						</cgxml:entity>
 					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>
 		</result>
 	</test-case>
-	
-	<test-case name="Entity Test with flush">
+
+	<test-case name="entity with flush">
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>

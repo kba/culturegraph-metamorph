@@ -1,14 +1,15 @@
 package org.culturegraph.metamorph.core.collectors;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.types.ListMap;
+import org.culturegraph.metamorph.types.NamedValue;
 
 /**
  * Corresponds to the <code>&lt;collect-entity&gt;</code> tag.
@@ -17,10 +18,10 @@ import org.culturegraph.metamorph.types.ListMap;
  */
 public final class Entity extends AbstractCollect {
 
-	private final ListMap<String, String> literalListMap = new ListMap<String, String>();
+	private final ListMap<NamedValueSource, NamedValue> literalListMap = new ListMap<NamedValueSource, NamedValue>();
 	
 	//private final List<NamedValue> literals = new ArrayList<NamedValue>();
-	private final Set<NamedValueSource> sources = new HashSet<NamedValueSource>();
+	private final List<NamedValueSource> sourceList = new ArrayList<NamedValueSource>();
 	private final Set<NamedValueSource> sourcesLeft = new HashSet<NamedValueSource>();
 
 	public Entity(final Metamorph metamorph) {
@@ -32,12 +33,17 @@ public final class Entity extends AbstractCollect {
 		final StreamReceiver streamReceiver = getMetamorph().getStreamReceiver();
 		streamReceiver.startEntity(getName());
 		
-		for(Entry<String, List<String>> entry:literalListMap.entrySet()){
-			final String name = entry.getKey();
-			for (String value : entry.getValue()) {
-				streamReceiver.literal(name, value);
+	
+		for(NamedValueSource source:sourceList){
+			for (NamedValue literal : literalListMap.get(source)) {
+				streamReceiver.literal(literal.getName(), literal.getValue());
 			}
 		}
+//			final String name = entry.getKey();
+//			for (String value : entry.getValue()) {
+//				streamReceiver.literal(name, value);
+//			}
+//		}
 //		
 //		for (NamedValue literal : literals) {
 //			streamReceiver.literal(literal.getName(), literal.getValue());
@@ -47,7 +53,7 @@ public final class Entity extends AbstractCollect {
 
 	@Override
 	protected void receive(final String name, final String value, final NamedValueSource source) {
-		literalListMap.put(name, value);
+		literalListMap.put(source, new NamedValue(name, value));
 		//literals.add(new NamedValue(name, value));
 		sourcesLeft.remove(source);
 	}
@@ -59,14 +65,14 @@ public final class Entity extends AbstractCollect {
 
 	@Override
 	protected void clear() {
-		sourcesLeft.addAll(sources);
+		sourcesLeft.addAll(sourceList);
 		//literals.clear();
 		literalListMap.clear();
 	}
 
 	@Override
 	public void addNamedValueSource(final NamedValueSource namedValueSource) {
-		sources.add(namedValueSource);
+		sourceList.add(namedValueSource);
 		sourcesLeft.add(namedValueSource);
 	}
 }
