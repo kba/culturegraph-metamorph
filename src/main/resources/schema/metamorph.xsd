@@ -38,7 +38,7 @@
 					</restriction>
 				</simpleType>
 			</attribute>
-			<attribute ref="xml:base" />
+<!-- 			<attribute ref="xml:base" /> -->
 		</complexType>
 	</element>
 
@@ -188,7 +188,7 @@
 			</sequence>
 			<attribute name="source" type="string" use="required" />
 			<attribute name="name" type="string" use="optional" />
-			<attribute name="value" type="string" use="optional" />
+<!-- 			<attribute name="value" type="string" use="optional" /> -->
 		</complexType>
 	</element>
 
@@ -275,6 +275,8 @@
 			<element ref="tns:constant" />
 			<element ref="tns:count" />
 			<element ref="tns:buffer" />
+			<element ref="tns:name" />
+			<element ref="tns:get-name"/>
 			<any namespace="##other" processContents="lax" />
 
 		</choice>
@@ -368,6 +370,11 @@
 	</element>
 
 	<element name="trim">
+		<complexType>
+		</complexType>
+	</element>
+	
+	<element name="get-name">
 		<complexType>
 		</complexType>
 	</element>

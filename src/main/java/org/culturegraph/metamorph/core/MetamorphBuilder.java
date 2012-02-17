@@ -121,7 +121,7 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker{
 		final String source = getAttr(dataNode, ATTRITBUTE.SOURCE);
 		data = new Data(source);
 		data.setName(getAttr(dataNode, ATTRITBUTE.NAME));
-		data.setValue(getAttr(dataNode, ATTRITBUTE.VALUE));
+//		data.setValue(getAttr(dataNode, ATTRITBUTE.VALUE));
 		metamorph.registerData(data);
 	}
 	

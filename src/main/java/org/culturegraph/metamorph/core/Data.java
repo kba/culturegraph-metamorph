@@ -11,7 +11,7 @@ import org.culturegraph.metamorph.util.StringUtil;
 final class Data  extends AbstractNamedValuePipeHead{
 
 	private String name;
-	private String value;
+	//private String value;
 	private final String source;
 
 	public Data(final String source) {
@@ -25,7 +25,7 @@ final class Data  extends AbstractNamedValuePipeHead{
 
 	@Override
 	public void receive(final String recName, final String recValue, final NamedValueSource source, final int recordCount, final int entityCount) {
-		getNamedValueReceiver().receive(StringUtil.fallback(name, recName), StringUtil.fallback(value, recValue),this, recordCount, entityCount);
+		getNamedValueReceiver().receive(StringUtil.fallback(name, recName), recValue, this, recordCount, entityCount);
 	}
 
 
@@ -38,28 +38,4 @@ final class Data  extends AbstractNamedValuePipeHead{
 		this.name = name;
 	}
 
-	/**
-	 * @param value
-	 *            the defaultValue to set
-	 */
-	
-	public void setValue(final String value) {
-		this.value = value;
-	}
-
-//	/**
-//	 * @return the defaultName
-//	 */
-//	
-//	public String getName() {
-//		return name;
-//	}
-//
-//	/**
-//	 * @return the defaultValue
-//	 */
-//
-//	public String getValue() {
-//		return value;
-//	}
 }

@@ -14,7 +14,7 @@ public final class Equals extends AbstractSimpleStatelessFunction {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * @param string
 	 */
