@@ -70,7 +70,9 @@
 				<group ref="tns:entity-rule" />
 				<element ref="xi:include" />
 			</choice>
+			<attribute ref="xml:base" />
 		</complexType>
+		
 	</element>
 
 	<element name="maps">
@@ -79,6 +81,7 @@
 				<element ref="tns:map" />
 				<element ref="xi:include" />
 			</choice>
+			<attribute ref="xml:base" />
 		</complexType>
 	</element>
 
