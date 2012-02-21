@@ -45,6 +45,14 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 		this.writer = new PrintWriter(writer);
 	}
 
+
+	@Override
+	protected void init() {
+		childCountStack.push(Integer.valueOf(0));
+		writer.println("digraph dataflow {\n" + "graph [ rankdir = \"LR\"];\n"
+				+ "node [ fontsize = \"9\"  shape = \"plaintext\"  fontname=\"Helvetica\"];\n" + "edge [ fontsize = \"9\"   fontname=\"Helvetica\"];\n");
+	}
+	
 	private static String buildRecord(final String identifier, final String name, final String color,
 			final Map<String, String> attributes) {
 		final StringBuilder builder = new StringBuilder();
@@ -93,12 +101,6 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 		edgeBuffer.append("\"" + fromId + "\" -> \"" + toId + "\" [color = \"grey\" dir=\"none\"]\n");
 	}
 
-	@Override
-	protected void init() {
-		childCountStack.push(Integer.valueOf(0));
-		writer.println("digraph g {\n" + "graph [ rankdir = \"LR\" ];\n"
-				+ "node [ fontsize = \"11\"  shape = \"plaintext\"];\n" + "edge [ fontsize = \"11\" ];\n");
-	}
 
 	@Override
 	protected void finish() {
