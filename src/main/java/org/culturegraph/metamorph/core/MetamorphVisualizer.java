@@ -163,14 +163,6 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 		return String.valueOf(++count);
 	}
 
-	// private String enterEntity(final Node node){
-	//
-	// }
-	//
-	// private void exitEntity(final Node node){
-	//
-	// }
-
 	private String newOutNode() {
 		final String identifier = getNewId();
 		writer.println("\"" + identifier
@@ -242,6 +234,9 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 	protected void handleFunction(final Node functionNode) {
 		final String identifier = getNewId();
 		final Map<String, String> attributes = attributesToMap(functionNode);
+		
+		//for lookups TODO: find generic solution
+		attributes.remove("default");
 		final String inAttr = attributes.remove("in");
 		if (inAttr != null) {
 			addIncludeEdge(inAttr, identifier);
