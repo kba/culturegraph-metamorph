@@ -200,7 +200,7 @@
 	<element name="postprocess">
 		<complexType>
 			<sequence>
-				<group ref="tns:function"></group>
+				<group ref="tns:function" maxOccurs="unbounded" minOccurs="0"/>
 			</sequence>
 		</complexType>
 	</element>
