@@ -12,29 +12,44 @@ import java.util.List;
  * @author Christoph Böhme <c.boehme@dnb.de>
  *
  */
-public final class Tee implements StreamReceiver, StreamSender {
+public final class Tee implements StreamPipe {
 
 	private final List<StreamReceiver> receivers = new ArrayList<StreamReceiver>();
 	
 	@Override
-	public <R extends StreamReceiver> R setReceiver(final R streamReceiver) {
-		if(!receivers.contains(streamReceiver)){ // inefficient for large lists. Maybe use a HashMap...
-			addStreamReceiver(streamReceiver);
+	public <R extends StreamReceiver> R setReceiver(final R receiver) {
+		if(!receivers.contains(receiver)){ // inefficient for large lists. Maybe use a HashSet...
+			addReceiver(receiver);
 		}
-		return streamReceiver;
+		return receiver;
 	}
 	
 	
-	public void setStreamReceivers(final StreamReceiver receiver1, final StreamReceiver receiver2) {
-		setReceiver(receiver1);
-		setReceiver(receiver2);
+	/**
+	 * sets both receivers and returns the first
+	 * @param receiver
+	 * @param lateralReceiver
+	 * @return the parameter 'receiver'
+	 * 	 
+	 */
+	public <R extends StreamReceiver> R setReceivers(final R receiver, final StreamReceiver lateralReceiver) {
+		setReceiver(receiver);
+		setReceiver(lateralReceiver);
+		return receiver;
 	}
 	
-	public void addStreamReceiver(final StreamReceiver receiver){
+	/**
+	 * adds receiver even if receiver is already added.
+	 * @param receiver
+	 * @return this
+	 */
+	public Tee addReceiver(final StreamReceiver receiver){
 		receivers.add(receiver);
+		return this;
 	}
 	
-	public void removeStreamReceiver(final StreamReceiver receiver){
+	
+	public void removeReceiver(final StreamReceiver receiver){
 		receivers.remove(receiver);
 	}
 
@@ -46,7 +61,6 @@ public final class Tee implements StreamReceiver, StreamSender {
 		for (StreamReceiver receiver : receivers) {
 			receiver.startRecord(identifier);
 		}
-
 	}
 
 	/* (non-Javadoc)
@@ -88,7 +102,4 @@ public final class Tee implements StreamReceiver, StreamSender {
 			receiver.literal(name, value);
 		}
 	}
-
-
-
 }

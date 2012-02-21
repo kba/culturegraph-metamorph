@@ -1,6 +1,5 @@
 package org.culturegraph.metamorph.stream.readers;
 
-import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,7 +10,6 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
  * {@link StreamReceiver}.
  * 
  * @author "Markus Michael Geipel"
- * @status Productive
  * @see StreamReceiver
  */
 public final class PicaReader extends AbstractReader {
@@ -32,10 +30,6 @@ public final class PicaReader extends AbstractReader {
 		read(record, getStreamReceiver());
 	}
 
-	@Override
-	protected Charset getCharset() {
-		return Charset.forName("UTF8");
-	}
 
 	/**
 	 * For each field in the stream the method calls:
@@ -60,7 +54,7 @@ public final class PicaReader extends AbstractReader {
 				final String fieldName;
 				final int firstSubfield;
 				if (subfields[1].charAt(0) == 'S') {
-					fieldName = subfields[0].trim() + subfields[1].charAt(1);
+					fieldName = subfields[0].trim() + subfields[1].trim();
 					firstSubfield = 2;
 				} else {
 					fieldName = subfields[0].trim();

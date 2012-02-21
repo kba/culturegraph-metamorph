@@ -8,14 +8,15 @@
 	<!-- </parent> -->
 	<groupId>org.culturegraph</groupId>
 	<artifactId>metamorph</artifactId>
-	<version>0.3</version>
+
+	<version>1.0</version>
+
 	<name>Metamorph, Transformation Language for Metadata</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<targetJdk>1.6</targetJdk>
 		<junit.version>4.8.2</junit.version>
-		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
 	</properties>
 
 	<!-- <repositories> -->
@@ -34,7 +35,6 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<type>jar</type>
-			<scope>test</scope>
 		</dependency>
 		<!-- Logging -->
 
@@ -44,9 +44,35 @@
 			<version>1.6.4</version>
 		</dependency>
 
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+
+		<!-- <dependency> -->
+		<!-- <groupId>xerces</groupId> -->
+		<!-- <artifactId>xercesImpl</artifactId> -->
+		<!-- <version>2.10.0</version> -->
+		<!-- </dependency> -->
+
 	</dependencies>
 
 	<build>
+
+		<testResources>
+			<testResource>
+				<directory>src/test/java</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -92,7 +118,7 @@
 						<artifactId>maven-checkstyle-plugin</artifactId>
 						<version>2.6</version>
 						<configuration>
-							<configLocation>${basedir}/developers/checkstyle_rules.xml</configLocation>
+							<configLocation>${basedir}/quality_assurance/checkstyle_rules.xml</configLocation>
 						</configuration>
 						<executions>
 							<execution>
@@ -150,7 +176,7 @@
 							<linkXRef>true</linkXRef>
 
 							<rulesets>
-								<ruleset>${basedir}/developers/pmd_rules.xml</ruleset>
+								<ruleset>${basedir}/quality_assurance/pmd_rules.xml</ruleset>
 							</rulesets>
 						</configuration>
 

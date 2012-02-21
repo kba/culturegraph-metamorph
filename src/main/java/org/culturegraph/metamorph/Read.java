@@ -1,7 +1,7 @@
 package org.culturegraph.metamorph;
 
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
@@ -40,7 +40,7 @@ public final class Read {
 		final String fileName = args[0];
 		final String extension = getExtention(fileName);
 		reader.setFormat(extension);
-		reader.read(new FileInputStream(fileName));
+		reader.read(new FileReader(fileName));
 		consoleWriter.flush();
 	}
 

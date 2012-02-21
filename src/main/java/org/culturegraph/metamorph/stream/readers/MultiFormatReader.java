@@ -1,7 +1,6 @@
 package org.culturegraph.metamorph.stream.readers;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +8,7 @@ import org.culturegraph.metamorph.core.DefaultErrorHandler;
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
 import org.culturegraph.metamorph.core.MetamorphErrorHandler;
-import org.culturegraph.metamorph.core.MetamorphException;
+import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 
 /**
@@ -70,7 +69,7 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 		if (morphDefinition==null && streamReceiver != null) {
 			currentReader.setReceiver(streamReceiver);
 		}else if (morphDefinition != null) {
-			final String morphDefinitionFinal = morphDefinition + '.' + format;
+			final String morphDefinitionFinal = morphDefinition + '.' + format + ".xml";
 			final Metamorph metamorph = MetamorphBuilder.build(morphDefinitionFinal);
 			metamorphs.put(format, metamorph);
 			metamorph.setErrorHandler(this);
@@ -79,7 +78,6 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 				metamorph.setReceiver(streamReceiver);
 			}
 		} 
-
 	}
 
 	@Override
@@ -102,19 +100,22 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 		return streamReceiver;
 	}
 
-	@Override
-	public void read(final InputStream inputStream) throws IOException {
-		if (streamReceiver == null) {
-			throw new IllegalStateException(ERROR_RECEIVER_NULL);
-		}
+//	@Override
+//	public void read(final InputStream inputStream) throws IOException {
+//		if (streamReceiver == null) {
+//			throw new IllegalStateException(ERROR_RECEIVER_NULL);
+//		}
+//
+//		try {
+//			currentReader.read(inputStream);
+//		} catch (MetamorphException e) {
+//			errorHandler.error(e);
+//		}
+//	}
 
-		try {
-			currentReader.read(inputStream);
-		} catch (MetamorphException e) {
-			errorHandler.error(e);
-		}
-	}
-
+	
+	
+	
 	@Override
 	public void read(final String entry) {
 		if (streamReceiver == null) {

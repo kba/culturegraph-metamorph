@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.stream.readers;
 
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 
 import org.culturegraph.metamorph.DataFilePath;
@@ -23,22 +23,18 @@ public final class SimplePicaReaderTest {
 	private final Reader reader = new PicaReader();
 	private final CountingWriter countStreamReceiver = new CountingWriter();
 
+	@Test(expected=MissingIdException.class)
+	public void testCorruptRead() throws IOException {
+		reader.setReceiver(countStreamReceiver);
+		reader.read(new FileReader(DataFilePath.PND_PICA));
+		reader.read("!THIS IS A CORRUPT RECORD!");
+	}
+	
 	@Test
 	public void testRead() throws IOException {
 		reader.setReceiver(countStreamReceiver);
-		reader.read(new FileInputStream(DataFilePath.PND_PICA));
+		reader.read(new FileReader(DataFilePath.PND_PICA));
 
-
-
-		/*
-		 * record contains no id
-		 */
-		try {
-			reader.read("!THIS IS A CORRUPT RECORD!");
-			Assert.fail("Expected MissingIdException!");
-		} catch (MissingIdException e) {
-			// nothing to do
-		}
 		/*
 		 * record contains empty fields (should be skipped)
 		 */

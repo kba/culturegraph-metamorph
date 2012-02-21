@@ -5,6 +5,11 @@ import java.util.Collection;
 import org.culturegraph.metamorph.stream.Collector;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 
+/**
+ * just records the value of the last received literal.
+ * @author Markus Michael Geipel
+ *
+ */
 public final class SingleValueWriter implements StreamReceiver, Collector<String> {
 
 	private String value = "";
@@ -47,6 +52,9 @@ public final class SingleValueWriter implements StreamReceiver, Collector<String
 		this.setValue(value);
 	}
 
+	/**
+	 * @return collected value, if nothing collected return ""
+	 */
 	public String getValue() {
 		return value;
 	}

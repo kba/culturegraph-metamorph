@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.culturegraph.metamorph.core.exceptions.IllegalMorphStateException;
+import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.culturegraph.metamorph.multimap.MultiMap;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
+import org.culturegraph.metamorph.stream.StreamPipe;
 import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.culturegraph.metamorph.stream.StreamSender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Transforms a data stream send via the {@link StreamReceiver} interface. Use
@@ -21,30 +21,33 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamReceiver, StreamSender, NamedValueReceiver, SimpleMultiMap {
+public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMultiMap, EntityEndIndicator {
 
 	public static final String ELSE_KEYWORD = "_else";
-	public static final String RECORD_KEYWORD = "record";
+	//public static final String RECORD_KEYWORD = "record";
 	public static final char FEEDBACK_CHAR = '@';
-	
-	private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
+	public static final String METADATA = "__meta";
+
+	//private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 	private static final char DEFAULT_ENTITY_MARKER = '.';
-	
+	//private static final char NEWLINE = '\n';
 
 	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
 	private final List<Data> elseSource = new ArrayList<Data>();
 	private final Map<String, List<EntityEndListener>> entityEndListeners = new HashMap<String, List<EntityEndListener>>();
 	private final Map<String, String> entityMap = new HashMap<String, String>();
 	private final SimpleMultiMap multiMap = new MultiMap();
-	
+
 	private final Deque<String> entityStack = new LinkedList<String>();
 	private final StringBuilder entityPath = new StringBuilder();
 	private final Deque<Integer> entityCountStack = new LinkedList<Integer>();
 
 	private StreamReceiver outputStreamReceiver;
 	private MetamorphErrorHandler errorHandler = new DefaultErrorHandler();
+
+	// private final RootSource rootSource = new RootSource();
 
 	private int recordCount;
 	private int entityCount;
@@ -63,8 +66,9 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		this.errorHandler = errorHandler;
 	}
 
-	protected void registerDataSource(final Data data, final String path) {
-		assert data != null && path != null;
+	protected void registerData(final Data data) {
+
+		final String path = data.getSource();
 
 		if (ELSE_KEYWORD.equals(path)) {
 			elseSource.add(data);
@@ -89,7 +93,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		entityCount = 0;
 		++recordCount;
 		recordCount %= Integer.MAX_VALUE;
-		
+
 		entityCountStack.add(Integer.valueOf(entityCount));
 
 		final String identifierFinal;
@@ -106,7 +110,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 	public void endRecord() {
 
 		notifyEntityEndListeners(RECORD_KEYWORD);
-		
+
 		outputStreamReceiver.endRecord();
 		entityCountStack.removeLast();
 		if (!entityCountStack.isEmpty()) {
@@ -160,9 +164,10 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 
 	@Override
 	public void literal(final String name, final String value) {
-		if (entityCountStack.isEmpty()) {
-			throw new IllegalMorphStateException("Cannot receive literals outside of records");
-		}
+		// if (entityCountStack.isEmpty()) {
+		// throw new
+		// IllegalMorphStateException("Cannot receive literals outside of records");
+		// }
 
 		final String path = entityPath.toString() + name;
 		dispatch(path, value, elseSource);
@@ -204,7 +209,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		final int entityCount = entityCountStack.getLast().intValue();
 		for (Data data : dataList) {
 			try {
-				data.data(key, value, recordCount, entityCount);
+				data.receive(key, value, null, recordCount, entityCount);
 			} catch (MetamorphException e) {
 				errorHandler.error(e);
 			}
@@ -216,7 +221,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 	 *            the outputHandler to set
 	 */
 	@Override
-	public <R extends StreamReceiver> R  setReceiver(final R streamReceiver) {
+	public <R extends StreamReceiver> R setReceiver(final R streamReceiver) {
 		if (streamReceiver == null) {
 			throw new IllegalArgumentException("'streamReceiver' must not be null");
 		}
@@ -227,23 +232,23 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 	/**
 	 * @return the outputStreamReceiver
 	 */
-	protected StreamReceiver getStreamReceiver() {
+	public StreamReceiver getStreamReceiver() {
 		return outputStreamReceiver;
 	}
 
-
-
 	@Override
-	public void data(final String name, final String value, final int recordCount, final int entityCount) {
-		if (name == null || value == null) {
-			LOG.warn("Empty data received. This is not suposed to happen. Please file a bugreport");
-		} else {
-			if (name.length() != 0 && name.charAt(0) == FEEDBACK_CHAR) {
-				dispatch(name, value, null);
-			} else {
-				outputStreamReceiver.literal(name, value);
-			}
+	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount,
+			final int entityCount) {
+		if(null==name){
+			throw new IllegalArgumentException("encountered literal with name='null'. This indicates a bug in the functions.");
 		}
+		
+		if (name.length() != 0 && name.charAt(0) == FEEDBACK_CHAR) {
+			dispatch(name, value, null);
+		} else {
+			outputStreamReceiver.literal(name, value);
+		}
+
 	}
 
 	/**
@@ -254,9 +259,8 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		entityMap.put(from, toParam);
 	}
 
-	protected void addEntityEndListener(final EntityEndListener entityEndListener, final String entityName) {
-		assert entityEndListener != null && entityName != null;
-
+	@Override
+	public void addEntityEndListener(final EntityEndListener entityEndListener, final String entityName) {
 		List<EntityEndListener> matchingListeners = entityEndListeners.get(entityName);
 		if (matchingListeners == null) {
 			matchingListeners = new LinkedList<EntityEndListener>();
@@ -264,11 +268,12 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 		}
 		matchingListeners.add(entityEndListener);
 	}
-	
-	protected void addRecordEndListener(final EntityEndListener entityEndListener) {
-		addEntityEndListener(entityEndListener, RECORD_KEYWORD);
-	}
-	
+
+	// protected void addRecordEndListener(final EntityEndListener
+	// entityEndListener) {
+	// addEntityEndListener(entityEndListener, RECORD_KEYWORD);
+	// }
+
 	@Override
 	public Map<String, String> getMap(final String mapName) {
 		return multiMap.getMap(mapName);
@@ -280,7 +285,7 @@ public final class Metamorph implements StreamReceiver, StreamSender, NamedValue
 	}
 
 	@Override
-	public Map<String, String> putMap(final String mapName, final  Map<String, String> map) {
+	public Map<String, String> putMap(final String mapName, final Map<String, String> map) {
 		return multiMap.putMap(mapName, map);
 	}
 

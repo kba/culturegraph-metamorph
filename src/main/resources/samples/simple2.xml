@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph xmlns="http://www.culturegraph.org/metamorph"
+	version="1" entityMarker=".">
+
+	<rules>
+
+		<data source="Source0" name="@feedback">
+			<isbn to="isbn13" />
+		</data>
+
+		<data source="Source0" name="@feedback" />
+
+
+		<data source="Source">
+			<isbn to="isbn13" />
+			<isbn to="isbn10" />
+		</data>
+		<data source="Source" name="Hawaii">
+			<isbn to="isbn13" />
+			<isbn to="isbn10" />
+		</data>
+
+		<choose>
+			<data source="Source2">
+				<isbn to="isbn13" />
+				<isbn to="isbn10" />
+			</data>
+			<data source="Source3" name="Hawaii">
+				<isbn to="isbn13" />
+				<isbn to="isbn10" />
+			</data>
+		</choose>
+
+		<choose name="@feedback2">
+			<data source="Source20" />
+			<data source="Source30" />
+		</choose>
+
+		<choose name="@feedback3">
+			<data source="Source21" />
+			<data source="Source31" />
+			<postprocess>
+				<isbn to="isbn10" />
+			</postprocess>
+		</choose>
+
+		<choose>
+			<data source="Source4">
+				<isbn to="isbn13" />
+				<isbn to="isbn10" />
+			</data>
+			<data source="Source5" name="Hawaii">
+				<isbn to="isbn13" />
+				<isbn to="isbn10" />
+			</data>
+			<postprocess>
+				<isbn to="isbn10" />
+			</postprocess>
+		</choose>
+
+		<data source="@feedback" name="gurk">
+			<isbn to="isbn10" />
+		</data>
+
+	</rules>
+
+</metamorph>

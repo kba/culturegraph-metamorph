@@ -2,6 +2,7 @@ package org.culturegraph.metamorph.stream.readers;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -25,7 +26,7 @@ public final class SimpleMabReaderTest {
 	@Test
 	public void testRead() throws IOException {
 		reader.setReceiver(countStreamReceiver);
-		reader.read(new FileInputStream(DataFilePath.TITLE_MAB));
+		reader.read(new FileReader(DataFilePath.TITLE_MAB));
 		
 		Assert.assertEquals("Number of read records is incorrect", NUM_RECORDS, countStreamReceiver.getNumRecords());
 		Assert.assertEquals("Number of read literals is incorrect", NUM_LITERALS, countStreamReceiver.getNumLiterals());

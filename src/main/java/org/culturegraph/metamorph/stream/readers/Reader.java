@@ -11,8 +11,8 @@ import org.culturegraph.metamorph.stream.StreamSender;
 
 
 /**
+ * Adds methods 'read' and 'getId' to {@link StreamSender}
  * @author Markus Michael Geipel
- * @status Experimental
  */
 public interface Reader extends StreamSender{
 
@@ -22,9 +22,12 @@ public interface Reader extends StreamSender{
 	 * Otherwise an {@link IllegalStateException} is thrown.
 	 * @throws IOException
 	 */
-	void read(final InputStream inputStream) throws IOException;
 	void read(final java.io.Reader reader) throws IOException;
 	
+	/**
+	 * Reads a single record
+	 * @param entry one record
+	 */
 	void read(final String entry);
 
 

@@ -1,6 +1,5 @@
 package org.culturegraph.metamorph.stream.readers;
 
-import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.stream.StreamReceiver;
@@ -90,8 +89,4 @@ public final class MarcReader extends AbstractReader {
 		return extractIdFromRawRecord(record);
 	}
 
-	@Override
-	protected Charset getCharset() {
-		return Charset.forName("UTF8");
-	}
 }

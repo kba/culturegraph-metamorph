@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph-test version="1.0"
+	xmlns="http://www.culturegraph.org/metamorph-test" xmlns:mm="http://www.culturegraph.org/metamorph"
+	xmlns:cgxml="http://www.culturegraph.org/cgxml">
+
+	<test-case name="entity simple">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1x">
+						<cgxml:literal name="data1" value="a1" />
+						<cgxml:literal name="data1" value="a2" />
+						<cgxml:literal name="data2" value="b" />
+					</cgxml:record>
+					<cgxml:record id="2x">
+						<cgxml:literal name="data2" value="c" />
+						<cgxml:literal name="data1" value="d" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="1">
+				<mm:rules>
+					<mm:entity name="entity">
+						<mm:data source="data1" name="l1" />
+						<mm:data source="data2" name="l2" />
+					</mm:entity>
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1x">
+						<cgxml:entity name="entity">
+							<cgxml:literal name="l1" value="a1" />
+							<cgxml:literal name="l1" value="a2" />
+							<cgxml:literal name="l2" value="b" />
+						</cgxml:entity>
+					</cgxml:record>
+					<cgxml:record id="2x">
+						<cgxml:entity name="entity">
+							<cgxml:literal name="l1" value="d" />
+							<cgxml:literal name="l2" value="c" />
+						</cgxml:entity>
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
+
+	<test-case name="entity with flush">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="d1" value="a" />
+						<cgxml:literal name="d1" value="b" />
+						<cgxml:literal name="d2" value="c" />
+					</cgxml:record>
+					<cgxml:record id="2">
+						<cgxml:literal name="d2" value="c" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="1">
+				<mm:rules>
+					<mm:entity name="entity" flushWith="record">
+						<mm:data source="d1" name="l1" />
+						<mm:data source="d2" name="l2" />
+					</mm:entity>
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:entity name="entity">
+							<cgxml:literal name="l1" value="a" />
+							<cgxml:literal name="l1" value="b" />
+							<cgxml:literal name="l2" value="c" />
+						</cgxml:entity>
+					</cgxml:record>
+					<cgxml:record id="2">
+						<cgxml:entity name="entity">
+							<cgxml:literal name="l2" value="c" />
+						</cgxml:entity>
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
+
+</metamorph-test>
