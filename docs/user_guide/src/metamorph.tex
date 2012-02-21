@@ -10,6 +10,9 @@
 \usepackage{listings}
 \usepackage{caption}
 \usepackage{draftwatermark}
+\usepackage{relsize}
+\usepackage{hyperref} 
+
 \SetWatermarkScale{5}
 
 %\usepackage{color}
@@ -21,7 +24,7 @@
 \lstloadlanguages{XML}
 \lstset{
 language=XML,
-basicstyle=\small\sffamily,
+basicstyle=\small\sffamily\smaller,
 frame=tb,
 %framexleftmargin=6px,
 %framexrightmargin=6px,
@@ -160,7 +163,7 @@ Figure \ref{fig:readerwriter} shows the basic setup for data processing with Met
 
 \begin{figure}[htp]
 \centering
-\includegraphics[width=.80\textwidth]{figures/readerwriter}
+\includegraphics[width=.70\textwidth]{figures/readerwriter}
 \caption{A typical processing pipeline including a Metamorph object for data transformation.}\label{fig:readerwriter}
 \end{figure}
 
@@ -181,7 +184,7 @@ final Metamorph metamorph = MetamorphBuilder.build("definition.xml");
 \end{lstlisting}
 
 \subsubsection{Wiring}
-The Metamorph object acts as a pipe element in the data stream. See also figure \ref{fig:readerwriter} and the explanation in section \ref{pipeline}. This means that we must wire it to a data source (or reader) and a data sink (or writer). Listing \ref{codepipeline1} shows how. First all elements of the processing chain are created.
+The Metamorph object acts as a pipe element in the data stream. See also figure \ref{fig:readerwriter}. This means that we must wire it to a data source (or reader) and a data sink (or writer). Listing \ref{codepipeline1} shows how. First all elements of the processing chain are created.
 The wiring is done by calling {\tt setReceiver()}. The call returns its argument, preserving the respective type. Thus the calls can be chained to build up a pipeline as shown in the listing. Finally the processing is stared by calling the respective method on the data source/reader. The method name depends on the reader. In the Metamorph project {\tt read()} is used by convention.
 
 \begin{lstlisting}[float=htb, label=codepipeline1,caption= Putting together a processing pipeline according to the pattern in section \ref{pipeline}., language=Java]
@@ -391,7 +394,7 @@ collects all received values and emits the most preferred one on record end. Pre
 
 \paragraph{}For the time being, see the test-cases and {\tt schema/metamorph.xsd} for more information.
 
-\subsection{Splitting Metamorph Definitions for Reuse}
+\subsubsection{Splitting Metamorph Definitions for Reuse}
 
 In a complex project setting there may be several Metamorph definitions in use, and it is likely that they share common parts. Imagine for instance a transformations from Marc 21 record holding data on books to RDF, and Marc 21 records hodling data on authors to RDF. Both make use of a table assinging country names to ISO country codes. Such a table should only exist once. To accomodate for such reuse, Metamorph offes an include mechanism based on XInclude. Listing \ref{xinclude} shows an example in which a {\tt map} is included.
 
@@ -412,8 +415,9 @@ In a complex project setting there may be several Metamorph definitions in use, 
 \end{lstlisting}
 Use the {\tt include} tag from the {\tt http://www.w3.org/2001/XInclude} namespace to insert an external xml file into your definition. The included file must be valid xml itself, containig syntactically valid tags from the Metamorph namespace.
 
+\subsection{Tools}
 
-\subsection{Testing Framework for Metamorph Definitions}
+\subsubsection{Testing Framework for Metamorph Definitions}
 
 Testing Metamorph definition files nearly always follows a simple pattern. Given the respective definition and an input, a specific output is expected. This can easily be expressed in XML as illustrated in listing \ref{test}.
 
@@ -469,10 +473,26 @@ An example test output in Eclipse is shown in figure \ref{fig:junit}. The root e
 \caption{Testcases shown in Eclipse}\label{fig:junit}
 \end{figure}
 
+\subsubsection{Visualizing Metamorph Definitions as Data Flow Diagramms}
+
+The processing model behind Metamorph is that of a data flow. Hence it is straight forward to visualize Metamorph as a directed network representing this the resulting flow of data. Figure \ref{fig:match-title} shows such a visual representation. 
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=1\textwidth]{figures/match-title}
+\caption{Visualization of a Metamorph definition used in the Culturegraph project (see also section \ref{culturegraph})}\label{fig:match-title}
+\end{figure}
+
+Blue ellipses represent data sources while green circles represent data output. In our example we have a process with two combination stages and several functions applied to intermediate data. Stages in which data is collected are marked with a gray title bar showing the name of the operation. Functions are represented by white boxes. Both contain all parameters as name-value-lists. 
+Two elements of Metamorph not shown in figure \ref{fig:match-title} are lookups and recursion. If lookup operations are included, the respective maps are depicted as gray tables. Finally, recursion (see section \ref{recursion}) is symbolized by yellow ellipses.
+
+To visualize a Metamorph definition execute the class {\tt org.\-culturegraph.\-metamorph.\-Visualize}. The output is a graph description in the dot\footnote{See \url{http://www.graphviz.org/content/dot-language}} language. To generate a graphical representation any software compatible with the dot language can be used. The most obvious choice is Graphviz (\url{http://www.graphviz.org/}). 
+
+
 \section{Application Examples}\label{apps}
 
 
-\subsection{Culturegraph}
+\subsection{Culturegraph}\label{culturegraph}
 Culturegraph is a Resolving- and Lookup-Service for bibliographic identifier. A Linked Open Data service that aims to establish shared identifiers for cultural works to ensure these resources can be reliably and persistently referenced.
 
 From a technical view point, the following is happening: metadata from different sources is written to a database and matched to find correspondences. The matches and the original data are indexed and published on a web-portal. To accomplish this, metadata has to be transformed in various stages of the processing pipeline. Figure \ref{fig:flow} provides an overview.
