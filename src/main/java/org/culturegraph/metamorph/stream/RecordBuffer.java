@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import org.culturegraph.metamorph.core.exceptions.ShouldNeverHappenException;
 import org.culturegraph.metamorph.stream.readers.CGEntityReader;
 import org.culturegraph.metamorph.stream.receivers.CGEntityWriter;
-import org.culturegraph.metamorph.util.ShouldNeverHappenException;
 
 /**
  * {@link StreamPipe} which buffers incomming records and replays them upon request.

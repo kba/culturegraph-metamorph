@@ -13,8 +13,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.culturegraph.metamorph.core.exceptions.ShouldNeverHappenException;
 import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.culturegraph.metamorph.util.ShouldNeverHappenException;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
