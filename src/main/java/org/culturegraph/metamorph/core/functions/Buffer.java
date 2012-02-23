@@ -9,7 +9,6 @@ import java.util.List;
 import org.culturegraph.metamorph.core.EntityEndIndicator;
 import org.culturegraph.metamorph.core.EntityEndListener;
 import org.culturegraph.metamorph.core.NamedValueSource;
-import org.culturegraph.metamorph.types.ListMap;
 
 /**
  * @author Markus Michael Geipel

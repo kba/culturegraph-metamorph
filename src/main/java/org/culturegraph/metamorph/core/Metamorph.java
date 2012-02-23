@@ -1,6 +1,7 @@
 package org.culturegraph.metamorph.core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -292,5 +293,10 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	@Override
 	public String putValue(final String mapName, final String key, final String value) {
 		return multiMap.putValue(mapName, key, value);
+	}
+
+	@Override
+	public Collection<String> getMapNames() {
+		return multiMap.getMapNames();
 	}
 }

@@ -1,5 +1,6 @@
 package org.culturegraph.metamorph.multimap;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +58,12 @@ public class MultiMap implements SimpleMultiMap{
 			data.put(mapName, map);
 		}
 		return map.put(key, value);
+	}
+
+
+	@Override
+	public final Collection<String> getMapNames() {
+		return Collections.unmodifiableSet(data.keySet());
 	}
 	
 
