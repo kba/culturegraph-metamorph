@@ -3,22 +3,10 @@ package org.culturegraph.metamorph.core.functions;
 /**
  * @author Markus Michael Geipel
  */
-public final class Equals extends AbstractSimpleStatelessFunction {
-
-	private String string;
+public final class Equals extends AbstractFilter{
 
 	@Override
-	public String process(final String value) {
-		if(value.equals(string)){
-			return value;
-		}
-		return null;
-	}
-	
-	/**
-	 * @param string
-	 */
-	public void setString(final String string) {
-		this.string = string;
+	protected boolean accept(final String value) {
+		return getString().equals(value);
 	}
 }

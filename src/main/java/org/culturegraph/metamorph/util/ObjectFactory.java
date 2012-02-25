@@ -89,7 +89,7 @@ public class ObjectFactory<O> {
 			final String methodName = attribute.getKey().toLowerCase();
 			final Method method = methodMap.get(methodName);
 			if(null==method){
-				throw new MetamorphException("Method '" + methodName + "' does not exist in '" + instance.getClass().getSimpleName() + "'");
+				throw new MetamorphException("Method '" + methodName + "' does not exist in '" + instance.getClass().getSimpleName() + "'!");
 			}
 			final Class<?> type = method.getParameterTypes()[0];
 			
