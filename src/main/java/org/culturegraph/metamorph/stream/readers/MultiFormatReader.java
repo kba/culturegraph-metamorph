@@ -100,21 +100,6 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 		return streamReceiver;
 	}
 
-//	@Override
-//	public void read(final InputStream inputStream) throws IOException {
-//		if (streamReceiver == null) {
-//			throw new IllegalStateException(ERROR_RECEIVER_NULL);
-//		}
-//
-//		try {
-//			currentReader.read(inputStream);
-//		} catch (MetamorphException e) {
-//			errorHandler.error(e);
-//		}
-//	}
-
-	
-	
 	
 	@Override
 	public void read(final String entry) {

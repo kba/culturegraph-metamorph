@@ -39,4 +39,5 @@ public final class ReflectionUtil {
 			throw new MetamorphException(className + INSTANTIATION_ERROR, e);
 		}
 	}
+
 }
