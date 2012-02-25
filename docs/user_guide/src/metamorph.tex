@@ -489,7 +489,15 @@ The processing model behind Metamorph is that of a data flow. Hence it is straig
 Blue ellipses represent data sources while green circles represent data output. In our example we have a process with two combination stages and several functions applied to intermediate data. Stages in which data is collected are marked with a gray title bar showing the name of the operation. Functions are represented by white boxes. Both contain all parameters as name-value-lists. 
 Two elements of Metamorph not shown in figure \ref{fig:match-title} are lookups and recursion. If lookup operations are included, the respective maps are depicted as gray tables. Finally, recursion (see section \ref{recursion}) is symbolized by yellow ellipses.
 
-To visualize a Metamorph definition execute the class {\tt org.\-culturegraph.\-metamorph.\-Visualize}. The output is a graph description in the dot\footnote{See \url{http://www.graphviz.org/content/dot-language}} language. To generate a graphical representation any software compatible with the dot language can be used. The most obvious choice is Graphviz (\url{http://www.graphviz.org/}). 
+To visualize a Metamorph definition execute the class {\tt org.\-culturegraph.\-metamorph.\-Visualize}. The output is a graph description in the dot\footnote{See \url{http://www.graphviz.org/content/dot-language}} language. To generate a graphical representation any software compatible with the dot language can be used. The most obvious choice is Graphviz (\url{http://www.graphviz.org/}). See listing \ref{viz_bash} for a sample Bash script using the Graphviz dot layouter. Make sure to include the Graphviz binaries in your {\tt \$PATH} variable. Related Bash scripts can also be found in the {\tt bin/} folder of Metamorph.
+
+\begin{lstlisting}[float=htb, label=viz_bash,caption=Simple Bash script for visualizing a Metamorph definition., language=Bash]
+#!/bin/bash
+FORMAT=$1
+FILE=$2
+java org.culturegraph.metamorph.Visualize $FILE | dot -T$FORMAT > $FILE.$FORMAT
+\end{lstlisting}
+
 
 
 \section{Application Examples}\label{apps}
