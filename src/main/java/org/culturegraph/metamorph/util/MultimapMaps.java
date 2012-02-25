@@ -34,12 +34,14 @@ public final class MultimapMaps{
 			builder.append("\"" + StringEscapeUtils.escapeJavaScript(mapName) + "\":{");
 			final Map<String, String> map = multiMap.getMap(mapName);
 			for (Entry<String, String> entry : map.entrySet()) {
-				builder.append("\"" + StringEscapeUtils.escapeJavaScript(entry.getKey()) + "\")");
+				builder.append("\"" + StringEscapeUtils.escapeJavaScript(entry.getKey()) + "\"");
 				builder.append(":");
-				builder.append("\"" + StringEscapeUtils.escapeJavaScript(entry.getValue()) +"\"");
+				builder.append("\"" + StringEscapeUtils.escapeJavaScript(entry.getValue()) +"\",");
 			}
-			builder.append("}");
+			builder.deleteCharAt(builder.length()-1);
+			builder.append("},");
 		}
+		builder.deleteCharAt(builder.length()-1);
 		builder.append("}");
 		return builder.toString();
 	}

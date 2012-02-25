@@ -125,10 +125,14 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 		entityCountStack.add(Integer.valueOf(entityCount));
 		entityStack.add(name);
 		entityPath.append(name + entityMarker);
+		
 		final String toEntity = entityMap.get(name);
 		if (toEntity != null) {
 			outputStreamReceiver.startEntity(toEntity);
 		}
+		
+		final String path = entityPath.toString();
+		dispatch(path, name, null);
 	}
 
 	@Override
@@ -165,14 +169,8 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 
 	@Override
 	public void literal(final String name, final String value) {
-		// if (entityCountStack.isEmpty()) {
-		// throw new
-		// IllegalMorphStateException("Cannot receive literals outside of records");
-		// }
-
 		final String path = entityPath.toString() + name;
 		dispatch(path, value, elseSource);
-
 	}
 
 	/**
