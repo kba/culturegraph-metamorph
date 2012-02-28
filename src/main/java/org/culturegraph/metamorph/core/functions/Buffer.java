@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.culturegraph.metamorph.core.EntityEndIndicator;
 import org.culturegraph.metamorph.core.EntityEndListener;
+import org.culturegraph.metamorph.core.NamedValueReceiver;
 import org.culturegraph.metamorph.core.NamedValueSource;
 
 /**
@@ -30,7 +31,8 @@ public final class Buffer extends AbstractFunction implements EntityEndListener 
 	@Override
 	public void onEntityEnd(final String name, final int recordCount, final int entityCount) {
 		for (Receipt receipt : receipts) {
-			getNamedValueReceiver().receive(receipt.name, receipt.value, receipt.source, receipt.recordCount, receipt.entityCount);
+			receipt.send(getNamedValueReceiver());
+			//getNamedValueReceiver().receive(receipt.name, receipt.value, receipt.source, receipt.recordCount, receipt.entityCount);
 		}
 	}
 
@@ -52,14 +54,18 @@ public final class Buffer extends AbstractFunction implements EntityEndListener 
 		private final NamedValueSource source;
 		private final int recordCount;
 		private final int entityCount;
-		
-		public Receipt(final String name, final String value, final NamedValueSource source, final int recordCount,
+			
+		protected Receipt(final String name, final String value, final NamedValueSource source, final int recordCount,
 				final int entityCount) {
 			this.name = name;
 			this.value = value;
 			this.source = source;
 			this.recordCount = recordCount;
 			this.entityCount = entityCount;
+		}
+		
+		protected void send(final NamedValueReceiver receiver){
+			receiver.receive(name, value, source, recordCount, entityCount);
 		}
 	}
 }

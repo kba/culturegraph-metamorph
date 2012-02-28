@@ -3,6 +3,7 @@ package org.culturegraph.metamorph.core.collectors;
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
 import org.culturegraph.metamorph.util.ObjectFactory;
+import org.culturegraph.metamorph.util.ResourceUtil;
 
 /**
  * Factory for all collectors used by {@link Metamorph} and {@link MetamorphBuilder}
@@ -11,12 +12,10 @@ import org.culturegraph.metamorph.util.ObjectFactory;
  *
  */
 public final class CollectFactory extends ObjectFactory<Collect> {
+	public static final String POPERTIES_LOCATION = "metamorph-collectors.properties";
+
 	public CollectFactory() {
 		super();
-		registerClass("combine", Combine.class);
-		registerClass("choose", Choose.class);
-		registerClass("group", Group.class);
-		registerClass("entity", Entity.class);
-		registerClass("concat", Concat.class);
+		loadClassesFromMap(ResourceUtil.loadProperties(POPERTIES_LOCATION), Collect.class);
 	}
 }
