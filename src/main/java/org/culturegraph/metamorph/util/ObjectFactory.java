@@ -48,7 +48,7 @@ public class ObjectFactory<O> {
 		return availableClasses;
 	}
 	
-	public final boolean containesKey(final String name){
+	public final boolean containsKey(final String name){
 		return availableClasses.contains(name);
 	}
 

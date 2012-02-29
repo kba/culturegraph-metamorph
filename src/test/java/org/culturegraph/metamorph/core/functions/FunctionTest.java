@@ -8,5 +8,5 @@ import org.junit.runner.RunWith;
  * @author Markus Michael Geipel
  */
 @RunWith(TestSuite.class)
-@TestDefinitions({"Basic.xml","Lookup.xml","Stateful.xml", "Misc.xml"})
+@TestDefinitions({"Basic.xml","Lookup.xml","Stateful.xml", "Unique.xml", "Misc.xml"})
 public final class FunctionTest {/*bind to xml test*/}

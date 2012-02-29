@@ -41,7 +41,7 @@ public final class DefaultReaderFactory extends AbstractReaderFactory {
 
 	@Override
 	public boolean isFormatSupported(final String format) {
-		return factory.containesKey(format);
+		return factory.containsKey(format);
 	}
 
 	@Override

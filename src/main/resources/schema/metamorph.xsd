@@ -280,6 +280,7 @@
 			<element ref="tns:buffer" />
 			<element ref="tns:name" />
 			<element ref="tns:get-name"/>
+			<element ref="tns:unique"/>
 			<any namespace="##other" processContents="lax" />
 
 		</choice>
@@ -390,6 +391,29 @@
 	<element name="equals">
 		<complexType>
 			<attribute name="string" type="string" use="required" />
+		</complexType>
+	</element>
+	
+		<element name="unique">
+		<complexType>
+			<attribute name="in" use="optional" default="record">
+				<simpleType>
+					<restriction base="string">
+						<enumeration value="record"></enumeration>
+						<enumeration value="entity"></enumeration>
+					</restriction>
+				</simpleType>
+			</attribute>
+			<attribute name="part" use="optional"
+				default="value">
+				<simpleType>
+					<restriction base="string">
+						<enumeration value="name"></enumeration>
+						<enumeration value="value"></enumeration>
+						<enumeration value="name-value"></enumeration>
+					</restriction>
+				</simpleType>
+			</attribute>
 		</complexType>
 	</element>
 

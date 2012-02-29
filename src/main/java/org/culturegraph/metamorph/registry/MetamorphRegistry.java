@@ -2,6 +2,7 @@ package org.culturegraph.metamorph.registry;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.culturegraph.metamorph.core.Metamorph;
@@ -21,10 +22,14 @@ public final class MetamorphRegistry implements ReadOnlyRegistry<Metamorph> {
 	// morphMap is not concurrent as it is not changed again. For a ReadWriteRegistry a ConcurrentHashMap would be needed!
 	private final Map<String, Metamorph> morphMap = new HashMap<String, Metamorph>();
 	
-	public MetamorphRegistry(final Map<String, String> morphMap) {
-		for(Entry<String, String> entry:morphMap.entrySet()){
-			final Metamorph metamorph = MetamorphBuilder.build(entry.getValue());
-			this.morphMap.put(entry.getKey(), metamorph);
+	/**
+	 * Creates a {@link MetamorphRegistry} based on a {@link Map}. The map is untyped to allow the use of {@link Properties} as argument.
+	 * @param morphMap
+	 */
+	public MetamorphRegistry(final Map<?, ?> morphMap) {
+		for(Entry<?, ?> entry:morphMap.entrySet()){
+			final Metamorph metamorph = MetamorphBuilder.build(entry.getValue().toString());
+			this.morphMap.put(entry.getKey().toString(), metamorph);
 		}
 	}
 
