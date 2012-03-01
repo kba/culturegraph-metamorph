@@ -18,17 +18,18 @@ public final class MarcReader extends AbstractReader {
 	private static final Pattern FIELD_PATTERN = Pattern.compile(FIELD_DELIMITER, Pattern.LITERAL);
 	private static final Pattern SUBFIELD_PATTERN = Pattern.compile(SUB_DELIMITER, Pattern.LITERAL);
 	private static final int POS_ENCODING = 9;
-	private static final int POS_TYPE = 6;
-	private static final int POS_LEVEL = 7;
+	private static final int POS_LEADER6 = 6;
+	private static final int POS_LEADER7 = 7;
+	private static final int POS_LEADER19 = 19;
 	private static final int POS_DIRECTORY = 24;
 	private static final int DIRECTORY_ENTRY_WIDTH = 12;
-	private static final String TYPE = "type";
-	private static final String LEVEL = "level";
+	private static final String LEADER6 = "leader6";
+	private static final String LEADER7 = "leader7";
 	private static final int TAG_LENGTH = 3;
 	private static final int DATA_START_BEGIN = 12;
 	private static final int DATA_START_END = 17;
-	private static final String MULTIPART = "multipart";
-	private static final int POS_MULTIPART = 19;
+	private static final String LEADER19 = "leader19";
+	
 	private static final Object ID_TAG = "001";
 
 	@Override
@@ -40,9 +41,9 @@ public final class MarcReader extends AbstractReader {
 		final StreamReceiver receiver = getStreamReceiver();
 		try {
 			receiver.startRecord(extractIdFromRawRecord(record));
-			receiver.literal(TYPE, String.valueOf(record.charAt(POS_TYPE)));
-			receiver.literal(LEVEL, String.valueOf(record.charAt(POS_LEVEL)));
-			receiver.literal(MULTIPART, String.valueOf(record.charAt(POS_MULTIPART)));
+			receiver.literal(LEADER6, String.valueOf(record.charAt(POS_LEADER6)));
+			receiver.literal(LEADER7, String.valueOf(record.charAt(POS_LEADER7)));
+			receiver.literal(LEADER19, String.valueOf(record.charAt(POS_LEADER19)));
 			
 			final int dataStart = Integer.parseInt(record.substring(DATA_START_BEGIN, DATA_START_END));
 			final String directory = record.substring(POS_DIRECTORY, dataStart);
