@@ -37,6 +37,7 @@ final class DomLoader {
 			final DocumentBuilder documentBuilder = getDocumentBuilder(schemaFile);
 			final Document document = documentBuilder.parse(inputSource);
 			
+			//xerces issue
 			removeEmptyTextNodes(document.getDocumentElement());
 			
 			return document;
@@ -53,7 +54,11 @@ final class DomLoader {
 			if (child.getNodeType() == Node.TEXT_NODE) {
 				final Node old = child;
 				child = child.getNextSibling();
-				node.removeChild(old);
+				
+				
+				if(old.getNodeValue().trim().isEmpty()){
+					node.removeChild(old);
+				}
 			}else{
 				removeEmptyTextNodes(child);
 				child = child.getNextSibling();

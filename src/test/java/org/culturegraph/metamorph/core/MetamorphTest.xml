@@ -38,6 +38,40 @@
 		</result>
 	</test-case>
 
+<test-case name="meta data">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="1">
+				<mm:meta>
+					<mm:name>test</mm:name>
+				</mm:meta>
+				<mm:rules>
+					<mm:data source="_id" name="name">
+						<mm:constant value="name"/>
+						<mm:lookup in="__meta"/>
+					</mm:data>
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="name" value="test" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
 
 	<test-case name="else tag">
 		<input type="text/x-cg+xml">

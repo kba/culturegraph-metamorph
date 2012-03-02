@@ -231,6 +231,7 @@ public abstract class AbstractMetamorphDomWalker {
 	private void handleMeta(final Node node) {
 		for (Node metaEntryNode = node.getFirstChild(); metaEntryNode != null; metaEntryNode = metaEntryNode
 				.getNextSibling()) {
+			
 			handleMetaEntry(metaEntryNode.getLocalName(), metaEntryNode.getTextContent());
 		}
 	}
