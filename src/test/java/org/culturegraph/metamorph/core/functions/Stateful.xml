@@ -59,6 +59,10 @@
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
+					<cgxml:record id="0">
+						<cgxml:literal name="datax" value="1" />
+						<cgxml:literal name="datax" value="2" />
+					</cgxml:record>
 					<cgxml:record id="1">
 						<cgxml:literal name="data" value="1" />
 						<cgxml:literal name="data" value="2" />
@@ -67,6 +71,10 @@
 					<cgxml:record id="2">
 						<cgxml:literal name="data" value="1" />
 						<cgxml:literal name="data" value="2" />
+					</cgxml:record>
+					<cgxml:record id="3">
+						<cgxml:literal name="datax" value="1" />
+						<cgxml:literal name="datax" value="2" />
 					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>
@@ -85,11 +93,15 @@
 		<result type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
+					<cgxml:record id="0">
+					</cgxml:record>
 					<cgxml:record id="1">
 						<cgxml:literal name="count" value="3" />
 					</cgxml:record>
 					<cgxml:record id="2">
 						<cgxml:literal name="count" value="2" />
+					</cgxml:record>
+					<cgxml:record id="3">
 					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>

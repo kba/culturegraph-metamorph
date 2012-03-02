@@ -13,7 +13,6 @@ public abstract class AbstractStatefulFunction extends AbstractFunction {
 	private NamedValueSource source;
 	private String lastName;
 	
-	
 	protected final int getRecordCount() {
 		return recordCount;
 	}
@@ -32,6 +31,7 @@ public abstract class AbstractStatefulFunction extends AbstractFunction {
 	
 	@Override
 	public final void receive(final String name, final String value, final NamedValueSource source, final int recordCount, final int entityCount) {
+		
 		if(!sameRecord(recordCount)){
 			reset();
 			this.recordCount = recordCount;
@@ -47,7 +47,7 @@ public abstract class AbstractStatefulFunction extends AbstractFunction {
 		if(processedValue==null){
 			return;
 		}
-
+	
 		getNamedValueReceiver().receive(name, processedValue , source, recordCount, entityCount);
 	}
 	
