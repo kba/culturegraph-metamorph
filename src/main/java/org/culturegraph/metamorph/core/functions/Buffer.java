@@ -20,20 +20,28 @@ public final class Buffer extends AbstractFunction implements EntityEndListener 
 	private final List<Receipt> receipts = new ArrayList<Receipt>();
 
 	private String flushWith = EntityEndIndicator.RECORD_KEYWORD;
+	private int currentRecord;
 
 	@Override
 	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount,
 			final int entityCount) {
+		
+		if(currentRecord!=recordCount){
+			receipts.clear();
+			currentRecord=recordCount;
+		}
+		
 		receipts.add(new Receipt(name, value, source, recordCount, entityCount));
 
 	}
 
 	@Override
 	public void onEntityEnd(final String name, final int recordCount, final int entityCount) {
+		
 		for (Receipt receipt : receipts) {
 			receipt.send(getNamedValueReceiver());
-			//getNamedValueReceiver().receive(receipt.name, receipt.value, receipt.source, receipt.recordCount, receipt.entityCount);
 		}
+		receipts.clear();
 	}
 
 	@Override

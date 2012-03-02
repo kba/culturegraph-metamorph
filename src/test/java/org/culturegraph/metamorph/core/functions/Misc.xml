@@ -114,9 +114,21 @@
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
+					<cgxml:record id="0">
+						<cgxml:literal name="d1" value="Aloha" />
+					</cgxml:record>
 					<cgxml:record id="1">
 						<cgxml:literal name="d2" value="Hawaii" />
 						<cgxml:literal name="d2" value="Oahu" />
+						<cgxml:literal name="d1" value="Aloha" />
+					</cgxml:record>
+					<cgxml:record id="2">
+					</cgxml:record>
+					<cgxml:record id="3">
+						<cgxml:literal name="d1" value="Aloha" />
+					</cgxml:record>
+					<cgxml:record id="4">
+						<cgxml:literal name="d2" value="to all" />
 						<cgxml:literal name="d1" value="Aloha" />
 					</cgxml:record>
 				</cgxml:records>
@@ -140,9 +152,18 @@
 		<result type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
+					<cgxml:record id="0">
+					</cgxml:record>
 					<cgxml:record id="1">
 						<cgxml:literal name="greeting" value="Aloha Hawaii" />
 						<cgxml:literal name="greeting" value="Aloha Oahu" />
+					</cgxml:record>
+					<cgxml:record id="2">
+					</cgxml:record>
+					<cgxml:record id="3">
+					</cgxml:record>
+					<cgxml:record id="4">
+						<cgxml:literal name="greeting" value="Aloha to all" />
 					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>
