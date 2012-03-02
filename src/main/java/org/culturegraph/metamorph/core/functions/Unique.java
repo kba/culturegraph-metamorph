@@ -6,16 +6,12 @@ package org.culturegraph.metamorph.core.functions;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * @author Markus Michael Geipel
  * 
  */
 public final class Unique extends AbstractStatefulFunction{
 
-	private static final Logger LOG = LoggerFactory.getLogger(Unique.class);
 	
 	private static final String ENTITY = "entity";
 	private static final String NAME = "name";
@@ -32,7 +28,6 @@ public final class Unique extends AbstractStatefulFunction{
 	@Override
 	public String process(final String value) {
 		final String key = keyGenerator.createKey(getLastName(), value);
-		LOG.info(set.toString());
 		if (set.contains(key)) {
 			return null;
 		}

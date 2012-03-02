@@ -12,7 +12,7 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
  * @see StreamReceiver
  */
 public final class MabReader extends AbstractReader {
-	
+
 	private static final String FIELD_END = "\u001e";
 	private static final Pattern FIELD_PATTERN = Pattern.compile(FIELD_END, Pattern.LITERAL);
 	private static final Pattern SUBFIELD_PATTERN = Pattern.compile("\u001f", Pattern.LITERAL);
@@ -25,15 +25,12 @@ public final class MabReader extends AbstractReader {
 	private static final String INVALID_FORMAT = "Invalid MAB format";
 	private static final String ID_TAG = "001 ";
 	private static final int TAG_LENGTH = 4;
-	
 
 	@Override
 	protected void processRecord(final String record) {
 		if (record.trim().isEmpty()) {
 			return;
 		}
-
-		
 
 		// final String header = record.substring(0, HEADER_SIZE);
 		// if (LOG.isTraceEnabled()) {
@@ -50,7 +47,7 @@ public final class MabReader extends AbstractReader {
 
 		try {
 			receiver.literal(LEADER, record.substring(0, HEADER_SIZE));
-			receiver.literal(TYPE, String.valueOf(record.charAt(HEADER_SIZE-1)));
+			receiver.literal(TYPE, String.valueOf(record.charAt(HEADER_SIZE - 1)));
 			final String content = record.substring(HEADER_SIZE);
 			for (String part : FIELD_PATTERN.split(content)) {
 				if (!part.startsWith(RECORD_END)) {
@@ -72,18 +69,17 @@ public final class MabReader extends AbstractReader {
 					}
 				}
 			}
+			receiver.endRecord();
 		} catch (IndexOutOfBoundsException e) {
 			throw new RecordFormatException("[" + record + "]", e);
-		} 
-		receiver.endRecord();
+		}
+
 	}
 
-
-
 	public static String extractIdFromRecord(final String record) {
-		try{
+		try {
 			final int fieldEnd = record.indexOf(FIELD_END, HEADER_SIZE);
-			if(record.substring(HEADER_SIZE, HEADER_SIZE + TAG_LENGTH).equals(ID_TAG)){
+			if (record.substring(HEADER_SIZE, HEADER_SIZE + TAG_LENGTH).equals(ID_TAG)) {
 				return record.substring(HEADER_SIZE + TAG_LENGTH, fieldEnd);
 			}
 			throw new MissingIdException(record);

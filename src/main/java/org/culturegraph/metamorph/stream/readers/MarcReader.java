@@ -34,17 +34,16 @@ public final class MarcReader extends AbstractReader {
 
 	@Override
 	protected void processRecord(final String record) {
-
-		if (record.charAt(POS_ENCODING) != 'a') {
-			throw new IllegalEncodingException("UTF-8 encoding expected");
-		}
 		final StreamReceiver receiver = getStreamReceiver();
 		try {
+			if (record.charAt(POS_ENCODING) != 'a') {
+				throw new IllegalEncodingException("UTF-8 encoding expected");
+			}
 			receiver.startRecord(extractIdFromRawRecord(record));
 			receiver.literal(LEADER6, String.valueOf(record.charAt(POS_LEADER6)));
 			receiver.literal(LEADER7, String.valueOf(record.charAt(POS_LEADER7)));
 			receiver.literal(LEADER19, String.valueOf(record.charAt(POS_LEADER19)));
-			
+
 			final int dataStart = Integer.parseInt(record.substring(DATA_START_BEGIN, DATA_START_END));
 			final String directory = record.substring(POS_DIRECTORY, dataStart);
 			final int numDirEntries = directory.length() / DIRECTORY_ENTRY_WIDTH;
@@ -65,10 +64,12 @@ public final class MarcReader extends AbstractReader {
 					receiver.endEntity();
 				}
 			}
+			receiver.endRecord();
 		} catch (IndexOutOfBoundsException exception) {
 			throw new RecordFormatException(record, exception);
-		} 
-		receiver.endRecord();
+		}
+			
+	
 	}
 
 	public static String extractIdFromRawRecord(final String record) {

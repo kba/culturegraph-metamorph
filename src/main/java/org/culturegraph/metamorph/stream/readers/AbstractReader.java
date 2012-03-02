@@ -46,18 +46,8 @@ public abstract class AbstractReader implements Reader {
 	
 
 
-
-//	public final void read(final InputStream inputStream) throws IOException {
-//		if (inputStream == null) {
-//			throw new IllegalArgumentException("InputStream must be set");
-//		}
-//		read(new InputStreamReader(inputStream, getCharset()));
-//	}
-
-
 	@Override
 	public final void read(final String entry) {
-		assert null != entry && streamReceiver != null;
 		processRecord(Normalizer.normalize(entry, Form.NFC));
 	}
 
