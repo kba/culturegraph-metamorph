@@ -51,7 +51,7 @@ public final class PicaReader extends AbstractReader {
 					final String fieldName;
 					final int firstSubfield;
 					if (subfields[1].charAt(0) == 'S') {
-						fieldName = subfields[0].trim() + subfields[1].trim();
+						fieldName = subfields[0].trim() + subfields[1].substring(1).trim();
 						firstSubfield = 2;
 					} else {
 						fieldName = subfields[0].trim();
