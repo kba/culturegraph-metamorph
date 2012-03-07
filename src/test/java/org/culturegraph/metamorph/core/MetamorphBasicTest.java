@@ -7,7 +7,7 @@ import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metamorph.stream.AbstractStreamReceiver;
 import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.culturegraph.metamorph.types.NamedValue;
+import org.culturegraph.metastream.type.NamedValue;
 import org.junit.Assert;
 import org.junit.Test;
 
