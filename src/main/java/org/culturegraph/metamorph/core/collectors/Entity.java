@@ -8,8 +8,8 @@ import java.util.Set;
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
 import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.culturegraph.metamorph.types.ListMap;
-import org.culturegraph.metamorph.types.NamedValue;
+import org.culturegraph.metastream.type.ListMap;
+import org.culturegraph.metastream.type.NamedValue;
 
 /**
  * Corresponds to the <code>&lt;collect-entity&gt;</code> tag.

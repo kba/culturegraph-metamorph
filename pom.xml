@@ -57,6 +57,11 @@
 		<!-- <version>2.10.0</version> -->
 		<!-- </dependency> -->
 
+		<dependency>
+			<groupId>org.culturegraph</groupId>
+			<artifactId>metastream</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
