@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -56,6 +57,10 @@ public final class MultimapMaps{
 				load(multiMap, file);
 			}
 		}
+	}
+	
+	public static void load(final SimpleMultiMap multiMap, final List<String> fileNames) throws IOException {
+		load(multiMap, fileNames.toArray(new String[fileNames.size()]));
 	}
  
 	private static void load(final SimpleMultiMap multiMap, final File file) throws IOException {
