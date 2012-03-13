@@ -55,6 +55,58 @@
 		</result>
 	</test-case>
 
+	<test-case name="occurence same entity">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:entity name="e">
+							<cgxml:literal name="data" value="1" />
+							<cgxml:literal name="data" value="2" />
+							<cgxml:literal name="data" value="3" />
+						</cgxml:entity>
+						<cgxml:entity name="e">
+							<cgxml:literal name="data" value="1" />
+							<cgxml:literal name="data" value="2" />
+							<cgxml:literal name="data" value="3" />
+						</cgxml:entity>
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="1">
+				<mm:rules>
+					<mm:data source="e.data" name="l2">
+						<mm:occurence only="lessThen 2" sameEntity="true" />
+					</mm:data>
+					<mm:data source="e.data" name="2">
+						<mm:occurence only="2" sameEntity="true" />
+					</mm:data>
+					<mm:data source="e.data" name="g2">
+						<mm:occurence only="moreThen 2" sameEntity="true" />
+					</mm:data>
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="l2" value="1" />
+						<cgxml:literal name="2" value="2" />
+						<cgxml:literal name="g2" value="3" />
+						<cgxml:literal name="l2" value="1" />
+						<cgxml:literal name="2" value="2" />
+						<cgxml:literal name="g2" value="3" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
+
 	<test-case name="count">
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">

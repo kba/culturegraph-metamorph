@@ -26,7 +26,10 @@ public final class Occurence extends AbstractStatefulFunction {
 	private String format;
 	
 	private final Map<String, String> variables = new HashMap<String, String>();
+	private boolean sameEntity;
 	
+
+
 	@Override
 	public String process(final String value) {
 		++count;
@@ -56,11 +59,15 @@ public final class Occurence extends AbstractStatefulFunction {
 
 	@Override
 	protected boolean doResetOnEntityChange() {
-		return false;
+		return sameEntity;
 	}
 
 	public void setOnly(final String only) {
 		filter = parse(only);		
+	}
+	
+	public void setSameEntity(final boolean sameEntity) {
+		this.sameEntity = sameEntity;
 	}
 	
 	private static IntFilter parse(final String only) {

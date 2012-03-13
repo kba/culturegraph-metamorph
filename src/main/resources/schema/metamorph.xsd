@@ -299,7 +299,7 @@
 					</restriction>
 				</simpleType>
 			</attribute>
-			<!-- <attribute name="format" type="string" use="optional" /> -->
+			<attribute name="sameEntity" type="boolean" use="optional" default="false" />
 		</complexType>
 	</element>
 
