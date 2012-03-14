@@ -34,13 +34,13 @@ public final class Concat extends AbstractCollect{
 
 	@Override
 	protected void emit() {
-		getNamedValueReceiver().receive(getName(), prefix + getConcat() + postfix, this, getRecordCount(), getEntityCount());
+		if(builder.length()!=0){
+			final String concat = builder.substring(0, builder.length()-delimiter.length());
+			getNamedValueReceiver().receive(getName(), prefix + concat + postfix, this, getRecordCount(), getEntityCount());
+		}
 	}
 
 
-	private String getConcat() {
-		return builder.substring(0, builder.length()-delimiter.length());
-	}
 
 	@Override
 	protected boolean isComplete() {
