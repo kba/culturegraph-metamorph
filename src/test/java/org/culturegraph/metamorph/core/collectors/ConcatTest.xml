@@ -64,7 +64,6 @@
 							<cgxml:literal name="2" value="e" />
 						</cgxml:entity>
 					</cgxml:record>
-
 				</cgxml:records>
 			</cgxml:cgxml>
 		</input>
