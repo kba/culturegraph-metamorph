@@ -1,5 +1,6 @@
 package org.culturegraph.metamorph.multimap;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -18,6 +19,7 @@ public interface SimpleMultiMap {
 	 * @param mapName
 	 * @return map corresponding to mapName. Never return <code>null</code>. If there is no corresponding {@link Map}, return empty one.
 	 */
+	Collection<String> getMapNames();
 	Map<String, String> getMap(String mapName);
 	String getValue(String mapName, String key);
 	

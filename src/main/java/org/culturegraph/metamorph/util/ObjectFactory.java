@@ -6,11 +6,10 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.culturegraph.metamorph.core.exceptions.MetamorphException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides instances of preregistered classes.
@@ -24,7 +23,6 @@ public class ObjectFactory<O> {
 
 	private static final String INSTANTIATION_PROBLEM = " could not be instantiated";
 
-	private static final Logger LOG = LoggerFactory.getLogger(ObjectFactory.class);
 
 	private static final String SET = "set";
 
@@ -32,10 +30,9 @@ public class ObjectFactory<O> {
 	private final Map<Class<? extends O>, Map<String, Method>> classMethodMaps = new HashMap<Class<? extends O>, Map<String, Method>>();
 	private final Set<String> availableClasses = Collections.unmodifiableSet(classes.keySet()); 
 
-	public final void registerClass(final String name, final Class<? extends O> clazz) {
+	public final void registerClass(final String key, final Class<? extends O> clazz) {
 
-		classes.put(name, clazz);
-		LOG.debug("Registered class '" + name + "': " + clazz.getName());
+		classes.put(key, clazz);
 
 		final Map<String, Method> methodMap = new HashMap<String, Method>();
 		classMethodMaps.put(clazz, methodMap);
@@ -47,8 +44,12 @@ public class ObjectFactory<O> {
 		}
 	}
 
-	public final Set<String> getAvailableClasses() {
+	public final Set<String> keySet() {
 		return availableClasses;
+	}
+	
+	public final boolean containsKey(final String name){
+		return availableClasses.contains(name);
 	}
 
 	public final O newInstance(final String name,  final Map<String, String> attributes, final Object...contructorArgs) {
@@ -89,7 +90,7 @@ public class ObjectFactory<O> {
 			final String methodName = attribute.getKey().toLowerCase();
 			final Method method = methodMap.get(methodName);
 			if(null==method){
-				throw new MetamorphException("Method '" + methodName + "' does not exist in '" + instance.getClass().getSimpleName() + "'");
+				throw new MetamorphException("Method '" + methodName + "' does not exist in '" + instance.getClass().getSimpleName() + "'!");
 			}
 			final Class<?> type = method.getParameterTypes()[0];
 			
@@ -114,4 +115,30 @@ public class ObjectFactory<O> {
 	private void setMethodError(final String methodName, final String simpleName, final Exception exc) {
 		throw new MetamorphException("Cannot set '" + methodName + "' for class '" + simpleName + "'", exc);
 	}
+	
+	@SuppressWarnings("unchecked") // protected by 'if (type.isAssignableFrom(clazz)) {'
+	public final void loadClassesFromMap(final Map<?,?> properties, final Class<O> type){
+		
+		final ClassLoader loader = ReflectionUtil.getClassLoader();
+		for (Entry<?,?> entry : properties.entrySet()) {
+			final String className = entry.getValue().toString();
+			final String name = entry.getKey().toString();
+
+			try {
+				final Class<?> clazz = loader.loadClass(className);
+				if (type.isAssignableFrom(clazz)) {
+					
+					registerClass(name, (Class<? extends O>)clazz);
+
+				} else {
+					throw new MetamorphException(className + " does not implement " + type.getName() + " registration with "
+							+ this.getClass().getSimpleName() + " failed.");
+				}
+			} catch (ClassNotFoundException e) {
+				throw new MetamorphException(className + " not found", e);
+			}
+		}
+	}
+	
+	
 }

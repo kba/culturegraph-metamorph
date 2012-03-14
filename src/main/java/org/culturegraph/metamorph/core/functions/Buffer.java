@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.culturegraph.metamorph.core.EntityEndIndicator;
 import org.culturegraph.metamorph.core.EntityEndListener;
+import org.culturegraph.metamorph.core.NamedValueReceiver;
 import org.culturegraph.metamorph.core.NamedValueSource;
-import org.culturegraph.metamorph.types.ListMap;
 
 /**
  * @author Markus Michael Geipel
@@ -20,19 +20,28 @@ public final class Buffer extends AbstractFunction implements EntityEndListener 
 	private final List<Receipt> receipts = new ArrayList<Receipt>();
 
 	private String flushWith = EntityEndIndicator.RECORD_KEYWORD;
+	private int currentRecord;
 
 	@Override
 	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount,
 			final int entityCount) {
+		
+		if(currentRecord!=recordCount){
+			receipts.clear();
+			currentRecord=recordCount;
+		}
+		
 		receipts.add(new Receipt(name, value, source, recordCount, entityCount));
 
 	}
 
 	@Override
 	public void onEntityEnd(final String name, final int recordCount, final int entityCount) {
+		
 		for (Receipt receipt : receipts) {
-			getNamedValueReceiver().receive(receipt.name, receipt.value, receipt.source, receipt.recordCount, receipt.entityCount);
+			receipt.send(getNamedValueReceiver());
 		}
+		receipts.clear();
 	}
 
 	@Override
@@ -53,14 +62,18 @@ public final class Buffer extends AbstractFunction implements EntityEndListener 
 		private final NamedValueSource source;
 		private final int recordCount;
 		private final int entityCount;
-		
-		public Receipt(final String name, final String value, final NamedValueSource source, final int recordCount,
+			
+		protected Receipt(final String name, final String value, final NamedValueSource source, final int recordCount,
 				final int entityCount) {
 			this.name = name;
 			this.value = value;
 			this.source = source;
 			this.recordCount = recordCount;
 			this.entityCount = entityCount;
+		}
+		
+		protected void send(final NamedValueReceiver receiver){
+			receiver.receive(name, value, source, recordCount, entityCount);
 		}
 	}
 }

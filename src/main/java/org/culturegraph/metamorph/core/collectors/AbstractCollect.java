@@ -3,8 +3,6 @@ package org.culturegraph.metamorph.core.collectors;
 import org.culturegraph.metamorph.core.AbstractNamedValuePipeHead;
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Common basis for {@link Entity}, {@link Combine} etc.
@@ -14,7 +12,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractCollect extends AbstractNamedValuePipeHead implements Collect {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
+//	private static final Logger LOG = LoggerFactory.getLogger(AbstractCollect.class);
 
 	private int oldRecord;
 	private int oldEntity;

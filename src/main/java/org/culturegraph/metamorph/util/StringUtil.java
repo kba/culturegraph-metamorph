@@ -14,7 +14,7 @@ public final class StringUtil {
 		// no instances
 	}
 	
-	public static String fallback(final String value, final String fallbackValue) {
+	public static <O> O fallback(final O value, final O fallbackValue) {
 		if (value == null) {
 			return fallbackValue;
 		}

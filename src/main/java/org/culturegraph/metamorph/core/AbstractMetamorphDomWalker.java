@@ -171,7 +171,7 @@ public abstract class AbstractMetamorphDomWalker {
 
 	private void handleRule(final Node node) {
 		final String nodeName = node.getLocalName();
-		if (getCollectFactory().getAvailableClasses().contains(nodeName)) {
+		if (getCollectFactory().containsKey(nodeName)) {
 			enterCollect(node);
 			for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
 				if (POSTPROCESS.equals(child.getLocalName())) {
@@ -231,6 +231,7 @@ public abstract class AbstractMetamorphDomWalker {
 	private void handleMeta(final Node node) {
 		for (Node metaEntryNode = node.getFirstChild(); metaEntryNode != null; metaEntryNode = metaEntryNode
 				.getNextSibling()) {
+			
 			handleMetaEntry(metaEntryNode.getLocalName(), metaEntryNode.getTextContent());
 		}
 	}

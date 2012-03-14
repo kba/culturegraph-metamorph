@@ -97,7 +97,10 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker{
 	
 	@Override
 	protected void handleMetaEntry(final String name, final String value) {
+		
 		metamorph.putValue(Metamorph.METADATA, name, value);
+		
+		
 	}
 
 

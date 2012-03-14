@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.util;
+package org.culturegraph.metamorph.core.exceptions;
 
 /**
  * Throw if there is a significant mismatch between reality and the programmers weltbild

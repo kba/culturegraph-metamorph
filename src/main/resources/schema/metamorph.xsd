@@ -38,7 +38,7 @@
 					</restriction>
 				</simpleType>
 			</attribute>
-<!-- 			<attribute ref="xml:base" /> -->
+			<!-- <attribute ref="xml:base" /> -->
 		</complexType>
 	</element>
 
@@ -72,7 +72,7 @@
 			</choice>
 			<attribute ref="xml:base" />
 		</complexType>
-		
+
 	</element>
 
 	<element name="maps">
@@ -150,6 +150,8 @@
 
 			<attribute name="flushWith" type="string" use="optional"
 				default="record" />
+			<attribute name="reset" type="boolean" use="optional"
+				default="false" />
 		</complexType>
 	</element>
 
@@ -191,7 +193,7 @@
 			</sequence>
 			<attribute name="source" type="string" use="required" />
 			<attribute name="name" type="string" use="optional" />
-<!-- 			<attribute name="value" type="string" use="optional" /> -->
+			<!-- <attribute name="value" type="string" use="optional" /> -->
 		</complexType>
 	</element>
 
@@ -200,7 +202,7 @@
 	<element name="postprocess">
 		<complexType>
 			<sequence>
-				<group ref="tns:function" maxOccurs="unbounded" minOccurs="0"/>
+				<group ref="tns:function" maxOccurs="unbounded" minOccurs="0" />
 			</sequence>
 		</complexType>
 	</element>
@@ -221,7 +223,8 @@
 	<element name="entry">
 		<complexType>
 			<attribute name="name" type="string" use="required" />
-			<attribute name="value" type="string" use="optional" default=""/>
+			<attribute name="value" type="string" use="optional"
+				default="" />
 		</complexType>
 	</element>
 
@@ -279,7 +282,8 @@
 			<element ref="tns:count" />
 			<element ref="tns:buffer" />
 			<element ref="tns:name" />
-			<element ref="tns:get-name"/>
+			<element ref="tns:get-name" />
+			<element ref="tns:unique" />
 			<any namespace="##other" processContents="lax" />
 
 		</choice>
@@ -290,12 +294,12 @@
 			<attribute name="only" use="required">
 				<simpleType>
 					<restriction base="string">
-						<whiteSpace value="collapse"/>
-						<pattern value="(lessThen |moreThen )?\d+"/>
+						<whiteSpace value="collapse" />
+						<pattern value="(lessThen |moreThen )?\d+" />
 					</restriction>
 				</simpleType>
 			</attribute>
-			<!-- <attribute name="format" type="string" use="optional" /> -->
+			<attribute name="sameEntity" type="boolean" use="optional" default="false" />
 		</complexType>
 	</element>
 
@@ -376,7 +380,7 @@
 		<complexType>
 		</complexType>
 	</element>
-	
+
 	<element name="get-name">
 		<complexType>
 		</complexType>
@@ -390,6 +394,28 @@
 	<element name="equals">
 		<complexType>
 			<attribute name="string" type="string" use="required" />
+		</complexType>
+	</element>
+
+	<element name="unique">
+		<complexType>
+			<attribute name="in" use="optional" default="record">
+				<simpleType>
+					<restriction base="string">
+						<enumeration value="record"></enumeration>
+						<enumeration value="entity"></enumeration>
+					</restriction>
+				</simpleType>
+			</attribute>
+			<attribute name="part" use="optional" default="value">
+				<simpleType>
+					<restriction base="string">
+						<enumeration value="name"></enumeration>
+						<enumeration value="value"></enumeration>
+						<enumeration value="name-value"></enumeration>
+					</restriction>
+				</simpleType>
+			</attribute>
 		</complexType>
 	</element>
 

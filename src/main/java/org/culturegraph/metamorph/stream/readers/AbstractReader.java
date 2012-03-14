@@ -8,7 +8,7 @@ import java.text.Normalizer.Form;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 
 /**
- * Parses a raw Picaplus stream (utf8 encoding assumed). Events are handled by a
+ * Baseclass for bibliographic data {@link Reader}s. Events are handled by a
  * {@link StreamReceiver}.
  * 
  * @author "Markus Michael Geipel"
@@ -46,18 +46,8 @@ public abstract class AbstractReader implements Reader {
 	
 
 
-
-//	public final void read(final InputStream inputStream) throws IOException {
-//		if (inputStream == null) {
-//			throw new IllegalArgumentException("InputStream must be set");
-//		}
-//		read(new InputStreamReader(inputStream, getCharset()));
-//	}
-
-
 	@Override
 	public final void read(final String entry) {
-		assert null != entry && streamReceiver != null;
 		processRecord(Normalizer.normalize(entry, Form.NFC));
 	}
 
