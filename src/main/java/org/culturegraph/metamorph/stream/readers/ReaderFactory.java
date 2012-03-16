@@ -1,17 +1,23 @@
+/**
+ * 
+ */
 package org.culturegraph.metamorph.stream.readers;
 
-import java.util.Set;
-
+import org.culturegraph.metamorph.util.ObjectFactory;
+import org.culturegraph.metamorph.util.ResourceUtil;
 
 /**
- * Defines a Factory to create {@link Reader}s based on a given file/input format.
+ * Builds readers.
  * 
- * @author Markus Michael Geipel
- * @deprecated Use DecoderFactory instead
+ * @author Christoph Böhme
+ *
  */
-@Deprecated
-public interface ReaderFactory {
-	Reader newReader(final String format);
-	boolean isFormatSupported(final String format);
-	Set<String> getSupportedFormats();
+public final class ReaderFactory extends ObjectFactory<Reader> {
+	public static final String POPERTIES_LOCATION = "metamorph-readers.properties";
+
+	public ReaderFactory() {
+		super();
+		loadClassesFromMap(ResourceUtil.loadProperties(POPERTIES_LOCATION), Reader.class);
+	}
+
 }

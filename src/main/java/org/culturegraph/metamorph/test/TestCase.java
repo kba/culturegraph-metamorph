@@ -8,12 +8,10 @@ import java.io.StringReader;
 import java.util.Collections;
 
 import org.culturegraph.metamorph.core.MetamorphBuilder;
-import org.culturegraph.metamorph.stream.readers.AbstractReaderFactory;
 import org.culturegraph.metamorph.stream.readers.Reader;
 import org.culturegraph.metamorph.stream.readers.ReaderFactory;
 import org.culturegraph.metamorph.util.ResourceUtil;
 import org.culturegraph.metamorph.util.XMLUtil;
-import org.culturegraph.metastream.converter.StringDecoder;
 import org.culturegraph.metastream.converter.xml.CGXMLHandler;
 import org.culturegraph.metastream.converter.xml.XMLDecoder;
 import org.culturegraph.metastream.framework.StreamPipe;
@@ -42,7 +40,7 @@ public final class TestCase {
 	private static final String STRICT_KEY_ORDER_ATTR = "strict-key-order";
 	private static final String STRICT_VALUE_ORDER_ATTR = "strict-value-order";
 	
-	private static final ReaderFactory READER_FACTORY = AbstractReaderFactory.newInstance();
+	private static final ReaderFactory READER_FACTORY = new ReaderFactory();
 	
 	private final Element config;
 	
@@ -96,7 +94,7 @@ public final class TestCase {
 	private Reader getReader() {		
 		final Element input = (Element) config.getElementsByTagName(INPUT_TAG).item(0);
 		final String mimeType = input.getAttribute(TYPE_ATTR);
-		return READER_FACTORY.newReader(mimeType);
+		return READER_FACTORY.newInstance(mimeType, Collections.<String, String>emptyMap());
 	}
 	
 	private StreamPipe getTransformation() {

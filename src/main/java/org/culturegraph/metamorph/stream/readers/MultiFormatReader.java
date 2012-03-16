@@ -1,5 +1,6 @@
 package org.culturegraph.metamorph.stream.readers;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 	private Reader currentReader;
 	private final Map<String, Reader> openReaders = new HashMap<String, Reader>();
 	private final Map<String, Metamorph> metamorphs = new HashMap<String, Metamorph>();
-	private final ReaderFactory readerFactory = AbstractReaderFactory.newInstance();
+	private final ReaderFactory readerFactory = new ReaderFactory();
 	private StreamReceiver streamReceiver;
 	private final String morphDefinition;
 	private MetamorphErrorHandler errorHandler = new DefaultErrorHandler();
@@ -62,7 +63,7 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 		if (null != currentReader) {
 			return;
 		}
-		currentReader = readerFactory.newReader(format);
+		currentReader = readerFactory.newInstance(format, Collections.<String, String>emptyMap());
 		openReaders.put(format, currentReader);
 
 		
