@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
-import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.culturegraph.metastream.framework.StreamReceiver;
 import org.culturegraph.metastream.type.ListMap;
 import org.culturegraph.metastream.type.NamedValue;
 

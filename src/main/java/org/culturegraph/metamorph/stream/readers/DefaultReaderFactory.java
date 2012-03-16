@@ -13,8 +13,9 @@ import org.culturegraph.metamorph.util.StringUtil;
  * already registered.
  * 
  * @author Markus Michael Geipel
- * 
+ * @deprecated Use DecoderFactory instead 
  */
+@Deprecated
 public final class DefaultReaderFactory extends AbstractReaderFactory {
 	public static final String PROPERTY_LOCATION_NAME = "metamorph.readers.properties";
 	public static final String DEFAULT_PROPERTIES_LOCATION = "metamorph-readers.properties";

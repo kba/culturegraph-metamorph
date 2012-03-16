@@ -13,8 +13,8 @@ import org.culturegraph.metamorph.core.exceptions.IllegalMorphStateException;
 import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.culturegraph.metamorph.multimap.MultiMap;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
-import org.culturegraph.metamorph.stream.StreamPipe;
-import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.culturegraph.metastream.framework.StreamPipe;
+import org.culturegraph.metastream.framework.StreamReceiver;
 
 /**
  * Transforms a data stream send via the {@link StreamReceiver} interface. Use
@@ -24,12 +24,13 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
  */
 public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMultiMap, EntityEndIndicator {
 
+	public static final String ID_NAME = "_id";
 	public static final String ELSE_KEYWORD = "_else";
 	//public static final String RECORD_KEYWORD = "record";
 	public static final char FEEDBACK_CHAR = '@';
 	public static final String METADATA = "__meta";
 
-//rivate static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
+	//private static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 	private static final char DEFAULT_ENTITY_MARKER = '.';
@@ -108,7 +109,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 			identifierFinal = identifier;
 		}
 		outputStreamReceiver.startRecord(identifierFinal);
-		dispatch(StreamReceiver.ID_NAME, identifierFinal, null);
+		dispatch(ID_NAME, identifierFinal, null);
 	}
 
 	@Override
@@ -181,6 +182,11 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 		dispatch(currentEntityPath + name, value, elseSource);
 	}
 
+	@Override
+	public void close() {
+		outputStreamReceiver.close();
+	}
+	
 	/**
 	 * @param path
 	 * @param value
@@ -306,4 +312,5 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	public Collection<String> getMapNames() {
 		return multiMap.getMapNames();
 	}
+
 }

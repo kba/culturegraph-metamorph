@@ -1,12 +1,11 @@
 package org.culturegraph.metamorph;
 
-import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import org.culturegraph.metamorph.stream.readers.MultiFormatReader;
-import org.culturegraph.metamorph.stream.receivers.DefaultWriter;
+import org.culturegraph.metastream.sink.StreamWriter;
 
 /**
  * Example which reads mab2, pica and marc21 files and prints the result to the
@@ -34,14 +33,15 @@ public final class Read {
 			System.err.println("Usage: Read FILE [MORPHDEF]");
 			return;
 		}
-		final DefaultWriter consoleWriter = new DefaultWriter(new BufferedWriter(new OutputStreamWriter(System.out, "UTF8")));
+		final StreamWriter consoleWriter = new StreamWriter();
 		reader.setReceiver(consoleWriter);
+		consoleWriter.setReceiver(new OutputStreamWriter(System.out, "UTF8"));
 
 		final String fileName = args[0];
 		final String extension = getExtention(fileName);
 		reader.setFormat(extension);
 		reader.read(new FileReader(fileName));
-		consoleWriter.flush();
+		reader.close();
 	}
 
 	private static String getExtention(final String fileName) {

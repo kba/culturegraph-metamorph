@@ -1,6 +1,5 @@
 package org.culturegraph.metamorph.stream.readers;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,15 +8,16 @@ import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
 import org.culturegraph.metamorph.core.MetamorphErrorHandler;
 import org.culturegraph.metamorph.core.exceptions.MetamorphException;
-import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.culturegraph.metastream.framework.StreamReceiver;
 
 /**
  * {@link MultiFormatReader} uses the {@link AbstractReaderFactory} to handle
  * all registered input formats.
  * 
  * @author Markus Michael Geipel
- * 
+ * @deprecated Use {@code DecoderFactory} and {@code MetamorphRegistry} instead.
  */
+@Deprecated
 public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 
 	private static final String ERROR_NO_FORMAT = "no format set";
@@ -129,8 +129,13 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 	}
 
 	@Override
-	public void read(final java.io.Reader reader) throws IOException {
+	public void read(final java.io.Reader reader) {
 		currentReader.read(reader);
 		
+	}
+
+	@Override
+	public void close() {
+		currentReader.close();
 	}
 }

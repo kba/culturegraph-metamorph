@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
-import org.culturegraph.metamorph.stream.AbstractStreamReceiver;
-import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.culturegraph.metastream.framework.DefaultStreamReceiver;
+import org.culturegraph.metastream.framework.StreamReceiver;
 import org.culturegraph.metastream.type.NamedValue;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public final class MetamorphBasicTest implements NamedValueReceiver {
 	private static final String MATCHING_PATH = ENTITY_NAME + '.' + LITERAL_NAME;
 	private static final String NON_MATCHING_PATH1 = "s234234";
 	private static final String NON_MATCHING_PATH2 = ENTITY_NAME + ".lskdj";
-	private static final StreamReceiver EMPTY_RECEIVER = new AbstractStreamReceiver() {
+	private static final StreamReceiver EMPTY_RECEIVER = new DefaultStreamReceiver() {
 		@Override
 		public void literal(final String name, final String value) {
 			// nothing
