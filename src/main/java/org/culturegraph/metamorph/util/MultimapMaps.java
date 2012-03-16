@@ -5,13 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * loads text files into a {@link SimpleMultiMap}. Keys and values are tab-separated. The
@@ -21,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public final class MultimapMaps{
-	private static final Logger LOG = LoggerFactory.getLogger(MultimapMaps.class);
+	//private static final Logger LOG = LoggerFactory.getLogger(MultimapMaps.class);
 
 	private MultimapMaps() {
 		// no instances
@@ -59,6 +58,10 @@ public final class MultimapMaps{
 			}
 		}
 	}
+	
+	public static void load(final SimpleMultiMap multiMap, final List<String> fileNames) throws IOException {
+		load(multiMap, fileNames.toArray(new String[fileNames.size()]));
+	}
  
 	private static void load(final SimpleMultiMap multiMap, final File file) throws IOException {
 
@@ -67,13 +70,13 @@ public final class MultimapMaps{
 
 		String line = bufferedReader.readLine();
 		while (line != null) {
-			if (!line.isEmpty()) {
+			if (!line.isEmpty() && line.charAt(0) != '#') {
 				addRecord(line, multiMap);
 			}
 			line = bufferedReader.readLine();
 		}
 		bufferedReader.close();
-		LOG.debug(file.getName() + " loaded into map.");
+		
 	}
 
 	private static void addRecord(final String line, final SimpleMultiMap multiMap) {

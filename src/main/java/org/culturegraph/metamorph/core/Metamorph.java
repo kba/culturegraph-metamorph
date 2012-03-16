@@ -223,7 +223,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 		for (Data data : dataList) {
 			try {
 				data.receive(key, value, null, recordCount, currentEntityCount);
-			} catch (MetamorphException e) {
+			} catch (RuntimeException e) {
 				errorHandler.error(e);
 			}
 		}
