@@ -33,9 +33,8 @@ public final class Read {
 			System.err.println("Usage: Read FILE [MORPHDEF]");
 			return;
 		}
-		final StreamWriter consoleWriter = new StreamWriter();
+		final StreamWriter consoleWriter = new StreamWriter(new OutputStreamWriter(System.out, "UTF8"));
 		reader.setReceiver(consoleWriter);
-		consoleWriter.setReceiver(new OutputStreamWriter(System.out, "UTF8"));
 
 		final String fileName = args[0];
 		final String extension = getExtention(fileName);
