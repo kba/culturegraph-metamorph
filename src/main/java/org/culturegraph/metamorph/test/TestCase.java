@@ -14,7 +14,8 @@ import org.culturegraph.metamorph.util.ResourceUtil;
 import org.culturegraph.metamorph.util.XMLUtil;
 import org.culturegraph.metastream.converter.xml.CGXMLHandler;
 import org.culturegraph.metastream.converter.xml.XMLDecoder;
-import org.culturegraph.metastream.framework.StreamPipe;
+import org.culturegraph.metastream.framework.StreamReceiver;
+import org.culturegraph.metastream.framework.StreamReceiverPipe;
 import org.culturegraph.metastream.sink.EventList;
 import org.culturegraph.metastream.util.StreamValidator;
 import org.w3c.dom.Element;
@@ -45,7 +46,7 @@ public final class TestCase {
 	private final Element config;
 	
 	private final Reader reader;
-	private final StreamPipe transformation;
+	private final StreamReceiverPipe<StreamReceiver> transformation;
 		
 	public TestCase(final Element config) {
 		this.config = config;
@@ -97,7 +98,7 @@ public final class TestCase {
 		return READER_FACTORY.newInstance(mimeType, Collections.<String, String>emptyMap());
 	}
 	
-	private StreamPipe getTransformation() {
+	private StreamReceiverPipe<StreamReceiver> getTransformation() {
 		final NodeList nodes = config.getElementsByTagName(TRANSFORMATION_TAG);
 		if (nodes.getLength() == 0) {
 			return null;			

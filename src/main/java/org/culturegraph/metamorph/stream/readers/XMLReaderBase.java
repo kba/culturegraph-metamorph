@@ -2,7 +2,7 @@ package org.culturegraph.metamorph.stream.readers;
 
 import org.culturegraph.metastream.converter.xml.XMLDecoder;
 import org.culturegraph.metastream.framework.StreamReceiver;
-import org.culturegraph.metastream.framework.XMLToStreamConverter;
+import org.culturegraph.metastream.framework.XMLReceiverPipe;
 
 /**
  * @author Christoph Böhme
@@ -11,9 +11,9 @@ import org.culturegraph.metastream.framework.XMLToStreamConverter;
 public class XMLReaderBase implements Reader {
 	
 	private final XMLDecoder xmlDecoder = new XMLDecoder();
-	private final XMLToStreamConverter xmlReceiver;
+	private final XMLReceiverPipe<StreamReceiver> xmlReceiver;
 	
-	protected XMLReaderBase(final XMLToStreamConverter xmlReceiver) {
+	protected XMLReaderBase(final XMLReceiverPipe<StreamReceiver> xmlReceiver) {
 		this.xmlReceiver = xmlReceiver;
 		xmlDecoder.setReceiver(this.xmlReceiver);
 	}
