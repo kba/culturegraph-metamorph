@@ -72,7 +72,7 @@ public final class TestCase {
 		}
 		
 		reader.read(getInputData());
-		reader.close();
+		reader.closeResources();
 		
 		final StreamValidator validator = 
 				new StreamValidator(resultStream.getEvents());
@@ -89,7 +89,7 @@ public final class TestCase {
 		decoder.setReceiver(new CGXMLHandler()).setReceiver(validator);
 		
 		decoder.process(getExpectedResult());
-		validator.close();	
+		validator.closeResources();	
 	}
 	
 	private Reader getReader() {		

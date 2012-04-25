@@ -37,8 +37,13 @@ public class ReaderBase implements Reader {
 	}
 
 	@Override
-	public final void close() {
-		lineReader.close();
+	public final void reset() {
+		lineReader.reset();
+	}
+	
+	@Override
+	public final void closeResources() {
+		lineReader.closeResources();
 	}
 
 	@Override

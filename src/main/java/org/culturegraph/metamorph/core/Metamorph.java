@@ -180,10 +180,16 @@ public final class Metamorph implements StreamReceiverPipe<StreamReceiver>, Name
 	public void literal(final String name, final String value) {
 		dispatch(currentEntityPath + name, value, elseSource);
 	}
-
+	
 	@Override
-	public void close() {
-		outputStreamReceiver.close();
+	public void reset() {
+		// TODO: Implement proper reset handling
+		outputStreamReceiver.reset();
+	}
+	
+	@Override
+	public void closeResources() {
+		outputStreamReceiver.closeResources();
 	}
 	
 	/**

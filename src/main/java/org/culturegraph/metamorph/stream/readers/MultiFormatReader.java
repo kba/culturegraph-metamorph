@@ -136,7 +136,13 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 	}
 
 	@Override
-	public void close() {
-		currentReader.close();
+	public void reset() {
+		currentReader.reset();
 	}
+
+	@Override
+	public void closeResources() {
+		currentReader.closeResources();
+	}
+	
 }

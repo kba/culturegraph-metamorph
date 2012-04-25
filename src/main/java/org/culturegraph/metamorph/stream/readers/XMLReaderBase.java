@@ -35,8 +35,13 @@ public class XMLReaderBase implements Reader {
 	}
 
 	@Override
-	public final void close() {
-		xmlDecoder.close();
+	public final void reset() {
+		xmlDecoder.reset();
+	}
+
+	@Override
+	public final void closeResources() {
+		xmlDecoder.closeResources();
 	}
 
 	@Override

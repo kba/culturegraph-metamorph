@@ -40,7 +40,7 @@ public final class Read {
 		final String extension = getExtention(fileName);
 		reader.setFormat(extension);
 		reader.read(new FileReader(fileName));
-		reader.close();
+		reader.closeResources();
 	}
 
 	private static String getExtention(final String fileName) {

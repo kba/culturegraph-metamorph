@@ -87,11 +87,20 @@ public final class Splitter implements StreamReceiverPipe<StreamReceiver> {
 	}
 
 	@Override
-	public void close() {
-		buffer.close();
-		metamorph.close();
+	public void reset() {
+		buffer.reset();
+		metamorph.reset();
 		for (StreamReceiver r: receiverMap.values()) {
-			r.close();
+			r.reset();
+		}
+	}
+	
+	@Override
+	public void closeResources() {
+		buffer.closeResources();
+		metamorph.closeResources();
+		for (StreamReceiver r: receiverMap.values()) {
+			r.closeResources();
 		}
 	}
 }
