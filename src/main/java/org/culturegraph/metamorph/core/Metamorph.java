@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.culturegraph.metamorph.core.exceptions.IllegalMorphStateException;
-import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.culturegraph.metamorph.multimap.MultiMap;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metamorph.stream.StreamPipe;
@@ -126,6 +125,10 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 
 	@Override
 	public void startEntity(final String name) {
+		if(name==null){
+			throw new IllegalArgumentException("Entity name must not be null.");
+		}
+		
 		++entityCount;
 		currentEntityCount = entityCount;
 		entityCountStack.push(Integer.valueOf(entityCount));
@@ -146,12 +149,14 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	@Override
 	public void endEntity() {
 
-		final int end = entityPath.length();
+		
 		try {
-			entityPath.delete(end - entityStack.getLast().length() - 1, end);
-
+			final int end = entityPath.length();
 			final String name = entityStack.pop();
 			currentEntityCount = entityCountStack.pop().intValue();
+			
+			entityPath.delete(end - name.length() - 1, end);
+			
 			currentEntityPath = entityPath.toString();
 
 			notifyEntityEndListeners(name);

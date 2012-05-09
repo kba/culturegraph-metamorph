@@ -284,6 +284,7 @@
 			<element ref="tns:name" />
 			<element ref="tns:get-name" />
 			<element ref="tns:unique" />
+			<element ref="tns:script" />
 			<any namespace="##other" processContents="lax" />
 
 		</choice>
@@ -449,6 +450,13 @@
 	<element name="constant">
 		<complexType>
 			<attribute name="value" type="string" use="required" />
+		</complexType>
+	</element>
+	
+		<element name="script">
+		<complexType>
+			<attribute name="invoke" type="string" use="required" />
+			<attribute name="file" type="string" use="required" />
 		</complexType>
 	</element>
 

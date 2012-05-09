@@ -476,7 +476,7 @@ An example test output in Eclipse is shown in figure \ref{fig:junit}. The root e
 \caption{Testcases shown in Eclipse}\label{fig:junit}
 \end{figure}
 
-\subsubsection{Visualizing Metamorph Definitions as Data Flow Diagramms}
+\subsubsection{Visualizing Metamorph Definitions as Data Flow Diagramms}\label{vis}
 
 The processing model behind Metamorph is that of a data flow. Hence it is straight forward to visualize Metamorph as a directed network representing this the resulting flow of data. Figure \ref{fig:match-title} shows such a visual representation. 
 
@@ -501,12 +501,17 @@ java org.culturegraph.metamorph.Visualize $FILE | dot -T$FORMAT > $FILE.$FORMAT
 
 
 \section{Application Examples}\label{apps}
-
+ Metamorph is used is several projects in the German National Library. The following overview shall convey a basic understanding of Metamorph's range of application.
 
 \subsection{Culturegraph}\label{culturegraph}
 Culturegraph is a Resolving- and Lookup-Service for bibliographic identifier. A Linked Open Data service that aims to establish shared identifiers for cultural works to ensure these resources can be reliably and persistently referenced.
+From a technical view point, the following is happening: metadata from different sources is written to a database and matched to find correspondences. The matches and the original data are indexed and published on a web-portal. To accomplish this, metadata has to be transformed in various stages of the processing pipeline.
 
-From a technical view point, the following is happening: metadata from different sources is written to a database and matched to find correspondences. The matches and the original data are indexed and published on a web-portal. To accomplish this, metadata has to be transformed in various stages of the processing pipeline. Figure \ref{fig:flow} provides an overview.
+First of all the source data is encoded in Marc21, Mab2 or Pica+. Hence, in the first stage, the source data is transformed into the Culturegraph internal format which forms the common denominator. The transformation of each source format into the Culturegraph format is encoded in a Metamorph definition. 
+To ensure quality and to inform the matching algorithm design, it is imperative to calculate statistics of the data. Metamorph is used to select the pieces of data that are counted by the framework. This allows to answer a range of questions easily. Questions such as "How many records for each year of issuance exist in each subject group? How many of them have at least one ISBN?"
+...
+
+ Figure \ref{fig:flow} provides an overview.
 
 \begin{figure}[htp]
 \centering
@@ -514,13 +519,27 @@ From a technical view point, the following is happening: metadata from different
 \caption{Dataflows in Culturegraph. MM stands for a data transformation using Metamorph}\label{fig:flow}
 \end{figure}
 
+The advantage of encoding all data transformation in Culturegraph as Metamorph definition is transparency. As Metamorph definitions can easily be visualized (see section \ref{vis}), each piece of information presented to a user of the system can be graphically backtrackt right to the delivered source data.
 
-%\subsection{Linked Data Service DNB}
+
+\subsection{Linked Data Service DNB}
 
 
 \section{Future Prospects}
+Metamoprh is work in progress. Hence there are naturally open issues, limitations as well as possible extentions to be added in the future. 
 
 \subsection{Open Issues and Limitations}
+
+The current version of Metamorph exhibits the following limitations:
+
+\begin{description}
+\item[Nested Entities] Entity tags cannot be nested currently.
+\item[Entity Names] 
+\end{description}
+
+
+Apart from these limitations there are several points to not when using Metamorph.
+
 
 \subsection{Possible Extensions}
 \subsubsection{Indexing Data}
