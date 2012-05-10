@@ -146,17 +146,8 @@ One module implementing {\tt StreamSender} for example might read a bibliographi
 The events are received by another module which implements {\tt StreamReceiver} and {\tt StreamSender}, thus forming a pipe or filter element in the chain. 
 It may react on the events and transform the stream and its contents. Finally an arbitrary {\tt StreamReceiver} may form the endpoint of chain by reassembling the events to objects or persisting them to a database, logging them, indexing them. The interfaces shield the intricacies of one element in the chain from the others. This means that parts can be easily exchanged. The modularity gained by this schema enables reuse of software components and admits for a more flexible architecture.
 
+Having modeled complex data as a stream of events, we can now build generic operation to be applied to this stream. Handling the stream and transforming it is the pupose of Metamorph which will be explained in the following section.
 
-\subsection{Generic Transformations}\label{trans}
-
-
-\subsubsection{Addressing and Dispaching Data}\label{dispatching}
-
-\subsubsection{Data Receivers}
-
-\subsubsection{Data Processors}
-
-\subsubsection{Data Collectors}
 
 
 
@@ -279,13 +270,34 @@ First we eliminate all whitespaces by using a {\tt replace} operation. Next we a
 Please note that functions may return zero to $n$ values. If no value is returned, the processing is stopped and nothing will be sent downstream. If for instance a {\tt regexp} does not match, processing stops and there will be no 'rdaGr2:dateOfDeath' in the output stream.
 
 Builtin functions include:
-{\tt compose}, {\tt constant}, {\tt count}, {\tt regexp}, {\tt replace}, {\tt substring}, {\tt lookup}, {\tt whitelist}, {\tt blacklist}, {\tt isbn}, {\tt equals}, {\tt htmlanchor}, {\tt trim}, {\tt split}, {\tt normalize-utf8} and {\tt occurence}. For the time being, see the test-cases and {\tt schema/metamorph.xsd} for arguments and usage examples.
+\begin{description}
+\item[{\tt compose}] wraps the value in a prefix and postfix.
+\item[{\tt constant}] replaces the value with a constant.
+\item[{\tt count}] counts occurences of the value.
+\item[{\tt regexp}] regexp matching. Optional extraction of specific match groups.
+ \item[{\tt replace}] replace operation based on a regexp.
+\item[{\tt substring}] extraction of a substring.
+\item[{\tt lookup}] lookup and replace based on a data table. See \ref{lookup}.
+\item[{\tt whitelist}] Filtering based on a whitelist. See \ref{lookup}.
+ \item[{\tt blacklist}] Filtering based on a blacklist. See \ref{lookup}.
+ \item[{\tt isbn}] ISBN cleaning, checkdigit verification and transformation between ISBN 10 and ISBN 13.
+ \item[{\tt equals}] filtering based on equality.
+\item[{\tt not-equals}] filtering based on inequality.
+ \item[{\tt htmlanchor}] create a HTML anchor tag.
+ \item[{\tt trim}] trim the value.
+ \item[{\tt split}] splitting based on a regexp.
+ \item[{\tt script}] processing the value with a JavaScript function.
+ \item[{\tt normalize-utf8}]  UTF-8 normalization. Brings Umlauts into canonical form.
+\item[{\tt occurence}]. filtering based on occurence.
+\end{description}
+
+For the time being see the test-cases and {\tt schema/metamorph.xsd} for arguments and usage examples.
 
 
 
 \subsubsection{Looking up  Pieces of Data}\label{lookup}
 
-A certain group of functions takes a map/dictionary as argument: {\tt lookup}, {\tt whitelist}, {\tt blacklist} etc.
+A certain group of functions takes a map/dictionary as argument: {\tt lookup}m {\tt whitelist}, {\tt blacklist} etc.
 In this section the usage of such maps will be explained. We start with a simple example of data lookup.
 
 \paragraph{Local Lookup}
@@ -391,9 +403,9 @@ collects all received values and concatenates them on record end. {\tt flushOn= 
 \paragraph{Choose}
 collects all received values and emits the most preferred one on record end. Preference is assigned according to the order the data sources appear within the {\tt choose} tag.  Eligible arguments are {\tt sameEntity} and {\tt flushOn}.
 
-\paragraph{Group} is syntactic sugar. Use it to set name, value or both once for an entire group of {\tt data} or collect ({\tt combine}, {\tt choose}, etc. ) tags.
+\paragraph{Group} is syntactic sugar. Use it to set name, value or both only once for an entire group of {\tt data} or collect ({\tt combine}, {\tt choose}, etc. ) tags.
 
-\paragraph{Entity} collects literals to rearrange them as an entity. Use the argument {\tt name} to assign a name to the entity. Further arguments are {\tt sameEntity}, {\tt flushOn} and {\tt reset}.
+\paragraph{Entity} collects literals to rearrange them as an entity. Use the argument {\tt name} to assign a name to the entity. Further arguments are {\tt sameEntity}, {\tt flushOn} and {\tt reset}. Note that the {\tt entity} tag can only apear als child of the {\tt rules} tag or another {\tt entity} tag as it does not output a literal.
 
 \paragraph{}For the time being, see the test-cases and {\tt schema/metamorph.xsd} for more information.
 
@@ -419,6 +431,8 @@ In a complex project setting there may be several Metamorph definitions in use, 
 Use the {\tt include} tag from the {\tt http://www.w3.org/2001/XInclude} namespace to insert an external xml file into your definition. The included file must be valid xml itself, containig syntactically valid tags from the Metamorph namespace.
 
 \subsection{Tools}
+
+Several tools support the work with Metamorph.
 
 \subsubsection{Testing Framework for Metamorph Definitions}
 
@@ -525,25 +539,31 @@ The advantage of encoding all data transformation in Culturegraph as Metamorph d
 \subsection{Linked Data Service DNB}
 
 
+
 \section{Future Prospects}
 Metamoprh is work in progress. Hence there are naturally open issues, limitations as well as possible extentions to be added in the future. 
 
 \subsection{Open Issues and Limitations}
 
-The current version of Metamorph exhibits the following limitations:
+We are aware that the current version of Metamorph exhibits the following limitations:
 
 \begin{description}
-\item[Nested Entities] Entity tags cannot be nested currently.
-\item[Entity Names] 
+\item[Entity Names]  For the time being, the name provided to the {\tt entity} tag is a constant and cannot be dynamically assigned. Further releases of Metamorph will address this issue.
+\item[User Libraries] Currently there the possibility to extend the tag set for data processing is limited to the inclusion of Java Code described in \ref{customfunc} and the invocatio of JavaScript functions via the {\tt script} tag. The is no mechanism yet to include a whole set of new function (forming a library).
+\item[Addressing pieces of data] There is no wildcard support in the data addressing mechanism. The {\tt data} tag only accepts literal strings as source address.
 \end{description}
+We hope to cut down this list in the releases to come.
 
+\subsection{Work on Extensions}
+We are currently working on additional modules to broaden the scope of application Metamorph can offer.
+This includes indexing data and transforming data to RDF. The following subsections elaborate on this.
 
-Apart from these limitations there are several points to not when using Metamorph.
-
-
-\subsection{Possible Extensions}
 \subsubsection{Indexing Data}
+TODO
+
 \subsubsection{Writing RDF}
+TODO
+
 
 \end{document}
 
