@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.culturegraph.metamorph.core.Metamorph;
+import org.culturegraph.metamorph.core.NamedValueReceiver;
 import org.culturegraph.metamorph.core.NamedValueSource;
 import org.culturegraph.metamorph.stream.StreamReceiver;
 import org.culturegraph.metamorph.types.ListMap;
@@ -20,12 +21,12 @@ import org.slf4j.LoggerFactory;
  */
 public final class Entity extends AbstractCollect {
 	private static final Logger LOG = LoggerFactory.getLogger(Entity.class);
-	
+
+
 	private final ListMap<NamedValueSource, NamedValue> literalListMap = new ListMap<NamedValueSource, NamedValue>();
 	private final List<NamedValueSource> sourceList = new ArrayList<NamedValueSource>();
 	private final Set<NamedValueSource> sourcesLeft = new HashSet<NamedValueSource>();
 
-	private final List<Entity> subEntityList = new ArrayList<Entity>();
 
 	public Entity(final Metamorph metamorph) {
 		super(metamorph);
@@ -33,10 +34,30 @@ public final class Entity extends AbstractCollect {
 
 	@Override
 	protected void emit() {
+		if (isRootEntity()) {
+			//root starts the write
+			writeCollectedNamedValues();
+		} else {
+			// must be an entity as entities can not be nested in other collectors
+			final Entity parentEntity = (Entity) getNamedValueReceiver(); 
+			//nested entities signal their readiness to parent by sending null
+			parentEntity.receive(null, null, this, getRecordCount(), getEntityCount());
+		}
+	}
+	
+	private boolean isRootEntity() {
+		return  getNamedValueReceiver() == getMetamorph();
+	}
+
+	private void writeCollectedNamedValues(){
 		final StreamReceiver streamReceiver = getMetamorph().getStreamReceiver();
 		streamReceiver.startEntity(getName());
 
 		for (NamedValueSource source : sourceList) {
+			if (source instanceof Entity) {
+				final Entity nestedEntity = (Entity) source;
+				nestedEntity.writeCollectedNamedValues();
+			}
 			for (NamedValue literal : literalListMap.get(source)) {
 				streamReceiver.literal(literal.getName(), literal.getValue());
 			}
@@ -47,7 +68,9 @@ public final class Entity extends AbstractCollect {
 
 	@Override
 	protected void receive(final String name, final String value, final NamedValueSource source) {
-		literalListMap.put(source, new NamedValue(name, value));
+		if (name != null) { // do not record ready signals from nested entities
+			literalListMap.put(source, new NamedValue(name, value));
+		}
 		sourcesLeft.remove(source);
 	}
 
@@ -66,10 +89,6 @@ public final class Entity extends AbstractCollect {
 	public void addNamedValueSource(final NamedValueSource namedValueSource) {
 		sourceList.add(namedValueSource);
 		sourcesLeft.add(namedValueSource);
-		if (namedValueSource instanceof Entity) {
-			final Entity entity = (Entity) namedValueSource;
-			subEntityList.add(entity);
-			LOG.info("subentity added");
-		}
+
 	}
 }

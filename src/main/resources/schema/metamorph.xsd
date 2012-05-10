@@ -172,9 +172,10 @@
 
 	<element name="entity">
 		<complexType>
-			<sequence>
+			<choice minOccurs="1" maxOccurs="unbounded">
 				<group ref="tns:literal-rule" minOccurs="0" maxOccurs="unbounded" />
-			</sequence>
+				<element ref="tns:entity"/>
+			</choice>
 			<attribute name="name" type="string" use="required" />
 			<attribute name="reset" type="boolean" use="optional"
 				default="false" />

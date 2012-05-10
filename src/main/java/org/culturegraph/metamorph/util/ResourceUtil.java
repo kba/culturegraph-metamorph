@@ -42,7 +42,6 @@ public final class ResourceUtil {
 			return getStream(new File(name));
 		}
 		return stream;
-
 	}
 
 	public static InputStream getStream(final File file) throws FileNotFoundException {
