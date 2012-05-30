@@ -252,7 +252,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount,
 			final int entityCount) {
 		if(null==name){
-			throw new IllegalArgumentException("encountered literal with name='null'. This indicates a bug in the functions.");
+			throw new IllegalArgumentException("encountered literal with name='null'. This indicates a bug in a function or a collector.");
 		}
 		
 		if (name.length() != 0 && name.charAt(0) == FEEDBACK_CHAR) {
