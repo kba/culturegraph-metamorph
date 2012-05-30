@@ -36,8 +36,15 @@ public final class Choose extends AbstractCollect{
 
 	@Override
 	protected void emit() {
-		getNamedValueReceiver().receive(StringUtil.fallback(getName(), name), StringUtil.fallback(getValue(), value), this, getRecordCount(), getEntityCount());
+		if(!isEmpty()){
+			getNamedValueReceiver().receive(StringUtil.fallback(getName(), name), StringUtil.fallback(getValue(), value), this, getRecordCount(), getEntityCount());
+		}
 		clear();
+	}
+
+
+	private boolean isEmpty() {
+		return name==null;
 	}
 
 
