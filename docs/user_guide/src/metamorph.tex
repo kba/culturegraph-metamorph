@@ -32,6 +32,21 @@ columns=fullflexible,
 captionpos=b,
 }
 
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  keywordstyle=\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\ttfamily,
+  stringstyle=\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
 
 \begin{document}
 \maketitle
@@ -57,7 +72,7 @@ A final section on the future prospects and limitations of Metamorph rounds up t
 
 \section{Metadata Transformation in Practice}
 
-Metadata transformation is a complex and sometimes tedious process as its correctness depends on an overlap of domain knowledge and programming skills. First the typical procedure will be skeched followed by a discussion of the resulting challenges.
+Metadata transformation is a complex and sometimes tedious process as its correctness depends on an overlap of domain knowledge and programming skills. First the typical procedure will be sketched followed by a discussion of the resulting challenges.
 
 
 \subsection{Workflow}
@@ -146,17 +161,8 @@ One module implementing {\tt StreamSender} for example might read a bibliographi
 The events are received by another module which implements {\tt StreamReceiver} and {\tt StreamSender}, thus forming a pipe or filter element in the chain. 
 It may react on the events and transform the stream and its contents. Finally an arbitrary {\tt StreamReceiver} may form the endpoint of chain by reassembling the events to objects or persisting them to a database, logging them, indexing them. The interfaces shield the intricacies of one element in the chain from the others. This means that parts can be easily exchanged. The modularity gained by this schema enables reuse of software components and admits for a more flexible architecture.
 
+Having modeled complex data as a stream of events, we can now build generic operation to be applied to this stream. Handling the stream and transforming it is the purpose of Metamorph which will be explained in the following section.
 
-\subsection{Generic Transformations}\label{trans}
-
-
-\subsubsection{Addressing and Dispaching Data}\label{dispatching}
-
-\subsubsection{Data Receivers}
-
-\subsubsection{Data Processors}
-
-\subsubsection{Data Collectors}
 
 
 
@@ -191,7 +197,7 @@ The Metamorph object acts as a pipe element in the data stream. See also figure 
 The wiring is done by calling {\tt setReceiver()}. The call returns its argument, preserving the respective type. Thus the calls can be chained to build up a pipeline as shown in the listing. Finally the processing is stared by calling the respective method on the data source/reader. The method name depends on the reader. In the Metamorph project {\tt read()} is used by convention.
 
 \begin{lstlisting}[float=htb, label=codepipeline1,caption= Putting together a processing pipeline according to the pattern in section \ref{pipeline}., language=Java]
-// create neccessary objects
+// create necessary objects
 final PicaReader reader = new PicaReader();
 final Metamorph metamorph = MetamorphBuilder.build("defnition.xml");
 final ListMapWriter writer = new ListMapWriter();
@@ -279,13 +285,34 @@ First we eliminate all whitespaces by using a {\tt replace} operation. Next we a
 Please note that functions may return zero to $n$ values. If no value is returned, the processing is stopped and nothing will be sent downstream. If for instance a {\tt regexp} does not match, processing stops and there will be no 'rdaGr2:dateOfDeath' in the output stream.
 
 Builtin functions include:
-{\tt compose}, {\tt constant}, {\tt count}, {\tt regexp}, {\tt replace}, {\tt substring}, {\tt lookup}, {\tt whitelist}, {\tt blacklist}, {\tt isbn}, {\tt equals}, {\tt htmlanchor}, {\tt trim}, {\tt split}, {\tt normalize-utf8} and {\tt occurence}. For the time being, see the test-cases and {\tt schema/metamorph.xsd} for arguments and usage examples.
+\begin{description}
+\item[{\tt compose}] wraps the value in a prefix and postfix.
+\item[{\tt constant}] replaces the value with a constant.
+\item[{\tt count}] counts occurrences of the value.
+\item[{\tt regexp}] regexp matching. Optional extraction of specific match groups.
+ \item[{\tt replace}] replace operation based on a regexp.
+\item[{\tt substring}] extraction of a substring.
+\item[{\tt lookup}] lookup and replace based on a data table. See \ref{lookup}.
+\item[{\tt whitelist}] Filtering based on a whitelist. See \ref{lookup}.
+ \item[{\tt blacklist}] Filtering based on a blacklist. See \ref{lookup}.
+ \item[{\tt isbn}] ISBN cleaning, checkdigit verification and transformation between ISBN 10 and ISBN 13.
+ \item[{\tt equals}] filtering based on equality.
+\item[{\tt not-equals}] filtering based on inequality.
+ \item[{\tt htmlanchor}] create a HTML anchor tag.
+ \item[{\tt trim}] trim the value.
+ \item[{\tt split}] splitting based on a regexp.
+ \item[{\tt script}] processing the value with a JavaScript function. 
+ \item[{\tt normalize-utf8}]  UTF-8 normalization. Brings Umlauts into canonical form.
+\item[{\tt occurrence}]. filtering based on occurrence.
+\end{description}
+
+For the time being see the test-cases and {\tt schema/metamorph.xsd} for arguments and usage examples.
 
 
 
 \subsubsection{Looking up  Pieces of Data}\label{lookup}
 
-A certain group of functions takes a map/dictionary as argument: {\tt lookup}, {\tt whitelist}, {\tt blacklist} etc.
+A certain group of functions takes a map/dictionary as argument: {\tt lookup}m {\tt whitelist}, {\tt blacklist} etc.
 In this section the usage of such maps will be explained. We start with a simple example of data lookup.
 
 \paragraph{Local Lookup}
@@ -335,22 +362,40 @@ metamorph.putMap("name of map", map);
 
 
 
-\subsubsection{Integration of custom Java code}\label{customfunc}
+\subsubsection{Integration of customized code}\label{customfunc}
 
-If the predefined functions for data processing do not satisfy your needs, you may define new functions as shown in listing \ref{def}.
-In the definition statement a Java class is bound to a name which is subsequently used to refer to it. There are a few important points to note:
+In case the predefined functions for data processing do not satisfy your needs, two choices to extend Metamorph scripts with customized code are at your disposal: The first is to write a Java class. The second is to load a JavaScript file.
+
+\paragraph{Java}
+
+You may define new functions as shown in listing \ref{def}. In the definition statement a Java class is bound to a name which is subsequently used to refer to it. There are a few important points to note:
 The class must implement the {\tt Function} interface. For each attribute provided when referencing the function, a respective {\tt set} method is called right after instantiation. This mechanism correctly handles the types {\tt String}, {\tt boolean} and {\tt int}. A function is instantiated once per use in Metamorph definition and may thus maintain a state. See the JavaDoc for more details, examples and advanced issues such as dealing with state.
 
-\begin{lstlisting}[float=htb, label=def,caption=User defined functions.]
+\begin{lstlisting}[float=htb, label=def,caption=User defined functions in Java.]
 <functions>
    <def name="my_super_function" class="org.myorg.myfunctions.MySuperFunction" />
 </functions> 
 \end{lstlisting}
 
+\paragraph{JavaScript}
+
+To invoke a JavaScript function use the {\tt script} tag as shown in listing \ref{def2}. 
+\begin{lstlisting}[float=htb, label=def2,caption=User defined functions in JavaScript.]
+<data source="X">
+   <script file="script.js" invoke="emphasize" />
+</data>
+\end{lstlisting}
+The {\tt script} takes as arguments the path to a JavaScript file and the name of the function to be invoked using the data as sole argument. The return value may be any object as Metamorph will call {\tt toString()} on it before proceeding. Listing \ref{js} shows the JavaScript file referenced in Listing \ref{def2}.
+
+\begin{lstlisting}[float=htb, label=js, language=JavaScript, caption=JavaScript file implementing the function referenced in listing \ref{def2}.]
+function emphasize(val){
+	return "<em>" + val + "</em>";
+}
+\end{lstlisting}
 
 \subsubsection{Recursion}\label{recursion}
 
-Pieces of data processed with Metamorph are by default sent to the {\tt StreamReceiver} registered with Metamorph. There is however the posibillity to send a piece of data into a feedback loop. In this case the data reenters Metamorph just as it came from the upstream {\tt StreamSender}. This recursion is accomplished by prepending an '@' to the name of the data as shown in listing \ref{lst:rec}. 
+Pieces of data processed with Metamorph are by default sent to the {\tt StreamReceiver} registered with Metamorph. There is however the possibility to send a piece of data into a feedback loop. In this case the data reenters Metamorph just as it came from the upstream {\tt StreamSender}. This recursion is accomplished by prepending an '@' to the name of the data as shown in listing \ref{lst:rec}. 
 
 \begin{lstlisting}[float=htb,label=lst:rec,caption=Prepending '@' to the literal name to enable recursive processing.]
 <data source="002@.0" name="@format">
@@ -391,9 +436,9 @@ collects all received values and concatenates them on record end. {\tt flushOn= 
 \paragraph{Choose}
 collects all received values and emits the most preferred one on record end. Preference is assigned according to the order the data sources appear within the {\tt choose} tag.  Eligible arguments are {\tt sameEntity} and {\tt flushOn}.
 
-\paragraph{Group} is syntactic sugar. Use it to set name, value or both once for an entire group of {\tt data} or collect ({\tt combine}, {\tt choose}, etc. ) tags.
+\paragraph{Group} is syntactic sugar. Use it to set name, value or both only once for an entire group of {\tt data} or collect ({\tt combine}, {\tt choose}, etc. ) tags.
 
-\paragraph{Entity} collects literals to rearrange them as an entity. Use the argument {\tt name} to assign a name to the entity. Further arguments are {\tt sameEntity}, {\tt flushOn} and {\tt reset}.
+\paragraph{Entity} collects literals to rearrange them as an entity. Use the argument {\tt name} to assign a name to the entity. Further arguments are {\tt sameEntity}, {\tt flushOn} and {\tt reset}. Note that the {\tt entity} tag can only apear als child of the {\tt rules} tag or another {\tt entity} tag as it does not output a literal.
 
 \paragraph{}For the time being, see the test-cases and {\tt schema/metamorph.xsd} for more information.
 
@@ -419,6 +464,8 @@ In a complex project setting there may be several Metamorph definitions in use, 
 Use the {\tt include} tag from the {\tt http://www.w3.org/2001/XInclude} namespace to insert an external xml file into your definition. The included file must be valid xml itself, containig syntactically valid tags from the Metamorph namespace.
 
 \subsection{Tools}
+
+Several tools support the work with Metamorph.
 
 \subsubsection{Testing Framework for Metamorph Definitions}
 
@@ -454,7 +501,7 @@ public final class MyTest {/*bind to xml test*/}
 \end{lstlisting}
 
 The {\tt RunWith} annotation instructs JUnit to let {\tt org.culturegraph.metamorph.test.TestSuite} handle the testing.
-Use the {\tt TestDefinitions} annotation to tell {\tt TestSuite} were to look for tests. If no such annotation is found {\tt TestSuite} looks for an XML files with the same name as the binding class. The XML files are expected to be located in the same folder as the binding class. The rationale is that both belong together and separating them would be confusing. Colocating the xml files with the class files is causing trouble with same build environments though. In the case of Maven there is an straight forward remedy: see listing \ref{maven_test}
+Use the {\tt TestDefinitions} annotation to tell {\tt TestSuite} were to look for tests. If no such annotation is found {\tt TestSuite} looks for an XML files with the same name as the binding class. The XML files are expected to be located in the same folder as the binding class. The rationale is that both belong together and separating them would be confusing. Collocating the xml files with the class files is causing trouble with same build environments though. In the case of Maven there is an straight forward remedy: see listing \ref{maven_test}
 
 \begin{lstlisting}[float=htb, label=maven_test,caption=Telling Maven not to ignore resources colocated with java files in the test source directory.]
 <testResources>
@@ -476,7 +523,7 @@ An example test output in Eclipse is shown in figure \ref{fig:junit}. The root e
 \caption{Testcases shown in Eclipse}\label{fig:junit}
 \end{figure}
 
-\subsubsection{Visualizing Metamorph Definitions as Data Flow Diagramms}
+\subsubsection{Visualizing Metamorph Definitions as Data Flow Diagramms}\label{vis}
 
 The processing model behind Metamorph is that of a data flow. Hence it is straight forward to visualize Metamorph as a directed network representing this the resulting flow of data. Figure \ref{fig:match-title} shows such a visual representation. 
 
@@ -501,12 +548,17 @@ java org.culturegraph.metamorph.Visualize $FILE | dot -T$FORMAT > $FILE.$FORMAT
 
 
 \section{Application Examples}\label{apps}
-
+ Metamorph is used is several projects in the German National Library. The following overview shall convey a basic understanding of Metamorph's range of application.
 
 \subsection{Culturegraph}\label{culturegraph}
 Culturegraph is a Resolving- and Lookup-Service for bibliographic identifier. A Linked Open Data service that aims to establish shared identifiers for cultural works to ensure these resources can be reliably and persistently referenced.
+From a technical view point, the following is happening: metadata from different sources is written to a database and matched to find correspondences. The matches and the original data are indexed and published on a web-portal. To accomplish this, metadata has to be transformed in various stages of the processing pipeline.
 
-From a technical view point, the following is happening: metadata from different sources is written to a database and matched to find correspondences. The matches and the original data are indexed and published on a web-portal. To accomplish this, metadata has to be transformed in various stages of the processing pipeline. Figure \ref{fig:flow} provides an overview.
+First of all the source data is encoded in Marc21, Mab2 or Pica+. Hence, in the first stage, the source data is transformed into the Culturegraph internal format which forms the common denominator. The transformation of each source format into the Culturegraph format is encoded in a Metamorph definition. 
+To ensure quality and to inform the matching algorithm design, it is imperative to calculate statistics of the data. Metamorph is used to select the pieces of data that are counted by the framework. This allows to answer a range of questions easily. Questions such as "How many records for each year of issuance exist in each subject group? How many of them have at least one ISBN?"
+...
+
+ Figure \ref{fig:flow} provides an overview.
 
 \begin{figure}[htp]
 \centering
@@ -514,17 +566,37 @@ From a technical view point, the following is happening: metadata from different
 \caption{Dataflows in Culturegraph. MM stands for a data transformation using Metamorph}\label{fig:flow}
 \end{figure}
 
+The advantage of encoding all data transformation in Culturegraph as Metamorph definition is transparency. As Metamorph definitions can easily be visualized (see section \ref{vis}), each piece of information presented to a user of the system can be graphically backtrackt right to the delivered source data.
 
-%\subsection{Linked Data Service DNB}
+
+\subsection{Linked Data Service DNB}
+
 
 
 \section{Future Prospects}
+Metamoprh is work in progress. Hence there are naturally open issues, limitations as well as possible extensions to be added in the future. 
 
 \subsection{Open Issues and Limitations}
 
-\subsection{Possible Extensions}
+We are aware that the current version of Metamorph exhibits the following limitations:
+
+\begin{description}
+\item[Entity Names]  For the time being, the name provided to the {\tt entity} tag is a constant and cannot be dynamically assigned. Further releases of Metamorph will address this issue.
+\item[User Libraries] Currently there the possibility to extend the tag set for data processing is limited to the inclusion of Java Code described in \ref{customfunc} and the invocation of JavaScript functions via the {\tt script} tag. The is no mechanism yet to include a whole set of new function (forming a library).
+\item[Addressing pieces of data] There is no wildcard support in the data addressing mechanism. The {\tt data} tag only accepts literal strings as source address.
+\end{description}
+We hope to cut down this list in the releases to come.
+
+\subsection{Work on Extensions}
+We are currently working on additional modules to broaden the scope of application Metamorph can offer.
+This includes indexing data and transforming data to RDF. The following subsections elaborate on this.
+
 \subsubsection{Indexing Data}
+TODO
+
 \subsubsection{Writing RDF}
+TODO
+
 
 \end{document}
 

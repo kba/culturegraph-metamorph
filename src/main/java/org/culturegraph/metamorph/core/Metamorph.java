@@ -126,6 +126,10 @@ public final class Metamorph implements StreamReceiverPipe<StreamReceiver>, Name
 
 	@Override
 	public void startEntity(final String name) {
+		if(name==null){
+			throw new IllegalArgumentException("Entity name must not be null.");
+		}
+		
 		++entityCount;
 		currentEntityCount = entityCount;
 		entityCountStack.push(Integer.valueOf(entityCount));
@@ -146,12 +150,14 @@ public final class Metamorph implements StreamReceiverPipe<StreamReceiver>, Name
 	@Override
 	public void endEntity() {
 
-		final int end = entityPath.length();
+		
 		try {
-			entityPath.delete(end - entityStack.getLast().length() - 1, end);
-
+			final int end = entityPath.length();
 			final String name = entityStack.pop();
 			currentEntityCount = entityCountStack.pop().intValue();
+			
+			entityPath.delete(end - name.length() - 1, end);
+			
 			currentEntityPath = entityPath.toString();
 
 			notifyEntityEndListeners(name);
@@ -258,7 +264,7 @@ public final class Metamorph implements StreamReceiverPipe<StreamReceiver>, Name
 	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount,
 			final int entityCount) {
 		if(null==name){
-			throw new IllegalArgumentException("encountered literal with name='null'. This indicates a bug in the functions.");
+			throw new IllegalArgumentException("encountered literal with name='null'. This indicates a bug in a function or a collector.");
 		}
 		
 		if (name.length() != 0 && name.charAt(0) == FEEDBACK_CHAR) {

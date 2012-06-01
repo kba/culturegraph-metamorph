@@ -72,7 +72,6 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker{
 		if (mapDefault != null) {
 			metamorph.putValue(mapName, SimpleMultiMap.DEFAULT_MAP_KEY, mapDefault);
 		}
-		
 	}
 
 
@@ -97,10 +96,7 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker{
 	
 	@Override
 	protected void handleMetaEntry(final String name, final String value) {
-		
 		metamorph.putValue(Metamorph.METADATA, name, value);
-		
-		
 	}
 
 
@@ -159,7 +155,7 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker{
 			parent.addNamedValueSource(collect);
 			collect.endPipe(parent);
 		}
-		
+		// must be set after recursive calls to flush decendents before parent
 		final String flushWith = getAttr(node, ATTRITBUTE.FLUSH_WITH);
 		if (null != flushWith) {
 			collect.setFlushWith(flushWith);

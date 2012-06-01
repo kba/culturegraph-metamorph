@@ -66,10 +66,9 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 		currentReader = readerFactory.newInstance(format, Collections.<String, String>emptyMap());
 		openReaders.put(format, currentReader);
 
-		
-		if (morphDefinition==null && streamReceiver != null) {
+		if (morphDefinition == null && streamReceiver != null) {
 			currentReader.setReceiver(streamReceiver);
-		}else if (morphDefinition != null) {
+		} else if (morphDefinition != null) {
 			final String morphDefinitionFinal = morphDefinition + '.' + format + ".xml";
 			final Metamorph metamorph = MetamorphBuilder.build(morphDefinitionFinal);
 			metamorphs.put(format, metamorph);
@@ -78,7 +77,7 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 			if (streamReceiver != null) {
 				metamorph.setReceiver(streamReceiver);
 			}
-		} 
+		}
 	}
 
 	@Override
@@ -86,7 +85,7 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 		if (streamReceiver == null) {
 			throw new IllegalArgumentException(ERROR_RECEIVER_NULL);
 		}
-		
+
 		this.streamReceiver = streamReceiver;
 		if (morphDefinition == null) {
 			for (Reader reader : openReaders.values()) {
@@ -97,11 +96,10 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 				metamorph.setReceiver(streamReceiver);
 			}
 		}
-		
+
 		return streamReceiver;
 	}
 
-	
 	@Override
 	public void read(final String entry) {
 		if (streamReceiver == null) {
@@ -132,7 +130,7 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 	@Override
 	public void read(final java.io.Reader reader) {
 		currentReader.read(reader);
-		
+
 	}
 
 	@Override

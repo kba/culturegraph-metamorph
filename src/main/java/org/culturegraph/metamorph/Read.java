@@ -37,8 +37,8 @@ public final class Read {
 		reader.setReceiver(consoleWriter);
 
 		final String fileName = args[0];
-		final String extension = getExtention(fileName);
-		reader.setFormat(extension);
+		
+		reader.setFormat(getExtention(fileName));
 		reader.read(new FileReader(fileName));
 		reader.closeResources();
 	}
