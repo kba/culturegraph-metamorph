@@ -45,13 +45,10 @@ public final class RecordBufferTest {
 		picaReader.read(new FileReader(DataFilePath.PND_PICA));
 
 		// replay
-		try {
-			buffer.replay();
-			finalWriter.flush();
-		} catch (RecordFormatException e) {
-			Assert.fail("Error during replay: " + e);
-		}
 
+		buffer.replay();
+		finalWriter.flush();
+		
 		// check result
 		Assert.assertEquals(refereceStringWriter.toString(), finalStringWriter.toString());
 

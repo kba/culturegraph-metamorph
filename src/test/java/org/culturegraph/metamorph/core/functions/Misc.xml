@@ -36,6 +36,43 @@
 			</cgxml:cgxml>
 		</result>
 	</test-case>
+	
+	
+		<test-case name="setreplace">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="data" value="dt., frz. und eng." />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="1">
+				<mm:rules>
+					<mm:data source="data">
+						<mm:setreplace>
+							<mm:entry name="dt." value="deutsch"/>
+							<mm:entry name="frz." value="französich"/>
+							<mm:entry name="eng." value="englisch"/>
+						</mm:setreplace>
+					</mm:data>
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="data" value="deutsch, französich und englisch" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
 
 	<test-case name="case">
 		<input type="text/x-cg+xml">

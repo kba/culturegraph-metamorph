@@ -6,7 +6,7 @@ package org.culturegraph.metamorph.core.functions;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.culturegraph.metamorph.util.StringUtil;
+import org.culturegraph.metamorph.util.Util;
 
 /**
  * @author Markus Michael Geipel
@@ -45,7 +45,7 @@ public final class Occurence extends AbstractStatefulFunction {
 		}
 		variables.put("value", value);
 		variables.put("count", String.valueOf(count));
-		return StringUtil.format(format, variables);
+		return Util.format(format, variables);
 	}
 
 	public void setFormat(final String format) {

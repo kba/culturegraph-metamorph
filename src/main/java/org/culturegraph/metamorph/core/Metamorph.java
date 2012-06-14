@@ -14,6 +14,7 @@ import org.culturegraph.metamorph.multimap.MultiMap;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metamorph.stream.StreamPipe;
 import org.culturegraph.metamorph.stream.StreamReceiver;
+import org.culturegraph.metamorph.util.string.TrailingWildcardTrie;
 
 /**
  * Transforms a data stream send via the {@link StreamReceiver} interface. Use
@@ -27,6 +28,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	//public static final String RECORD_KEYWORD = "record";
 	public static final char FEEDBACK_CHAR = '@';
 	public static final String METADATA = "__meta";
+	public static final String WILDCARD = "*";
 
 //rivate static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
 
@@ -34,7 +36,8 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	private static final char DEFAULT_ENTITY_MARKER = '.';
 
 	
-	private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
+	//private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
+	private final TrailingWildcardTrie<Data> dataSources = new TrailingWildcardTrie<Data>();
 	private final List<Data> elseSource = new ArrayList<Data>();
 	private final Map<String, List<EntityEndListener>> entityEndListeners = new HashMap<String, List<EntityEndListener>>();
 	//private final Map<String, String> entityMap = new HashMap<String, String>();
@@ -75,12 +78,19 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 			elseSource.add(data);
 		} else {
 
-			List<Data> matchingDataSources = dataSources.get(path);
-			if (matchingDataSources == null) {
-				matchingDataSources = new ArrayList<Data>();
-				dataSources.put(path, matchingDataSources);
+//			List<Data> matchingDataSources = dataSources.get(path);
+//			if (matchingDataSources == null) {
+//				matchingDataSources = new ArrayList<Data>();
+//				dataSources.put(path, matchingDataSources);
+//
+//			}
+//			matchingDataSources.add(data);
+			if(path.endsWith(WILDCARD)){
+				dataSources.put(path.substring(0, path.length()-1), data, true);
+			}else{
+				dataSources.put(path, data);
 			}
-			matchingDataSources.add(data);
+			
 		}
 	}
 
@@ -205,7 +215,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	 */
 	private List<Data> findMatchingData(final String path, final List<Data> fallback) {
 		final List<Data> matchingData = dataSources.get(path);
-		if (matchingData == null) {
+		if (matchingData == null || matchingData.isEmpty()) {
 			return fallback;
 		}
 		return matchingData;

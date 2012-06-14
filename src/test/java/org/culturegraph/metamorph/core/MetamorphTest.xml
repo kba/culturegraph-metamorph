@@ -107,6 +107,46 @@
 			</cgxml:cgxml>
 		</result>
 	</test-case>
+	
+	
+	<test-case name="prefix match">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="d1" value="Aloha1" />
+						<cgxml:literal name="data2" value="Aloha2" />
+						<cgxml:literal name="data3" value="Aloha3" />
+						<cgxml:literal name="DA3" value="AlohaHula" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<mm:metamorph version="1" entityMarker="X">
+				<mm:rules>
+					<mm:data source="data*" name="Hawaii" />
+					<mm:data source="d*" name="Oahu" />
+				</mm:rules>
+			</mm:metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="Oahu" value="Aloha1" />
+						<cgxml:literal name="Oahu" value="Aloha2" />
+						<cgxml:literal name="Hawaii" value="Aloha2" />
+						<cgxml:literal name="Oahu" value="Aloha3" />
+						<cgxml:literal name="Hawaii" value="Aloha3" />
+						
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
 
 	<test-case name="xinclude">
 		<input type="text/x-cg+xml">

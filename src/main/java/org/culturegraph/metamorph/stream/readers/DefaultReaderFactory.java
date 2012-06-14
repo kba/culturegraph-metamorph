@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.culturegraph.metamorph.util.ObjectFactory;
 import org.culturegraph.metamorph.util.ResourceUtil;
-import org.culturegraph.metamorph.util.StringUtil;
+import org.culturegraph.metamorph.util.Util;
 
 /**
  * {@link AbstractReaderFactory} with pica, mab2 and marc21 {@link Reader}s
@@ -27,7 +27,7 @@ public final class DefaultReaderFactory extends AbstractReaderFactory {
 	public DefaultReaderFactory() {
 		super();
 		
-		final String propertiesLocation = StringUtil.fallback(System.getProperty(PROPERTY_LOCATION_NAME), DEFAULT_PROPERTIES_LOCATION);
+		final String propertiesLocation = Util.fallback(System.getProperty(PROPERTY_LOCATION_NAME), DEFAULT_PROPERTIES_LOCATION);
 		factory.loadClassesFromMap(ResourceUtil.loadProperties(propertiesLocation), Reader.class);
 	}
 

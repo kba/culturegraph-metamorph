@@ -286,6 +286,7 @@
 			<element ref="tns:get-name" />
 			<element ref="tns:unique" />
 			<element ref="tns:script" />
+			<element ref="tns:setreplace"/>
 			<any namespace="##other" processContents="lax" />
 
 		</choice>
@@ -325,6 +326,15 @@
 	</element>
 
 	<element name="whitelist">
+		<complexType>
+			<sequence>
+				<element ref="tns:entry" minOccurs="0" maxOccurs="unbounded" />
+			</sequence>
+			<attribute name="map" type="string" use="optional" />
+		</complexType>
+	</element>
+	
+		<element name="setreplace">
 		<complexType>
 			<sequence>
 				<element ref="tns:entry" minOccurs="0" maxOccurs="unbounded" />
