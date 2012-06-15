@@ -263,10 +263,11 @@ Finally the optional {\tt maps} block allows to define maps/dictionaries for loo
 \subsubsection{Receiving Pieces of Data}\label{data}
 
 The {\tt data} tag is used to receive literals. Use the {\tt source} attribute to address the literal you want to catch. Listing \ref{lst:data} would receive the value of any literal with name {\it literalname}, enclosed in an entity named {\it entityname}.
-The value is then sent to the downstream {\tt StreamReceiver} under the name {\it newName}. It is thus the most basic form of mapping data.
+The value is then sent to the downstream {\tt StreamReceiver} under the name {\it newName}. It is thus the most basic form of mapping data. The {\tt source} attribute also accepts a trailing wildcard ('*'). For instance {\tt <data source="person*" />} would match all literals with names starting with ``person'': ``person\_name'', ``person\_age'', etc.
 \begin{lstlisting}[float=htb, label=lst:data,caption=Receiving values from literals]
 <data source="entityname.literalname" name="newName" />
 \end{lstlisting}
+
 
 
 \subsubsection{Processing Pieces of Data}\label{process}
@@ -291,6 +292,7 @@ Builtin functions include:
 \item[{\tt count}] counts occurrences of the value.
 \item[{\tt regexp}] regexp matching. Optional extraction of specific match groups.
  \item[{\tt replace}] replace operation based on a regexp.
+ \item[{\tt setreplace}] replaces multiple strings. The mapping from string to replacement is defined in a map, just as done in the {\tt lookup} function. See \ref{lookup}.
 \item[{\tt substring}] extraction of a substring.
 \item[{\tt lookup}] lookup and replace based on a data table. See \ref{lookup}.
 \item[{\tt whitelist}] Filtering based on a whitelist. See \ref{lookup}.

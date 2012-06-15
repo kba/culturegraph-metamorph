@@ -39,7 +39,6 @@ public final class TrailingWildcardTrieTest {
 		results = trie.get(YORK);
 		Assert.assertTrue(results.contains(YORK));
 		
-		
 	}
 
 }
