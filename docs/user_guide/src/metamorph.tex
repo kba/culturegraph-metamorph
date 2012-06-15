@@ -585,7 +585,7 @@ We are aware that the current version of Metamorph exhibits the following limita
 \begin{description}
 \item[Entity Names]  For the time being, the name provided to the {\tt entity} tag is a constant and cannot be dynamically assigned. Further releases of Metamorph will address this issue.
 \item[User Libraries] Currently there the possibility to extend the tag set for data processing is limited to the inclusion of Java Code described in \ref{customfunc} and the invocation of JavaScript functions via the {\tt script} tag. The is no mechanism yet to include a whole set of new function (forming a library).
-\item[Addressing pieces of data] There is no wildcard support in the data addressing mechanism. The {\tt data} tag only accepts literal strings as source address.
+\item[Addressing pieces of data] There is only trailing wildcard support in the data addressing mechanism. The {\tt data} tag only accepts literal strings, optionally ending with a wildcard as source address.
 \end{description}
 We hope to cut down this list in the releases to come.
 
