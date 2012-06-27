@@ -22,9 +22,9 @@ public final class DefaultWriter implements StreamReceiver {
 	private int count;
 
 	public DefaultWriter(final Writer writer) {
-			out = new PrintWriter(writer);
+		out = new PrintWriter(writer);
 	}
-	
+
 	@Override
 	public void startRecord(final String identifier) {
 		++count;
@@ -46,8 +46,12 @@ public final class DefaultWriter implements StreamReceiver {
 
 	@Override
 	public void endEntity() {
-		indentBuilder.deleteCharAt(indentBuilder.length() - 1);
+		if (indentBuilder.length() > 0) {
+			indentBuilder.deleteCharAt(indentBuilder.length() - 1);
+		}
 		indent = indentBuilder.toString();
+		out.println(indent + "<" + indentBuilder.length());
+
 	}
 
 	@Override

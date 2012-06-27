@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph xmlns="http://www.culturegraph.org/metamorph"
+	version="1">
+	<meta>
+		<name>Marc21 to PropertyRecord</name>
+	</meta>
+
+	<rules>
+		<data source="_id" name="cg:type">
+			<constant value="bib" />
+		</data>
+
+		<data source="leader7" name="cg:typeOfWork">
+			<lookup default="dependent">
+				<entry name="m" value="independent" />
+			</lookup>
+		</data>
+
+		<group name="cg:modeOfIssuance">
+			<combine name="doc/col" value="${value}">
+				<data source="leader7" name="7">
+					<equals string="m" />
+				</data>
+				<data source="leader19" name="value">
+					<lookup default="bibo:Document">
+						<entry name="a" value="bibo:Collection" />
+					</lookup>
+				</data>
+			</combine>
+
+			<combine name="per/series" value="${value}">
+				<data source="leader7" name="7">
+					<equals string="s" />
+				</data>
+				<data source="008" name="value">
+					<substring start="21" />
+					<lookup default="bibo:Periodical">
+						<entry name="m" value="bibo:Series" />
+					</lookup>
+				</data>
+			</combine>
+
+		</group>
+
+		<!-- data source="multipart" name="cg:resourceType"> <lookup in="resourceList" 
+			/> </data -->
+		<choose name="dcterms:format">
+
+			<combine name="" value="${value}">
+				<data source="leader6">
+					<equals string="a" />
+				</data>
+				<data source="007">
+					<substring start="0" end="1" />
+					<equals string="c" />
+				</data>
+				<data source="007" name="value">
+					<substring start="1" end="2" />
+					<lookup default="discs">
+						<entry name="r" value="online" />
+					</lookup>
+				</data>
+			</combine>
+
+			<combine name="" value="brailles">
+				<data source="leader6">
+					<equals string="a" />
+				</data>
+				<data source="007">
+					<substring start="0" end="2" />
+					<equals string="tc" />
+				</data>
+			</combine>
+
+			<combine name="" value="microfiches">
+				<data source="leader6">
+					<equals string="a" />
+				</data>
+				<data source="007">
+					<substring start="0" end="1" />
+					<equals string="h" />
+				</data>
+			</combine>
+
+			<data source="leader6">
+				<lookup>
+					<entry name="a" value="books" />
+					<entry name="g" value="audiovisual" />
+					<entry name="e" value="maps" />
+					<entry name="o" value="multimedia" />
+				</lookup>
+			</data>
+
+		</choose>
+
+
+
+
+
+		<data source="001" name="cg:sourceRecordId" />
+
+		<data source="008" name="cg:countryCodeMarc">
+			<regexp match="^(.{15})(\w{2,3})(.*)" format="${2}" />
+		</data>
+
+		<data source="008" name="dcterms:language">
+			<regexp match="^(.{35})(\w{2,3})(.*)" format="${2}" />
+		</data>
+
+		<data source="010  .a" name="cg:loc" />
+
+		<combine name="${name}" value="${value}" reset="true">
+			<data source="0167 .2" name="name">
+				<lookup in="prefixLookup016" />
+			</data>
+			<data source="0167 .a" name="value" />
+		</combine>
+
+		<!-- cause BSZ uses wrong indicators/subfields-combination -->
+		<combine name="${name}" value="${value}" reset="true">
+			<data source="016  .a" name="name">
+				<regexp match="^\(((.*))\)" format="${1}" />
+				<lookup in="prefixLookup016" />
+			</data>
+			<data source="016  .a" name="value">
+				<regexp match="^\(.*\)((.*))" format="${1}" />
+			</data>
+		</combine>
+
+
+		<data source="020  .a" name="bibo:isbn13">
+			<isbn to="isbn13" />
+		</data>
+
+		<data source="022  .a" name="bibo:issn" />
+
+		<data source="0242 .a" name="cg:ismn" />
+
+		<data source="0243 .a" name="bibo:gtin14" />
+
+		<combine name="${name}" value="${value}" reset="true">
+			<data source="0247 .2" name="name">
+				<lookup in="doiList" />
+			</data>
+			<data source="0247 .a" name="value" />
+		</combine>
+
+		<!-- data source="027 .a" name="cg:isrn" / -->
+
+		<combine name="${name}" value="${value}" reset="true">
+			<data source="035  .a" name="name">
+				<regexp match="^\(.*\)" />
+				<lookup in="prefixLookup035" />
+			</data>
+			<data source="035  .a" name="value">
+				<regexp match="^\(.*\)((.*))" format="${1}" />
+			</data>
+		</combine>
+
+		<group name="cg:originLanguage">
+			<data source="041  .h" />
+			<data source="041 7.h" />
+			<data source="041 7.2" />
+		</group>
+
+		<group name="dcterms:language">
+			<data source="041 7.a" />
+			<data source="041 7.2" />
+		</group>
+
+		<data source="044  .c" name="cg:countryCodeIso" />
+
+		<group name="dcterms:creator">
+			<data source="1001 .a" />
+			<data source="7001 .a" />
+		</group>
+
+		<!-- data source="090 .f" name="cg:typeOfWork"> <lookup in="workListField90" 
+			/> </data -->
+
+		<data source="1001 .0" name="cg:creatorDNBGND">
+			<regexp match="^\(DE-588a\)((.*))" format="${1}" />
+		</data>
+		<data source="7001 .0" name="cg:creatorDNBGND">
+			<regexp match="^\(DE-588a\)((.*))" format="${1}" />
+		</data>
+
+		<!-- <group name="rdaGr2:identifierForTheCorporateBody"> -->
+		<!-- <data source="1102 .0" /> -->
+		<!-- <data source="1100 .0" /> -->
+		<!-- <data source="1101 .0" /> -->
+		<!-- </group> -->
+
+		<!-- <group name="gnd:preferredNameForTheCorporateBody"> -->
+		<!-- <data source="1102 .a" /> -->
+		<!-- <data source="1100 .a" /> -->
+		<!-- <data source="1101 .a" /> -->
+		<!-- </group> -->
+
+		<group name="dcterms:title">
+			<data source="24500.a" />
+			<data source="24503.a" />
+			<data source="24504.a" />
+			<data source="24510.a" />
+			<data source="24512.a" />
+			<data source="24514.a" />
+		</group>
+
+		<group name="cg:additionToTitle">
+			<data source="24500.b" />
+			<data source="24503.b" />
+			<data source="24504.b" />
+			<data source="24510.b" />
+			<data source="24512.b" />
+			<data source="24514.b" />
+		</group>
+
+		<data source="7300 .a" name="cg:uniformTitle" />
+
+		<group name="dcterms:volume">
+			<data source="245 0.n" />
+			<data source="245 4.n" />
+			<data source="24500.n" />
+			<data source="24503.n" />
+			<data source="24504.n" />
+			<data source="24510.n" />
+			<data source="24512.n" />
+			<data source="24514.n" />
+			<data source="24500.p" />
+			<data source="24503.p" />
+			<data source="24504.p" />
+			<data source="24510.p" />
+			<data source="24512.p" />
+			<data source="24514.p" />
+		</group>
+
+
+		<group name="cg:edition">
+			<data source="250  .a" />
+			<!-- <data source="250 .6" /> <data source="250 .8" /> -->
+		</group>
+
+
+
+		<group name="cg:publicationPlace">
+			<data source="260  .a" />
+			<data source="2603 .a" />
+		</group>
+
+
+		<group name="cg:publisherName">
+			<data source="260  .b" />
+			<data source="2603 .b" />
+		</group>
+
+
+
+		<group name="dcterms:issued">
+			<data source="260  .c" />
+			<data source="2603 .c" />
+		</group>
+
+		<data source="300  .a" name="dcterms:extent" />
+
+		<data source="502  .o" name="cg:universityScript" />
+
+		<data source="773  .w" name="dcterms:isPartOf" />
+		<data source="775  .w" name="dcterms:isFormatOf" />
+
+		<!-- <data source="7001 .0" name="xbib:creatorDNBGNDnebeneintragung"> <regexp 
+			match="^\(DE-588a\)((.*))" format="${1}" /> </data> <data source="7102 .0" 
+			name="rdaGr2:identifierForTheCorporateBodynebeneintragung"> <regexp match="^\(DE-588b\)((.*))" 
+			format="${1}" /> </data> -->
+
+		<group name="cg:broaderWorkId">
+			<data source="773  .w" />
+			<data source="7730 .w" />
+			<data source="7731 .w" />
+			<data source="77318.w" />
+			<data source="77308.w" />
+			<data source="4901 .x" />
+			<data source="4900 .x" />
+			<data source="830 0.x" />
+		</group>
+
+		<group name="cg:broaderWorkTitle">
+			<data source="4901 .a" />
+			<data source="4900 .a" />
+			<data source="830 0.a" />
+		</group>
+
+
+
+		<group name="cg:broaderWorkVolume">
+			<data source="4901 .v" />
+			<data source="4900 .v" />
+			<data source="830 0.v" />
+		</group>
+
+	</rules>
+	<maps>
+
+		<map name="prefixLookup016">
+			<entry name="DE-101" value="cg:dnb" />
+			<entry name="DE-600" value="cg:zdb" />
+			<entry name="Uk" value="cg:bnb" />
+			<entry name="ItFiC" value="cg:casaliniLibri" />
+			<entry name="FrPBN" value="cg:bnf" />
+			<entry name="OCoLC" value="cg:oclc" />
+			<entry name="DE-599" value="cg:eki" />
+			<!-- <entry name="(XXXxUND)" value="EKI-fakePrefix" /> -->
+		</map>
+
+		<map name="prefixLookup035" default="undefinedField035">
+			<entry name="(OCoLC)" value="cg:oclc" />
+			<entry name="(DE-599)" value="cg:eki" />
+			<entry name="(OBV)" value="cg:obv" />
+			<entry name="(XXXxUND)" value="cg:EKIincorrect" />
+		</map>
+
+		<map name="doiList" default="undefinedDoi">
+			<entry name="doi" value="bibo:doi" />
+			<entry name="urn" value="cg:uniformResourceName" />
+			<entry name="handle" value="bibo:handle" />
+		</map>
+
+
+	</maps>
+</metamorph>	

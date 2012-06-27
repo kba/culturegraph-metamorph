@@ -9,12 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.culturegraph.metamorph.core.exceptions.IllegalMorphStateException;
 import org.culturegraph.metamorph.multimap.MultiMap;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metamorph.stream.StreamPipe;
 import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.culturegraph.metamorph.util.string.TrailingWildcardTrie;
 
 /**
  * Transforms a data stream send via the {@link StreamReceiver} interface. Use
@@ -25,28 +23,28 @@ import org.culturegraph.metamorph.util.string.TrailingWildcardTrie;
 public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMultiMap, EntityEndIndicator {
 
 	public static final String ELSE_KEYWORD = "_else";
-	//public static final String RECORD_KEYWORD = "record";
+	// public static final String RECORD_KEYWORD = "record";
 	public static final char FEEDBACK_CHAR = '@';
 	public static final String METADATA = "__meta";
 	public static final String WILDCARD = "*";
 
-//rivate static final Logger LOG = LoggerFactory.getLogger(Metamorph.class);
+	// rivate static final Logger LOG =
+	// LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 	private static final char DEFAULT_ENTITY_MARKER = '.';
 
-	
-	//private final Map<String, List<Data>> dataSources = new HashMap<String, List<Data>>();
-	private final TrailingWildcardTrie<Data> dataSources = new TrailingWildcardTrie<Data>();
-	private final List<Data> elseSource = new ArrayList<Data>();
+	private final DataRegistry dataRegistry = new WildcardDataRegistry();
+	private final List<Data> elseSources = new ArrayList<Data>();
 	private final Map<String, List<EntityEndListener>> entityEndListeners = new HashMap<String, List<EntityEndListener>>();
-	//private final Map<String, String> entityMap = new HashMap<String, String>();
+	// private final Map<String, String> entityMap = new HashMap<String,
+	// String>();
 	private final SimpleMultiMap multiMap = new MultiMap();
 
 	private final Deque<String> entityStack = new LinkedList<String>();
 	private final StringBuilder entityPath = new StringBuilder();
-	private String currentEntityPath="";
-	
+	private String currentEntityPath = "";
+
 	private final Deque<Integer> entityCountStack = new LinkedList<Integer>();
 	private int entityCount;
 	private int currentEntityCount;
@@ -56,8 +54,6 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	private int recordCount;
 	private char entityMarker = DEFAULT_ENTITY_MARKER;
 
-	
-	
 	protected Metamorph() {
 		// keep constructor in package
 	}
@@ -75,22 +71,9 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 		final String path = data.getSource();
 
 		if (ELSE_KEYWORD.equals(path)) {
-			elseSource.add(data);
+			elseSources.add(data);
 		} else {
-
-//			List<Data> matchingDataSources = dataSources.get(path);
-//			if (matchingDataSources == null) {
-//				matchingDataSources = new ArrayList<Data>();
-//				dataSources.put(path, matchingDataSources);
-//
-//			}
-//			matchingDataSources.add(data);
-			if(path.endsWith(WILDCARD)){
-				dataSources.put(path.substring(0, path.length()-1), data, true);
-			}else{
-				dataSources.put(path, data);
-			}
-			
+			dataRegistry.register(path, data);
 		}
 	}
 
@@ -98,13 +81,13 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	public void startRecord(final String identifier) {
 		entityCountStack.clear();
 		entityStack.clear();
-		currentEntityPath="";
+		currentEntityPath = "";
 		if (entityPath.length() != 0) {
 			entityPath.delete(0, entityPath.length());
 		}
 		entityCount = 0;
 		currentEntityCount = 0;
-		
+
 		++recordCount;
 		recordCount %= Integer.MAX_VALUE;
 
@@ -128,56 +111,55 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 		outputStreamReceiver.endRecord();
 		entityCountStack.removeLast();
 		if (!entityCountStack.isEmpty()) {
-			throw new IllegalMorphStateException(ENTITIES_NOT_BALANCED);
+			throw new IllegalStateException(ENTITIES_NOT_BALANCED);
 		}
-		currentEntityPath="";
+		currentEntityPath = "";
 	}
 
 	@Override
 	public void startEntity(final String name) {
-		if(name==null){
+		if (name == null) {
 			throw new IllegalArgumentException("Entity name must not be null.");
 		}
-		
+
 		++entityCount;
 		currentEntityCount = entityCount;
 		entityCountStack.push(Integer.valueOf(entityCount));
-		
+
 		entityStack.push(name);
 		entityPath.append(name);
 		dispatch(entityPath.toString(), name, null);
-		
+
 		entityPath.append(entityMarker);
-		currentEntityPath=entityPath.toString();
-		
-//		final String toEntity = entityMap.get(name);
-//		if (toEntity != null) {
-//			outputStreamReceiver.startEntity(toEntity);
-//		}
+		currentEntityPath = entityPath.toString();
+
+		// final String toEntity = entityMap.get(name);
+		// if (toEntity != null) {
+		// outputStreamReceiver.startEntity(toEntity);
+		// }
 	}
 
 	@Override
 	public void endEntity() {
 
-		
 		try {
 			final int end = entityPath.length();
 			final String name = entityStack.pop();
 			currentEntityCount = entityCountStack.pop().intValue();
-			
+
 			entityPath.delete(end - name.length() - 1, end);
-			
+
 			currentEntityPath = entityPath.toString();
 
 			notifyEntityEndListeners(name);
 
-//			final String toEntity = entityMap.get(name);
-//			if (toEntity != null) {
-//				outputStreamReceiver.endEntity();
-//			}
+			// final String toEntity = entityMap.get(name);
+			// if (toEntity != null) {
+			// outputStreamReceiver.endEntity();
+			// }
 
 		} catch (NoSuchElementException exc) {
-			throw new IllegalMorphStateException(ENTITIES_NOT_BALANCED + ": " + exc.getMessage(), exc);
+			throw new IllegalStateException(ENTITIES_NOT_BALANCED + ": " + exc.getMessage(), exc);
 		}
 	}
 
@@ -193,7 +175,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 
 	@Override
 	public void literal(final String name, final String value) {
-		dispatch(currentEntityPath + name, value, elseSource);
+		dispatch(currentEntityPath + name, value, elseSources);
 	}
 
 	/**
@@ -214,7 +196,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	 * @return
 	 */
 	private List<Data> findMatchingData(final String path, final List<Data> fallback) {
-		final List<Data> matchingData = dataSources.get(path);
+		final List<Data> matchingData = dataRegistry.get(path);
 		if (matchingData == null || matchingData.isEmpty()) {
 			return fallback;
 		}
@@ -228,7 +210,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	 *            destination
 	 */
 	private void send(final String key, final String value, final List<Data> dataList) {
-		//final int entityCount = entityCountStack.getLast().intValue();
+		// final int entityCount = entityCountStack.getLast().intValue();
 		for (Data data : dataList) {
 			try {
 				data.receive(key, value, null, recordCount, currentEntityCount);
@@ -261,10 +243,11 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	@Override
 	public void receive(final String name, final String value, final NamedValueSource source, final int recordCount,
 			final int entityCount) {
-		if(null==name){
-			throw new IllegalArgumentException("encountered literal with name='null'. This indicates a bug in a function or a collector.");
+		if (null == name) {
+			throw new IllegalArgumentException(
+					"encountered literal with name='null'. This indicates a bug in a function or a collector.");
 		}
-		
+
 		if (name.length() != 0 && name.charAt(0) == FEEDBACK_CHAR) {
 			dispatch(name, value, null);
 		} else {
@@ -273,14 +256,15 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 
 	}
 
-//	/**
-//	 * @param from
-//	 * @param to
-//	 */
-//	protected void addEntityMapping(final String from, final String toParam) {
-//		throw new NotImplementedException();
-//		//entityMap.put(from, toParam);
-//	}
+	// /**
+	// * @param from
+	// * @param to
+	// */
+	// protected void addEntityMapping(final String from, final String toParam)
+	// {
+	// throw new NotImplementedException();
+	// //entityMap.put(from, toParam);
+	// }
 
 	@Override
 	public void addEntityEndListener(final EntityEndListener entityEndListener, final String entityName) {

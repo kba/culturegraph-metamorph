@@ -38,7 +38,7 @@
 		</result>
 	</test-case>
 
-<test-case name="meta data">
+	<test-case name="meta data">
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
@@ -55,8 +55,8 @@
 				</mm:meta>
 				<mm:rules>
 					<mm:data source="_id" name="name">
-						<mm:constant value="name"/>
-						<mm:lookup in="__meta"/>
+						<mm:constant value="name" />
+						<mm:lookup in="__meta" />
 					</mm:data>
 				</mm:rules>
 			</mm:metamorph>
@@ -87,7 +87,7 @@
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="1" entityMarker="X">
+			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:data source="data1" name="Hawaii" />
 					<mm:data source="_else" />
@@ -107,41 +107,40 @@
 			</cgxml:cgxml>
 		</result>
 	</test-case>
-	
-	
-	<test-case name="prefix match">
+
+
+	<test-case name="? wildcard match">
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
 					<cgxml:record id="1">
-						<cgxml:literal name="d1" value="Aloha1" />
-						<cgxml:literal name="data2" value="Aloha2" />
-						<cgxml:literal name="data3" value="Aloha3" />
-						<cgxml:literal name="DA3" value="AlohaHula" />
+						<cgxml:entity name="ABC">
+							<cgxml:literal name="d" value="Aloha1" />
+						</cgxml:entity>
+						<cgxml:entity name="ABD">
+							<cgxml:literal name="d" value="Aloha2" />
+						</cgxml:entity>
 					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<mm:metamorph version="1" entityMarker="X">
+			<mm:metamorph version="1">
 				<mm:rules>
-					<mm:data source="data*" name="Hawaii" />
-					<mm:data source="d*" name="Oahu" />
+					<mm:data source="AB?.d" name="Hawaii" />
+					<mm:data source="ABC.d" name="Oahu" />
 				</mm:rules>
 			</mm:metamorph>
 		</transformation>
 
-		<result type="text/x-cg+xml">
+		<result type="text/x-cg+xml" strict-key-order="false"> 
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
 					<cgxml:record id="1">
 						<cgxml:literal name="Oahu" value="Aloha1" />
-						<cgxml:literal name="Oahu" value="Aloha2" />
+						<cgxml:literal name="Hawaii" value="Aloha1" />
 						<cgxml:literal name="Hawaii" value="Aloha2" />
-						<cgxml:literal name="Oahu" value="Aloha3" />
-						<cgxml:literal name="Hawaii" value="Aloha3" />
-						
 					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>
@@ -160,11 +159,11 @@
 		</input>
 
 		<transformation type="text/x-metamorph+xml">
-			<metamorph version="1" entityMarker="X"
+			<metamorph version="1"
 				xmlns="http://www.culturegraph.org/metamorph">
 				<rules>
 					<data source="data">
-						<lookup in="map"/>
+						<lookup in="map" />
 					</data>
 				</rules>
 				<maps>
