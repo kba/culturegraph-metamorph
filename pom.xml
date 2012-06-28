@@ -8,11 +8,7 @@
 	<!-- </parent> -->
 	<groupId>org.culturegraph</groupId>
 	<artifactId>metamorph</artifactId>
-
-
 	<version>1.2-SNAPSHOT</version>
-
-
 	<name>Metamorph, Transformation Language for Metadata</name>
 
 	<properties>
@@ -52,13 +48,6 @@
 			<version>2.3</version>
 		</dependency>
 
-
-		<!-- <dependency> -->
-		<!-- <groupId>xerces</groupId> -->
-		<!-- <artifactId>xercesImpl</artifactId> -->
-		<!-- <version>2.10.0</version> -->
-		<!-- </dependency> -->
-
 		<dependency>
 			<groupId>org.culturegraph</groupId>
 			<artifactId>metastream</artifactId>
@@ -93,20 +82,33 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>2.2.2</version>
 				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<descriptors>
+						<descriptor>src/main/assembly/assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
 					<archive>
 						<manifest>
+							<addClasspath>true</addClasspath>
+							<!-- Configures the classpath prefix. This configuration option is 
+								used to specify that all needed libraries are found under lib/ directory. -->
+							<classpathPrefix>lib/</classpathPrefix>
+							<!-- Specifies the main class of the application -->
 							<mainClass>org.culturegraph.metamorph.Read</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 

@@ -122,7 +122,7 @@ public final class MetamorphBasicTest implements NamedValueReceiver {
 	}
 	
 
-	@Test(expected=MetamorphException.class)
+	@Test(expected=IllegalStateException.class)
 	public void testEntityBorderBalanceCheck1(){
 		final Metamorph metamorph = new Metamorph();
 		metamorph.setReceiver(EMPTY_RECEIVER);
@@ -134,7 +134,7 @@ public final class MetamorphBasicTest implements NamedValueReceiver {
 		metamorph.endRecord();
 	}
 	
-	@Test(expected=MetamorphException.class)
+	@Test(expected=IllegalStateException.class)
 	public void testEntityBorderBalanceCheck2(){
 		final Metamorph metamorph = new Metamorph();
 		metamorph.setReceiver(EMPTY_RECEIVER);

@@ -2,7 +2,7 @@ package org.culturegraph.metamorph.core.collectors;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
-import org.culturegraph.metamorph.util.StringUtil;
+import org.culturegraph.metamorph.util.Util;
 
 /**
  * Implementation of the <code>&lt;group&gt;</code> tag.
@@ -18,7 +18,7 @@ public final class Group extends AbstractCollect{
 	
 	@Override
 	protected void receive(final String recName, final String recValue, final NamedValueSource source) {
-		getNamedValueReceiver().receive(StringUtil.fallback(getName(), recName), StringUtil.fallback(getValue(), recValue), this, getRecordCount(), getEntityCount());
+		getNamedValueReceiver().receive(Util.fallback(getName(), recName), Util.fallback(getValue(), recValue), this, getRecordCount(), getEntityCount());
 	}
 
 	@Override

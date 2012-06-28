@@ -3,14 +3,14 @@ package org.culturegraph.metamorph.util;
 import java.util.Map;
 
 /**
- * Basic formating utils
+ * Basic utils
  * 
  * @author Markus Michael Geipel
  *
  */
-public final class StringUtil {
+public final class Util {
 
-	private StringUtil() {
+	private Util() {
 		// no instances
 	}
 	
@@ -56,6 +56,5 @@ public final class StringUtil {
 		}
 		return builder.toString();
 	}
-	
-	
+		
 }
