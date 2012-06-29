@@ -19,7 +19,7 @@ import org.junit.Test;
 public final class SimpleMarcReaderTest {
 	
 	private static final int NUM_RECORDS=10;
-	private static final int NUM_LITERALS=765;
+	private static final int NUM_LITERALS=745;
 	
 	private final MarcReader reader = new MarcReader();
 	private final CountingWriter countStreamReceiver =  new CountingWriter();
