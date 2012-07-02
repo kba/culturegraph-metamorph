@@ -1,5 +1,7 @@
 package org.culturegraph.metamorph.stream.readers;
 
+import java.io.StringReader;
+
 import org.culturegraph.metastream.converter.xml.XMLDecoder;
 import org.culturegraph.metastream.framework.StreamReceiver;
 import org.culturegraph.metastream.framework.XMLReceiverPipe;
@@ -31,7 +33,7 @@ public class XMLReaderBase implements Reader {
 
 	@Override
 	public final void read(final String entry) {
-		throw new UnsupportedOperationException();
+		xmlDecoder.process(new StringReader(entry));
 	}
 
 	@Override

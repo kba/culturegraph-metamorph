@@ -1,13 +1,15 @@
 package org.culturegraph.metamorph.stream.readers;
 
+import org.culturegraph.metastream.converter.xml.GenericXMLHandler;
+
 
 /**
  * reads XML Lido
  * @author Markus Michael Geipel
  * 
  */
-public class LidoReader extends XMLStreamReader {
+public class LidoReader extends XMLReaderBase {
 	public LidoReader() {
-		super("lido");
+		super(new GenericXMLHandler("lido"));
 	}
 }

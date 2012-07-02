@@ -7,8 +7,8 @@ import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
 import org.culturegraph.metastream.framework.StreamReceiver;
 import org.culturegraph.metastream.framework.StreamReceiverPipe;
+import org.culturegraph.metastream.pipe.StreamBuffer;
 import org.culturegraph.metastream.sink.SingleValue;
-import org.culturegraph.metastream.sink.StreamBuffer;
 
 /**
  * @author Markus Michael Geipel
@@ -46,13 +46,11 @@ public final class Splitter implements StreamReceiverPipe<StreamReceiver> {
 		final String key = singleValue.getValue();
 		final StreamReceiver receiver = receiverMap.get(key);
 		
-		if(null == receiver){
-			buffer.reset();
-			return;
+		if(null != receiver){
+			buffer.setReceiver(receiver);
+			buffer.replay();
 		}
-		
-		buffer.setReceiver(receiver);
-		buffer.replay();
+		buffer.clear();
 	}
 	
 	@Override
@@ -88,19 +86,19 @@ public final class Splitter implements StreamReceiverPipe<StreamReceiver> {
 
 	@Override
 	public void reset() {
-		buffer.reset();
+		buffer.clear();
 		metamorph.reset();
-		for (StreamReceiver r: receiverMap.values()) {
-			r.reset();
+		for (StreamReceiver receiver: receiverMap.values()) {
+			receiver.reset();
 		}
 	}
 	
 	@Override
 	public void closeResources() {
-		buffer.closeResources();
+		buffer.clear();
 		metamorph.closeResources();
-		for (StreamReceiver r: receiverMap.values()) {
-			r.closeResources();
+		for (StreamReceiver receiver: receiverMap.values()) {
+			receiver.closeResources();
 		}
 	}
 }
