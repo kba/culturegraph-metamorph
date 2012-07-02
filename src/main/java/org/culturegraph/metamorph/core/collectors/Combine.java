@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
-import org.culturegraph.metamorph.util.StringUtil;
+import org.culturegraph.metamorph.util.Util;
 
 /**
  * Corresponds to the <code>&lt;collect-literal&gt;</code> tag.
@@ -26,8 +26,8 @@ public final class Combine extends AbstractCollect{
 
 	@Override
 	protected void emit() {
-		final String name = StringUtil.format(getName(), variables);
-		final String value = StringUtil.format(getValue(), variables);
+		final String name = Util.format(getName(), variables);
+		final String value = Util.format(getValue(), variables);
 		getNamedValueReceiver().receive(name, value, this, getRecordCount(), getEntityCount());
 	}
 

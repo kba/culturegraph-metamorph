@@ -124,7 +124,6 @@ public abstract class AbstractCollect extends AbstractNamedValuePipeHead impleme
 	@Override
 	public void addNamedValueSource(final NamedValueSource namedValueSource) {
 		// nothing
-		
 	}
 
 	@Override

@@ -4,8 +4,8 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import org.culturegraph.metamorph.stream.receivers.ValidationException;
-import org.culturegraph.metamorph.stream.receivers.WellformednessException;
+import org.culturegraph.metastream.util.ValidationException;
+import org.culturegraph.metastream.util.WellformednessException;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;

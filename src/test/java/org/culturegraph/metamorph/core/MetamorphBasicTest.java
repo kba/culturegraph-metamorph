@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.culturegraph.metamorph.core.exceptions.MetamorphException;
 import org.culturegraph.metamorph.multimap.SimpleMultiMap;
-import org.culturegraph.metamorph.stream.AbstractStreamReceiver;
-import org.culturegraph.metamorph.stream.StreamReceiver;
-import org.culturegraph.metamorph.types.NamedValue;
+import org.culturegraph.metastream.framework.DefaultStreamReceiver;
+import org.culturegraph.metastream.framework.StreamReceiver;
+import org.culturegraph.metastream.type.NamedValue;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public final class MetamorphBasicTest implements NamedValueReceiver {
 	private static final String MATCHING_PATH = ENTITY_NAME + '.' + LITERAL_NAME;
 	private static final String NON_MATCHING_PATH1 = "s234234";
 	private static final String NON_MATCHING_PATH2 = ENTITY_NAME + ".lskdj";
-	private static final StreamReceiver EMPTY_RECEIVER = new AbstractStreamReceiver() {
+	private static final StreamReceiver EMPTY_RECEIVER = new DefaultStreamReceiver() {
 		@Override
 		public void literal(final String name, final String value) {
 			// nothing
@@ -122,7 +122,7 @@ public final class MetamorphBasicTest implements NamedValueReceiver {
 	}
 	
 
-	@Test(expected=MetamorphException.class)
+	@Test(expected=IllegalStateException.class)
 	public void testEntityBorderBalanceCheck1(){
 		final Metamorph metamorph = new Metamorph();
 		metamorph.setReceiver(EMPTY_RECEIVER);
@@ -134,7 +134,7 @@ public final class MetamorphBasicTest implements NamedValueReceiver {
 		metamorph.endRecord();
 	}
 	
-	@Test(expected=MetamorphException.class)
+	@Test(expected=IllegalStateException.class)
 	public void testEntityBorderBalanceCheck2(){
 		final Metamorph metamorph = new Metamorph();
 		metamorph.setReceiver(EMPTY_RECEIVER);

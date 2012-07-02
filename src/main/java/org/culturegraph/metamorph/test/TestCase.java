@@ -4,19 +4,20 @@
 package org.culturegraph.metamorph.test;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.StringReader;
+import java.util.Collections;
 
 import org.culturegraph.metamorph.core.MetamorphBuilder;
-import org.culturegraph.metamorph.stream.StreamPipe;
-import org.culturegraph.metamorph.stream.readers.AbstractReaderFactory;
-import org.culturegraph.metamorph.stream.readers.CGXmlReader;
 import org.culturegraph.metamorph.stream.readers.Reader;
 import org.culturegraph.metamorph.stream.readers.ReaderFactory;
-import org.culturegraph.metamorph.stream.receivers.EventStreamValidator;
-import org.culturegraph.metamorph.stream.receivers.EventStreamWriter;
 import org.culturegraph.metamorph.util.ResourceUtil;
 import org.culturegraph.metamorph.util.XMLUtil;
+import org.culturegraph.metastream.converter.xml.CGXMLHandler;
+import org.culturegraph.metastream.converter.xml.XMLDecoder;
+import org.culturegraph.metastream.framework.StreamReceiver;
+import org.culturegraph.metastream.framework.StreamReceiverPipe;
+import org.culturegraph.metastream.sink.EventList;
+import org.culturegraph.metastream.util.StreamValidator;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -40,12 +41,12 @@ public final class TestCase {
 	private static final String STRICT_KEY_ORDER_ATTR = "strict-key-order";
 	private static final String STRICT_VALUE_ORDER_ATTR = "strict-value-order";
 	
-	private static final ReaderFactory READER_FACTORY = AbstractReaderFactory.newInstance();
-
+	private static final ReaderFactory READER_FACTORY = new ReaderFactory();
+	
 	private final Element config;
 	
 	private final Reader reader;
-	private final StreamPipe transformation;
+	private final StreamReceiverPipe<StreamReceiver> transformation;
 		
 	public TestCase(final Element config) {
 		this.config = config;
@@ -61,21 +62,20 @@ public final class TestCase {
 		return Boolean.parseBoolean(config.getAttribute(IGNORE_ATTR));
 	}
 
-	public void run() throws IOException {
+	public void run() {
 		
-		final EventStreamWriter resultStream = new EventStreamWriter();
+		final EventList resultStream = new EventList();
 		if (transformation == null) {
 			reader.setReceiver(resultStream);
 		} else {
 			reader.setReceiver(transformation).setReceiver(resultStream);
 		}
 		
-		resultStream.resetStream();
 		reader.read(getInputData());
-		resultStream.endStream();
+		reader.closeResources();
 		
-		final EventStreamValidator validator = 
-				new EventStreamValidator(resultStream.getEventStream());
+		final StreamValidator validator = 
+				new StreamValidator(resultStream.getEvents());
 		
 		final Element result = (Element) config.getElementsByTagName(RESULT_TAG).item(0);
 		validator.setStrictRecordOrder(Boolean.parseBoolean(
@@ -85,21 +85,20 @@ public final class TestCase {
 		validator.setStrictValueOrder(Boolean.parseBoolean(
 				result.getAttribute(STRICT_VALUE_ORDER_ATTR)));
 		
-		final CGXmlReader resultReader = new CGXmlReader();
-		resultReader.setReceiver(validator);
+		final XMLDecoder decoder = new XMLDecoder();
+		decoder.setReceiver(new CGXMLHandler()).setReceiver(validator);
 		
-		validator.resetStream();
-		resultReader.read(getExpectedResult());
-		validator.endStream();	
+		decoder.process(getExpectedResult());
+		validator.closeResources();	
 	}
 	
 	private Reader getReader() {		
 		final Element input = (Element) config.getElementsByTagName(INPUT_TAG).item(0);
 		final String mimeType = input.getAttribute(TYPE_ATTR);
-		return READER_FACTORY.newReader(mimeType);
+		return READER_FACTORY.newInstance(mimeType, Collections.<String, String>emptyMap());
 	}
 	
-	private StreamPipe getTransformation() {
+	private StreamReceiverPipe<StreamReceiver> getTransformation() {
 		final NodeList nodes = config.getElementsByTagName(TRANSFORMATION_TAG);
 		if (nodes.getLength() == 0) {
 			return null;			

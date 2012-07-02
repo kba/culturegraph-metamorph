@@ -5,47 +5,58 @@ import java.util.Map;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
-import org.culturegraph.metamorph.stream.receivers.SingleValueWriter;
+import org.culturegraph.metastream.framework.StreamReceiver;
+import org.culturegraph.metastream.framework.StreamReceiverPipe;
+import org.culturegraph.metastream.pipe.StreamBuffer;
+import org.culturegraph.metastream.sink.SingleValue;
 
 /**
  * @author Markus Michael Geipel
  *
  */
-public final class Splitter implements StreamPipe {
+public final class Splitter implements StreamReceiverPipe<StreamReceiver> {
 
-	private final RecordBuffer buffer = new RecordBuffer();
-	private final SingleValueWriter singleValueWriter = new SingleValueWriter();
+	private final StreamBuffer buffer = new StreamBuffer();
+	private final SingleValue singleValue = new SingleValue();
 	private final Map<String, StreamReceiver> receiverMap = new HashMap<String, StreamReceiver>();
 	private final Metamorph metamorph;
 	
 	public Splitter(final String morphDef) {
 		metamorph = MetamorphBuilder.build(morphDef);
-		metamorph.setReceiver(singleValueWriter);
+		metamorph.setReceiver(singleValue);
 	}
 	
 	public Splitter(final Metamorph metamorph) {
 		this.metamorph = metamorph;
-		metamorph.setReceiver(singleValueWriter);
+		metamorph.setReceiver(singleValue);
+	}
+
+	@Override
+	public <R extends StreamReceiver> R setReceiver(final R receiver) {
+		receiverMap.put("", receiver);
+		return receiver;
+	}
+
+	public <R extends StreamReceiver> R setReceiver(final String key, final R receiver) {
+		receiverMap.put(key, receiver);
+		return receiver;
 	}
 	
 	private void dispatch(){
-		final String key = singleValueWriter.getValue();
+		final String key = singleValue.getValue();
 		final StreamReceiver receiver = receiverMap.get(key);
 		
-		if(null==receiver){
-			buffer.reset();
-			return;
+		if(null != receiver){
+			buffer.setReceiver(receiver);
+			buffer.replay();
 		}
-		
-		buffer.setReceiver(receiver);
-		buffer.replay();
+		buffer.clear();
 	}
 	
 	@Override
 	public void startRecord(final String identifier) {
 		buffer.startRecord(identifier);
-		metamorph.startRecord(identifier);
-	
+		metamorph.startRecord(identifier);	
 	}
 
 	@Override
@@ -73,14 +84,21 @@ public final class Splitter implements StreamPipe {
 		metamorph.literal(name, value);
 	}
 
-	public <R extends StreamReceiver> R setReceiver(final String key, final R streamReceiver) {
-		receiverMap.put(key, streamReceiver);
-		return streamReceiver;
+	@Override
+	public void reset() {
+		buffer.clear();
+		metamorph.reset();
+		for (StreamReceiver receiver: receiverMap.values()) {
+			receiver.reset();
+		}
 	}
 	
 	@Override
-	public <R extends StreamReceiver> R setReceiver(final R streamReceiver) {
-		receiverMap.put("", streamReceiver);
-		return streamReceiver;
+	public void closeResources() {
+		buffer.clear();
+		metamorph.closeResources();
+		for (StreamReceiver receiver: receiverMap.values()) {
+			receiver.closeResources();
+		}
 	}
 }

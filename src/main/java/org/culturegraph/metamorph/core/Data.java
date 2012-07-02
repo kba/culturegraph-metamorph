@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.core;
 
-import org.culturegraph.metamorph.util.StringUtil;
+import org.culturegraph.metamorph.util.Util;
 
 
 /**
@@ -25,7 +25,7 @@ final class Data  extends AbstractNamedValuePipeHead{
 
 	@Override
 	public void receive(final String recName, final String recValue, final NamedValueSource source, final int recordCount, final int entityCount) {
-		getNamedValueReceiver().receive(StringUtil.fallback(name, recName), recValue, this, recordCount, entityCount);
+		getNamedValueReceiver().receive(Util.fallback(name, recName), recValue, this, recordCount, entityCount);
 	}
 
 

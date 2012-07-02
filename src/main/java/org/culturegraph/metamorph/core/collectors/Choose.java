@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
-import org.culturegraph.metamorph.util.StringUtil;
+import org.culturegraph.metamorph.util.Util;
 
 /**
  * Corresponds to the <code>&lt;choose-literal&gt;</code> tag.
@@ -36,8 +36,15 @@ public final class Choose extends AbstractCollect{
 
 	@Override
 	protected void emit() {
-		getNamedValueReceiver().receive(StringUtil.fallback(getName(), name), StringUtil.fallback(getValue(), value), this, getRecordCount(), getEntityCount());
+		if(!isEmpty()){
+			getNamedValueReceiver().receive(Util.fallback(getName(), name), Util.fallback(getValue(), value), this, getRecordCount(), getEntityCount());
+		}
 		clear();
+	}
+
+
+	private boolean isEmpty() {
+		return name==null;
 	}
 
 

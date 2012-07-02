@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.culturegraph.metamorph.core.exceptions.MetamorphException;
-import org.culturegraph.metamorph.util.StringUtil;
+import org.culturegraph.metamorph.util.Util;
 
 
 /**
@@ -46,7 +46,7 @@ public final class Regexp extends AbstractSimpleStatelessFunction {
 		for (int i = 0; i <= matcher.groupCount(); ++i) {
 			tempVars.put(String.valueOf(i), matcher.group(i));
 		}
-		return StringUtil.format(format, tempVars); 
+		return Util.format(format, tempVars); 
 	}
 	
 	public void setExceptionOnFail(final String exceptionOnFail){

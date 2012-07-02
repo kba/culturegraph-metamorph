@@ -172,9 +172,10 @@
 
 	<element name="entity">
 		<complexType>
-			<sequence>
+			<choice minOccurs="1" maxOccurs="unbounded">
 				<group ref="tns:literal-rule" minOccurs="0" maxOccurs="unbounded" />
-			</sequence>
+				<element ref="tns:entity"/>
+			</choice>
 			<attribute name="name" type="string" use="required" />
 			<attribute name="reset" type="boolean" use="optional"
 				default="false" />
@@ -284,6 +285,8 @@
 			<element ref="tns:name" />
 			<element ref="tns:get-name" />
 			<element ref="tns:unique" />
+			<element ref="tns:script" />
+			<element ref="tns:setreplace"/>
 			<any namespace="##other" processContents="lax" />
 
 		</choice>
@@ -323,6 +326,15 @@
 	</element>
 
 	<element name="whitelist">
+		<complexType>
+			<sequence>
+				<element ref="tns:entry" minOccurs="0" maxOccurs="unbounded" />
+			</sequence>
+			<attribute name="map" type="string" use="optional" />
+		</complexType>
+	</element>
+	
+		<element name="setreplace">
 		<complexType>
 			<sequence>
 				<element ref="tns:entry" minOccurs="0" maxOccurs="unbounded" />
@@ -449,6 +461,13 @@
 	<element name="constant">
 		<complexType>
 			<attribute name="value" type="string" use="required" />
+		</complexType>
+	</element>
+	
+		<element name="script">
+		<complexType>
+			<attribute name="invoke" type="string" use="required" />
+			<attribute name="file" type="string" use="required" />
 		</complexType>
 	</element>
 

@@ -66,6 +66,9 @@
 						<cgxml:entity name="entity">
 							<cgxml:literal name="data2" value="C" />
 						</cgxml:entity>
+						<cgxml:entity name="entity">
+							<cgxml:literal name="dataX" value="X" />
+						</cgxml:entity>
 					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>

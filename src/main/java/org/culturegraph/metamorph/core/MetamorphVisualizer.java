@@ -15,14 +15,14 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.dom.Node;
 
 /**
- * Visualized a Metamorph definition in dot format
+ * Visualizes a Metamorph definition in dot format. <br><strong>Warning:</strong> This visualizer is a mere proof of concept. Code is messy and not covered by unit tests!
  * 
  * @author Markus Michael Geipel
  * 
  */
 public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 
-	private static final String RECURSION_INDICATOR = "@";
+	private static final String RECURSION_INDICATOR = Character.toString(Metamorph.FEEDBACK_CHAR);
 	private static final Set<String> ORDERED_COLLECTS = new HashSet<String>();
 	private final Map<String, String> meta = new HashMap<String, String>();
 	private final PrintWriter writer;
@@ -235,9 +235,12 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 		final String identifier = getNewId();
 		final Map<String, String> attributes = attributesToMap(functionNode);
 		
-		//for lookups TODO: find generic solution
+		//for lookups TODO: find generic solution and get rid of the ifs.
 		attributes.remove("default");
-		final String inAttr = attributes.remove("in");
+		String inAttr = attributes.remove("in");
+		if (inAttr != null) {
+			inAttr = attributes.remove("map");
+		}
 		if (inAttr != null) {
 			addIncludeEdge(inAttr, identifier);
 		}

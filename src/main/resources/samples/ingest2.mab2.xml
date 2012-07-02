@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph xmlns="http://www.culturegraph.org/metamorph"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1">
+
+	<meta>
+		<name>Mab2 to PropertyRecord</name>
+	</meta>
+
+
+	<rules>
+		<data source="_id" name="cg:type">
+			<constant value="bib" />
+		</data>
+
+		<data source="001" name="cg:sourceRecordId" />
+
+		<data source="010" name="cg:broaderWorkId" />
+
+		<data source="010 " name="dcterms:isPartOf" />
+
+		<data source="527 " name="dcterms:isFormatOf" />
+		<data source="527x" name="dcterms:isFormatOf" />
+		<data source="527y" name="dcterms:isFormatOf" />
+		<data source="527z" name="dcterms:isFormatOf" />
+
+
+		<data source="025a" name="cg:dnb" />
+		<data source="025b" name="cg:bnb" />
+		<data source="025c" name="cg:casaliniLibri" />
+		<data source="025f" name="cg:bnf" />
+		<data source="025l" name="cg:loc" />
+		<data source="025o" name="cg:oclc" />
+		<data source="025z" name="cg:zdb" />
+		<data source="026" name="cg:eki" />
+
+
+		<group name="cg:countryCodeDIN23166">
+			<data source="036a" />
+			<data source="036b" />
+		</group>
+
+		<group name="dcterms:language">
+			<data source="037a" />
+			<data source="037b" />
+		</group>
+
+		<group name="cg:originLanguage">
+			<data source="038a" />
+			<data source="038b" />
+		</group>
+
+
+
+		<choose name="dcterms:format">
+			<data source="050">
+				<regexp match="^a.*" />
+				<constant value="books" />
+			</data>
+			<data source="050">
+				<regexp match="^...a.*" />
+				<constant value="brailles" />
+			</data>
+			<data source="050">
+				<regexp match="^..a.*" />
+				<constant value="microfiches" />
+			</data>
+			<data source="050">
+				<regexp match="^.........a.*" />
+				<constant value="cards" />
+			</data>
+			<data source="050">
+				<regexp match="^......a.*" />
+				<constant value="multimedia" />
+			</data>
+			<data source="050">
+				<substring start="7" end="8" />
+				<lookup>
+					<entry name="g" value="online" />
+					<entry name="b" value="disc" />
+				</lookup>
+			</data>
+		</choose>
+
+		<choose name="cg:modeOfIssuance">
+			<data source="051">
+				<substring start="0" end="1" />
+				<lookup>
+					<entry name="m" value="bibo:Document" />
+					<entry name="a" value="bibo:Document" />
+					<entry name="s" value="bibo:Document" />
+					<entry name="n" value="bibo:Collection" />
+					<entry name="f" value="bibo:Collection" />
+					<entry name="t" value="bibo:Collection" />
+				</lookup>
+			</data>
+			<data source="052">
+				<substring start="1" end="2" />
+				<lookup>
+					<entry name="r" value="bibo:Series" />
+					<entry name="p" value="bibo:Periodical" />
+					<entry name="z" value="bibo:Periodical" />
+				</lookup>
+			</data>
+		</choose>
+
+
+		<data source="100" name="dcterms:creator">
+
+		</data>
+
+		<group name="cg:creatorDNBGND">
+			<data source="102a" />
+		</group>
+
+
+		<data source="331" name="dcterms:title">
+		</data>
+
+
+
+		<data source="335" name="cg:additionToTitle">
+		</data>
+
+
+		<data source="455" name="dcterms:volume" />
+
+		<group name="cg:edition">
+			<data source="400" />
+			<!-- <data source="403" /> -->
+		</group>
+
+		<data source="410" name="cg:publicationPlace">
+		</data>
+		<data source="412" name="cg:publisherName" />
+		<choose name="dcterms:issued">
+			<data source="426" />
+			<data source="425" />
+		</choose>
+		<data source="433" name="dcterms:extent" />
+
+		<group name="@cg:broaderWorkTitle">
+			<data source="451" />
+			<data source="451a" />
+			<data source="451b" />
+		</group>
+
+		<data source="@cg:broaderWorkTitle" name="cg:broaderWorkTitle">
+		</data>
+
+		<group name="cg:broaderWorkId">
+			<data source="453r" />
+			<data source="453m" />
+			<data source="453" />
+		</group>
+
+		<data source="540a" name="bibo:isbn13">
+			<isbn to="isbn13" />
+		</data>
+
+		<data source="541a" name="cg:ismn" />
+		<data source="542a" name="bibo:issn" />
+
+
+		<data source="552a" name="bibo:doi" />
+		<data source="552b" name="cg:uniformResourceName" />
+		<data source="552c" name="bibo:handle" />
+		<data source="553a" name="bibo:gtin14" />
+		<data source="554" name="cg:universityScript" />
+
+	</rules>
+
+
+</metamorph>
