@@ -14,6 +14,7 @@ import org.culturegraph.metastream.framework.StreamReceiver;
 /**
  * {@link MultiFormatReader} uses the {@link AbstractReaderFactory} to handle
  * all registered input formats.
+ * @deprecated no longer supported
  * 
  * @author Markus Michael Geipel
  * @deprecated Use {@code DecoderFactory} and {@code MetamorphRegistry} instead.

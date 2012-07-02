@@ -3,8 +3,12 @@ package org.culturegraph.metamorph;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Collections;
 
-import org.culturegraph.metamorph.stream.readers.MultiFormatReader;
+import org.culturegraph.metamorph.core.Metamorph;
+import org.culturegraph.metamorph.core.MetamorphBuilder;
+import org.culturegraph.metamorph.stream.readers.Reader;
+import org.culturegraph.metamorph.stream.readers.ReaderFactory;
 import org.culturegraph.metastream.sink.StreamWriter;
 
 /**
@@ -24,21 +28,22 @@ public final class Read {
 	 * @throws IOException
 	 */
 	public static void main(final String[] args) throws IOException {
-		final MultiFormatReader reader;
-		if (args.length == 1) {
-			reader = new MultiFormatReader();
-		} else if (args.length == 2) {
-			reader = new MultiFormatReader(args[1]);
-		} else {
+		if(args.length < 1 || args.length>2){
 			System.err.println("Usage: Read FILE [MORPHDEF]");
 			return;
 		}
-		final StreamWriter consoleWriter = new StreamWriter(new OutputStreamWriter(System.out, "UTF8"));
-		reader.setReceiver(consoleWriter);
-
-		final String fileName = args[0];
 		
-		reader.setFormat(getExtention(fileName));
+		final String fileName = args[0];
+		final Reader reader = new ReaderFactory().newInstance(getExtention(fileName), Collections.<String, String>emptyMap());
+		final StreamWriter consoleWriter = new StreamWriter(new OutputStreamWriter(System.out, "UTF8"));
+
+		if (args.length == 2) {
+			final Metamorph metamorph = MetamorphBuilder.build(args[1]);
+			reader.setReceiver(metamorph).setReceiver(consoleWriter);
+		}else{
+			reader.setReceiver(consoleWriter);
+		}
+
 		reader.read(new FileReader(fileName));
 		reader.closeResources();
 	}
