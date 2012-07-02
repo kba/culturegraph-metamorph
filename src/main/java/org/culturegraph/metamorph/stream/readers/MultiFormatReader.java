@@ -14,10 +14,12 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
 /**
  * {@link MultiFormatReader} uses the {@link AbstractReaderFactory} to handle
  * all registered input formats.
+ * @deprecated no longer supported
  * 
  * @author Markus Michael Geipel
  * 
  */
+@Deprecated
 public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 
 	private static final String ERROR_NO_FORMAT = "no format set";

@@ -3,7 +3,6 @@ package org.culturegraph.metamorph.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -23,13 +22,10 @@ import org.culturegraph.metamorph.stream.StreamReceiver;
 public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMultiMap, EntityEndIndicator {
 
 	public static final String ELSE_KEYWORD = "_else";
-	// public static final String RECORD_KEYWORD = "record";
 	public static final char FEEDBACK_CHAR = '@';
 	public static final String METADATA = "__meta";
 	public static final String WILDCARD = "*";
 
-	// rivate static final Logger LOG =
-	// LoggerFactory.getLogger(Metamorph.class);
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 	private static final char DEFAULT_ENTITY_MARKER = '.';
@@ -209,7 +205,6 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	 *            destination
 	 */
 	private void send(final String key, final String value, final List<Data> dataList) {
-		// final int entityCount = entityCountStack.getLast().intValue();
 		for (Data data : dataList) {
 			try {
 				data.receive(key, value, null, recordCount, currentEntityCount);
@@ -270,10 +265,6 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 		entityEndListenerRegistry.register(entityName, entityEndListener);
 	}
 
-	// protected void addRecordEndListener(final EntityEndListener
-	// entityEndListener) {
-	// addEntityEndListener(entityEndListener, RECORD_KEYWORD);
-	// }
 
 	@Override
 	public Map<String, String> getMap(final String mapName) {
