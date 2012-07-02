@@ -1,7 +1,7 @@
 package org.culturegraph.metamorph.stream.readers;
 
 import org.culturegraph.metastream.converter.LineReader;
-import org.culturegraph.metastream.converter.StringDecoder;
+import org.culturegraph.metastream.framework.ObjectReceiverPipe;
 import org.culturegraph.metastream.framework.StreamReceiver;
 
 /**
@@ -10,9 +10,9 @@ import org.culturegraph.metastream.framework.StreamReceiver;
 public class ReaderBase implements Reader {
 
 	private final LineReader lineReader;
-	private final StringDecoder decoder;
+	private final ObjectReceiverPipe<String, StreamReceiver> decoder;
 	
-	protected ReaderBase(final StringDecoder decoder) {
+	public ReaderBase(final ObjectReceiverPipe<String, StreamReceiver> decoder) {
 		super();
 		
 		this.decoder = decoder;
@@ -44,11 +44,6 @@ public class ReaderBase implements Reader {
 	@Override
 	public final void closeResources() {
 		lineReader.closeResources();
-	}
-
-	@Override
-	public final String getId(final String record) {
-		return decoder.getId(record);
 	}
 	
 }

@@ -25,13 +25,5 @@ public interface Reader extends Sender<StreamReceiver> {
 	 * @param entry one record
 	 */
 	void read(final String entry);
-	
-	/**
-	 * Extracts the id from the raw record data. Used for database ingests.
-	 * @param record raw record
-	 * @return id (never <code>null</code>!)
-	 * @throws MissingIdException
-	 */
-	String getId(String record);
 
 }

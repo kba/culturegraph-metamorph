@@ -44,9 +44,4 @@ public class XMLReaderBase implements Reader {
 		xmlDecoder.closeResources();
 	}
 
-	@Override
-	public final String getId(final String record) {
-		throw new UnsupportedOperationException();
-	}
-
 }

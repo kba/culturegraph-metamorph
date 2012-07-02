@@ -7,30 +7,31 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Implements {@link DataRegistry} with a {@link HashMap}.
+ * Implements {@link Registry} with a {@link HashMap}.
  * 
  * @author Markus Michael Geipel
- * 
- */
-final class SimpleDataRegistry implements DataRegistry {
 
-	private final Map<String, List<Data>> map = new HashMap<String, List<Data>>();
+ * @param <T>
+ */
+final class SimpleDataRegistry<T> implements Registry<T> {
+
+	private final Map<String, List<T>> map = new HashMap<String, List<T>>();
 
 	@Override
-	public void register(final String path, final Data data) {
-		List<Data> matchingData = map.get(path);
+	public void register(final String path, final T value) {
+		List<T> matchingData = map.get(path);
 		if (matchingData == null) {
-			matchingData = new ArrayList<Data>();
+			matchingData = new ArrayList<T>();
 			map.put(path, matchingData);
 
 		}
-		matchingData.add(data);
+		matchingData.add(value);
 
 	}
 
 	@Override
-	public List<Data> get(final String path) {
-		final List<Data> matchingData = map.get(path);
+	public List<T> get(final String path) {
+		final List<T> matchingData = map.get(path);
 		if (matchingData == null) {
 			return Collections.emptyList();
 		}

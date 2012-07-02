@@ -7,8 +7,9 @@ import java.util.List;
  * 
  * @author Markus Michael Geipel
  *
+ * @param <T>
  */
-interface DataRegistry {
+interface Registry<T> {
 
 	/**
 	 * add an instance of {@link Data} to a path.
@@ -16,12 +17,12 @@ interface DataRegistry {
 	 * @param path
 	 * @param data
 	 */
-	void register(String path, Data data);
+	void register(String path, T value);
 
 	/**
 	 * @param path
 	 * @return matching {@link Data} instances. Should NEVER be <code>null</code>. If no matches found, an empty {@link List} is to be returned.
 	 */
-	List<Data> get(String path);
+	List<T> get(String path);
 
 }

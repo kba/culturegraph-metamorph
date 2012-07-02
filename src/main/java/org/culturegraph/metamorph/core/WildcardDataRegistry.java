@@ -5,23 +5,23 @@ import java.util.List;
 import org.culturegraph.metamorph.util.string.WildcardTrie;
 
 /**
- * Implements {@link DataRegistry} with a {@link WildcardTrie}.
+ * Implements {@link Registry} with a {@link WildcardTrie}.
  * 
  * @author Markus Michael Geipel
- *
+ * @param <T>
  */
-final class WildcardDataRegistry implements DataRegistry {
+final class WildcardRegistry<T> implements Registry<T> {
 
-	private final WildcardTrie<Data> trie = new WildcardTrie<Data>();
+	private final WildcardTrie<T> trie = new WildcardTrie<T>();
 	
 	@Override
-	public void register(final String path, final Data data) {
-		trie.put(path, data);
+	public void register(final String path, final T value) {
+		trie.put(path, value);
 
 	}
 
 	@Override
-	public List<Data> get(final String path) {
+	public List<T> get(final String path) {
 		return trie.get(path);
 	}
 
