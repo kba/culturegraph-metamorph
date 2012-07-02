@@ -111,15 +111,6 @@ public final class MultiFormatReader implements Reader, MetamorphErrorHandler {
 		}
 	}
 
-	@Override
-	public String getId(final String record) {
-		if (streamReceiver == null) {
-			throw new IllegalStateException(ERROR_NO_FORMAT);
-		}
-
-		return currentReader.getId(record);
-
-	}
 
 	@Override
 	public void error(final Exception exception) {

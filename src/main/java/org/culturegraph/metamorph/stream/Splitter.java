@@ -13,7 +13,7 @@ import org.culturegraph.metamorph.stream.receivers.SingleValueWriter;
  */
 public final class Splitter implements StreamPipe {
 
-	private final RecordBuffer buffer = new RecordBuffer();
+	private final EventBuffer buffer = new EventBuffer();
 	private final SingleValueWriter singleValueWriter = new SingleValueWriter();
 	private final Map<String, StreamReceiver> receiverMap = new HashMap<String, StreamReceiver>();
 	private final Metamorph metamorph;
@@ -39,6 +39,7 @@ public final class Splitter implements StreamPipe {
 		
 		buffer.setReceiver(receiver);
 		buffer.replay();
+		buffer.reset();
 	}
 	
 	@Override

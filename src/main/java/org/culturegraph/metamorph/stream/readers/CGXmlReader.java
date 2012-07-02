@@ -80,10 +80,6 @@ public final class CGXmlReader implements Reader {
 		return this.receiver;
 	}
 
-	@Override
-	public String getId(final String record) {
-		throw new UnsupportedOperationException();
-	}
 
 	public void read(final InputStream inputStream) throws IOException {
 		if (inputStream == null) {

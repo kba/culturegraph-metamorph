@@ -41,7 +41,7 @@ public final class SimpleMabReaderTest {
 		String line = breader.readLine();
 		while (line != null) {
 			if(!line.isEmpty()){
-				Assert.assertNotNull(reader.getId(line));
+				Assert.assertNotNull(MabReader.extractIdFromRecord(line));
 			}
 			line = breader.readLine();
 		}

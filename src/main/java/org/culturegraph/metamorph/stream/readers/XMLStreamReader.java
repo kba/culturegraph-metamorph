@@ -32,14 +32,6 @@ public class XMLStreamReader extends AbstractXMLReader {
 	}
 
 	
-
-	@Override
-	public final String getId(final String record) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 	@Override
 	public final void startElement(final String uri, final String localName, final String qName, final Attributes attributes)
 			throws SAXException {

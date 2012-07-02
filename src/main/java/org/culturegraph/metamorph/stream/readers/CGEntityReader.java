@@ -22,11 +22,11 @@ public final class CGEntityReader extends AbstractReader {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CGEntityReader.class);
 
-	@Override
-	public String getId(final String record) {
-		final int cut = record.indexOf(CGEntity.FIELD_DELIMITER);
-		return record.substring(0, cut);
-	}
+//	@Override
+//	public String getId(final String record) {
+//		final int cut = record.indexOf(CGEntity.FIELD_DELIMITER);
+//		return record.substring(0, cut);
+//	}
 
 
 	@Override

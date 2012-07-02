@@ -34,9 +34,9 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 	private static final char DEFAULT_ENTITY_MARKER = '.';
 
-	private final DataRegistry dataRegistry = new WildcardDataRegistry();
+	private final Registry<Data> dataRegistry = new WildcardRegistry<Data>();
 	private final List<Data> elseSources = new ArrayList<Data>();
-	private final Map<String, List<EntityEndListener>> entityEndListeners = new HashMap<String, List<EntityEndListener>>();
+	private final Registry<EntityEndListener> entityEndListenerRegistry = new WildcardRegistry<EntityEndListener>();
 	// private final Map<String, String> entityMap = new HashMap<String,
 	// String>();
 	private final SimpleMultiMap multiMap = new MultiMap();
@@ -164,11 +164,10 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 	}
 
 	private void notifyEntityEndListeners(final String name) {
-		final List<EntityEndListener> matchingListeners = entityEndListeners.get(name);
-		if (null != matchingListeners) {
-			for (EntityEndListener listener : matchingListeners) {
-				listener.onEntityEnd(name, recordCount, currentEntityCount);
-			}
+		final List<EntityEndListener> matchingListeners = entityEndListenerRegistry.get(name);
+
+		for (EntityEndListener listener : matchingListeners) {
+			listener.onEntityEnd(name, recordCount, currentEntityCount);
 		}
 
 	}
@@ -268,12 +267,7 @@ public final class Metamorph implements StreamPipe, NamedValueReceiver, SimpleMu
 
 	@Override
 	public void addEntityEndListener(final EntityEndListener entityEndListener, final String entityName) {
-		List<EntityEndListener> matchingListeners = entityEndListeners.get(entityName);
-		if (matchingListeners == null) {
-			matchingListeners = new LinkedList<EntityEndListener>();
-			entityEndListeners.put(entityName, matchingListeners);
-		}
-		matchingListeners.add(entityEndListener);
+		entityEndListenerRegistry.register(entityName, entityEndListener);
 	}
 
 	// protected void addRecordEndListener(final EntityEndListener

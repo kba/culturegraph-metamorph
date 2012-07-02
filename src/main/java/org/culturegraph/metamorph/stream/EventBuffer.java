@@ -4,17 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link StreamPipe} which buffers incomming records and replays them upon
+ * {@link StreamPipe} which buffers incoming records and replays them upon
  * request.
  * 
  * @author Markus Michael Geipel
  * 
  */
-public final class RecordBuffer implements StreamPipe {
-
-	// private final CGEntityWriter cgEntityWriter = new CGEntityWriter();
-	// private final CGEntityReader cgEntityReader = new CGEntityReader();
-	// private final StringWriter stringWriter = new StringWriter();
+public final class EventBuffer implements StreamPipe {
 
 	/**
 	 * Defines entity and literal message types.
@@ -23,20 +19,14 @@ public final class RecordBuffer implements StreamPipe {
 		RECORD_START, RECORD_END, ENTITY_START, ENTITY_END, LITERAL
 	}
 
-	private final List<MessageType> typeBuffer = new ArrayList<RecordBuffer.MessageType>();
+	private final List<MessageType> typeBuffer = new ArrayList<EventBuffer.MessageType>();
 	private final List<String> valueBuffer = new ArrayList<String>();
-
-	private boolean recordClosed = true;
 	private StreamReceiver receiver;
 
-	// RecordBuffer() {
-	//	// cgEntityWriter.setPrintWriter(stringWriter);
-	//}
-
+	/**
+	 * replays the buffered event. 
+	 */
 	public void replay() {
-		if (!recordClosed) {
-			throw new IllegalStateException("Current record is not complete. Cannot reply inbetween records.");
-		}
 
 		int index = 0;
 		for (MessageType type : typeBuffer) {
@@ -62,46 +52,33 @@ public final class RecordBuffer implements StreamPipe {
 				break;
 			}
 		}
-
-		// cgEntityReader.read(new StringReader(stringWriter.toString()));
-
-		reset();
 	}
 
 	public void reset() {
-		// final StringBuffer buffer = stringWriter.getBuffer();
-		// buffer.delete(0, buffer.length());
 		typeBuffer.clear();
 		valueBuffer.clear();
 	}
 
 	@Override
 	public void startRecord(final String identifier) {
-		recordClosed = false;
 		typeBuffer.add(MessageType.RECORD_START);
 		valueBuffer.add(identifier);
-	//	cgEntityWriter.startRecord(identifier);
 	}
 
 	@Override
 	public void endRecord() {
-		recordClosed = true;
 		typeBuffer.add(MessageType.RECORD_END);
-		//cgEntityWriter.endRecord();
 	}
 
 	@Override
 	public void startEntity(final String name) {
 		typeBuffer.add(MessageType.ENTITY_START);
 		valueBuffer.add(name);
-		//cgEntityWriter.startEntity(name);
 	}
 
 	@Override
 	public void endEntity() {
 		typeBuffer.add(MessageType.ENTITY_END);
-		//cgEntityWriter.endEntity();
-
 	}
 
 	@Override
@@ -109,7 +86,6 @@ public final class RecordBuffer implements StreamPipe {
 		typeBuffer.add(MessageType.LITERAL);
 		valueBuffer.add(name);
 		valueBuffer.add(value);
-		//cgEntityWriter.literal(name, value);
 	}
 
 	@Override

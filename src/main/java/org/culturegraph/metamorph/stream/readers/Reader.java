@@ -38,6 +38,6 @@ public interface Reader extends StreamSender{
 	 * @return id (never <code>null</code>!)
 	 * @throws MissingIdException
 	 */
-	String getId(String record);
+//	String getId(String record);
 
 }

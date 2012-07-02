@@ -82,8 +82,4 @@ public final class PicaReader extends AbstractReader {
 		throw new MissingIdException(record);
 	}
 
-	@Override
-	public String getId(final String record) {
-		return extractIdFromRecord(record);
-	}
 }

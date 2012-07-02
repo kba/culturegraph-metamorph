@@ -27,12 +27,6 @@ public class MarcXMLReader extends AbstractXMLReader {
 
 
 
-	@Override
-	public final String getId(final String record) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	
 
 	@Override

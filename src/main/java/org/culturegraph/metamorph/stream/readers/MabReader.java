@@ -32,16 +32,6 @@ public final class MabReader extends AbstractReader {
 			return;
 		}
 
-		// final String header = record.substring(0, HEADER_SIZE);
-		// if (LOG.isTraceEnabled()) {
-		// LOG.trace("Länge des Datensatzes: " + header.substring(0, 4));
-		// LOG.trace("Status: " + header.charAt(5));
-		// LOG.trace("Version: " + header.substring(6, 10));
-		// LOG.trace("Indikatorlänge: " + header.charAt(10));
-		// LOG.trace("Teilfeldkennungslänge: " + header.charAt(11));
-		// LOG.trace("Datenanfang: " + header.substring(12, 17));
-		// LOG.trace("Typ: " + header.substring(23, 24));
-		// }
 		final StreamReceiver receiver = getStreamReceiver();
 		receiver.startRecord(extractIdFromRecord(record));
 
@@ -88,8 +78,4 @@ public final class MabReader extends AbstractReader {
 		}
 	}
 
-	@Override
-	public String getId(final String record) {
-		return extractIdFromRecord(record);
-	}
 }

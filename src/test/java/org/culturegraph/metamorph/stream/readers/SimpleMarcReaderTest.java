@@ -42,7 +42,7 @@ public final class SimpleMarcReaderTest {
 		String line = breader.readLine();
 		while (line != null) {
 			if(!line.isEmpty()){
-				Assert.assertNotNull(reader.getId(line));
+				Assert.assertNotNull(MarcReader.extractIdFromRecord(line));
 			}
 			line = breader.readLine();
 		}

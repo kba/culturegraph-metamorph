@@ -14,7 +14,7 @@ import org.culturegraph.metamorph.stream.receivers.DefaultWriter;
 import org.junit.Test;
 
 /**
- * Tests {@link RecordBuffer}.
+ * Tests {@link EventBuffer}.
  * 
  * @author Markus Michael Geipel
  * 
@@ -37,7 +37,7 @@ public final class RecordBufferTest {
 		final StringWriter finalStringWriter = new StringWriter();
 		final DefaultWriter finalWriter = new DefaultWriter(finalStringWriter);
 
-		final RecordBuffer buffer = new RecordBuffer();
+		final EventBuffer buffer = new EventBuffer();
 
 		picaReader.setReceiver(buffer).setReceiver(finalWriter);
 

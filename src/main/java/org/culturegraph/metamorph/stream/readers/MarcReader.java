@@ -41,7 +41,7 @@ public final class MarcReader extends AbstractReader {
 			if (record.charAt(POS_ENCODING) != 'a') {
 				throw new IllegalEncodingException("UTF-8 encoding expected");
 			}
-			receiver.startRecord(extractIdFromRawRecord(record));
+			receiver.startRecord(extractIdFromRecord(record));
 			receiver.literal(LEADER, record.substring(0, LEADER_END));
 			//ceiver.literal(LEADER6, String.valueOf(record.charAt(POS_LEADER6)));
 			///receiver.literal(LEADER7, String.valueOf(record.charAt(POS_LEADER7)));
@@ -75,7 +75,7 @@ public final class MarcReader extends AbstractReader {
 	
 	}
 
-	public static String extractIdFromRawRecord(final String record) {
+	public static String extractIdFromRecord(final String record) {
 		try {
 			if (record.substring(POS_DIRECTORY, POS_DIRECTORY + TAG_LENGTH).equals(ID_TAG)) {
 				final int start = record.indexOf(FIELD_DELIMITER) + 1;
@@ -89,9 +89,5 @@ public final class MarcReader extends AbstractReader {
 		}
 	}
 
-	@Override
-	public String getId(final String record) {
-		return extractIdFromRawRecord(record);
-	}
 
 }
