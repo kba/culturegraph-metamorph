@@ -7,9 +7,9 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
-import org.culturegraph.metamorph.core.exceptions.MetamorphException;
-import org.culturegraph.metamorph.util.ResourceUtil;
+import org.culturegraph.metamorph.core.MetamorphDefinitionException;
+import org.culturegraph.metamorph.core.MetamorphException;
+import org.culturegraph.util.ResourceUtil;
 
 /**
  * @author Markus Michael Geipel

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.culturegraph.metamorph.core.AbstractNamedValuePipeHead;
 import org.culturegraph.metamorph.core.EntityEndIndicator;
-import org.culturegraph.metamorph.multimap.SimpleMultiMap;
+import org.culturegraph.util.SimpleMultiMap;
 
 /**
  * @author Markus Michael Geipel

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
-import org.culturegraph.metamorph.util.Util;
+import org.culturegraph.util.Util;
 
 /**
  * Corresponds to the <code>&lt;collect-literal&gt;</code> tag.

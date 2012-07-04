@@ -1,8 +1,8 @@
 package org.culturegraph.metamorph.core.functions;
 
 import org.culturegraph.metamorph.core.Metamorph;
-import org.culturegraph.metamorph.util.ObjectFactory;
-import org.culturegraph.metamorph.util.ResourceUtil;
+import org.culturegraph.util.ObjectFactory;
+import org.culturegraph.util.ResourceUtil;
 
 /**
  * Provides the functions for {@link Metamorph}. By the default it contains the

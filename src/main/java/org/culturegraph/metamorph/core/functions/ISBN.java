@@ -3,7 +3,7 @@ package org.culturegraph.metamorph.core.functions;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.culturegraph.metamorph.core.exceptions.MetamorphException;
+import org.culturegraph.metamorph.core.MetamorphException;
 
 /**
  * Offers ISBN conversions

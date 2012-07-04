@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
-import org.culturegraph.metamorph.util.Util;
+import org.culturegraph.util.Util;
 
 /**
  * Corresponds to the <code>&lt;choose-literal&gt;</code> tag.

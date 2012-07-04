@@ -1,6 +1,5 @@
-package org.culturegraph.metamorph.core.exceptions;
+package org.culturegraph.metamorph.core;
 
-import org.culturegraph.metamorph.core.MetamorphBuilder;
 
 /**
  * Thrown by {@link MetamorphBuilder} if the definition is syntactically incorrect or components for dynamic loading are not found.

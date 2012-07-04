@@ -3,7 +3,7 @@ package org.culturegraph.metamorph.core.functions;
 import org.culturegraph.metamorph.core.EntityEndIndicator;
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValuePipe;
-import org.culturegraph.metamorph.multimap.SimpleMultiMap;
+import org.culturegraph.util.SimpleMultiMap;
 
 /**
  * Interface for functions used in {@link Metamorph}

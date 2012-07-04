@@ -5,6 +5,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.culturegraph.util.Util;
 import org.junit.Test;
 
 /**

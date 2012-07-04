@@ -1,6 +1,5 @@
-package org.culturegraph.metamorph.core.exceptions;
+package org.culturegraph.metamorph.core;
 
-import org.culturegraph.metamorph.core.Metamorph;
 
 /**
  * Thrown if an error occurs during the processing in {@link Metamorph}

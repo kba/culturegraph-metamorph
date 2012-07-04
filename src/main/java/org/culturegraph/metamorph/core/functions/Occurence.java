@@ -6,7 +6,7 @@ package org.culturegraph.metamorph.core.functions;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.culturegraph.metamorph.util.Util;
+import org.culturegraph.util.Util;
 
 /**
  * @author Markus Michael Geipel

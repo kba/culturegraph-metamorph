@@ -2,8 +2,8 @@ package org.culturegraph.metamorph.core.collectors;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
-import org.culturegraph.metamorph.util.ObjectFactory;
-import org.culturegraph.metamorph.util.ResourceUtil;
+import org.culturegraph.util.ObjectFactory;
+import org.culturegraph.util.ResourceUtil;
 
 /**
  * Factory for all collectors used by {@link Metamorph} and {@link MetamorphBuilder}

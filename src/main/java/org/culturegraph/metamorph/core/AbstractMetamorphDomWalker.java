@@ -7,9 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.culturegraph.metamorph.core.collectors.CollectFactory;
-import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
 import org.culturegraph.metamorph.core.functions.FunctionFactory;
-import org.culturegraph.metamorph.util.ResourceUtil;
+import org.culturegraph.util.ResourceUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;

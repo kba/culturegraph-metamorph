@@ -3,10 +3,11 @@ package org.culturegraph.metamorph.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.culturegraph.metamorph.multimap.SimpleMultiMap;
+
 import org.culturegraph.metastream.framework.DefaultStreamReceiver;
 import org.culturegraph.metastream.framework.StreamReceiver;
 import org.culturegraph.metastream.type.NamedValue;
+import org.culturegraph.util.SimpleMultiMap;
 import org.junit.Assert;
 import org.junit.Test;
 

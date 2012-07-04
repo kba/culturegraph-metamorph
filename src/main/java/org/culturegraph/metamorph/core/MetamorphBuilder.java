@@ -7,9 +7,8 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.culturegraph.metamorph.core.collectors.Collect;
-import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
 import org.culturegraph.metamorph.core.functions.Function;
-import org.culturegraph.metamorph.multimap.SimpleMultiMap;
+import org.culturegraph.util.SimpleMultiMap;
 import org.w3c.dom.Node;
 
 /**

@@ -2,7 +2,7 @@ package org.culturegraph.metamorph.core.collectors;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.NamedValueSource;
-import org.culturegraph.metamorph.util.Util;
+import org.culturegraph.util.Util;
 
 /**
  * Implementation of the <code>&lt;group&gt;</code> tag.

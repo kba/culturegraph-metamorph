@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import org.culturegraph.metamorph.core.exceptions.MetamorphDefinitionException;
+import org.culturegraph.metamorph.core.MetamorphDefinitionException;
 
 /**
  * @author Markus Michael Geipel

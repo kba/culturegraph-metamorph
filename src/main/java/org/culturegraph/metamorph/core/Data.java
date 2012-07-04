@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.core;
 
-import org.culturegraph.metamorph.util.Util;
+import org.culturegraph.util.Util;
 
 
 /**

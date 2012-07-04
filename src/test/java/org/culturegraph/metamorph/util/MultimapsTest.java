@@ -4,8 +4,9 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
-import org.culturegraph.metamorph.multimap.MultiMap;
-import org.culturegraph.metamorph.multimap.SimpleMultiMap;
+import org.culturegraph.util.MultiMap;
+import org.culturegraph.util.MultimapMaps;
+import org.culturegraph.util.SimpleMultiMap;
 import org.junit.Test;
 
 /**

@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.culturegraph.metamorph.multimap.MultiMap;
-import org.culturegraph.metamorph.multimap.SimpleMultiMap;
 import org.culturegraph.metastream.framework.StreamReceiver;
-import org.culturegraph.metastream.framework.StreamReceiverPipe;
+import org.culturegraph.metastream.framework.StreamPipe;
+import org.culturegraph.util.MultiMap;
+import org.culturegraph.util.SimpleMultiMap;
 
 /**
  * Transforms a data stream send via the {@link StreamReceiver} interface. Use
@@ -19,7 +19,7 @@ import org.culturegraph.metastream.framework.StreamReceiverPipe;
  * 
  * @author Markus Michael Geipel
  */
-public final class Metamorph implements StreamReceiverPipe<StreamReceiver>, NamedValueReceiver, SimpleMultiMap, EntityEndIndicator {
+public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueReceiver, SimpleMultiMap, EntityEndIndicator {
 
 	public static final String ID_NAME = "_id";
 	public static final String ELSE_KEYWORD = "_else";
