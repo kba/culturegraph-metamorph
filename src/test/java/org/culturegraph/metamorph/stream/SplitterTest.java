@@ -6,8 +6,8 @@ import java.io.IOException;
 import junit.framework.Assert;
 
 import org.culturegraph.metamorph.DataFilePath;
-import org.culturegraph.metamorph.stream.readers.PicaReader;
-import org.culturegraph.metamorph.stream.readers.Reader;
+import org.culturegraph.metamorph.readers.PicaReader;
+import org.culturegraph.metamorph.readers.Reader;
 import org.culturegraph.metastream.sink.Counter;
 import org.junit.Test;
 

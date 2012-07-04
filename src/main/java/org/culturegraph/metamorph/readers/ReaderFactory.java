@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.culturegraph.metamorph.stream.readers;
+package org.culturegraph.metamorph.readers;
 
 import org.culturegraph.util.ObjectFactory;
 import org.culturegraph.util.ResourceUtil;
@@ -19,7 +19,4 @@ public final class ReaderFactory extends ObjectFactory<Reader> {
 		super();
 		loadClassesFromMap(ResourceUtil.loadProperties(POPERTIES_LOCATION), Reader.class);
 	}
-
-
-
 }

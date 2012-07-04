@@ -1,4 +1,4 @@
-package org.culturegraph.metamorph.stream.readers;
+package org.culturegraph.metamorph.readers;
 
 import org.culturegraph.metastream.converter.bib.MarcDecoder;
 
