@@ -4,7 +4,7 @@ import java.io.StringReader;
 
 import org.culturegraph.metastream.converter.xml.XMLDecoder;
 import org.culturegraph.metastream.framework.StreamReceiver;
-import org.culturegraph.metastream.framework.XMLReceiverPipe;
+import org.culturegraph.metastream.framework.XMLPipe;
 
 /**
  * @author Christoph Böhme
@@ -13,9 +13,9 @@ import org.culturegraph.metastream.framework.XMLReceiverPipe;
 public class XMLReaderBase implements Reader {
 	
 	private final XMLDecoder xmlDecoder = new XMLDecoder();
-	private final XMLReceiverPipe<StreamReceiver> xmlReceiver;
+	private final XMLPipe<StreamReceiver> xmlReceiver;
 	
-	protected XMLReaderBase(final XMLReceiverPipe<StreamReceiver> xmlReceiver) {
+	protected XMLReaderBase(final XMLPipe<StreamReceiver> xmlReceiver) {
 		this.xmlReceiver = xmlReceiver;
 		xmlDecoder.setReceiver(this.xmlReceiver);
 	}
