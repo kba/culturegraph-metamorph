@@ -44,7 +44,7 @@ public final class Read {
 			reader.setReceiver(consoleWriter);
 		}
 
-		reader.read(new FileReader(fileName));
+		reader.process(new FileReader(fileName));
 		reader.closeResources();
 	}
 

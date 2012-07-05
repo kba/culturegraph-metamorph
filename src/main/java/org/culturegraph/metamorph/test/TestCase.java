@@ -71,7 +71,7 @@ public final class TestCase {
 			reader.setReceiver(transformation).setReceiver(resultStream);
 		}
 		
-		reader.read(getInputData());
+		reader.process(getInputData());
 		reader.closeResources();
 		
 		final StreamValidator validator = 

@@ -36,7 +36,7 @@ public final class SplitterTest {
 
 		splitter.setReceiver("Tp", countingWriterTp);
 
-		picaReader.read(new FileReader(DataFilePath.PND_PICA));
+		picaReader.process(new FileReader(DataFilePath.PND_PICA));
 
 		Assert.assertEquals(NUM_TN_RECORDS, countingWriterTn.getNumRecords());
 		Assert.assertEquals(NUM_TP_RECORDS, countingWriterTp.getNumRecords());

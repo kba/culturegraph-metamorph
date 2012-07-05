@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.culturegraph.metastream.framework.StreamReceiver;
+import org.culturegraph.metastream.annotation.Description;
+import org.culturegraph.metastream.annotation.In;
+import org.culturegraph.metastream.annotation.Out;
 import org.culturegraph.metastream.framework.StreamPipe;
+import org.culturegraph.metastream.framework.StreamReceiver;
 import org.culturegraph.util.MultiMap;
 import org.culturegraph.util.SimpleMultiMap;
 
@@ -19,6 +22,9 @@ import org.culturegraph.util.SimpleMultiMap;
  * 
  * @author Markus Michael Geipel
  */
+@Description("applies a metamorph transformation to the event stream. Morph definition is given in brackets.")
+@In(StreamReceiver.class)
+@Out(StreamReceiver.class)
 public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueReceiver, SimpleMultiMap, EntityEndIndicator {
 
 	public static final String ID_NAME = "_id";
@@ -52,9 +58,14 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 	private char entityMarker = DEFAULT_ENTITY_MARKER;
 
 	protected Metamorph() {
-		// keep constructor in package
+		// package private
 	}
-
+	
+	public Metamorph(final String morphDef) {
+		final MetamorphBuilder builder = new MetamorphBuilder(this);
+		builder.buildIntern(morphDef);
+	}
+	
 	protected void setEntityMarker(final char entityMarker) {
 		this.entityMarker = entityMarker;
 	}

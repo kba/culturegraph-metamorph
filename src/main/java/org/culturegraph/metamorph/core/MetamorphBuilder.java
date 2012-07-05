@@ -21,30 +21,39 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker{
 
 	
 	// private final String morphDef;
-	private Metamorph metamorph;
-	private Deque<Collect> collectStack;
+	private final Metamorph metamorph;
+	private final Deque<Collect> collectStack;
 	private Data data;
 
-	private MetamorphBuilder() {
+	protected MetamorphBuilder(final Metamorph metamorph) {
 		super();
-		// nothing to do
+		this.collectStack = new LinkedList<Collect>();
+		this.metamorph = metamorph;
+	}
+	
+	protected void  buildIntern(final String morphDef) {
+		walk(morphDef);
+	}
+	
+	protected void  buildIntern(final InputStream inputStream) {
+		walk(inputStream);
 	}
 
 	public static Metamorph build(final String morphDef) {
-		final MetamorphBuilder builder = new MetamorphBuilder();		
+		final MetamorphBuilder builder = new MetamorphBuilder(new Metamorph());		
 		builder.walk(morphDef);
 		return builder.metamorph;
 
 	}
 
 	public static Metamorph build(final InputStream inputStream) {
-		final MetamorphBuilder builder = new MetamorphBuilder();		
+		final MetamorphBuilder builder = new MetamorphBuilder(new Metamorph());		
 		builder.walk(inputStream);
 		return builder.metamorph;
 	}
 
 	public static Metamorph build(final Reader reader) {
-		final MetamorphBuilder builder = new MetamorphBuilder();		
+		final MetamorphBuilder builder = new MetamorphBuilder(new Metamorph());		
 		builder.walk(reader);
 		return builder.metamorph;
 	}
@@ -101,8 +110,8 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker{
 
 	@Override
 	protected void init() {
-		collectStack = new LinkedList<Collect>();
-		metamorph = new Metamorph();
+		
+		//metamorph = new Metamorph();
 	}
 
 

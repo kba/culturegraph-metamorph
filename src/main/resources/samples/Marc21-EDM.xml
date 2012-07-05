@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph xmlns="http://www.culturegraph.org/metamorph"
+	version="1">
+	<meta>
+		<name>Marc21 to EDM</name>
+	</meta>
+
+	<rules>
+		<data source="_id" name="rdf:type">
+			<constant value="ore:Aggregation" />
+		</data>
+
+		<entity name="edm:aggregatedCHO" flushWith="record">
+			<data name="dc:publisher" source="2603 .b" />
+			<data name="dc:creator" source="1001 .a" />
+			<data name="dc:creator" source="1001 .0">
+				<regexp match="^\(DE-588a\)(.*)" format="http://d-nb.info/gnd/${1}" />
+			</data>
+
+			<combine name="rdf:about" value="${url}${id}">
+				<data name="id" source="001" />
+				<data name="url" source="003">
+					<lookup>
+						<entry name="DE-101" value="http://d-nb.info/" />
+					</lookup>
+				</data>
+			</combine>
+
+			<group name="dc:subject">
+				<data source="650?7.0">
+					<regexp match="^\(DE-588.?\)((.*))" format="${1}" />
+				</data>
+				<data source="60017.0">
+					<regexp match="^\(DE-588.?\)((.*))" format="${1}" />
+				</data>
+				<data source="6890?.0">
+					<regexp match="^\(DE-588.?\)((.*))" format="${1}" />
+				</data>
+				<postprocess>
+					<compose prefix="http://d-nb.info/gnd/" />
+				</postprocess>
+			</group>
+
+			<group name="dc:subject">
+				<data source="650?7.a" name="dcterms:subject" />
+				<data source="60017.a" name="dcterms:subject" />
+				<data source="6890?.a" name="dcterms:subject" />
+			</group>
+
+			<group name="dc:title">
+				<data source="24500.a" />
+				<data source="24503.a" />
+				<data source="24504.a" />
+				<data source="24510.a" />
+				<data source="24512.a" />
+				<data source="24514.a" />
+			</group>
+
+			<group name="dcterms:issued">
+				<data source="260  .c" />
+				<data source="2603 .c" />
+			</group>
+			<data name="dcterms:extent" source="300  .a"/>
+			
+			<data name="dc:type" source="_id">
+				<constant value="text"/>
+			</data>
+
+		</entity>
+		<entity name="edm:WebResource" flushWith="record">
+			<data name="rdf:about" source="85640.u">
+				<replace pattern="http://nbn-resolving.de/" with="" />
+			</data>
+			<combine name="edm:ShownAt" value="${url}${id}">
+				<data name="id" source="001" />
+				<data name="url" source="003">
+					<lookup>
+						<entry name="DE-101" value="http://d-nb.info/" />
+					</lookup>
+				</data>
+			</combine>
+			<data name="edm:ShownBy" source="85640.u"/>
+		</entity>
+
+	</rules>
+	<maps>
+
+
+	</maps>
+</metamorph>	

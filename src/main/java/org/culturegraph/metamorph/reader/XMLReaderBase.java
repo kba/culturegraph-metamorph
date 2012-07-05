@@ -27,7 +27,7 @@ public class XMLReaderBase implements Reader {
 	}
 	
 	@Override
-	public final void read(final java.io.Reader reader) {
+	public final void process(final java.io.Reader reader) {
 		xmlDecoder.process(reader);
 	}
 
