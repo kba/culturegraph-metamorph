@@ -2,9 +2,9 @@ package org.culturegraph.metamorph.reader;
 
 import java.io.StringReader;
 
-import org.culturegraph.metastream.converter.xml.XMLDecoder;
+import org.culturegraph.metastream.converter.xml.XmlDecoder;
 import org.culturegraph.metastream.framework.StreamReceiver;
-import org.culturegraph.metastream.framework.XMLPipe;
+import org.culturegraph.metastream.framework.XmlPipe;
 
 /**
  * @author Christoph Böhme
@@ -12,10 +12,10 @@ import org.culturegraph.metastream.framework.XMLPipe;
  */
 public class XMLReaderBase implements Reader {
 	
-	private final XMLDecoder xmlDecoder = new XMLDecoder();
-	private final XMLPipe<StreamReceiver> xmlReceiver;
+	private final XmlDecoder xmlDecoder = new XmlDecoder();
+	private final XmlPipe<StreamReceiver> xmlReceiver;
 	
-	protected XMLReaderBase(final XMLPipe<StreamReceiver> xmlReceiver) {
+	protected XMLReaderBase(final XmlPipe<StreamReceiver> xmlReceiver) {
 		this.xmlReceiver = xmlReceiver;
 		xmlDecoder.setReceiver(this.xmlReceiver);
 	}
@@ -37,13 +37,13 @@ public class XMLReaderBase implements Reader {
 	}
 
 	@Override
-	public final void reset() {
-		xmlDecoder.reset();
+	public final void resetStream() {
+		xmlDecoder.resetStream();
 	}
 
 	@Override
-	public final void closeResources() {
-		xmlDecoder.closeResources();
+	public final void closeStream() {
+		xmlDecoder.closeStream();
 	}
 
 }

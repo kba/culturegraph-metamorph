@@ -10,8 +10,8 @@ import java.util.Collections;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
 import org.culturegraph.metamorph.reader.Reader;
 import org.culturegraph.metamorph.reader.ReaderFactory;
-import org.culturegraph.metastream.converter.xml.CGXMLHandler;
-import org.culturegraph.metastream.converter.xml.XMLDecoder;
+import org.culturegraph.metastream.converter.xml.CGXmlHandler;
+import org.culturegraph.metastream.converter.xml.XmlDecoder;
 import org.culturegraph.metastream.framework.StreamReceiver;
 import org.culturegraph.metastream.framework.StreamPipe;
 import org.culturegraph.metastream.sink.EventList;
@@ -72,7 +72,7 @@ public final class TestCase {
 		}
 		
 		reader.process(getInputData());
-		reader.closeResources();
+		reader.closeStream();
 		
 		final StreamValidator validator = 
 				new StreamValidator(resultStream.getEvents());
@@ -85,11 +85,11 @@ public final class TestCase {
 		validator.setStrictValueOrder(Boolean.parseBoolean(
 				result.getAttribute(STRICT_VALUE_ORDER_ATTR)));
 		
-		final XMLDecoder decoder = new XMLDecoder();
-		decoder.setReceiver(new CGXMLHandler()).setReceiver(validator);
+		final XmlDecoder decoder = new XmlDecoder();
+		decoder.setReceiver(new CGXmlHandler()).setReceiver(validator);
 		
 		decoder.process(getExpectedResult());
-		validator.closeResources();	
+		validator.closeStream();	
 	}
 	
 	private Reader getReader() {		

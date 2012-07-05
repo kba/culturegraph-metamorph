@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.reader;
 
-import org.culturegraph.metastream.converter.xml.CGXMLHandler;
+import org.culturegraph.metastream.converter.xml.CGXmlHandler;
 
 /**
  * @author Christoph Böhme
@@ -9,7 +9,7 @@ import org.culturegraph.metastream.converter.xml.CGXMLHandler;
 public final class CGXMLReader extends XMLReaderBase {
 
 	public CGXMLReader() {
-		super(new CGXMLHandler());
+		super(new CGXmlHandler());
 	}
 
 }

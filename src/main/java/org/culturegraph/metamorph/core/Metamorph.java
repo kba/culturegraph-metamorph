@@ -186,14 +186,14 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 	}
 	
 	@Override
-	public void reset() {
+	public void resetStream() {
 		// TODO: Implement proper reset handling
-		outputStreamReceiver.reset();
+		outputStreamReceiver.resetStream();
 	}
 	
 	@Override
-	public void closeResources() {
-		outputStreamReceiver.closeResources();
+	public void closeStream() {
+		outputStreamReceiver.closeStream();
 	}
 	
 	/**

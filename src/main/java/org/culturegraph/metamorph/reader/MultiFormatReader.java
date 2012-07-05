@@ -93,12 +93,12 @@ public final class MultiFormatReader implements Reader{
 	}
 
 	@Override
-	public void reset() {
-		currentReader.reset();
+	public void resetStream() {
+		currentReader.resetStream();
 	}
 
 	@Override
-	public void closeResources() {
-		currentReader.closeResources();
+	public void closeStream() {
+		currentReader.closeStream();
 	}
 }

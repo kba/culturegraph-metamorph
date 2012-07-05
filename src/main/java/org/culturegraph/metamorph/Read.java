@@ -45,7 +45,7 @@ public final class Read {
 		}
 
 		reader.process(new FileReader(fileName));
-		reader.closeResources();
+		reader.closeStream();
 	}
 
 	private static String getExtention(final String fileName) {

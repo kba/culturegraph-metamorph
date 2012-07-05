@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.reader;
 
-import org.culturegraph.metastream.converter.xml.MarcXMLHandler;
+import org.culturegraph.metastream.converter.xml.MarcXmlHandler;
 
 /**
  * @author Markus Michael Geipel
@@ -9,6 +9,6 @@ import org.culturegraph.metastream.converter.xml.MarcXMLHandler;
 
 public class MarcXMLReader extends XMLReaderBase {
 	public MarcXMLReader() {
-		super(new MarcXMLHandler());
+		super(new MarcXmlHandler());
 	}
 }

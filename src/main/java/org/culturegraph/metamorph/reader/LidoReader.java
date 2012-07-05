@@ -1,6 +1,6 @@
 package org.culturegraph.metamorph.reader;
 
-import org.culturegraph.metastream.converter.xml.GenericXMLHandler;
+import org.culturegraph.metastream.converter.xml.GenericXmlHandler;
 
 
 /**
@@ -10,6 +10,6 @@ import org.culturegraph.metastream.converter.xml.GenericXMLHandler;
  */
 public class LidoReader extends XMLReaderBase {
 	public LidoReader() {
-		super(new GenericXMLHandler("lido"));
+		super(new GenericXmlHandler("lido"));
 	}
 }
