@@ -10,12 +10,12 @@ import org.culturegraph.metastream.framework.XmlPipe;
  * @author Christoph Böhme
  *
  */
-public class XMLReaderBase implements Reader {
+public class XmlReaderBase implements Reader {
 	
 	private final XmlDecoder xmlDecoder = new XmlDecoder();
 	private final XmlPipe<StreamReceiver> xmlReceiver;
 	
-	protected XMLReaderBase(final XmlPipe<StreamReceiver> xmlReceiver) {
+	protected XmlReaderBase(final XmlPipe<StreamReceiver> xmlReceiver) {
 		this.xmlReceiver = xmlReceiver;
 		xmlDecoder.setReceiver(this.xmlReceiver);
 	}
@@ -45,5 +45,4 @@ public class XMLReaderBase implements Reader {
 	public final void closeStream() {
 		xmlDecoder.closeStream();
 	}
-
 }

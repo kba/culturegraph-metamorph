@@ -7,8 +7,8 @@ import org.culturegraph.metastream.converter.xml.MarcXmlHandler;
  * 
  */
 
-public class MarcXMLReader extends XMLReaderBase {
-	public MarcXMLReader() {
+public class MarcXmlReader extends XmlReaderBase {
+	public MarcXmlReader() {
 		super(new MarcXmlHandler());
 	}
 }
