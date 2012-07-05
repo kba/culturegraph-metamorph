@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.culturegraph.metamorph.readers;
+package org.culturegraph.metamorph.reader;
 
 import org.culturegraph.util.ObjectFactory;
 import org.culturegraph.util.ResourceUtil;

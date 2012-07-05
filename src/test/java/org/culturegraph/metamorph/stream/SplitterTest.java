@@ -7,8 +7,8 @@ import junit.framework.Assert;
 
 import org.culturegraph.metamorph.DataFilePath;
 import org.culturegraph.metamorph.pipe.Splitter;
-import org.culturegraph.metamorph.readers.PicaReader;
-import org.culturegraph.metamorph.readers.Reader;
+import org.culturegraph.metamorph.reader.PicaReader;
+import org.culturegraph.metamorph.reader.Reader;
 import org.culturegraph.metastream.sink.Counter;
 import org.junit.Test;
 

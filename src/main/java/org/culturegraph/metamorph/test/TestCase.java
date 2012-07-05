@@ -8,8 +8,8 @@ import java.io.StringReader;
 import java.util.Collections;
 
 import org.culturegraph.metamorph.core.MetamorphBuilder;
-import org.culturegraph.metamorph.readers.Reader;
-import org.culturegraph.metamorph.readers.ReaderFactory;
+import org.culturegraph.metamorph.reader.Reader;
+import org.culturegraph.metamorph.reader.ReaderFactory;
 import org.culturegraph.metastream.converter.xml.CGXMLHandler;
 import org.culturegraph.metastream.converter.xml.XMLDecoder;
 import org.culturegraph.metastream.framework.StreamReceiver;

@@ -7,8 +7,8 @@ import java.util.Collections;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
-import org.culturegraph.metamorph.readers.Reader;
-import org.culturegraph.metamorph.readers.ReaderFactory;
+import org.culturegraph.metamorph.reader.Reader;
+import org.culturegraph.metamorph.reader.ReaderFactory;
 import org.culturegraph.metastream.sink.StreamWriter;
 
 /**
