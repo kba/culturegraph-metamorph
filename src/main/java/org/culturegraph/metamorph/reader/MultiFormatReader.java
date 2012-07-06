@@ -20,12 +20,13 @@ import org.culturegraph.metastream.framework.StreamReceiver;
 @Out(StreamReceiver.class)
 
 public final class MultiFormatReader implements Reader{
-
+	private static final ReaderFactory READER_FACTORY = new ReaderFactory();
+	
 	private static final String ERROR_NO_FORMAT = "no format set";
 	private static final String ERROR_RECEIVER_NULL = "'streamReceiver' must not be null";
 	private Reader currentReader;
 	private final Map<String, Reader> openReaders = new HashMap<String, Reader>();
-	private final ReaderFactory readerFactory = new ReaderFactory();
+	
 	private StreamReceiver streamReceiver;
 	private String currentFormat;
 
@@ -51,7 +52,7 @@ public final class MultiFormatReader implements Reader{
 		currentFormat = format;
 
 		if (null == currentReader) {
-			currentReader = readerFactory.newInstance(format);
+			currentReader = READER_FACTORY.newInstance(format);
 			openReaders.put(format, currentReader);
 
 			if (streamReceiver != null) {

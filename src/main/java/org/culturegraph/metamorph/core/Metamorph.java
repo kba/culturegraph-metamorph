@@ -31,8 +31,6 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 	public static final String ELSE_KEYWORD = "_else";
 	public static final char FEEDBACK_CHAR = '@';
 	public static final String METADATA = "__meta";
-	public static final String WILDCARD = "*";
-
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
 	private static final char DEFAULT_ENTITY_MARKER = '.';
