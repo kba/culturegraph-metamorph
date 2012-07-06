@@ -4,8 +4,7 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import org.culturegraph.metastream.util.ValidationException;
-import org.culturegraph.metastream.util.WellformednessException;
+import org.culturegraph.metastream.util.FormatException;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
@@ -59,10 +58,7 @@ final class TestCaseRunner extends ParentRunner<TestCase> {
 			notifier.fireTestStarted(describeChild(child));
 			try {
 				child.run();
-			} catch (WellformednessException e) {
-				notifier.fireTestFailure(new Failure(describeChild(child), 
-						new AssertionError(e)));
-			} catch (ValidationException e) {
+			} catch (FormatException e) {
 				notifier.fireTestFailure(new Failure(describeChild(child), 
 						new AssertionError(e)));
 			} catch (Throwable e) {
