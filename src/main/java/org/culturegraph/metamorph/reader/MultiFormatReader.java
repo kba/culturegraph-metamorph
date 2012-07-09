@@ -2,10 +2,12 @@ package org.culturegraph.metamorph.reader;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.culturegraph.metastream.annotation.Description;
 import org.culturegraph.metastream.annotation.In;
 import org.culturegraph.metastream.annotation.Out;
+import org.culturegraph.metastream.annotation.ReturnsAvailableArguments;
 import org.culturegraph.metastream.framework.StreamReceiver;
 
 /**
@@ -15,10 +17,9 @@ import org.culturegraph.metastream.framework.StreamReceiver;
  * @author Markus Michael Geipel
  */
 
-@Description("Reads different formts. Format given in brackets.")
+@Description("Reads different formats. Format given in brackets.")
 @In(java.io.Reader.class)
 @Out(StreamReceiver.class)
-
 public final class MultiFormatReader implements Reader{
 	private static final ReaderFactory READER_FACTORY = new ReaderFactory();
 	
@@ -38,6 +39,10 @@ public final class MultiFormatReader implements Reader{
 		setFormat(format);
 	}
 
+	@ReturnsAvailableArguments
+	public static Set<String> getAvailableFormats(){
+		return READER_FACTORY.keySet();
+	}
 
 	public String getFormat() {
 		return currentFormat;
@@ -59,7 +64,6 @@ public final class MultiFormatReader implements Reader{
 				currentReader.setReceiver(streamReceiver);
 			}
 		}
-
 	}
 
 	@Override
@@ -73,8 +77,6 @@ public final class MultiFormatReader implements Reader{
 			for (Reader reader : openReaders.values()) {
 				reader.setReceiver(streamReceiver);
 			}
-		
-
 		return streamReceiver;
 	}
 
