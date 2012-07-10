@@ -23,6 +23,7 @@ public final class Choose extends AbstractCollect{
 	private int priority = Integer.MAX_VALUE;
 	private final Map<NamedValueSource, Integer> priorities = new HashMap<NamedValueSource, Integer>();
 	private int nextPriority;
+	private String defaultValue;
 
 	
 	/**
@@ -31,6 +32,10 @@ public final class Choose extends AbstractCollect{
 	public Choose(final Metamorph metamorph) {
 		super(metamorph);
 		setNamedValueReceiver(metamorph);
+	}
+	
+	public void setDefaultValue(final String defaultValue) {
+		this.defaultValue = defaultValue;
 	}
 
 

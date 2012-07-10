@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.culturegraph.metastream.MetastreamException;
 import org.culturegraph.metastream.annotation.Description;
 import org.culturegraph.metastream.annotation.In;
 import org.culturegraph.metastream.annotation.Out;
@@ -57,7 +58,11 @@ public final class MultiFormatReader implements Reader{
 		currentFormat = format;
 
 		if (null == currentReader) {
+			if(!READER_FACTORY.containsKey(format)){
+				throw new IllegalArgumentException("Format '" + format + "' not regognized.");
+			}
 			currentReader = READER_FACTORY.newInstance(format);
+			
 			openReaders.put(format, currentReader);
 
 			if (streamReceiver != null) {

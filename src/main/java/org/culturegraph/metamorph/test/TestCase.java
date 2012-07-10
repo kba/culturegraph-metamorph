@@ -8,6 +8,7 @@ import java.io.StringReader;
 import java.util.Collections;
 
 import org.culturegraph.metamorph.core.MetamorphBuilder;
+import org.culturegraph.metamorph.reader.MultiFormatReader;
 import org.culturegraph.metamorph.reader.Reader;
 import org.culturegraph.metamorph.reader.ReaderFactory;
 import org.culturegraph.metastream.converter.xml.CGXmlHandler;
@@ -95,7 +96,7 @@ public final class TestCase {
 	private Reader getReader() {		
 		final Element input = (Element) config.getElementsByTagName(INPUT_TAG).item(0);
 		final String mimeType = input.getAttribute(TYPE_ATTR);
-		return READER_FACTORY.newInstance(mimeType, Collections.<String, String>emptyMap());
+		return new MultiFormatReader(mimeType);
 	}
 	
 	private StreamPipe<StreamReceiver> getTransformation() {

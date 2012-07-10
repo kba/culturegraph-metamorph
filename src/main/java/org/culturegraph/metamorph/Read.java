@@ -7,6 +7,7 @@ import java.util.Collections;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
+import org.culturegraph.metamorph.reader.MultiFormatReader;
 import org.culturegraph.metamorph.reader.Reader;
 import org.culturegraph.metamorph.reader.ReaderFactory;
 import org.culturegraph.metastream.sink.StreamWriter;
@@ -34,7 +35,7 @@ public final class Read {
 		}
 		
 		final String fileName = args[0];
-		final Reader reader = new ReaderFactory().newInstance(getExtention(fileName), Collections.<String, String>emptyMap());
+		final Reader reader = new MultiFormatReader(getExtention(fileName));
 		final StreamWriter consoleWriter = new StreamWriter(new OutputStreamWriter(System.out, "UTF8"));
 
 		if (args.length == 2) {
