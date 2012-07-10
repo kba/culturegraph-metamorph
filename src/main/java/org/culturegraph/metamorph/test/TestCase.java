@@ -8,13 +8,13 @@ import java.io.StringReader;
 import java.util.Collections;
 
 import org.culturegraph.metamorph.core.MetamorphBuilder;
-import org.culturegraph.metamorph.reader.MultiFormatReader;
-import org.culturegraph.metamorph.reader.Reader;
-import org.culturegraph.metamorph.reader.ReaderFactory;
 import org.culturegraph.metastream.converter.xml.CGXmlHandler;
 import org.culturegraph.metastream.converter.xml.XmlDecoder;
 import org.culturegraph.metastream.framework.StreamReceiver;
 import org.culturegraph.metastream.framework.StreamPipe;
+import org.culturegraph.metastream.reader.MultiFormatReader;
+import org.culturegraph.metastream.reader.Reader;
+import org.culturegraph.metastream.reader.ReaderFactory;
 import org.culturegraph.metastream.sink.EventList;
 import org.culturegraph.metastream.util.StreamValidator;
 import org.culturegraph.util.ResourceUtil;
