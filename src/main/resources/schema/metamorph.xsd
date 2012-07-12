@@ -282,6 +282,7 @@
 			<element ref="tns:occurence" />
 			<element ref="tns:constant" />
 			<element ref="tns:count" />
+			<element ref="tns:urlencode" />			
 			<element ref="tns:buffer" />
 			<element ref="tns:name" />
 			<element ref="tns:get-name" />
@@ -400,6 +401,11 @@
 	</element>
 
 	<element name="count">
+		<complexType>
+		</complexType>
+	</element>
+
+	<element name="urlencode">
 		<complexType>
 		</complexType>
 	</element>
