@@ -1,12 +1,14 @@
 package org.culturegraph.metamorph.core;
 
+import org.culturegraph.metastream.MetastreamException;
+
 
 /**
  * Thrown if an error occurs during the processing in {@link Metamorph}
  * 
  * @author Markus Michael Geipel
  */
-public class MetamorphException extends RuntimeException {
+public class MetamorphException extends MetastreamException {
 
 	private static final long serialVersionUID = -3130648074493084946L;
 

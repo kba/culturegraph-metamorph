@@ -3,12 +3,18 @@
 	version="1">
 	<meta>
 		<name>Marc21 to EDM</name>
+
 	</meta>
 
 	<rules>
-		<data source="_id" name="rdf:type">
-			<constant value="ore:Aggregation" />
-		</data>
+		<entity name="ore:Aggregation">
+			<entity name="edm:aggregatedCHO">
+				<data name="~rdf:resource" source="_id">
+					<compose prefix="http://www.dnb.de/" />
+				</data>
+			</entity>
+		</entity>
+
 
 		<entity name="edm:aggregatedCHO" flushWith="record">
 			<data name="dc:publisher" source="2603 .b" />
@@ -60,10 +66,10 @@
 				<data source="260  .c" />
 				<data source="2603 .c" />
 			</group>
-			<data name="dcterms:extent" source="300  .a"/>
-			
+			<data name="dcterms:extent" source="300  .a" />
+
 			<data name="dc:type" source="_id">
-				<constant value="text"/>
+				<constant value="text" />
 			</data>
 
 		</entity>
@@ -79,12 +85,20 @@
 					</lookup>
 				</data>
 			</combine>
-			<data name="edm:ShownBy" source="85640.u"/>
+			<data name="edm:ShownBy" source="85640.u" />
 		</entity>
 
 	</rules>
 	<maps>
-
+		<map name="options">
+			<entry name="record-tag" value="rdf:RDF"/>
+		</map>
+		<map name="namespaces">
+			<entry name="rdf" value="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+			<entry name="edm" value="http://www.europeana.eu/schemas/edm/" />
+			<entry name="dcterms" value="http://purl.org/dc/terms/" />
+			<entry name="dc" value="http://purl.org/dc/elements/1.1/" />
+		</map>
 
 	</maps>
 </metamorph>	
