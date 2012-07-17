@@ -6,13 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.culturegraph.metamorph.core.Metamorph;
-import org.culturegraph.metamorph.core.NamedValueReceiver;
 import org.culturegraph.metamorph.core.NamedValueSource;
 import org.culturegraph.metastream.framework.StreamReceiver;
 import org.culturegraph.metastream.type.ListMap;
 import org.culturegraph.metastream.type.NamedValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Corresponds to the <code>&lt;collect-entity&gt;</code> tag.
@@ -20,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @author Markus Michael Geipel
  */
 public final class Entity extends AbstractCollect {
-	private static final Logger LOG = LoggerFactory.getLogger(Entity.class);
+//	private static final Logger LOG = LoggerFactory.getLogger(Entity.class);
 
 
 	private final ListMap<NamedValueSource, NamedValue> literalListMap = new ListMap<NamedValueSource, NamedValue>();

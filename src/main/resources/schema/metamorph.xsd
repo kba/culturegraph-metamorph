@@ -170,6 +170,27 @@
 				default="record" />
 		</complexType>
 	</element>
+	
+		<element name="tuples">
+		<complexType>
+			<sequence>
+				<choice minOccurs="1" maxOccurs="unbounded">
+					<group ref="tns:literal-rule" minOccurs="0" maxOccurs="unbounded" />
+				</choice>
+				<element ref="tns:postprocess" minOccurs="0" maxOccurs="1" />
+			</sequence>
+			<attribute name="name" type="string" use="required" />
+			<attribute name="flushWith" type="string" use="optional"
+				default="record" />
+			<attribute name="minN" use="optional">
+				<simpleType>
+					<restriction base="int">
+						<minInclusive value="1"/>
+					</restriction>
+				</simpleType>
+			</attribute>
+		</complexType>
+	</element>
 
 	<element name="entity">
 		<complexType>
@@ -259,6 +280,7 @@
 			<element ref="tns:choose" />
 			<element ref="tns:combine" />
 			<element ref="tns:concat" />
+			<element ref="tns:tuples" />
 		</choice>
 	</group>
 

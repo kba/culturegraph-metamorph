@@ -8,5 +8,7 @@ import org.junit.runner.RunWith;
  * @author Markus Michael Geipel
  */
 @RunWith(TestSuite.class)
-@TestDefinitions({"CombineTest.xml", "GroupTest.xml", "ChooseTest.xml", "EntityTest.xml", "ConcatTest.xml", "Nested.xml", "Misc.xml"})
-public final class CollectorTest {/*bind to xml test*/}
+@TestDefinitions({ "CombineTest.xml", "GroupTest.xml", "ChooseTest.xml", "EntityTest.xml", "ConcatTest.xml",
+		"Nested.xml", "TuplesTest.xml", "Misc.xml" })
+public final class CollectorTest {/* bind to xml test */
+}
