@@ -6,13 +6,14 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.culturegraph.metastream.annotation.Description;
 import org.culturegraph.metastream.annotation.In;
 import org.culturegraph.metastream.annotation.Out;
+import org.culturegraph.metastream.framework.DefaultStreamReceiver;
 import org.culturegraph.metastream.framework.StreamPipe;
 import org.culturegraph.metastream.framework.StreamReceiver;
+import org.culturegraph.metastream.pipe.StreamFlattener;
 import org.culturegraph.util.MultiMap;
 import org.culturegraph.util.SimpleMultiMap;
 
@@ -33,7 +34,7 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 	public static final String METADATA = "__meta";
 
 	private static final String ENTITIES_NOT_BALANCED = "Entity starts and ends are not balanced";
-	private static final char DEFAULT_ENTITY_MARKER = '.';
+//	private static final char DEFAULT_ENTITY_MARKER = '.';
 
 	private final Registry<Data> dataRegistry = new WildcardRegistry<Data>();
 	private final List<Data> elseSources = new ArrayList<Data>();
@@ -41,10 +42,11 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 	// private final Map<String, String> entityMap = new HashMap<String,
 	// String>();
 	private final SimpleMultiMap multiMap = new MultiMap();
+	private final StreamFlattener flattener = new StreamFlattener();
 
-	private final Deque<String> entityStack = new LinkedList<String>();
-	private final StringBuilder entityPath = new StringBuilder();
-	private String currentEntityPath = "";
+//	private final Deque<String> entityStack = new LinkedList<String>();
+//	private final StringBuilder entityPath = new StringBuilder();
+//	private String currentEntityPath = "";
 
 	private final Deque<Integer> entityCountStack = new LinkedList<Integer>();
 	private int entityCount;
@@ -53,19 +55,32 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 	private StreamReceiver outputStreamReceiver;
 	private MetamorphErrorHandler errorHandler = new DefaultErrorHandler();
 	private int recordCount;
-	private char entityMarker = DEFAULT_ENTITY_MARKER;
+//	private char entityMarker = DEFAULT_ENTITY_MARKER;
 
 	protected Metamorph() {
 		// package private
+		flattener.setReceiver(new DefaultStreamReceiver(){
+			@Override
+			public void literal(final String name, final String value) {
+				dispatch(name, value, elseSources);
+			}
+		});
 	}
 	
 	public Metamorph(final String morphDef) {
 		final MetamorphBuilder builder = new MetamorphBuilder(this);
 		builder.buildIntern(morphDef);
+		flattener.setReceiver(new DefaultStreamReceiver(){
+			@Override
+			public void literal(final String name, final String value) {
+				dispatch(name, value, elseSources);
+			}
+		});
 	}
 	
 	protected void setEntityMarker(final char entityMarker) {
-		this.entityMarker = entityMarker;
+		//this.entityMarker = entityMarker;
+		flattener.setEntityMarker(entityMarker);
 	}
 
 	public void setErrorHandler(final MetamorphErrorHandler errorHandler) {
@@ -85,12 +100,13 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 
 	@Override
 	public void startRecord(final String identifier) {
+		flattener.startRecord(identifier);
 		entityCountStack.clear();
-		entityStack.clear();
-		currentEntityPath = "";
-		if (entityPath.length() != 0) {
-			entityPath.delete(0, entityPath.length());
-		}
+		//entityStack.clear();
+		//currentEntityPath = "";
+		//if (entityPath.length() != 0) {
+		//	entityPath.delete(0, entityPath.length());
+		//}
 		entityCount = 0;
 		currentEntityCount = 0;
 
@@ -99,12 +115,12 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 
 		entityCountStack.add(Integer.valueOf(entityCount));
 
-		final String identifierFinal;
-		if (identifier == null) {
-			identifierFinal = String.valueOf(recordCount);
-		} else {
-			identifierFinal = identifier;
-		}
+		final String identifierFinal = identifier;
+//		if (identifier == null) {
+//			identifierFinal = String.valueOf(recordCount);
+//		} else {
+//			identifierFinal = identifier;
+//		}
 		outputStreamReceiver.startRecord(identifierFinal);
 		dispatch(ID_NAME, identifierFinal, null);
 	}
@@ -119,7 +135,8 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 		if (!entityCountStack.isEmpty()) {
 			throw new IllegalStateException(ENTITIES_NOT_BALANCED);
 		}
-		currentEntityPath = "";
+		//currentEntityPath = "";
+		flattener.endRecord();
 	}
 
 	@Override
@@ -132,12 +149,13 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 		currentEntityCount = entityCount;
 		entityCountStack.push(Integer.valueOf(entityCount));
 
-		entityStack.push(name);
-		entityPath.append(name);
-		dispatch(entityPath.toString(), name, null);
+		flattener.startEntity(name);
+		//entityStack.push(name);
+	//	entityPath.append(name);
+		dispatch(flattener.getCurrentPath(), "", null);
 
-		entityPath.append(entityMarker);
-		currentEntityPath = entityPath.toString();
+	//	entityPath.append(entityMarker);
+	//	currentEntityPath = entityPath.toString();
 
 		// final String toEntity = entityMap.get(name);
 		// if (toEntity != null) {
@@ -148,25 +166,26 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 	@Override
 	public void endEntity() {
 
-		try {
-			final int end = entityPath.length();
-			final String name = entityStack.pop();
+
+			//final int end = entityPath.length();
+			//final String name = entityStack.pop();
 			currentEntityCount = entityCountStack.pop().intValue();
 
-			entityPath.delete(end - name.length() - 1, end);
+			//entityPath.delete(end - name.length() - 1, end);
 
-			currentEntityPath = entityPath.toString();
-
-			notifyEntityEndListeners(name);
-
+		//	currentEntityPath = entityPath.toString();
+			final String currentEntityName = flattener.getCurrentEntityName();
+			if(currentEntityName!=null){
+				notifyEntityEndListeners(currentEntityName);
+			}
+			
+			flattener.endEntity();
 			// final String toEntity = entityMap.get(name);
 			// if (toEntity != null) {
 			// outputStreamReceiver.endEntity();
 			// }
 
-		} catch (NoSuchElementException exc) {
-			throw new IllegalStateException(ENTITIES_NOT_BALANCED + ": " + exc.getMessage(), exc);
-		}
+	
 	}
 
 	private void notifyEntityEndListeners(final String name) {
@@ -180,7 +199,9 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 
 	@Override
 	public void literal(final String name, final String value) {
-		dispatch(currentEntityPath + name, value, elseSources);
+		flattener.literal(name, value);
+		
+		//dispatch(currentEntityPath + name, value, elseSources);
 	}
 	
 	@Override
@@ -199,7 +220,7 @@ public final class Metamorph implements StreamPipe<StreamReceiver>, NamedValueRe
 	 * @param value
 	 * @param fallback
 	 */
-	private void dispatch(final String path, final String value, final List<Data> fallback) {
+	protected void dispatch(final String path, final String value, final List<Data> fallback) {
 		final List<Data> matchingData = findMatchingData(path, fallback);
 		if (null != matchingData) {
 			send(path, value, matchingData);

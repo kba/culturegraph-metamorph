@@ -43,4 +43,60 @@
 		</result>
 	</test-case>
 
+	<test-case name="nested same entity">
+		<input type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:entity name="rel">
+							<cgxml:literal name="ch" value="b" />
+							<cgxml:literal name="value" value="a" />
+						</cgxml:entity>
+						<cgxml:entity name="rel">
+							<cgxml:literal name="value" value="B" />
+						</cgxml:entity>
+						<cgxml:entity name="rel">
+							<cgxml:literal name="ch" value="e" />
+							<cgxml:literal name="value" value="d" />
+						</cgxml:entity>
+						<cgxml:entity name="rel">
+							<cgxml:literal name="ch" value="X" />
+						</cgxml:entity>
+
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</input>
+
+		<transformation type="text/x-metamorph+xml">
+			<metamorph version="1" xmlns="http://www.culturegraph.org/metamorph">
+				<rules>
+					<combine name="result" value="${value}${ch}" sameEntity="true"
+						reset="true">
+						<data source="rel.value" name="value" />
+
+						<choose name="ch" flushWith="rel">
+							<data source="rel.ch"/>
+							<data source="rel">
+								<constant value="M"/>
+							</data>
+						</choose>
+					</combine>
+				</rules>
+			</metamorph>
+		</transformation>
+
+		<result type="text/x-cg+xml">
+			<cgxml:cgxml version="1.0">
+				<cgxml:records>
+					<cgxml:record id="1">
+						<cgxml:literal name="result" value="ab" />
+						<cgxml:literal name="result" value="BM" />
+						<cgxml:literal name="result" value="de" />
+					</cgxml:record>
+				</cgxml:records>
+			</cgxml:cgxml>
+		</result>
+	</test-case>
+
 </metamorph-test>

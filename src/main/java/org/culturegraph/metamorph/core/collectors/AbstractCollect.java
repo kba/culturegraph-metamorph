@@ -94,8 +94,8 @@ public abstract class AbstractCollect extends AbstractNamedValuePipeHead impleme
 		}
 		if (resetNeedFor(currentEntity)) {
 			clear();
-			oldEntity = currentEntity;
 		}
+		oldEntity = currentEntity;
 	}
 
 	private boolean resetNeedFor(final int currentEntity) {
