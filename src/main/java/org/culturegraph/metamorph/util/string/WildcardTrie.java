@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A simple Trie, which accepts a trailing wildcard
@@ -17,6 +19,9 @@ import java.util.Set;
 public final class WildcardTrie<P> {
 	public static final char STAR_WILDCARD = '*';
 	public static final char Q_WILDCARD = '?';
+	public static final String OR_STRING = "|";
+	
+	private static final Pattern OR_PATTERN = Pattern.compile(OR_STRING, Pattern.LITERAL);
 	private final Node<P> root = new Node<P>();
 	// private Queue<Node<List<P>>> nodes = new LinkedList<Node<List<P>>>();
 	// private Queue<Node<List<P>>> nextNodes = new LinkedList<Node<List<P>>>();
@@ -25,6 +30,18 @@ public final class WildcardTrie<P> {
 	private Set<Node<P>> nextNodes = new HashSet<Node<P>>();
 
 	public void put(final String key, final P value) {
+		if (key.contains(OR_STRING)) {
+			final String[] keys = OR_PATTERN.split(key);
+			for (String string : keys) {
+				simpleyPut(string, value);
+			}
+		} else {
+			simpleyPut(key, value);
+		}
+	}
+
+	private void simpleyPut(final String key, final P value) {
+
 		final char[] keyChars = key.toCharArray();
 
 		final int length;
@@ -47,6 +64,7 @@ public final class WildcardTrie<P> {
 		} else {
 			next.addValue(value);
 		}
+
 	}
 
 	public List<P> get(final String key) {
@@ -54,7 +72,6 @@ public final class WildcardTrie<P> {
 		final char[] keyChars = key.toCharArray();
 
 		nodes.add(root);
-		
 
 		for (int i = 0; i < keyChars.length; ++i) {
 			for (Node<P> node : nodes) {
@@ -119,20 +136,19 @@ public final class WildcardTrie<P> {
 	 * @param <T>
 	 */
 	private final class Node<T> {
-		
+
 		private List<T> values = Collections.emptyList();
 		private final CharMap<Node<T>> links = new CharMap<Node<T>>();
 
 		// rivate final int depth;
 
-//		public Node(final T value) {
-//			values.add(value);
-//		}
-//
+		// public Node(final T value) {
+		// values.add(value);
+		// }
+		//
 		protected Node() {
 			// nothing to do
 		}
-
 
 		public Node<T> addNext(final char key) {
 			final Node<T> next;
@@ -146,7 +162,7 @@ public final class WildcardTrie<P> {
 		}
 
 		public void addValue(final T value) {
-			if(values==Collections.emptyList()){
+			if (values == Collections.emptyList()) {
 				values = new ArrayList<T>();
 			}
 			this.values.add(value);

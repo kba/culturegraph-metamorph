@@ -23,7 +23,7 @@
 				<regexp match="^\(DE-588a\)(.*)" format="http://d-nb.info/gnd/${1}" />
 			</data>
 
-			<combine name="rdf:about" value="${url}${id}">
+			<combine name="~rdf:about" value="${url}${id}">
 				<data name="id" source="001" />
 				<data name="url" source="003">
 					<lookup>
@@ -74,7 +74,7 @@
 
 		</entity>
 		<entity name="edm:WebResource" flushWith="record">
-			<data name="rdf:about" source="85640.u">
+			<data name="~rdf:about" source="85640.u">
 				<replace pattern="http://nbn-resolving.de/" with="" />
 			</data>
 			<combine name="edm:ShownAt" value="${url}${id}">
@@ -90,9 +90,6 @@
 
 	</rules>
 	<maps>
-		<map name="options">
-			<entry name="record-tag" value="rdf:RDF"/>
-		</map>
 		<map name="namespaces">
 			<entry name="rdf" value="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
 			<entry name="edm" value="http://www.europeana.eu/schemas/edm/" />

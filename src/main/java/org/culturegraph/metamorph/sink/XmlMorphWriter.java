@@ -6,7 +6,9 @@ import javax.xml.transform.TransformerException;
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metastream.annotation.Description;
 import org.culturegraph.metastream.annotation.In;
-import org.culturegraph.metastream.framework.DefaultStreamReceiver;
+import org.culturegraph.metastream.annotation.Out;
+import org.culturegraph.metastream.framework.ObjectReceiver;
+import org.culturegraph.metastream.framework.StreamPipe;
 import org.culturegraph.metastream.framework.StreamReceiver;
 import org.culturegraph.metastream.sink.XmlWriter;
 
@@ -18,7 +20,8 @@ import org.culturegraph.metastream.sink.XmlWriter;
  */
 @Description("applies a Metamorph transformation and writes the result to xml")
 @In(StreamReceiver.class)
-public final class XmlMorphWriter extends DefaultStreamReceiver {
+@Out(String.class)
+public final class XmlMorphWriter implements StreamPipe<ObjectReceiver<String>> {
 	
 	private final XmlWriter xmlWriter;
 	private final Metamorph metamorph;
@@ -31,6 +34,9 @@ public final class XmlMorphWriter extends DefaultStreamReceiver {
 		metamorph.setReceiver(xmlWriter);
 	}
 	
+	public void setRecordTag(final String tag){
+		xmlWriter.setRecordTag(tag);
+	}
 	
 	@Override
 	public void startRecord(final String identifier) {
@@ -59,6 +65,12 @@ public final class XmlMorphWriter extends DefaultStreamReceiver {
 	@Override
 	public void closeStream() {
 		metamorph.closeStream();
+	}
+
+	@Override
+	public <R extends ObjectReceiver<String>> R setReceiver(final R receiver) {
+		xmlWriter.setReceiver(receiver);
+		return receiver;
 	}
 
 

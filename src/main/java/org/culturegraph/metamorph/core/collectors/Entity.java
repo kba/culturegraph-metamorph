@@ -19,6 +19,7 @@ import org.culturegraph.metastream.type.NamedValue;
 public final class Entity extends AbstractCollect {
 //	private static final Logger LOG = LoggerFactory.getLogger(Entity.class);
 
+	public static final String ENTITY_NAME = "_entity_name";
 
 	private final ListMap<NamedValueSource, NamedValue> literalListMap = new ListMap<NamedValueSource, NamedValue>();
 	private final List<NamedValueSource> sourceList = new ArrayList<NamedValueSource>();

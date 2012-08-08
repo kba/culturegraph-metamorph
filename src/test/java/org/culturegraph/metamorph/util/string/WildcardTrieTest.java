@@ -127,5 +127,20 @@ public final class WildcardTrieTest {
 		Assert.assertEquals(3, trie.get("acb").size());
 
 	}
+	
+	@Test
+	public void testWithOrAndWildcard() {
+		final WildcardTrie<String> trie = new WildcardTrie<String>();
+
+		final String key = ABC + WildcardTrie.OR_STRING + CCB; 
+		trie.put(key, "");
+		Assert.assertTrue(ABC  + NOT_FOUND_BY + key, trie.get(ABC).contains(""));
+		Assert.assertTrue(CCB + NOT_FOUND_BY + key, trie.get(CCB).contains(""));
+
+		Assert.assertTrue(AABB + FOUND_BY + key, trie.get(AABB).isEmpty());
+		Assert.assertTrue(AB + FOUND_BY + key, trie.get(AB).isEmpty());
+
+
+	}
 
 }

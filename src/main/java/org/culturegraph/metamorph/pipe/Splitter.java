@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.culturegraph.metamorph.core.Metamorph;
 import org.culturegraph.metamorph.core.MetamorphBuilder;
+import org.culturegraph.metastream.annotation.Description;
+import org.culturegraph.metastream.annotation.In;
+import org.culturegraph.metastream.annotation.Out;
 import org.culturegraph.metastream.framework.StreamReceiver;
 import org.culturegraph.metastream.framework.StreamPipe;
 import org.culturegraph.metastream.pipe.StreamBuffer;
@@ -14,6 +17,9 @@ import org.culturegraph.metastream.sink.SingleValue;
  * @author Markus Michael Geipel
  *
  */
+@Description("Splits a stream based on a morph definition")
+@In(StreamReceiver.class)
+@Out(StreamReceiver.class)
 public final class Splitter implements StreamPipe<StreamReceiver> {
 
 	private final StreamBuffer buffer = new StreamBuffer();

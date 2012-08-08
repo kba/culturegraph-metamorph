@@ -71,8 +71,7 @@
 		<transformation type="text/x-metamorph+xml">
 			<metamorph version="1" xmlns="http://www.culturegraph.org/metamorph">
 				<rules>
-					<combine name="result" value="${value}${ch}" sameEntity="true"
-						reset="true">
+					<combine name="result" value="${value}${ch}" sameEntity="true">
 						<data source="rel.value" name="value" />
 
 						<choose name="ch" flushWith="rel">
