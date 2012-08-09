@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.culturegraph.metamorph.core.collectors.CollectFactory;
 import org.culturegraph.metamorph.core.functions.FunctionFactory;
+import org.culturegraph.metamorph.core.maps.MapFactory;
 import org.culturegraph.util.ResourceUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,6 +49,7 @@ public abstract class AbstractMetamorphDomWalker {
 	}
 
 	private static final String DATA = "data";
+	private static final String MAP = "map";
 	private static final String POSTPROCESS = "postprocess";
 	private static final String SCHEMA_FILE = "schema/metamorph.xsd";
 	private static final int LOWEST_COMPATIBLE_VERSION = 1;
@@ -55,6 +57,7 @@ public abstract class AbstractMetamorphDomWalker {
 
 	private FunctionFactory functionFactory;
 	private CollectFactory collectFactory;
+	private MapFactory mapFactory;
 
 	protected final FunctionFactory getFunctionFactory() {
 		return functionFactory;
@@ -62,6 +65,10 @@ public abstract class AbstractMetamorphDomWalker {
 
 	protected final CollectFactory getCollectFactory() {
 		return collectFactory;
+	}
+	
+	protected final MapFactory getMapFactory() {
+		return mapFactory;
 	}
 
 	public final void walk(final String morphDef) {
@@ -112,6 +119,7 @@ public abstract class AbstractMetamorphDomWalker {
 	protected final void walk(final Document doc) {
 		functionFactory = new FunctionFactory();
 		collectFactory = new CollectFactory();
+		mapFactory = new MapFactory();
 
 		init();
 
@@ -152,7 +160,9 @@ public abstract class AbstractMetamorphDomWalker {
 
 	protected abstract void setEntityMarker(final String entityMarker);
 
-	protected abstract void handleMap(final Node mapNode);
+	protected abstract void handleInternalMap(final Node mapNode);
+	
+	protected abstract void handleMapClass(final Node mapNode);
 
 	protected abstract void handleMetaEntry(final String name, final String value);
 
@@ -198,7 +208,11 @@ public abstract class AbstractMetamorphDomWalker {
 
 	private void handleMaps(final Node node) {
 		for (Node mapNode = node.getFirstChild(); mapNode != null; mapNode = mapNode.getNextSibling()) {
-			handleMap(mapNode);
+			if(MAP.equals(mapNode.getLocalName())){
+				handleInternalMap(mapNode);
+			}else{
+				handleMapClass(mapNode);
+			}
 		}
 	}
 

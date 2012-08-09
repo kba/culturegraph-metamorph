@@ -99,6 +99,50 @@
 		</result>
 	</test-case>
 
+<!-- 	<test-case name="dont flush empty entitities"> -->
+<!-- 		<input type="text/x-cg+xml"> -->
+<!-- 			<cgxml:cgxml version="1.0"> -->
+<!-- 				<cgxml:records> -->
+<!-- 					<cgxml:record id="1"> -->
+<!-- 						<cgxml:entity name="e"> -->
+<!-- 							<cgxml:literal name="d" value="a" /> -->
+<!-- 						</cgxml:entity> -->
+
+<!-- 					</cgxml:record> -->
+<!-- 					<cgxml:record id="2"> -->
+<!-- 						<cgxml:entity name="e"> -->
+<!-- 							<cgxml:literal name="X" value="a" /> -->
+<!-- 						</cgxml:entity> -->
+<!-- 					</cgxml:record> -->
+<!-- 				</cgxml:records> -->
+<!-- 			</cgxml:cgxml> -->
+<!-- 		</input> -->
+
+<!-- 		<transformation type="text/x-metamorph+xml"> -->
+<!-- 			<mm:metamorph version="1"> -->
+<!-- 				<mm:rules> -->
+<!-- 					<mm:entity name="entity" flushWith="record"> -->
+<!-- 						<mm:data source="e.d" name="value" /> -->
+<!-- 					</mm:entity> -->
+<!-- 				</mm:rules> -->
+<!-- 			</mm:metamorph> -->
+<!-- 		</transformation> -->
+
+<!-- 		<result type="text/x-cg+xml"> -->
+<!-- 			<cgxml:cgxml version="1.0"> -->
+<!-- 				<cgxml:records> -->
+<!-- 					<cgxml:record id="1"> -->
+<!-- 						<cgxml:entity name="entity"> -->
+<!-- 							<cgxml:literal name="value" value="a" /> -->
+<!-- 						</cgxml:entity> -->
+<!-- 					</cgxml:record> -->
+<!-- 					<cgxml:record id="2"> -->
+<!-- 					</cgxml:record> -->
+<!-- 				</cgxml:records> -->
+<!-- 			</cgxml:cgxml> -->
+<!-- 		</result> -->
+<!-- 	</test-case> -->
+
 	<test-case name="nested entity">
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">

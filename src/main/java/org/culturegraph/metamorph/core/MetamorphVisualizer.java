@@ -128,10 +128,17 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 	}
 
 	@Override
-	protected void handleMap(final Node mapNode) {
+	protected void handleInternalMap(final Node mapNode) {
 		final String mapName = getAttr(mapNode, ATTRITBUTE.NAME);
 		final Map<String, String> map = getMap(mapNode);
 		writer.println(buildMap(mapName, mapName, map));
+	}
+	
+	@Override
+	protected void handleMapClass(final Node mapNode) {
+		final String mapName = getAttr(mapNode, ATTRITBUTE.NAME);
+		final Map<String, String> emptyMap = Collections.emptyMap();
+		writer.println(buildMap(mapName, mapName, emptyMap));
 	}
 
 	private Map<String, String> getMap(final Node mapNode) {
@@ -264,4 +271,7 @@ public final class MetamorphVisualizer extends AbstractMetamorphDomWalker {
 	private void incrementChildCount() {
 		childCountStack.push(Integer.valueOf(1 + childCountStack.pop().intValue()));
 	}
+
+
+
 }

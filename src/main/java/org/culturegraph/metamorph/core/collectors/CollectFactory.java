@@ -6,7 +6,7 @@ import org.culturegraph.util.ObjectFactory;
 import org.culturegraph.util.ResourceUtil;
 
 /**
- * Factory for all collectors used by {@link Metamorph} and {@link MetamorphBuilder}
+ * Factory for all maps used by {@link Metamorph} and {@link MetamorphBuilder}
  * 
  * @author Markus Michael Geipel
  *

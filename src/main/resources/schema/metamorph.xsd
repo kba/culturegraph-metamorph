@@ -79,14 +79,12 @@
 		<complexType>
 			<choice minOccurs="0" maxOccurs="unbounded">
 				<element ref="tns:map" />
+				<element ref="tns:mapfile" />
 				<element ref="xi:include" />
 			</choice>
 			<attribute ref="xml:base" />
 		</complexType>
 	</element>
-
-
-
 
 	<element name="def">
 		<complexType>
@@ -234,11 +232,19 @@
 	<element name="map">
 		<complexType>
 			<sequence>
-				<element ref="tns:annotation" minOccurs="0" maxOccurs="1" />
 				<element ref="tns:entry" minOccurs="0" maxOccurs="unbounded" />
 			</sequence>
 			<attribute name="name" type="string" use="required" />
 			<attribute name="default" type="string" use="optional" />
+			<attribute ref="xml:base" />
+		</complexType>
+	</element>
+	
+		<element name="mapfile">
+		<complexType>
+			<attribute name="name" type="string" use="required" />
+			<attribute name="files" type="string" use="required" />
+			<attribute name="separator" type="string" use="optional" default="\t"/>
 			<attribute ref="xml:base" />
 		</complexType>
 	</element>

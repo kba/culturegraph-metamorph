@@ -19,7 +19,7 @@ import org.culturegraph.metastream.type.NamedValue;
 public final class Entity extends AbstractCollect {
 //	private static final Logger LOG = LoggerFactory.getLogger(Entity.class);
 
-	public static final String ENTITY_NAME = "_entity_name";
+	//public static final String ENTITY_NAME = "_entity_name";
 
 	private final ListMap<NamedValueSource, NamedValue> literalListMap = new ListMap<NamedValueSource, NamedValue>();
 	private final List<NamedValueSource> sourceList = new ArrayList<NamedValueSource>();
@@ -46,11 +46,19 @@ public final class Entity extends AbstractCollect {
 	private boolean isRootEntity() {
 		return  getNamedValueReceiver() == getMetamorph();
 	}
+	
+//	private boolean hasSomethingToWrite(){
+//		
+//	}
 
 	private void writeCollectedNamedValues(){
+//		if(literalListMap.isEmpty()){
+//			return;
+//		}
+		
 		final StreamReceiver streamReceiver = getMetamorph().getStreamReceiver();
 		streamReceiver.startEntity(getName());
-
+		
 		for (NamedValueSource source : sourceList) {
 			if (source instanceof Entity) {
 				final Entity nestedEntity = (Entity) source;

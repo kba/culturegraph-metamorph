@@ -18,6 +18,7 @@ import org.w3c.dom.Node;
  */
 public final class MetamorphBuilder extends AbstractMetamorphDomWalker {
 
+	private static final String NOT_FOUND = " not found.";
 	// private final String morphDef;
 	private final Metamorph metamorph;
 	private final Deque<Collect> collectStack;
@@ -64,8 +65,9 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker {
 	}
 
 	@Override
-	protected void handleMap(final Node mapNode) {
+	protected void handleInternalMap(final Node mapNode) {
 		final String mapName = getAttr(mapNode, ATTRITBUTE.NAME);
+
 		final String mapDefault = getAttr(mapNode, ATTRITBUTE.DEFAULT);
 
 		for (Node entryNode = mapNode.getFirstChild(); entryNode != null; entryNode = entryNode.getNextSibling()) {
@@ -79,6 +81,19 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void handleMapClass(final Node mapNode) {
+		final Map<String, String> attributes = attributesToMap(mapNode);
+
+		final String mapName = attributes.remove(ATTRITBUTE.NAME.getString());
+		if (!getMapFactory().containsKey(mapNode.getLocalName())) {
+			throw new IllegalArgumentException("Map " + mapNode.getLocalName() + NOT_FOUND);
+		}
+		final Map<String,String> map = getMapFactory().newInstance(mapNode.getLocalName(), attributes);
+		metamorph.putMap(mapName, map);
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	// protected by 'if (Function.class.isAssignableFrom(clazz))'
@@ -88,7 +103,7 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker {
 		try {
 			clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
 		} catch (ClassNotFoundException e) {
-			throw new MetamorphDefinitionException("Class '" + className + "' not found.", e);
+			throw new MetamorphDefinitionException("Function " + className + NOT_FOUND, e);
 		}
 		if (Function.class.isAssignableFrom(clazz)) {
 			getFunctionFactory().registerClass(getAttr(functionDefNode, ATTRITBUTE.NAME), (Class<Function>) clazz);
@@ -141,7 +156,7 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker {
 		attributes.remove(ATTRITBUTE.FLUSH_WITH.getString());
 
 		if (!getCollectFactory().containsKey(node.getLocalName())) {
-			throw new IllegalArgumentException("Collector " + node.getLocalName() + " not implemented.");
+			throw new IllegalArgumentException("Collector " + node.getLocalName() + NOT_FOUND);
 		}
 		final Collect collect = getCollectFactory().newInstance(node.getLocalName(), attributes, metamorph);
 
@@ -168,7 +183,7 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker {
 	@Override
 	protected void handleFunction(final Node functionNode) {
 		if (!getFunctionFactory().containsKey(functionNode.getLocalName())) {
-			throw new IllegalArgumentException(functionNode.getLocalName() + " is not registered.");
+			throw new IllegalArgumentException(functionNode.getLocalName() + NOT_FOUND);
 		}
 		final Function function = getFunctionFactory().newInstance(functionNode.getLocalName(),
 				attributesToMap(functionNode));
@@ -189,4 +204,5 @@ public final class MetamorphBuilder extends AbstractMetamorphDomWalker {
 			data.appendPipe(function);
 		}
 	}
+
 }
