@@ -12,7 +12,7 @@ import org.culturegraph.util.Util;
  * @author Markus Michael Geipel
  *
  */
-public final class Occurence extends AbstractStatefulFunction {
+public final class Occurrence extends AbstractStatefulFunction {
 
 	private static final String MORE_THEN = "moreThen ";
 	private static final String LESS_THEN = "lessThen ";

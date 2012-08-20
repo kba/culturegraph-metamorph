@@ -27,18 +27,18 @@ public abstract class AbstractFunction extends AbstractNamedValuePipeHead implem
 		return null;
 	}
 
-	protected final String getMapName() {
+	public final String getMapName() {
 		return mapName;
 	}
 
-	protected final Map<String, String> getMap() {
+	public final Map<String, String> getMap() {
 		if (localMap == null) {
 			return multiMap.getMap(mapName);
 		}
 		return localMap;
 	}
 
-	protected final void setMap(final String mapName) {
+	public final void setMap(final String mapName) {
 		this.mapName = mapName;
 	}
 

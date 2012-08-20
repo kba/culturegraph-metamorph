@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -23,20 +22,24 @@ public final class WildcardTrie<P> {
 	
 	private static final Pattern OR_PATTERN = Pattern.compile(OR_STRING, Pattern.LITERAL);
 	private final Node<P> root = new Node<P>();
-	// private Queue<Node<List<P>>> nodes = new LinkedList<Node<List<P>>>();
-	// private Queue<Node<List<P>>> nextNodes = new LinkedList<Node<List<P>>>();
 
 	private Set<Node<P>> nodes = new HashSet<Node<P>>();
 	private Set<Node<P>> nextNodes = new HashSet<Node<P>>();
 
-	public void put(final String key, final P value) {
-		if (key.contains(OR_STRING)) {
-			final String[] keys = OR_PATTERN.split(key);
-			for (String string : keys) {
+	/**
+	 * inserts keys into the try. Use '|' to concatenate. Use '*' (0,inf) and '?' (1,1) to express wildcards.
+	 * 
+	 * @param keys
+	 * @param value
+	 */
+	public void put(final String keys, final P value) {
+		if (keys.contains(OR_STRING)) {
+			final String[] keysSplit = OR_PATTERN.split(keys);
+			for (String string : keysSplit) {
 				simpleyPut(string, value);
 			}
 		} else {
-			simpleyPut(key, value);
+			simpleyPut(keys, value);
 		}
 	}
 
@@ -106,30 +109,7 @@ public final class WildcardTrie<P> {
 		return matches;
 	}
 
-	// public List<P> get(final String key) {
-	// final List<P> matches = new ArrayList<P>();
-	// final char[] keyChars = key.toCharArray();
-	// nodes.add(root);
-	// while (!nodes.isEmpty()) {
-	// final Node<List<P>> node = nodes.poll();
-	//
-	// if (node.getDepth() == keyChars.length) {
-	// if (node.getValue() != null) {
-	// matches.addAll(node.getValue());
-	// }
-	// } else {
-	// final Node<List<P>> next = node.getNext(keyChars[node.getDepth()]);
-	// if (next != null) {
-	// nodes.add(next);
-	// }
-	// final Node<List<P>> question = node.getNext(Q_WILDCARD);
-	// if (question != null) {
-	// nodes.add(question);
-	// }
-	// }
-	// }
-	// return matches;
-	// }
+
 
 	/**
 	 * 
@@ -140,12 +120,7 @@ public final class WildcardTrie<P> {
 		private List<T> values = Collections.emptyList();
 		private final CharMap<Node<T>> links = new CharMap<Node<T>>();
 
-		// rivate final int depth;
-
-		// public Node(final T value) {
-		// values.add(value);
-		// }
-		//
+	
 		protected Node() {
 			// nothing to do
 		}

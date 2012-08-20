@@ -71,7 +71,7 @@ public final class Choose extends AbstractCollect{
 	protected void receive(final String name, final String value, final NamedValueSource source) {
 		final int sourcePriority = priorities.get(source).intValue();
 		 
-		if (sourcePriority < priority) {
+		if (sourcePriority <= priority) {
 			this.value = value;
 			this.name = name;
 			this.priority = sourcePriority;

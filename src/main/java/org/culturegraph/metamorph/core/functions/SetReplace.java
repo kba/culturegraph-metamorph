@@ -20,5 +20,6 @@ public final class SetReplace extends AbstractSimpleStatelessFunction {
 			prepared = true;
 		}
 		return setReplacer.replaceIn(text);
+		
 	}
 }

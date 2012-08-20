@@ -3,7 +3,7 @@
 	xmlns="http://www.culturegraph.org/metamorph-test" xmlns:mm="http://www.culturegraph.org/metamorph"
 	xmlns:cgxml="http://www.culturegraph.org/cgxml">
 
-	<test-case name="occurence">
+	<test-case name="occurrence">
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
@@ -25,13 +25,13 @@
 			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:data source="data" name="l2">
-						<mm:occurence only="lessThen 2" />
+						<mm:occurrence only="lessThen 2" />
 					</mm:data>
 					<mm:data source="data" name="2">
-						<mm:occurence only="2" />
+						<mm:occurrence only="2" />
 					</mm:data>
 					<mm:data source="data" name="g2">
-						<mm:occurence only="moreThen 2" />
+						<mm:occurrence only="moreThen 2" />
 					</mm:data>
 				</mm:rules>
 			</mm:metamorph>
@@ -55,7 +55,7 @@
 		</result>
 	</test-case>
 
-	<test-case name="occurence same entity">
+	<test-case name="occurrence same entity">
 		<input type="text/x-cg+xml">
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
@@ -79,13 +79,13 @@
 			<mm:metamorph version="1">
 				<mm:rules>
 					<mm:data source="e.data" name="l2">
-						<mm:occurence only="lessThen 2" sameEntity="true" />
+						<mm:occurrence only="lessThen 2" sameEntity="true" />
 					</mm:data>
 					<mm:data source="e.data" name="2">
-						<mm:occurence only="2" sameEntity="true" />
+						<mm:occurrence only="2" sameEntity="true" />
 					</mm:data>
 					<mm:data source="e.data" name="g2">
-						<mm:occurence only="moreThen 2" sameEntity="true" />
+						<mm:occurrence only="moreThen 2" sameEntity="true" />
 					</mm:data>
 				</mm:rules>
 			</mm:metamorph>
@@ -138,6 +138,11 @@
 					<mm:data source="data" name="count">
 						<mm:count />
 					</mm:data>
+					<mm:choose flushWith="record">
+						<mm:data source="datax" name="count">
+							<mm:count />
+						</mm:data>
+					</mm:choose>
 				</mm:rules>
 			</mm:metamorph>
 		</transformation>
@@ -146,14 +151,19 @@
 			<cgxml:cgxml version="1.0">
 				<cgxml:records>
 					<cgxml:record id="0">
+						<cgxml:literal name="count" value="2" />
 					</cgxml:record>
 					<cgxml:record id="1">
+						<cgxml:literal name="count" value="1" />
+						<cgxml:literal name="count" value="2" />
 						<cgxml:literal name="count" value="3" />
 					</cgxml:record>
 					<cgxml:record id="2">
+						<cgxml:literal name="count" value="1" />
 						<cgxml:literal name="count" value="2" />
 					</cgxml:record>
 					<cgxml:record id="3">
+						<cgxml:literal name="count" value="2" />
 					</cgxml:record>
 				</cgxml:records>
 			</cgxml:cgxml>

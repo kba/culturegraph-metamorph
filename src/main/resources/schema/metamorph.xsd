@@ -307,13 +307,13 @@
 			<element ref="tns:trim" />
 			<element ref="tns:split" />
 			<element ref="tns:normalize-utf8" />
-			<element ref="tns:occurence" />
+			<element ref="tns:occurrence" />
 			<element ref="tns:constant" />
 			<element ref="tns:count" />
 			<element ref="tns:urlencode" />			
 			<element ref="tns:buffer" />
 			<element ref="tns:name" />
-			<element ref="tns:get-name" />
+			<element ref="tns:switch-name-value" />
 			<element ref="tns:unique" />
 			<element ref="tns:script" />
 			<element ref="tns:setreplace"/>
@@ -322,7 +322,7 @@
 		</choice>
 	</group>
 
-	<element name="occurence">
+	<element name="occurrence">
 		<complexType>
 			<attribute name="only" use="required">
 				<simpleType>
@@ -423,7 +423,7 @@
 		</complexType>
 	</element>
 
-	<element name="get-name">
+	<element name="switch-name-value">
 		<complexType>
 		</complexType>
 	</element>
